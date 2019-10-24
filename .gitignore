@@ -87,3 +87,9 @@ target/
 
 # Mypy cache
 .mypy_cache/
+.Rprofile
+packrat/lib*/
+packrat/*
+!packrat/packrat.lock
+!packrat/packrat.opts
+.snakemake/

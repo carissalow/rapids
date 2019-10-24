@@ -1,0 +1,7 @@
+# Valid database table names
+SENSORS: [messages]
+
+# Participants to include in the analysis
+# You must create a file for each participant
+# named pXXX containing their device_id
+PIDS: [p01, p02]
