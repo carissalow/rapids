@@ -3,7 +3,8 @@ include: "rules/preprocessing.snakefile"
 
 rule all:
     input:
-        expand("data/raw/{pid}/{sensor}.csv", pid=config["PIDS"], sensor=config["SENSORS"])
+        expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
+        expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"])
 
 # --- Packrat Rules --- #
 ## Taken from https://github.com/lachlandeer/snakemake-econ-r
