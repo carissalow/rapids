@@ -2,7 +2,7 @@ rule download_dataset:
     input:
         "data/external/{pid}"
     params:
-        group = "AAPECS",
+        group = config["DOWNLOAD_DATASET"]["GROUP"],
         table = "{sensor}"
     output:
         "data/raw/{pid}/{sensor}_raw.csv"
@@ -14,7 +14,7 @@ rule readable_datetime:
         sensor_input = rules.download_dataset.output
     params:
         timezones = None,
-        fixed_timezone = "EST"
+        fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"]
     output:
         "data/raw/{pid}/{sensor}_with_datetime.csv"
     script:

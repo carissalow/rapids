@@ -10,6 +10,14 @@ PIDS: [p01, p02]
 DAY_SEGMENTS: &day_segments
   [daily, morning, afternoon, evening, night]
 
+# Download data config
+DOWNLOAD_DATASET:
+  GROUP: AAPECS
+
+# Readable datetime config
+READABLE_DATETIME:
+  FIXED_TIMEZONE: EST
+
 # Communication SMS features config
 COM_SMS:
   SMS_TYPES : [received, sent]
