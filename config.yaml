@@ -5,3 +5,13 @@ SENSORS: [messages]
 # You must create a file for each participant
 # named pXXX containing their device_id
 PIDS: [p01, p02]
+
+# Global var with common day segments
+DAY_SEGMENTS: &day_segments
+  [daily, morning, afternoon, evening, night]
+
+# Communication SMS features config
+COM_SMS:
+  SMS_TYPES : [received, sent]
+  DAY_SEGMENTS: *day_segments
+  METRICS: [count, distinctcontacts]

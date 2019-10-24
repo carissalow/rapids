@@ -1,10 +1,16 @@
 configfile: "config.yaml"
 include: "rules/preprocessing.snakefile"
+include: "rules/features.snakefile"
 
 rule all:
     input:
         expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
-        expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"])
+        expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
+        expand("data/processed/{pid}/com_sms_{sms_type}_{day_segment}_{metric}.csv",
+                            pid=config["PIDS"],
+                            sms_type = config["COM_SMS"]["SMS_TYPES"],
+                            day_segment = config["COM_SMS"]["DAY_SEGMENTS"],
+                            metric = config["COM_SMS"]["METRICS"]),
 
 # --- Packrat Rules --- #
 ## Taken from https://github.com/lachlandeer/snakemake-econ-r
