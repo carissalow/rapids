@@ -75,8 +75,6 @@ target/
 # Jupyter NB Checkpoints
 .ipynb_checkpoints/
 
-# exclude data from source control by default
-/data/
 
 # Mac OS-specific storage files
 .DS_Store
@@ -93,3 +91,14 @@ packrat/*
 !packrat/packrat.lock
 !packrat/packrat.opts
 .snakemake/
+
+# exclude data from source control by default
+# exclude data from source control by default
+data/external/*
+!/data/external/.gitkeep
+data/raw/*
+!/data/raw/.gitkeep
+data/interim/*
+!/data/interim/.gitkeep
+data/processed/*
+!/data/processed/.gitkeep
