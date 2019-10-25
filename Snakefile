@@ -11,6 +11,16 @@ rule all:
                             sms_type = config["COM_SMS"]["SMS_TYPES"],
                             day_segment = config["COM_SMS"]["DAY_SEGMENTS"],
                             metric = config["COM_SMS"]["METRICS"]),
+        expand("data/processed/{pid}/com_call_{call_type}_{segment}_{metric}.csv",
+                            pid=config["PIDS"], 
+                            call_type = config["COM_CALL"]["CALL_TYPE_MISSED"],
+                            segment = config["COM_CALL"]["DAY_SEGMENTS"],
+                            metric = config["COM_CALL"]["METRICS_MISSED"]),
+        expand("data/processed/{pid}/com_call_{call_type}_{segment}_{metric}.csv",
+                            pid=config["PIDS"], 
+                            call_type = config["COM_CALL"]["CALL_TYPE_TAKEN"],
+                            segment = config["COM_CALL"]["DAY_SEGMENTS"],
+                            metric = config["COM_CALL"]["METRICS_TAKEN"]),
 
 # --- Packrat Rules --- #
 ## Taken from https://github.com/lachlandeer/snakemake-econ-r

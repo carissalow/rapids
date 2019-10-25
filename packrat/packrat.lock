@@ -13,6 +13,11 @@ Source: CRAN
 Version: 1.0.0
 Hash: 6abedd7919c4457604c0aa44529a6683
 
+Package: DEoptimR
+Source: CRAN
+Version: 1.0-8
+Hash: adc74e88e85eabe6c7d73db6a86fe6cf
+
 Package: R6
 Source: CRAN
 Version: 2.4.0
@@ -124,6 +129,11 @@ Source: CRAN
 Version: 0.3.0
 Hash: 30b58109e4d7c6184a9c2e32f9ae38c6
 Requires: rlang
+
+Package: entropy
+Source: CRAN
+Version: 1.2.1
+Hash: ccff926ff232f7c19b4c84bab3d3d6d3
 
 Package: evaluate
 Source: CRAN
@@ -361,6 +371,12 @@ Version: 1.16
 Hash: 1f3014c40b12e8af0abf39fd78080237
 Requires: base64enc, evaluate, htmltools, jsonlite, knitr, mime,
     stringr, tinytex, xfun, yaml
+
+Package: robustbase
+Source: CRAN
+Version: 0.93-5
+Hash: 7b6672bf2b47c35d02a5b273393e49f5
+Requires: DEoptimR
 
 Package: rstudioapi
 Source: CRAN
