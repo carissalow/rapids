@@ -1,6 +1,7 @@
 configfile: "config.yaml"
 include: "rules/preprocessing.snakefile"
 include: "rules/features.snakefile"
+include: "rules/reports.snakefile"
 
 rule all:
     input:
@@ -11,6 +12,7 @@ rule all:
                             sms_type = config["COM_SMS"]["SMS_TYPES"],
                             day_segment = config["COM_SMS"]["DAY_SEGMENTS"],
                             metric = config["COM_SMS"]["METRICS"]),
+        expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
 
 # --- Packrat Rules --- #
 ## Taken from https://github.com/lachlandeer/snakemake-econ-r
