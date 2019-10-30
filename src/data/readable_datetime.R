@@ -17,11 +17,12 @@ if(!is.null(timezone_periods)){
                         timezone = as.character(timezone)) %>%
                 rowwise() %>%
                 mutate(utc_date_time = as.POSIXct(timestamp/1000, origin="1970-01-01", tz="UTC"),
-                        local_date_time = format(utc_date_time, tz = timezone, usetz = F),
-                        local_date = as.Date(local_date_time),
-                        local_time = strsplit(local_date_time, " ")[[1]][2],
-                        local_hour = as.numeric(strsplit(local_time, ":")[[1]][1]),
-                        day_segment = case_when(local_hour %in% 0:5 ~ "night",
+                        local_date_time = format(utc_date_time, tz = fixed_timezone, usetz = F)) %>%
+                separate(local_date_time, c("local_date","local_time"), "\\s", remove = FALSE) %>%
+                separate(local_time, c("local_hour", "local_minute"), ":", remove = FALSE, extra = "drop") %>%
+                mutate(local_hour = as.numeric(local_hour),
+                        local_minute = as.numeric(local_minute),
+                        local_day_segment = case_when(local_hour %in% 0:5 ~ "night",
                                                 local_hour %in% 6:11 ~ "morning",
                                                 local_hour %in% 12:17 ~ "afternoon",
                                                 local_hour %in% 18:23 ~ "evening"))
@@ -30,14 +31,14 @@ if(!is.null(timezone_periods)){
 } else if(!is.null(fixed_timezone)){
     output <- input %>% 
                 mutate(utc_date_time = as.POSIXct(timestamp/1000, origin="1970-01-01", tz="UTC"),
-                        local_date_time = format(utc_date_time, tz = fixed_timezone, usetz = F),
-                        local_date = as.Date(local_date_time),
-                        local_time = strsplit(local_date_time, " ")[[1]][2],
-                        local_hour = as.numeric(strsplit(local_time, ":")[[1]][1]),
+                        local_date_time = format(utc_date_time, tz = fixed_timezone, usetz = F)) %>%
+                separate(local_date_time, c("local_date","local_time"), "\\s", remove = FALSE) %>%
+                separate(local_time, c("local_hour", "local_minute"), ":", remove = FALSE, extra = "drop") %>%
+                mutate(local_hour = as.numeric(local_hour),
+                        local_minute = as.numeric(local_minute),
                         local_day_segment = case_when(local_hour %in% 0:5 ~ "night",
                                                 local_hour %in% 6:11 ~ "morning",
                                                 local_hour %in% 12:17 ~ "afternoon",
                                                 local_hour %in% 18:23 ~ "evening"))
-
     write.csv(output, sensor_output)
 }
