@@ -1,35 +1,54 @@
 import pandas as pd
-import numpy as np
 import plotly.io as pio
 import plotly.graph_objects as go
+import datetime
 
-def getHourlyRowCount(dates, sensor_data):
-    hourly_row_count = []
+def getComplianceMatrix(dates, compliance_bins):
+    compliance_matrix = []
     for date in dates:
-        num_rows = []
-        daily_rows = sensor_data[sensor_data["local_date"] == date]
-        for hour in range(24):
-            hourly_rows = daily_rows[daily_rows["local_hour"] == hour]
-            num_rows.append(hourly_rows.shape[0])
-        hourly_row_count.append(num_rows)
-    return hourly_row_count
+        date_bins = compliance_bins[compliance_bins["local_date"] == date]["count"].tolist()
+        compliance_matrix.append(date_bins)
+    return compliance_matrix
+
 
 def getHourlyRowCountHeatmap(dates, hourly_row_count, sensor_name, pid, output_path):
-    plot = go.Figure(data=go.Heatmap(z=hourly_row_count,x=[x for x in range(24)],y=dates,colorscale='Viridis'))
-    plot.update_layout(title="Hourly row count heatmap for " + pid + " for sensor " + sensor_name)
+    plot = go.Figure(data=go.Heatmap(z=hourly_row_count,
+                                     x=[x for x in range(24)],
+                                     y=[datetime.datetime.strftime(date, '%Y/%m/%d') for date in dates],
+                                     colorscale='Viridis'))
+    plot.update_layout(title="Hourly row count heatmap for " + pid + " and sensor " + sensor_name)
     pio.write_html(plot, file=output_path, auto_open=False)
 
 
 
 sensor_data = pd.read_csv(snakemake.input[0])
-# get current sensor name
 sensor_name = snakemake.params["table"]
-# get current patient id
 pid = snakemake.params["pid"]
-# get sorted date list
-dates = list(set(sensor_data["local_date"]))
-dates.sort()
-# get num of rows per hour per day
-hourly_row_count = getHourlyRowCount(dates, sensor_data)
-# get heatmap
+
+start_date = sensor_data["local_date"][0]
+end_date = sensor_data.at[sensor_data.index[-1],"local_date"]
+
+# Make local hour double digit
+sensor_data["local_hour"] = sensor_data["local_hour"].map("{0:0=2d}".format)
+
+# Group and count by local_date and local_hour
+sensor_data_hourly_bins = sensor_data.groupby(["local_date","local_hour"]).agg(count=("timestamp","count")).reset_index()
+
+# Add first and last day boundaries for resampling
+sensor_data_hourly_bins = sensor_data_hourly_bins.append([pd.Series([start_date, "00", 0], sensor_data_hourly_bins.columns),
+                                                          pd.Series([end_date, "23", 0], sensor_data_hourly_bins.columns)])
+
+# Rebuild local date hour for resampling
+sensor_data_hourly_bins["local_date_hour"] = pd.to_datetime(sensor_data_hourly_bins["local_date"] + \
+                                             " " + sensor_data_hourly_bins["local_hour"] + ":00:00")
+
+resampled_hourly_bins = pd.DataFrame(sensor_data_hourly_bins.resample("1H", on="local_date_hour")["count"].sum())
+
+# Extract list of dates for creating the heatmap
+resampled_hourly_bins.reset_index(inplace=True)
+resampled_hourly_bins["local_date"] = resampled_hourly_bins["local_date_hour"].dt.date
+dates = resampled_hourly_bins["local_date"].drop_duplicates().tolist()
+
+# Create heatmap
+hourly_row_count = getComplianceMatrix(dates, resampled_hourly_bins)
 getHourlyRowCountHeatmap(dates, hourly_row_count, sensor_name, pid, snakemake.output[0])
