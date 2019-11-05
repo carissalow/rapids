@@ -8,7 +8,7 @@ def getComplianceMatrix(dates, compliance_bins):
     compliance_matrix = []
     for date in dates:
         date_bins = compliance_bins[compliance_bins["local_date"] == date]
-        compliance_matrix.append(((date_bins["has_row"]>0).astype(int)).tolist())
+        compliance_matrix.append(date_bins["has_row"].tolist())
     return compliance_matrix
 
 def getComplianceHeatmap(dates, compliance_matrix, pid, output_path, bin_size):
@@ -18,7 +18,7 @@ def getComplianceHeatmap(dates, compliance_matrix, pid, output_path, bin_size):
     plot = go.Figure(data=go.Heatmap(z=compliance_matrix,
                                      x=x_axis_labels,
                                      y=dates,
-                                     colorscale=[[0, "rgb(255, 255, 255)"],[1, "rgb(120, 120, 120)"]]))
+                                     colorscale='Viridis'))
     plot.update_layout(title="Five minutes has_row heatmap for " + pid)
     pio.write_html(plot, file=output_path, auto_open=False)
 
@@ -28,6 +28,10 @@ sensors_dates = []
 sensors_five_minutes_row_is = pd.DataFrame()
 for sensor_path in snakemake.input:
     sensor_data = pd.read_csv(sensor_path)
+    
+    # check if the sensor is off
+    if sensor_data.empty:
+        continue
 
     # create a dataframe contains 2 columns: local_date_time, has_row
     sensor_data["has_row"] = [1]*sensor_data.shape[0]
@@ -43,6 +47,7 @@ for sensor_path in snakemake.input:
     sensed_bins.loc[sensed_bins.shape[0], :] = [end_date, 0]
     # get bins with 5 min
     sensor_five_minutes_row_is = pd.DataFrame(sensed_bins.resample("5T", on="local_date_time")["has_row"].sum())
+    sensor_five_minutes_row_is["has_row"] = (sensor_five_minutes_row_is["has_row"]>0).astype(int)
     # merge current sensor with previous sensors
     if sensors_five_minutes_row_is.empty:
         sensors_five_minutes_row_is = sensor_five_minutes_row_is
