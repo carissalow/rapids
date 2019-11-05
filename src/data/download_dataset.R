@@ -19,5 +19,5 @@ sensor_data <- sensor_data[order(sensor_data$timestamp),]
 
 # Droping duplicates on all columns except for _id
 sensor_data <- sensor_data %>% distinct(!!!syms(setdiff(names(sensor_data), "_id")))
-write.table(sensor_data, sensor_file, row.names = FALSE, quote = FALSE, sep = ",")
+write.csv(sensor_data, sensor_file)
 dbDisconnect(stopDB)
