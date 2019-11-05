@@ -1,3 +1,5 @@
+source("packrat/init.R")
+
 library(dplyr)
 
 # Load Ian Barnett's code. Taken from https://scholar.harvard.edu/ibarnett/software/gpsmobility
