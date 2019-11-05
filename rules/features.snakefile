@@ -21,3 +21,11 @@ rule communication_call_metrics:
         "data/processed/{pid}/com_call_{call_type}_{day_segment}_{metric}.csv"
     script:
         "../src/features/communication_call_metrics.R"
+
+rule battery_deltas:
+    input:
+        "data/raw/{pid}/battery_with_datetime.csv"
+    output:
+        "data/processed/{pid}/battery_deltas.csv"
+    script:
+        "../src/features/battery_deltas.R"
