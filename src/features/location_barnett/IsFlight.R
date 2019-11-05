@@ -1,0 +1,33 @@
+IsFlight <-
+function(mat,r,w){
+  num=nrow(mat)
+  if(sqrt((mat[1,1]-mat[num,1])^2+(mat[1,2]-mat[num,2])^2)<r){
+    return(FALSE)
+  }
+  if(min(sqrt((mat[2:num,1]-mat[1:(num-1),1])^2+(mat[2:num,2]-mat[1:(num-1),2])^2))<r){
+    return(FALSE)
+  }
+  if(num==2){
+    return(TRUE)
+  }
+  if(mat[1,1]==mat[num,1]){
+    if(max(abs(mat[2:(num-1),1]))>w){
+      return(FALSE)
+    }else{
+      return(TRUE)
+    }
+  }
+  if(mat[1,1]>mat[num,1]){
+    mat=mat[num:1,]
+  }
+  mat[,1]=mat[,1]-mat[1,1]
+  mat[,2]=mat[,2]-mat[1,2]
+  theta=-atan(mat[num,2]/mat[num,1])
+  A=matrix(c(cos(theta),-sin(theta),sin(theta),cos(theta)),nrow=2,byrow=TRUE)
+  rotpts=A%*%t(matrix(mat[2:(num-1),1:2],ncol=2))
+  if(max(abs(rotpts[2,]))>w){
+    return(FALSE)
+  }else{
+    return(TRUE)
+  }
+}

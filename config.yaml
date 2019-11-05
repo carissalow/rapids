@@ -1,5 +1,5 @@
 # Valid database table names
-SENSORS: [messages, calls, battery]
+SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, screen]
 
 # Participants to include in the analysis
 # You must create a file for each participant
@@ -10,13 +10,17 @@ PIDS: [p01, p02]
 DAY_SEGMENTS: &day_segments
   [daily, morning, afternoon, evening, night]
 
+# Global timezone
+TIMEZONE: &timezone
+  EST
+
 # Download data config
 DOWNLOAD_DATASET:
   GROUP: AAPECS
 
 # Readable datetime config
 READABLE_DATETIME:
-  FIXED_TIMEZONE: EST
+  FIXED_TIMEZONE: *timezone
 
 # Communication SMS features config
 COM_SMS:
@@ -32,3 +36,12 @@ COM_CALL:
   DAY_SEGMENTS: *day_segments
   METRICS_MISSED: [count, distinctcontacts]
   METRICS_TAKEN: [count, distinctcontacts, meanduration, sumduration, hubermduration, varqnduration, entropyduration]
+
+PHONE_VALID_SENSED_DAYS:
+  BIN_SIZE: 5 # (in minutes)
+  MIN_VALID_HOURS: 20 # (out of 24)
+  MIN_BINS_PER_HOUR: 8 # (out of 60min/BIN_SIZE bins)
+
+BARNETT_LOCATION:
+  ACCURACY_LIMIT: 51 # filters location coordinates with an accuracy higher than this
+  TIMEZONE: *timezone

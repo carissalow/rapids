@@ -29,3 +29,14 @@ rule battery_deltas:
         "data/processed/{pid}/battery_deltas.csv"
     script:
         "../src/features/battery_deltas.R"
+
+rule location_barnett_metrics:
+    input:
+        "data/raw/{pid}/locations_with_datetime.csv"
+    params:
+        accuracy_limit = config["BARNETT_LOCATION"]["ACCURACY_LIMIT"],
+        timezone = config["BARNETT_LOCATION"]["TIMEZONE"]
+    output:
+        "data/processed/{pid}/location_barnett_metrics.csv"
+    script:
+        "../src/features/location_barnett_metrics.R"

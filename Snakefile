@@ -8,6 +8,7 @@ rule all:
         expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("data/processed/{pid}/battery_deltas.csv", pid=config["PIDS"]),
+        expand("data/interim/{pid}/phone_valid_sensed_days.csv", pid=config["PIDS"]),
         expand("data/processed/{pid}/com_sms_{sms_type}_{day_segment}_{metric}.csv",
                             pid=config["PIDS"],
                             sms_type = config["COM_SMS"]["SMS_TYPES"],
@@ -23,6 +24,7 @@ rule all:
                             call_type = config["COM_CALL"]["CALL_TYPE_TAKEN"],
                             segment = config["COM_CALL"]["DAY_SEGMENTS"],
                             metric = config["COM_CALL"]["METRICS_TAKEN"]),
+        expand("data/processed/{pid}/location_barnett_metrics.csv", pid=config["PIDS"]),
         # Reports
         expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"], sensor=config["SENSORS"]),
