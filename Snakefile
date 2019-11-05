@@ -8,6 +8,7 @@ rule all:
         expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("data/processed/{pid}/battery_deltas.csv", pid=config["PIDS"]),
+        expand("data/interim/{pid}/phone_valid_sensed_days.csv", pid=config["PIDS"]),
         expand("data/processed/{pid}/com_sms_{sms_type}_{day_segment}_{metric}.csv",
                             pid=config["PIDS"],
                             sms_type = config["COM_SMS"]["SMS_TYPES"],

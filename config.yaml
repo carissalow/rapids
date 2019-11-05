@@ -1,5 +1,5 @@
 # Valid database table names
-SENSORS: [messages, calls, battery, screen]
+SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, screen]
 
 # Participants to include in the analysis
 # You must create a file for each participant
@@ -32,3 +32,8 @@ COM_CALL:
   DAY_SEGMENTS: *day_segments
   METRICS_MISSED: [count, distinctcontacts]
   METRICS_TAKEN: [count, distinctcontacts, meanduration, sumduration, hubermduration, varqnduration, entropyduration]
+
+PHONE_VALID_SENSED_DAYS:
+  BIN_SIZE: 5 # (in minutes)
+  MIN_VALID_HOURS: 20 # (out of 24)
+  MIN_BINS_PER_HOUR: 8 # (out of 60min/BIN_SIZE bins)
