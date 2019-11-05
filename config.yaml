@@ -10,13 +10,17 @@ PIDS: [p01, p02]
 DAY_SEGMENTS: &day_segments
   [daily, morning, afternoon, evening, night]
 
+# Global timezone
+TIMEZONE: &timezone
+  EST
+
 # Download data config
 DOWNLOAD_DATASET:
   GROUP: AAPECS
 
 # Readable datetime config
 READABLE_DATETIME:
-  FIXED_TIMEZONE: EST
+  FIXED_TIMEZONE: *timezone
 
 # Communication SMS features config
 COM_SMS:
@@ -37,3 +41,7 @@ PHONE_VALID_SENSED_DAYS:
   BIN_SIZE: 5 # (in minutes)
   MIN_VALID_HOURS: 20 # (out of 24)
   MIN_BINS_PER_HOUR: 8 # (out of 60min/BIN_SIZE bins)
+
+BARNETT_LOCATION:
+  ACCURACY_LIMIT: 51 # filters location coordinates with an accuracy higher than this
+  TIMEZONE: *timezone

@@ -1,0 +1,36 @@
+RadiusOfGyration <-
+function(mat,ITRVL){
+  mat=matrix(mat,ncol=7)
+  IDskip=which(mat[,1]==4)
+  if(length(IDskip)>0){
+    mat=matrix(mat[-IDskip,],ncol=7)
+  }
+  N=nrow(mat)
+  w_v=rep(0,N)
+  x_v=rep(0,N)
+  y_v=rep(0,N)
+  for(i in 1:N){
+    if(mat[i,1]==4){
+      next
+    } 
+    if(mat[i,1]==3){
+      x_v[i]=mat[i,2]
+      y_v[i]=mat[i,3]
+      w_v[i]=ITRVL
+    }
+    if(mat[i,1]==1){
+      x_v[i]=mean(mat[i,c(2,5)])
+      y_v[i]=mean(mat[i,c(3,6)])
+      w_v[i]=mat[i,7]-mat[i,4]
+    }
+    if(mat[i,1]==2){
+      x_v[i]=mat[i,2]
+      y_v[i]=mat[i,3]
+      w_v[i]=mat[i,7]-mat[i,4]
+    }
+  }
+  sumw_v=sum(w_v)
+  xavg=sum(w_v*x_v)/sumw_v
+  yavg=sum(w_v*y_v)/sumw_v
+  return(sqrt(sum(((x_v-xavg)^2+(y_v-yavg)^2)*w_v)/sumw_v))
+}
