@@ -28,6 +28,7 @@ rule all:
         expand("data/processed/{pid}/bluetooth_{segment}.csv",
                             pid=config["PIDS"], 
                             segment = config["BLUETOOTH"]["DAY_SEGMENTS"]),
+        expand("data/processed/{pid}/activity_extracted.csv",pid=config["PIDS"]),
         # Reports
         expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"], sensor=config["SENSORS"]),
