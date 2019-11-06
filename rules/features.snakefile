@@ -37,7 +37,7 @@ rule location_barnett_metrics:
         accuracy_limit = config["BARNETT_LOCATION"]["ACCURACY_LIMIT"],
         timezone = config["BARNETT_LOCATION"]["TIMEZONE"]
     output:
-        "data/processed/{pid}/location_barnett_metrics.csv"
+        "data/processed/{pid}/location_barnett.csv"
     script:
         "../src/features/location_barnett_metrics.R"
 

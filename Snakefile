@@ -24,7 +24,7 @@ rule all:
                             call_type = config["COM_CALL"]["CALL_TYPE_TAKEN"],
                             segment = config["COM_CALL"]["DAY_SEGMENTS"],
                             metric = config["COM_CALL"]["METRICS_TAKEN"]),
-        expand("data/processed/{pid}/location_barnett_metrics.csv", pid=config["PIDS"]),
+        expand("data/processed/{pid}/location_barnett.csv", pid=config["PIDS"]),
         expand("data/processed/{pid}/bluetooth_{segment}.csv",
                             pid=config["PIDS"], 
                             segment = config["BLUETOOTH"]["DAY_SEGMENTS"]),
