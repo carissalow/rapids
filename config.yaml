@@ -30,12 +30,13 @@ COM_SMS:
 
 # Communication call features config
 # Separate configurations for missed and taken calls
-COM_CALL:
-  CALL_TYPE_MISSED : [missed]
-  CALL_TYPE_TAKEN : [incoming, outgoing]
+CALLS:
+  TYPES: [missed, incoming, outgoing]
+  METRICS:
+    missed:  [count, distinctcontacts]
+    incoming: [count, distinctcontacts, meanduration, sumduration, hubermduration, varqnduration, entropyduration]
+    outgoing: [count, distinctcontacts, meanduration, sumduration, hubermduration, varqnduration, entropyduration]
   DAY_SEGMENTS: *day_segments
-  METRICS_MISSED: [count, distinctcontacts]
-  METRICS_TAKEN: [count, distinctcontacts, meanduration, sumduration, hubermduration, varqnduration, entropyduration]
 
 PHONE_VALID_SENSED_DAYS:
   BIN_SIZE: 5 # (in minutes)

@@ -10,15 +10,15 @@ rule communication_sms_metrics:
     script:
         "../src/features/communication_sms_metrics.R"
 
-rule communication_call_metrics:
+rule call_metrics:
     input: 
         "data/raw/{pid}/calls_with_datetime.csv"
     params:
         call_type = "{call_type}",
         day_segment = "{day_segment}",
-        metric = "{metric}"
+        metrics = lambda wildcards: config["CALLS"]["METRICS"][wildcards.call_type]
     output:
-        "data/processed/{pid}/com_call_{call_type}_{day_segment}_{metric}.csv"
+        "data/processed/{pid}/call_{call_type}_{day_segment}.csv"
     script:
         "../src/features/communication_call_metrics.R"
 
