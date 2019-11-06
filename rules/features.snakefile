@@ -20,7 +20,7 @@ rule call_metrics:
     output:
         "data/processed/{pid}/call_{call_type}_{day_segment}.csv"
     script:
-        "../src/features/communication_call_metrics.R"
+        "../src/features/call_metrics.R"
 
 rule battery_deltas:
     input:
