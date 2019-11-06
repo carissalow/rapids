@@ -22,14 +22,15 @@ DOWNLOAD_DATASET:
 READABLE_DATETIME:
   FIXED_TIMEZONE: *timezone
 
-# Communication SMS features config
-COM_SMS:
-  SMS_TYPES : [received, sent]
-  DAY_SEGMENTS: *day_segments
-  METRICS: [count, distinctcontacts]
+# Communication SMS features config, TYPES and METRICS keys need to match
+SMS:
+  TYPES : [received, sent]
+  METRICS: 
+    received: [count, distinctcontacts]
+    sent: [count, distinctcontacts]
+  DAY_SEGMENTS: *day_segments  
 
-# Communication call features config
-# Separate configurations for missed and taken calls
+# Communication call features config, TYPES and METRICS keys need to match
 CALLS:
   TYPES: [missed, incoming, outgoing]
   METRICS:
