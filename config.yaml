@@ -1,5 +1,5 @@
 # Valid database table names
-SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, screen]
+SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, fitbit_data, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, screen]
 
 # Participants to include in the analysis
 # You must create a file for each participant
