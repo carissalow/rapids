@@ -51,3 +51,11 @@ rule bluetooth_metrics:
         "data/processed/{pid}/bluetooth_{day_segment}.csv"
     script:
         "../src/features/bluetooth_metrics.R"
+        
+rule activity_metrics:
+    input:
+        "data/raw/{pid}/plugin_google_activity_recognition_with_datetime.csv"
+    output:
+        "data/processed/{pid}/activity_extracted.csv"
+    script:
+        "../src/features/activity_recognition.py"
