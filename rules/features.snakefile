@@ -56,6 +56,6 @@ rule activity_metrics:
     input:
         "data/raw/{pid}/plugin_google_activity_recognition_with_datetime.csv"
     output:
-        "data/processed/{pid}/activity_extracted.csv"
+        "data/processed/{pid}/google_activity_recognition.csv"
     script:
-        "../src/features/activity_recognition.py"
+        "../src/features/google_activity_recognition.py"
