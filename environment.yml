@@ -1,4 +1,4 @@
-name: moshi-env2
+name: moshi-env
 channels:
   - anaconda
   - defaults
@@ -77,5 +77,5 @@ dependencies:
     - pyrsistent==0.15.5
     - ratelimiter==1.2.0.post0
     - snakemake==5.7.1
-prefix: /usr/local/Caskroom/miniconda/base/envs/moshi-env2
+prefix: /usr/local/Caskroom/miniconda/base/envs/moshi-env
 
