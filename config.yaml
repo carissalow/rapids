@@ -11,8 +11,10 @@ DAY_SEGMENTS: &day_segments
   [daily, morning, afternoon, evening, night]
 
 # Global timezone
+# Use codes from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+# Double check your code, for example EST is not US Eastern Time.
 TIMEZONE: &timezone
-  EST
+  America/New_York
 
 # Download data config
 DOWNLOAD_DATASET:
