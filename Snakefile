@@ -25,6 +25,9 @@ rule all:
                             segment = config["COM_CALL"]["DAY_SEGMENTS"],
                             metric = config["COM_CALL"]["METRICS_TAKEN"]),
         expand("data/processed/{pid}/location_barnett_metrics.csv", pid=config["PIDS"]),
+        expand("data/processed/{pid}/bluetooth_{segment}.csv",
+                            pid=config["PIDS"], 
+                            segment = config["BLUETOOTH"]["DAY_SEGMENTS"]),
         # Reports
         expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"], sensor=config["SENSORS"]),

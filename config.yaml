@@ -45,3 +45,7 @@ PHONE_VALID_SENSED_DAYS:
 BARNETT_LOCATION:
   ACCURACY_LIMIT: 51 # filters location coordinates with an accuracy higher than this
   TIMEZONE: *timezone
+
+BLUETOOTH:
+  DAY_SEGMENTS: *day_segments
+  METRICS: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
