@@ -17,8 +17,9 @@ def getComplianceHeatmap(dates, compliance_matrix, pid, output_path, bin_size):
                     "{0:0=2d}".format(x % bins_per_hour * bin_size) for x in range(24 * bins_per_hour)]
     plot = go.Figure(data=go.Heatmap(z=compliance_matrix,
                                      x=x_axis_labels,
-                                     y=dates,
-                                     colorscale='Viridis'))
+                                     y=[datetime.datetime.strftime(date, '%Y/%m/%d') for date in dates],
+                                     colorscale='Viridis',
+                                     colorbar={'tick0': 0,'dtick': 1}))
     plot.update_layout(title="Five minutes has_row heatmap for " + pid)
     pio.write_html(plot, file=output_path, auto_open=False)
 
