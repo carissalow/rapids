@@ -59,3 +59,11 @@ rule activity_metrics:
         "data/processed/{pid}/google_activity_recognition.csv"
     script:
         "../src/features/google_activity_recognition.py"
+
+rule battery_metrics:
+    input:
+        "data/processed/{pid}/battery_deltas.csv"
+    output:
+        "data/processed/{pid}/battery_daily.csv"
+    script:
+        "../src/features/battery_metrics.py"

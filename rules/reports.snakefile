@@ -18,3 +18,13 @@ rule compliance_heatmap:
         "reports/figures/{pid}/compliance_heatmap.html"
     script:
         "../src/visualization/compliance_heatmap.py"
+
+rule battery_consumption_rates_barchart:
+    input:
+        "data/processed/{pid}/battery_daily.csv"
+    params:
+        pid = "{pid}"
+    output:
+        "reports/figures/{pid}/battery_consumption_rates_barchart.html"
+    script:
+        "../src/visualization/battery_consumption_rates_barchart.py"
