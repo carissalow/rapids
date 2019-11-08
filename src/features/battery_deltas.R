@@ -18,4 +18,4 @@ consumption <- battery %>%
     select(-group_id) %>%
     filter(time_diff > 0.1) # Avoids including quick cycles
 
-write.csv(consumption, snakemake@output[[1]])
+write.csv(consumption, snakemake@output[[1]], row.names = FALSE)
