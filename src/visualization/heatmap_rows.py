@@ -16,7 +16,7 @@ def getHourlyRowCountHeatmap(dates, hourly_row_count, sensor_name, pid, output_p
                                      x=[x for x in range(24)],
                                      y=[datetime.datetime.strftime(date, '%Y/%m/%d') for date in dates],
                                      colorscale='Viridis'))
-    plot.update_layout(title="Hourly row count heatmap for " + pid + " and sensor " + sensor_name)
+    plot.update_layout(title="Row count heatmap for " + sensor_name + " of " + pid)
     pio.write_html(plot, file=output_path, auto_open=False)
 
 
