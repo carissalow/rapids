@@ -17,20 +17,34 @@ Mode <- function(v) {
 }
 
 compute_call_feature <- function(calls, metric, day_segment){
-  calls <- calls %>% filter_by_day_segment(day_segment)
-  feature <- switch(metric,
-       "count" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := n()),
-       "distinctcontacts" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := n_distinct(trace)),
-       "meanduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := mean(call_duration)),
-       "sumduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := sum(call_duration)),
-       "minduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := min(call_duration)),
-       "maxduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := max(call_duration)),
-       "stdduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := sd(call_duration)),
-       "modeduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := Mode(call_duration)),
-       "hubermduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := huberM(call_duration)$mu),
-       "varqnduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := Qn(call_duration)),
-       "entropyduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := entropy.MillerMadow(call_duration)))
-  return(feature)
+  if(metric == "countmostfrequentcontact"){
+     # Get the most frequent contact
+    calls <- calls %>% group_by(trace) %>% 
+      mutate(N=n()) %>% 
+      ungroup() %>%
+      filter(N == max(N))
+
+    return(calls %>% 
+             filter_by_day_segment(day_segment) %>%
+             summarise(!!paste("call", type, day_segment, metric, sep = "_") := n()))
+  } else {
+    calls <- calls %>% filter_by_day_segment(day_segment)
+    feature <- switch(metric,
+        "count" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := n()),
+        "distinctcontacts" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := n_distinct(trace)),
+        "meanduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := mean(call_duration)),
+        "sumduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := sum(call_duration)),
+        "minduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := min(call_duration)),
+        "maxduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := max(call_duration)),
+        "stdduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := sd(call_duration)),
+        "modeduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := Mode(call_duration)),
+        "hubermduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := huberM(call_duration)$mu),
+        "varqnduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := Qn(call_duration)),
+        "entropyduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := entropy.MillerMadow(call_duration)),
+        "timefirstcall" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := first(local_hour) + (first(local_minute)/60)),
+        "timelastcall" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := last(local_hour) + (last(local_minute)/60)))
+    return(feature)
+  }
 }
 
 calls <-  read.csv(snakemake@input[[1]], stringsAsFactors = FALSE)

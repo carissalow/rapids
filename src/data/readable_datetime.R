@@ -36,5 +36,5 @@ if(!is.null(timezone_periods)){
                 mutate(utc_date_time = as.POSIXct(timestamp/1000, origin="1970-01-01", tz="UTC"),
                         local_date_time = format(utc_date_time, tz = fixed_timezone, usetz = F))
     output <- split_local_date_time(output)
-    write.csv(output, sensor_output)
+    write.csv(output, sensor_output, row.names = FALSE)
 }

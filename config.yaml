@@ -30,17 +30,17 @@ READABLE_DATETIME:
 SMS:
   TYPES : [received, sent]
   METRICS: 
-    received: [count, distinctcontacts]
-    sent: [count, distinctcontacts]
+    received: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
+    sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments  
 
 # Communication call features config, TYPES and METRICS keys need to match
 CALLS:
   TYPES: [missed, incoming, outgoing]
   METRICS:
-    missed:  [count, distinctcontacts]
-    incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration]
-    outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration]
+    missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
+    incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+    outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments
 
 PHONE_VALID_SENSED_DAYS:

@@ -31,3 +31,14 @@ rule phone_valid_sensed_days:
         "data/interim/{pid}/phone_valid_sensed_days.csv"
     script:
         "../src/data/phone_valid_sensed_days.R"
+
+rule unify_ios_android:
+    input:
+        sensor_data = "data/raw/{pid}/{sensor}_with_datetime.csv",
+        participant_info = "data/external/{pid}"
+    params:
+        sensor = "{sensor}"
+    output:
+        "data/raw/{pid}/{sensor}_with_datetime_unified.csv"
+    script:
+        "../src/data/unify_ios_android.R"
