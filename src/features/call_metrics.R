@@ -43,8 +43,8 @@ compute_call_feature <- function(calls, metric, day_segment){
         "entropyduration" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := entropy.MillerMadow(call_duration)),
         "timefirstcall" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := first(local_hour) + (first(local_minute)/60)),
         "timelastcall" = calls %>% summarise(!!paste("call", type, day_segment, metric, sep = "_") := last(local_hour) + (last(local_minute)/60)))
+    return(feature)
   }
-  return(feature)
 }
 
 calls <-  read.csv(snakemake@input[[1]], stringsAsFactors = FALSE)
