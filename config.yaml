@@ -37,8 +37,8 @@ CALLS:
   TYPES: [missed, incoming, outgoing]
   METRICS:
     missed:  [count, distinctcontacts]
-    incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration]
-    outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration]
+    incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+    outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments
 
 PHONE_VALID_SENSED_DAYS:
