@@ -12,7 +12,7 @@ rule sms_metrics:
 
 rule call_metrics:
     input: 
-        "data/raw/{pid}/calls_with_datetime.csv"
+        "data/raw/{pid}/calls_with_datetime_unified.csv"
     params:
         call_type = "{call_type}",
         day_segment = "{day_segment}",
