@@ -10,11 +10,25 @@ filter_by_day_segment <- function(data, day_segment) {
 }
 
 compute_sms_feature <- function(sms, metric, day_segment){
-  sms <- sms %>% filter_by_day_segment(day_segment)
-  feature <- switch(metric,
-       "count" = sms %>% summarise(!!paste("com", "sms", sms_type, day_segment, metric, sep = "_") := n()),
-       "distinctcontacts" = sms %>% summarise(!!paste("com", "sms", sms_type, day_segment, metric, sep = "_") := n_distinct(trace)))
-  return(feature)
+  if(metric == "countmostfrequentcontact"){
+     # Get the most frequent contact
+    sms <- sms %>% group_by(trace) %>% 
+      mutate(N=n()) %>% 
+      ungroup() %>%
+      filter(N == max(N))
+
+    return(sms %>% 
+             filter_by_day_segment(day_segment) %>%
+             summarise(!!paste("sms", sms_type, day_segment, metric, sep = "_") := n()))
+  } else {
+    sms <- sms %>% filter_by_day_segment(day_segment)
+    feature <- switch(metric,
+        "count" = sms %>% summarise(!!paste("sms", sms_type, day_segment, metric, sep = "_") := n()),
+        "distinctcontacts" = sms %>% summarise(!!paste("sms", sms_type, day_segment, metric, sep = "_") := n_distinct(trace)),
+        "timefirstsms" = sms %>% summarise(!!paste("sms", sms_type, day_segment, metric, sep = "_") := first(local_hour) + (first(local_minute)/60)),
+        "timelastsms" = sms %>% summarise(!!paste("sms", sms_type, day_segment, metric, sep = "_") := last(local_hour) + (last(local_minute)/60)))
+    return(feature)
+  }
 }
 
 sms <-  read.csv(snakemake@input[[1]])

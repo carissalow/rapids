@@ -28,8 +28,8 @@ READABLE_DATETIME:
 SMS:
   TYPES : [received, sent]
   METRICS: 
-    received: [count, distinctcontacts]
-    sent: [count, distinctcontacts]
+    received: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
+    sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments  
 
 # Communication call features config, TYPES and METRICS keys need to match
