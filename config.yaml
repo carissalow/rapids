@@ -36,7 +36,7 @@ SMS:
 CALLS:
   TYPES: [missed, incoming, outgoing]
   METRICS:
-    missed:  [count, distinctcontacts]
+    missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
     incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
     outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments
