@@ -1,10 +1,12 @@
 # Valid database table names
-SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, fitbit_data, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, screen]
+SENSORS: [calls, messages]
+# Unify Android and iOS tables to correct for inconsistencies
+UNIFIED_SENSORS: [calls]
 
 # Participants to include in the analysis
 # You must create a file for each participant
 # named pXXX containing their device_id
-PIDS: [p01, p02]
+PIDS: ['p181', 'p182', 'p191', 'p200', 'p203', 'p205', 'p214', 'p216', 'p221', 'p223', 'p224', 'p226', 'p227', 'p228', 'p263', 'p231', 'p233', 'p234', 'p236', 'p237', 'p254', 'p286', 'p238', 'p239', 'p240', 'p241', 'p243', 'p247', 'p249', 'p250', 'p251', 'p252', 'p253', 'p255', 'p256', 'p257', 'p258', 'p259', 'p260', 'p266', 'p269', 'p270', 'p271', 'p273', 'p295', 'p272', 'p274', 'p275', 'p276', 'p277', 'p278', 'p279', 'p281', 'p282', 'p283', 'p284', 'p285', 'p288', 'p289', 'p290', 'p291', 'p292', 'p293', 'p298', 'p300', 'p302', 'p307', 'p308', 'p309', 'p310', 'p311', 'p312', 'p313', 'p314', 'p316', 'p318', 'p319', 'p321', 'p322', 'p323', 'p324', 'p325', 'p327', 'p330', 'p331', 'p332', 'p333', 'p334', 'p336', 'p337', 'p338', 'p339', 'p342', 'p343', 'p345', 'p346', 'p347', 'p348', 'p349', 'p350', 'p351', 'p352', 'p353', 'p356', 'p357', 'p358', 'p360', 'p361', 'p364', 'p366', 'p372', 'p373', 'p374', 'p375', 'p381', 'p382', 'p386', 'p387', 'p391', 'p392', 'p393', 'p398']
 
 # Global var with common day segments
 DAY_SEGMENTS: &day_segments

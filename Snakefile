@@ -7,8 +7,9 @@ rule all:
     input:
         expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
-        expand("data/processed/{pid}/battery_deltas.csv", pid=config["PIDS"]),
-        expand("data/interim/{pid}/phone_valid_sensed_days.csv", pid=config["PIDS"]),
+        expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["UNIFIED_SENSORS"]),
+        # expand("data/processed/{pid}/battery_deltas.csv", pid=config["PIDS"]),
+        # expand("data/interim/{pid}/phone_valid_sensed_days.csv", pid=config["PIDS"]),
         expand("data/processed/{pid}/sms_{sms_type}_{day_segment}.csv",
                             pid=config["PIDS"],
                             sms_type = config["SMS"]["TYPES"],
@@ -17,16 +18,16 @@ rule all:
                             pid=config["PIDS"], 
                             call_type=config["CALLS"]["TYPES"],
                             segment = config["CALLS"]["DAY_SEGMENTS"]),
-        expand("data/processed/{pid}/location_barnett.csv", pid=config["PIDS"]),
-        expand("data/processed/{pid}/bluetooth_{segment}.csv",
-                            pid=config["PIDS"], 
-                            segment = config["BLUETOOTH"]["DAY_SEGMENTS"]),
-        expand("data/processed/{pid}/google_activity_recognition.csv",pid=config["PIDS"]),
-        expand("data/processed/{pid}/battery_daily.csv", pid=config["PIDS"]),
-        # Reports
-        expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
-        expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"], sensor=config["SENSORS"]),
-        expand("reports/figures/{pid}/battery_consumption_rates_barchart.html", pid=config["PIDS"]),
+        # expand("data/processed/{pid}/location_barnett.csv", pid=config["PIDS"]),
+        # expand("data/processed/{pid}/bluetooth_{segment}.csv",
+        #                     pid=config["PIDS"], 
+        #                     segment = config["BLUETOOTH"]["DAY_SEGMENTS"]),
+        # expand("data/processed/{pid}/google_activity_recognition.csv",pid=config["PIDS"]),
+        # expand("data/processed/{pid}/battery_daily.csv", pid=config["PIDS"]),
+        # # Reports
+        # expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
+        # expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"], sensor=config["SENSORS"]),
+        # expand("reports/figures/{pid}/battery_consumption_rates_barchart.html", pid=config["PIDS"]),
 
 # --- Packrat Rules --- #
 ## Taken from https://github.com/lachlandeer/snakemake-econ-r
