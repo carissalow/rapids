@@ -55,17 +55,21 @@ for sensor_path in snakemake.input:
     else:
         sensors_five_minutes_row_is = pd.concat([sensors_five_minutes_row_is, sensor_five_minutes_row_is]).groupby("local_date_time").sum()
 
+if sensors_five_minutes_row_is.empty:
+    empty_html = open(snakemake.output[0], "w")
+    empty_html.write("There is no sensor data for " + pid)
+    empty_html.close()
+else:
+    sensors_five_minutes_row_is.reset_index(inplace=True)
+    # resample again to impute missing dates
+    sensors_five_minutes_row_is_successive = pd.DataFrame(sensors_five_minutes_row_is.resample("5T", on="local_date_time")["has_row"].sum())
 
-sensors_five_minutes_row_is.reset_index(inplace=True)
-# resample again to impute missing dates
-sensors_five_minutes_row_is_successive = pd.DataFrame(sensors_five_minutes_row_is.resample("5T", on="local_date_time")["has_row"].sum())
+    # get sorted date list
+    sensors_five_minutes_row_is_successive.reset_index(inplace=True)
+    sensors_five_minutes_row_is_successive["local_date"] = sensors_five_minutes_row_is_successive["local_date_time"].apply(lambda x: x.date())
+    dates = list(set(sensors_five_minutes_row_is_successive["local_date"]))
+    dates.sort()
+    compliance_matrix = getComplianceMatrix(dates, sensors_five_minutes_row_is_successive)
 
-# get sorted date list
-sensors_five_minutes_row_is_successive.reset_index(inplace=True)
-sensors_five_minutes_row_is_successive["local_date"] = sensors_five_minutes_row_is_successive["local_date_time"].apply(lambda x: x.date())
-dates = list(set(sensors_five_minutes_row_is_successive["local_date"]))
-dates.sort()
-compliance_matrix = getComplianceMatrix(dates, sensors_five_minutes_row_is_successive)
-
-# get heatmap
-getComplianceHeatmap(dates, compliance_matrix, pid, snakemake.output[0], 5)
+    # get heatmap
+    getComplianceHeatmap(dates, compliance_matrix, pid, snakemake.output[0], 5)
