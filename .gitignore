@@ -103,3 +103,5 @@ data/interim/*
 data/processed/*
 !/data/processed/.gitkeep
 reports/
+.Rproj.user
+*.Rproj

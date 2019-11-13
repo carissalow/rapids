@@ -19,7 +19,7 @@ battery_data = pd.read_csv(snakemake.input[0])
 pid = snakemake.params["pid"]
 if battery_data.empty:
     empty_html = open(snakemake.output[0], "w")
-    empty_html.write("There is no "+ sensor_name + " data for "+pid)
+    empty_html.write("There is no battery data for " + pid)
     empty_html.close()
 else:
     plot = getBatteryConsumptionRatesBarChart(battery_data, pid)
