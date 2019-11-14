@@ -28,3 +28,21 @@ rule battery_consumption_rates_barchart:
         "reports/figures/{pid}/battery_consumption_rates_barchart.html"
     script:
         "../src/visualization/battery_consumption_rates_barchart.py"
+
+rule zip_aapecs_features:
+    output:
+        "reports/features_{date}.zip",
+    shell:
+        "zip -r {output} data/processed"
+
+rule zip_aapecs_interim:
+    output:
+        "reports/interim_{date}.zip",
+    shell:
+        "zip -r {output} data/interim"
+
+rule zip_aapecs_figures:
+    output:
+        "reports/figures_{date}.zip",
+    shell:
+        "zip -r {output} reports/figures"

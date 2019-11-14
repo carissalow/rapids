@@ -30,6 +30,7 @@ rule all:
         expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("reports/figures/{pid}/battery_consumption_rates_barchart.html", pid=config["PIDS"]),
+        expand("reports/{folder}_{date}.zip", folder=["features", "interim", "figures"], date=["20191113"]),
 
 # --- Packrat Rules --- #
 ## Taken from https://github.com/lachlandeer/snakemake-econ-r
