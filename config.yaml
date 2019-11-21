@@ -53,3 +53,7 @@ BARNETT_LOCATION:
 BLUETOOTH:
   DAY_SEGMENTS: *day_segments
   METRICS: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+
+GOOGLE_ACTIVITY_RECOGNITION:
+  DAY_SEGMENTS: *day_segments
+  METRICS: ['count','most_common_activity','number_unique_activities','activity_change_count']

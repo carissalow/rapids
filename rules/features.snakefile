@@ -55,8 +55,11 @@ rule bluetooth_metrics:
 rule activity_metrics:
     input:
         "data/raw/{pid}/plugin_google_activity_recognition_with_datetime.csv"
+    params:
+        segment = "{day_segment}",
+        metrics = config["GOOGLE_ACTIVITY_RECOGNITION"]["METRICS"]
     output:
-        "data/processed/{pid}/google_activity_recognition.csv"
+        "data/processed/{pid}/google_activity_recognition_{day_segment}.csv"
     script:
         "../src/features/google_activity_recognition.py"
 
