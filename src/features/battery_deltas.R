@@ -16,7 +16,8 @@ if(nrow(battery) > 0){
               local_end_date_time = last(local_date_time),
               local_start_date = first(local_date),
               local_end_date = last(local_date),
-              local_day_segment = first(local_day_segment)) %>%
+              local_start_day_segment = first(local_day_segment),
+              local_end_day_segment = last(local_day_segment)) %>%
     select(-group_id) %>%
     filter(time_diff > 0.1) # Avoids including quick cycles
 } else {
@@ -26,7 +27,8 @@ if(nrow(battery) > 0){
                             local_end_date_time = character(),
                             local_start_date = character(),
                             local_end_date = character(),
-                            local_day_segment = character())
+                            local_start_day_segment = character(),
+                            local_end_day_segment = character())
 }
 
 write.csv(consumption, snakemake@output[[1]], row.names = FALSE)
