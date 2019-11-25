@@ -23,7 +23,9 @@ rule all:
                             segment = config["BLUETOOTH"]["DAY_SEGMENTS"]),
         expand("data/processed/{pid}/google_activity_recognition_{segment}.csv",pid=config["PIDS"], 
                             segment = config["GOOGLE_ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]),
-        expand("data/processed/{pid}/battery_daily.csv", pid=config["PIDS"]),
+        expand("data/processed/{pid}/battery_{day_segment}.csv",
+                            pid = config["PIDS"],
+                            day_segment = config["BATTERY"]["DAY_SEGMENTS"]),
         # Reports
         expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"], sensor=config["SENSORS"]),

@@ -66,7 +66,10 @@ rule activity_metrics:
 rule battery_metrics:
     input:
         "data/processed/{pid}/battery_deltas.csv"
+    params:
+        day_segment = "{day_segment}",
+        metrics = config["BATTERY"]["METRICS"]
     output:
-        "data/processed/{pid}/battery_daily.csv"
+        "data/processed/{pid}/battery_{day_segment}.csv"
     script:
         "../src/features/battery_metrics.py"
