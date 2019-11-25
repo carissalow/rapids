@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 
 def getBatteryConsumptionRatesBarChart(battery_data, pid):
     plot = go.Figure(go.Bar(
-                    x=battery_data["battery_consumption_rate"],
+                    x=battery_data["battery_daily_avgconsumptionrate"],
                     y=battery_data["local_date"].apply(lambda x: x.replace("-","/")).tolist(),
                     orientation='h'))
     plot.update_layout(title="Daily battery consumption rates bar chart for " + pid,
