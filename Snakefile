@@ -9,6 +9,7 @@ rule all:
         expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("data/processed/{pid}/battery_deltas.csv", pid=config["PIDS"]),
         expand("data/processed/{pid}/screen_deltas.csv", pid=config["PIDS"]),
+        expand("data/processed/{pid}/google_activity_recognition_deltas.csv", pid=config["PIDS"]),
         expand("data/interim/{pid}/phone_valid_sensed_days.csv", pid=config["PIDS"]),
         expand("data/processed/{pid}/sms_{sms_type}_{day_segment}.csv",
                             pid=config["PIDS"],

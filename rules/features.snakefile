@@ -38,6 +38,14 @@ rule screen_deltas:
     script:
         "../src/features/screen_deltas.R"
 
+rule google_activity_recognition_deltas:
+    input:
+        "data/raw/{pid}/plugin_google_activity_recognition_with_datetime.csv"
+    output:
+        "data/processed/{pid}/google_activity_recognition_deltas.csv"
+    script:
+        "../src/features/google_activity_recognition_deltas.R"
+
 rule location_barnett_metrics:
     input:
         "data/raw/{pid}/locations_with_datetime.csv"
@@ -62,7 +70,8 @@ rule bluetooth_metrics:
         
 rule activity_metrics:
     input:
-        "data/raw/{pid}/plugin_google_activity_recognition_with_datetime.csv"
+        "data/raw/{pid}/plugin_google_activity_recognition_with_datetime.csv",
+        "data/raw/{pid}/plugin_google_activity_recognition_deltas.csv"
     params:
         segment = "{day_segment}",
         metrics = config["GOOGLE_ACTIVITY_RECOGNITION"]["METRICS"]
