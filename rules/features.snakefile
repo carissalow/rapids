@@ -30,6 +30,14 @@ rule battery_deltas:
     script:
         "../src/features/battery_deltas.R"
 
+rule screen_deltas:
+    input:
+        "data/raw/{pid}/screen_with_datetime.csv"
+    output:
+        "data/processed/{pid}/screen_deltas.csv"
+    script:
+        "../src/features/screen_deltas.R"
+
 rule location_barnett_metrics:
     input:
         "data/raw/{pid}/locations_with_datetime.csv"
