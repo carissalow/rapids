@@ -73,3 +73,18 @@ rule battery_metrics:
         "data/processed/{pid}/battery_{day_segment}.csv"
     script:
         "../src/features/battery_metrics.py"
+
+rule screen_metrics:
+    input:
+        screen_events = "data/raw/{pid}/screen_with_datetime.csv",
+        screen_deltas = "data/processed/{pid}/screen_deltas.csv"
+    params:
+        day_segment = "{day_segment}",
+        metrics_event = config["SCREEN"]["METRICS_EVENT"],
+        metrics_episode = config["SCREEN"]["METRICS_EPISODE"],
+        episodes = config["SCREEN"]["EPISODES"]
+    output:
+        "data/processed/{pid}/screen_{day_segment}.csv"
+    script:
+        "../src/features/screen_metrics.py"
+

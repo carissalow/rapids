@@ -61,4 +61,9 @@ GOOGLE_ACTIVITY_RECOGNITION:
 BATTERY:
   DAY_SEGMENTS: *day_segments
   METRICS: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
-  
+
+SCREEN:
+  DAY_SEGMENTS: *day_segments
+  METRICS_EVENT: ["counton", "countunlock"]
+  METRICS_EPISODE: ["sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+  EPISODES: ["unlock"]
