@@ -9,7 +9,7 @@ metrics = snakemake.params["metrics"]
 if battery_data.empty:
     battery_features = pd.DataFrame(columns=["local_date"] + ["battery_" + day_segment + "_" + x for x in metrics])
 else:
-    battery_data = splitOvernightEpisodes(battery_data, ["battery_diff"])
+    battery_data = splitOvernightEpisodes(battery_data, ["battery_diff"], [])
 
     if day_segment != "daily":
         battery_data = splitMultiSegmentEpisodes(battery_data, day_segment, ["battery_diff"])

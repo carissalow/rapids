@@ -20,13 +20,13 @@ def computeTruncatedDifferences(df, extra_cols):
     df.rename(columns={"truncated_time_diff": "time_diff"}, inplace=True)
     return df
 
-def splitOvernightEpisodes(sensor_deltas, extra_cols):
+def splitOvernightEpisodes(sensor_deltas, extra_cols, fixed_cols):
     overnight = sensor_deltas[(sensor_deltas["local_start_date"] + timedelta(days=1)) == sensor_deltas["local_end_date"]]
     not_overnight = sensor_deltas[sensor_deltas["local_start_date"] == sensor_deltas["local_end_date"]]
 
     if not overnight.empty:
-        today = overnight[extra_cols + ["time_diff", "local_start_date_time", "local_start_date", "local_start_day_segment"]].copy()
-        tomorrow = overnight[extra_cols + ["time_diff", "local_end_date_time", "local_end_date", "local_end_day_segment"]].copy()
+        today = overnight[extra_cols + fixed_cols + ["time_diff", "local_start_date_time", "local_start_date", "local_start_day_segment"]].copy()
+        tomorrow = overnight[extra_cols + fixed_cols + ["time_diff", "local_end_date_time", "local_end_date", "local_end_day_segment"]].copy()
 
         # truncate the end time of all overnight periods to midnight
         today = truncateTime(today, "local_end_day_segment", "evening", "local_end_date_time", "local_start_date", time(23,59,59))
@@ -67,7 +67,6 @@ def splitMultiSegmentEpisodes(sensor_deltas, day_segment, extra_cols):
     
     if not within_segments.empty:
         within_segments = truncateTime(within_segments, "local_start_day_segment", day_segment, "local_start_date_time", "local_start_date", time(EPOCH_TIMES[day_segment][0],0,0))
-
         within_segments = truncateTime(within_segments, "local_end_day_segment", day_segment, "local_end_date_time", "local_end_date", time(EPOCH_TIMES[day_segment][1],59,59))
 
     across_segments = pd.concat([start_segment, end_segment, within_segments], axis=0, sort=False)
