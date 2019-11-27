@@ -78,6 +78,6 @@ else:
         duration_features = pd.concat([duration_features, getEpisodeDurationFeatures(screen_deltas, episode, metrics_episode)], axis=1)
 
     screen_features = pd.concat([event_features, duration_features], axis = 1).fillna(0)
-    screen_features.reset_index(inplace=True)
+    screen_features = screen_features.rename_axis('local_date').reset_index()
 
 screen_features.to_csv(snakemake.output[0], index=False)
