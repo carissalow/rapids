@@ -10,6 +10,8 @@ rule all:
         expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["UNIFIED_SENSORS"]),
         expand("data/processed/{pid}/battery_deltas.csv", pid=config["PIDS"]),
+        expand("data/processed/{pid}/screen_deltas.csv", pid=config["PIDS"]),
+        expand("data/processed/{pid}/google_activity_recognition_deltas.csv", pid=config["PIDS"]),
         expand("data/interim/{pid}/phone_valid_sensed_days.csv", pid=config["PIDS"]),
         # Features ------------------------------------------------------------
         expand("data/processed/{pid}/sms_{sms_type}_{day_segment}.csv",
@@ -24,9 +26,15 @@ rule all:
         expand("data/processed/{pid}/bluetooth_{segment}.csv",
                             pid=config["PIDS"], 
                             segment = config["BLUETOOTH"]["DAY_SEGMENTS"]),
-        expand("data/processed/{pid}/google_activity_recognition.csv",pid=config["PIDS"]),
-        expand("data/processed/{pid}/battery_daily.csv", pid=config["PIDS"]),
-        # Reports ------------------------------------------------------------
+        expand("data/processed/{pid}/google_activity_recognition_{segment}.csv",pid=config["PIDS"], 
+                            segment = config["GOOGLE_ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]),
+        expand("data/processed/{pid}/battery_{day_segment}.csv",
+                            pid = config["PIDS"],
+                            day_segment = config["BATTERY"]["DAY_SEGMENTS"]),
+        expand("data/processed/{pid}/screen_{day_segment}.csv",
+                            pid = config["PIDS"],
+                            day_segment = config["SCREEN"]["DAY_SEGMENTS"]),
+        # Reports
         expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("reports/figures/{pid}/battery_consumption_rates_barchart.html", pid=config["PIDS"]),

@@ -55,3 +55,17 @@ BARNETT_LOCATION:
 BLUETOOTH:
   DAY_SEGMENTS: *day_segments
   METRICS: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+
+GOOGLE_ACTIVITY_RECOGNITION:
+  DAY_SEGMENTS: *day_segments
+  METRICS: ['count','most_common_activity','number_unique_activities','activity_change_count']
+
+BATTERY:
+  DAY_SEGMENTS: *day_segments
+  METRICS: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
+
+SCREEN:
+  DAY_SEGMENTS: *day_segments
+  METRICS_EVENT: ["counton", "countunlock"]
+  METRICS_DELTAS: ["sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+  EPISODES: ["unlock"]
