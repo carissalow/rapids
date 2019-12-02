@@ -98,7 +98,7 @@ rule screen_metrics:
     params:
         day_segment = "{day_segment}",
         metrics_event = config["SCREEN"]["METRICS_EVENT"],
-        metrics_episode = config["SCREEN"]["METRICS_EPISODE"],
+        metrics_deltas = config["SCREEN"]["METRICS_DELTAS"],
         episodes = config["SCREEN"]["EPISODES"]
     output:
         "data/processed/{pid}/screen_{day_segment}.csv"

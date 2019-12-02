@@ -40,8 +40,12 @@ def splitOvernightEpisodes(sensor_deltas, extra_cols, fixed_cols):
 
         # calculate new time_diff and extra_cols for split overnight periods
         overnight = computeTruncatedDifferences(overnight, extra_cols)
+    
+    # sort by local_start_date_time and reset the index
+    days = pd.concat([not_overnight, overnight], axis=0, sort=False)
+    days = days.sort_values(by=['local_start_date_time']).reset_index(drop=True)
 
-    return pd.concat([not_overnight, overnight], axis=0, sort=False)
+    return days
 
 def splitMultiSegmentEpisodes(sensor_deltas, day_segment, extra_cols):
     # extract episodes that start and end at the same epochs
@@ -74,4 +78,8 @@ def splitMultiSegmentEpisodes(sensor_deltas, day_segment, extra_cols):
     if not across_segments.empty:
         accross_segments = computeTruncatedDifferences(across_segments, extra_cols)
 
-    return pd.concat([exact_segments, across_segments], axis=0, sort=False)
+    # sort by local_start_date_time and reset the index
+    segments = pd.concat([exact_segments, across_segments], axis=0, sort=False)
+    segments = segments.sort_values(by=['local_start_date_time']).reset_index(drop=True)
+
+    return segments

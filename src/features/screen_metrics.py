@@ -54,12 +54,12 @@ screen_data = pd.read_csv(snakemake.input["screen_events"], parse_dates=["local_
 screen_deltas = pd.read_csv(snakemake.input["screen_deltas"], parse_dates=["local_start_date_time", "local_end_date_time", "local_start_date", "local_end_date"])
 day_segment = snakemake.params["day_segment"]
 metrics_event = snakemake.params["metrics_event"]
-metrics_episode = snakemake.params["metrics_episode"]
+metrics_deltas = snakemake.params["metrics_deltas"]
 episodes = snakemake.params["episodes"]
 
 if screen_data.empty:
-    metrics_episode_name = ["".join(metric) for metric in itertools.product(metrics_episode,episodes)]
-    screen_features = pd.DataFrame(columns=["local_date"]+["screen_" + day_segment + "_" + x for x in metrics_event + metrics_episode_name])
+    metrics_deltas_name = ["".join(metric) for metric in itertools.product(metrics_deltas,episodes)]
+    screen_features = pd.DataFrame(columns=["local_date"]+["screen_" + day_segment + "_" + x for x in metrics_event + metrics_deltas_name])
 else:    
     # drop consecutive duplicates of screen_status keeping the last one
     screen_data = screen_data.loc[(screen_data[["screen_status"]].shift(-1) != screen_data[["screen_status"]]).any(axis=1)].reset_index(drop=True)
@@ -75,9 +75,9 @@ else:
     event_features = getEventFeatures(screen_data, metrics_event)
     duration_features = pd.DataFrame()
     for episode in episodes:
-        duration_features = pd.concat([duration_features, getEpisodeDurationFeatures(screen_deltas, episode, metrics_episode)], axis=1)
+        duration_features = pd.concat([duration_features, getEpisodeDurationFeatures(screen_deltas, episode, metrics_deltas)], axis=1)
 
     screen_features = pd.concat([event_features, duration_features], axis = 1).fillna(0)
-    screen_features = screen_features.rename_axis('local_date').reset_index()
+    screen_features = screen_features.rename_axis("local_date").reset_index()
 
 screen_features.to_csv(snakemake.output[0], index=False)
