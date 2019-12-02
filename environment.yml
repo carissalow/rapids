@@ -31,7 +31,7 @@ dependencies:
   - jsonschema=3.1.1
   - libcxx=9.0.0
   - libffi=3.2.1
-  - libgfortran=3.0.1
+  - libgfortran
   - markupsafe=1.1.1
   - mkl=2019.4
   - mkl-service=2.3.0
