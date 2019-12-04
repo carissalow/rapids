@@ -34,7 +34,7 @@ rule all:
                             day_segment = config["SCREEN"]["DAY_SEGMENTS"]),
         # Reports
         expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
-        expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"], sensor=config["SENSORS"]),
+        expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"]),
         expand("reports/figures/{pid}/battery_consumption_rates_barchart.html", pid=config["PIDS"]),
 
 # --- Packrat Rules --- #

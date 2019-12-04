@@ -11,7 +11,7 @@ rule heatmap_rows:
 
 rule compliance_heatmap:
     input:
-        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["SENSORS"])
+        "data/interim/{pid}/phone_sensed_bins.csv"
     params:
         pid = "{pid}"
     output:
