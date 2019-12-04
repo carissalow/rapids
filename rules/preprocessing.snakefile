@@ -32,6 +32,16 @@ rule phone_valid_sensed_days:
     script:
         "../src/data/phone_valid_sensed_days.R"
 
+rule phone_sensed_bins:
+    input:
+        all_sensors =  expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["SENSORS"])
+    params:
+        bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"]
+    output:
+        "data/interim/{pid}/phone_sensed_bins.csv"
+    script:
+        "../src/data/phone_sensed_bins.R"
+
 rule unify_ios_android:
     input:
         sensor_data = "data/raw/{pid}/{sensor}_with_datetime.csv",

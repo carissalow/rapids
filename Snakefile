@@ -11,6 +11,7 @@ rule all:
         expand("data/processed/{pid}/screen_deltas.csv", pid=config["PIDS"]),
         expand("data/processed/{pid}/google_activity_recognition_deltas.csv", pid=config["PIDS"]),
         expand("data/interim/{pid}/phone_valid_sensed_days.csv", pid=config["PIDS"]),
+        expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]),
         expand("data/processed/{pid}/sms_{sms_type}_{day_segment}.csv",
                             pid=config["PIDS"],
                             sms_type = config["SMS"]["TYPES"],
