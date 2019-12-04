@@ -27,30 +27,33 @@ else:
 
     if(day_segment!='daily'):
         resampledData = resampledData.loc[resampledData['local_day_segment'] == str(day_segment)]
+
+    if resampledData.empty:
+        finalDataset = pd.DataFrame(columns = columns)
+    else:
+        count = resampledData['activity_type'].resample('D').count()
+
+        #Finding most common activity of the day
+        mostCommonActivity = resampledData['activity_type'].resample('D').apply(lambda x:stats.mode(x)[0])
+
+        #finding different number of activities during a day
+        uniqueActivities = resampledData['activity_type'].resample('D').nunique()
+        
+        #finding Number of times activity changed
+        resampledData['activity_type_shift'] = resampledData['activity_type'].shift().fillna(resampledData['activity_type'].head(1),inplace=True)
+        resampledData['different_activity'] = np.where(resampledData['activity_type']!=resampledData['activity_type_shift'],1,0)
+        countChanges = resampledData['different_activity'].resample('D').sum()
+        finalDataset = pd.concat([count, mostCommonActivity, uniqueActivities, countChanges],axis=1)
+
+        deltas_metrics = {'sumstationary':['still','tilting'], 
+                        'summobile':['on_foot','running','on_bicycle'],
+                        'sumvehicle':['in_vehicle']}
     
-    count = resampledData['activity_type'].resample('D').count()
-
-    #Finding most common activity of the day
-    mostCommonActivity = resampledData['activity_type'].resample('D').apply(lambda x:stats.mode(x)[0])
-
-    #finding different number of activities during a day
-    uniqueActivities = resampledData['activity_type'].resample('D').nunique()
-    
-    #finding Number of times activity changed
-    resampledData['activity_type_shift'] = resampledData['activity_type'].shift().fillna(resampledData['activity_type'].head(1),inplace=True)
-    resampledData['different_activity'] = np.where(resampledData['activity_type']!=resampledData['activity_type_shift'],1,0)
-    countChanges = resampledData['different_activity'].resample('D').sum()
-    finalDataset = pd.concat([count, mostCommonActivity, uniqueActivities, countChanges],axis=1)
-
-    deltas_metrics = {'sumstationary':['still','tilting'], 
-                    'summobile':['on_foot','running','on_bicycle'],
-                    'sumvehicle':['on_vehicle']}
-  
-    for column, activity_labels in deltas_metrics.items():
-        metric = (ar_deltas[ar_deltas['activity'].isin(pd.Series(activity_labels))]  
-                .groupby(['local_start_date'])['time_diff']  
-                .agg({"ar_" + str(day_segment) + "_" + str(column) :'sum'}))  
-        finalDataset = finalDataset.merge(metric,how='outer',left_index=True,right_index=True)
+        for column, activity_labels in deltas_metrics.items():
+            metric = (ar_deltas[ar_deltas['activity'].isin(pd.Series(activity_labels))]  
+                    .groupby(['local_start_date'])['time_diff']  
+                    .agg({"ar_" + str(day_segment) + "_" + str(column) :'sum'}))  
+            finalDataset = finalDataset.merge(metric,how='outer',left_index=True,right_index=True)
     
 finalDataset.fillna(0,inplace=True)
 finalDataset.index.names = ['local_date']
