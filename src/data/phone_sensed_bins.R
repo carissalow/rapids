@@ -27,5 +27,5 @@ phone_sensed_bins <- all_sensor_data %>%
            fill = list(sensor_count=0)) %>% 
   pivot_wider(names_from = c(local_hour, bin), values_from = sensor_count)
 
-write.csv(phone_sensed_bins, output_file)
+write.csv(phone_sensed_bins, output_file, row.names = FALSE)
 

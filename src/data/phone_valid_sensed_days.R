@@ -28,4 +28,4 @@ phone_valid_sensed_days <- all_sensor_data %>%
     summarise(valid_hours = n()) %>% # Count how many valid hours each day has
     filter(valid_hours >= min_valid_hours) # Discard those days where there were fewer than min_valid_hours
 
-write.csv(phone_valid_sensed_days, output_file)
+write.csv(phone_valid_sensed_days, output_file, row.names = FALSE)
