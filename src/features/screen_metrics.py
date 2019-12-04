@@ -23,6 +23,8 @@ def getEpisodeDurationFeatures(screen_deltas, episode, metrics):
     return duration_helper
 
 def getEventFeatures(screen_data, metrics_events, phone_sensed_bins):
+    if screen_data.empty:
+        return pd.DataFrame(columns=["screen_" + day_segment + "_" + x for x in metrics_events])
     # get count_helper
     screen_status = screen_data.groupby(["local_date", "screen_status"]).count()[["timestamp"]].reset_index()
     count_on = screen_status[screen_status["screen_status"] == 0].set_index("local_date")[["timestamp"]].rename(columns = {"timestamp": "count_on"})
@@ -59,8 +61,9 @@ metrics_events = snakemake.params["metrics_events"]
 metrics_deltas = snakemake.params["metrics_deltas"]
 episodes = snakemake.params["episodes"]
 
+metrics_deltas_name = ["".join(metric) for metric in itertools.product(metrics_deltas, episodes)]
+
 if screen_data.empty:
-    metrics_deltas_name = ["".join(metric) for metric in itertools.product(metrics_deltas,episodes)]
     screen_features = pd.DataFrame(columns=["local_date"]+["screen_" + day_segment + "_" + x for x in metrics_events + metrics_deltas_name])
 else:    
     # drop consecutive duplicates of screen_status keeping the last one
@@ -77,7 +80,6 @@ else:
     event_features = getEventFeatures(screen_data, metrics_events, phone_sensed_bins)
 
     if screen_deltas.empty:
-        metrics_deltas_name = ["".join(metric) for metric in itertools.product(metrics_deltas,episodes)]
         duration_features = pd.DataFrame(columns=["screen_" + day_segment + "_" + x for x in metrics_deltas_name])
     else:
         duration_features = pd.DataFrame()
