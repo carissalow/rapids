@@ -22,7 +22,7 @@ def getEpisodeDurationFeatures(screen_deltas, episode, metrics):
     duration_helper = duration_helper.fillna(0)
     return duration_helper
 
-def getEventFeatures(screen_data, metrics_event):
+def getEventFeatures(screen_data, metrics_events, phone_sensed_bins):
     # get count_helper
     screen_status = screen_data.groupby(["local_date", "screen_status"]).count()[["timestamp"]].reset_index()
     count_on = screen_status[screen_status["screen_status"] == 0].set_index("local_date")[["timestamp"]].rename(columns = {"timestamp": "count_on"})
@@ -33,34 +33,35 @@ def getEventFeatures(screen_data, metrics_event):
     count_helper = pd.concat([count_on, count_off, count_lock, count_unlock], axis = 1)
     count_helper = count_helper.fillna(0).astype(np.int64)
 
-    # count on-off; unlock-lock
-    count_helper["diff_count_on_off"] = count_helper["count_on"] - count_helper["count_off"]
-    count_helper["diff_count_unlock_lock"] = count_helper["count_unlock"] - count_helper["count_lock"]
+    # get unlocks per minute
+    for date, row in count_helper.iterrows():
+        sensed_minutes = phone_sensed_bins.loc[date, :].sum() * 5
+        unlocks_per_minute = min(row["count_lock"], row["count_unlock"]) / (1 if sensed_minutes == 0 else sensed_minutes)
+        count_helper.loc[date, "unlocks_per_minute"] = unlocks_per_minute
     
     event_features = pd.DataFrame()
-    if "counton" in metrics_event:
-        event_features["screen_" + day_segment + "_counton"] = count_helper[["count_on", "count_off"]].max(axis=1)
-    if "countunlock" in metrics_event:
-        event_features["screen_" + day_segment + "_countunlock"] = count_helper[["count_lock", "count_unlock"]].max(axis=1)
-
-    ############################################################################################
-    # check missing values
-    event_features["screen_" + day_segment + "_diffcountonoff"] = count_helper["diff_count_on_off"]
-    event_features["screen_" + day_segment + "_diffcountunlocklock"] = count_helper["diff_count_unlock_lock"]
-    ############################################################################################
+    if "counton" in metrics_events:
+        event_features["screen_" + day_segment + "_counton"] = count_helper[["count_on", "count_off"]].min(axis=1)
+    if "countunlock" in metrics_events:
+        event_features["screen_" + day_segment + "_countunlock"] = count_helper[["count_lock", "count_unlock"]].min(axis=1)
+    if "unlocksperminute" in metrics_events:
+        event_features["screen_" + day_segment + "_unlocksperminute"] = count_helper["unlocks_per_minute"]
 
     return event_features
 
 screen_data = pd.read_csv(snakemake.input["screen_events"], parse_dates=["local_date_time", "local_date"])
 screen_deltas = pd.read_csv(snakemake.input["screen_deltas"], parse_dates=["local_start_date_time", "local_end_date_time", "local_start_date", "local_end_date"])
+phone_sensed_bins = pd.read_csv(snakemake.input["phone_sensed_bins"], parse_dates=["local_date"], index_col="local_date")
+phone_sensed_bins[phone_sensed_bins > 0] = 1
+
 day_segment = snakemake.params["day_segment"]
-metrics_event = snakemake.params["metrics_event"]
+metrics_events = snakemake.params["metrics_events"]
 metrics_deltas = snakemake.params["metrics_deltas"]
 episodes = snakemake.params["episodes"]
 
 if screen_data.empty:
     metrics_deltas_name = ["".join(metric) for metric in itertools.product(metrics_deltas,episodes)]
-    screen_features = pd.DataFrame(columns=["local_date"]+["screen_" + day_segment + "_" + x for x in metrics_event + metrics_deltas_name])
+    screen_features = pd.DataFrame(columns=["local_date"]+["screen_" + day_segment + "_" + x for x in metrics_events + metrics_deltas_name])
 else:    
     # drop consecutive duplicates of screen_status keeping the last one
     screen_data = screen_data.loc[(screen_data[["screen_status"]].shift(-1) != screen_data[["screen_status"]]).any(axis=1)].reset_index(drop=True)
@@ -73,7 +74,7 @@ else:
     screen_deltas.set_index(["local_start_date"],inplace=True)
 
     # extract features for events and episodes
-    event_features = getEventFeatures(screen_data, metrics_event)
+    event_features = getEventFeatures(screen_data, metrics_events, phone_sensed_bins)
 
     if screen_deltas.empty:
         metrics_deltas_name = ["".join(metric) for metric in itertools.product(metrics_deltas,episodes)]

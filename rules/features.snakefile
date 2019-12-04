@@ -94,14 +94,14 @@ rule battery_metrics:
 rule screen_metrics:
     input:
         screen_events = "data/raw/{pid}/screen_with_datetime.csv",
-        screen_deltas = "data/processed/{pid}/screen_deltas.csv"
+        screen_deltas = "data/processed/{pid}/screen_deltas.csv",
+        phone_sensed_bins = "data/interim/{pid}/phone_sensed_bins.csv"
     params:
         day_segment = "{day_segment}",
-        metrics_event = config["SCREEN"]["METRICS_EVENT"],
+        metrics_events = config["SCREEN"]["METRICS_EVENTS"],
         metrics_deltas = config["SCREEN"]["METRICS_DELTAS"],
         episodes = config["SCREEN"]["EPISODES"]
     output:
         "data/processed/{pid}/screen_{day_segment}.csv"
     script:
         "../src/features/screen_metrics.py"
-
