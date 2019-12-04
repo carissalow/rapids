@@ -11,8 +11,9 @@ rule all:
         expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["UNIFIED_SENSORS"]),
         expand("data/processed/{pid}/battery_deltas.csv", pid=config["PIDS"]),
         expand("data/processed/{pid}/screen_deltas.csv", pid=config["PIDS"]),
-        expand("data/processed/{pid}/google_activity_recognition_deltas.csv", pid=config["PIDS"]),
+        expand("data/processed/{pid}/plugin_google_activity_recognition_deltas.csv", pid=config["PIDS"]),
         expand("data/interim/{pid}/phone_valid_sensed_days.csv", pid=config["PIDS"]),
+        expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]),
         # Features ------------------------------------------------------------
         expand("data/processed/{pid}/sms_{sms_type}_{day_segment}.csv",
                             pid=config["PIDS"],

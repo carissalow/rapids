@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import datetime
+import itertools
 from datetime import datetime, timedelta, time
 from features_utils import splitOvernightEpisodes, splitMultiSegmentEpisodes
 
@@ -73,9 +74,14 @@ else:
 
     # extract features for events and episodes
     event_features = getEventFeatures(screen_data, metrics_event)
-    duration_features = pd.DataFrame()
-    for episode in episodes:
-        duration_features = pd.concat([duration_features, getEpisodeDurationFeatures(screen_deltas, episode, metrics_deltas)], axis=1)
+
+    if screen_deltas.empty:
+        metrics_deltas_name = ["".join(metric) for metric in itertools.product(metrics_deltas,episodes)]
+        duration_features = pd.DataFrame(columns=["screen_" + day_segment + "_" + x for x in metrics_deltas_name])
+    else:
+        duration_features = pd.DataFrame()
+        for episode in episodes:
+            duration_features = pd.concat([duration_features, getEpisodeDurationFeatures(screen_deltas, episode, metrics_deltas)], axis=1)
 
     screen_features = pd.concat([event_features, duration_features], axis = 1).fillna(0)
     screen_features = screen_features.rename_axis("local_date").reset_index()
