@@ -2,6 +2,12 @@ source("packrat/init.R")
 
 library(dplyr)
 
+unify_ios_battery <- function(ios_battery){
+    ios_battery <- ios_battery %>%
+        mutate(battery_status = replace(battery_status, battery_status == 3, 5),
+            battery_status = replace(battery_status, battery_status == 1, 3))
+}
+
 unify_ios_calls <- function(ios_calls){
     # Android’s call types 1=incoming, 2=outgoing, 3=missed
     # iOS' call status 1=incoming, 2=connected, 3=dialing, 4=disconnected
@@ -61,10 +67,14 @@ sensor <- snakemake@params[["sensor"]]
 platform <- readLines(participant_info, n=2)[[2]]
 
 if(sensor == "calls"){
-    if(platform == "android"){
-        write.csv(sensor_data, snakemake@output[[1]], row.names = FALSE)
-    } else if(platform == "ios"){
+    if(platform == "ios"){
         sensor_data = unify_ios_calls(sensor_data)
-        write.csv(sensor_data, snakemake@output[[1]], row.names = FALSE)
     }
+    # android calls remain unchanged
+} else if(sensor == "battery"){
+    if(platform == "ios"){
+        sensor_data = unify_ios_battery(sensor_data)
+    }
+    # android battery remains unchanged
 }
+write.csv(sensor_data, snakemake@output[[1]], row.names = FALSE)

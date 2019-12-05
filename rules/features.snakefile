@@ -24,7 +24,7 @@ rule call_metrics:
 
 rule battery_deltas:
     input:
-        "data/raw/{pid}/battery_with_datetime.csv"
+        "data/raw/{pid}/battery_with_datetime_unified.csv"
     output:
         "data/processed/{pid}/battery_deltas.csv"
     script:
