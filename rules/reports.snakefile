@@ -13,7 +13,8 @@ rule compliance_heatmap:
     input:
         "data/interim/{pid}/phone_sensed_bins.csv"
     params:
-        pid = "{pid}"
+        pid = "{pid}",
+        bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"]
     output:
         "reports/figures/{pid}/compliance_heatmap.html"
     script:

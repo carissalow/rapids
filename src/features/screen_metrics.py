@@ -22,7 +22,7 @@ def getEpisodeDurationFeatures(screen_deltas, episode, metrics):
     duration_helper = duration_helper.fillna(0)
     return duration_helper
 
-def getEventFeatures(screen_data, metrics_events, phone_sensed_bins):
+def getEventFeatures(screen_data, metrics_events, phone_sensed_bins, bin_size):
     if screen_data.empty:
         return pd.DataFrame(columns=["screen_" + day_segment + "_" + x for x in metrics_events])
     # get count_helper
@@ -37,7 +37,7 @@ def getEventFeatures(screen_data, metrics_events, phone_sensed_bins):
 
     # get unlocks per minute
     for date, row in count_helper.iterrows():
-        sensed_minutes = phone_sensed_bins.loc[date, :].sum() * 5
+        sensed_minutes = phone_sensed_bins.loc[date, :].sum() * bin_size
         unlocks_per_minute = min(row["count_lock"], row["count_unlock"]) / (1 if sensed_minutes == 0 else sensed_minutes)
         count_helper.loc[date, "unlocks_per_minute"] = unlocks_per_minute
     
@@ -60,6 +60,7 @@ day_segment = snakemake.params["day_segment"]
 metrics_events = snakemake.params["metrics_events"]
 metrics_deltas = snakemake.params["metrics_deltas"]
 episodes = snakemake.params["episodes"]
+bin_size = snakemake.params["bin_size"]
 
 metrics_deltas_name = ["".join(metric) for metric in itertools.product(metrics_deltas, episodes)]
 
@@ -77,7 +78,7 @@ else:
     screen_deltas.set_index(["local_start_date"],inplace=True)
 
     # extract features for events and episodes
-    event_features = getEventFeatures(screen_data, metrics_events, phone_sensed_bins)
+    event_features = getEventFeatures(screen_data, metrics_events, phone_sensed_bins, bin_size)
 
     if screen_deltas.empty:
         duration_features = pd.DataFrame(columns=["screen_" + day_segment + "_" + x for x in metrics_deltas_name])

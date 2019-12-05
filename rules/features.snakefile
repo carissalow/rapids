@@ -100,7 +100,8 @@ rule screen_metrics:
         day_segment = "{day_segment}",
         metrics_events = config["SCREEN"]["METRICS_EVENTS"],
         metrics_deltas = config["SCREEN"]["METRICS_DELTAS"],
-        episodes = config["SCREEN"]["EPISODES"]
+        episodes = config["SCREEN"]["EPISODES"],
+        bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"]
     output:
         "data/processed/{pid}/screen_{day_segment}.csv"
     script:

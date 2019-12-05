@@ -25,6 +25,7 @@ def getComplianceHeatmap(dates, compliance_matrix, pid, output_path, bin_size):
 
 # get current patient id
 pid = snakemake.params["pid"]
+bin_size = snakemake.params["bin_size"]
 phone_sensed_bins = pd.read_csv(snakemake.input[0], parse_dates=["local_date"], index_col="local_date")
 
 if phone_sensed_bins.empty:
@@ -37,4 +38,4 @@ else:
     # get dates and compliance_matrix
     dates, compliance_matrix = getDatesComplianceMatrix(phone_sensed_bins)
     # get heatmap
-    getComplianceHeatmap(dates, compliance_matrix, pid, snakemake.output[0], 5)
+    getComplianceHeatmap(dates, compliance_matrix, pid, snakemake.output[0], bin_size)
