@@ -52,3 +52,17 @@ rule unify_ios_android:
         "data/raw/{pid}/{sensor}_with_datetime_unified.csv"
     script:
         "../src/data/unify_ios_android.R"
+
+rule resample_fused_location:
+    input:
+        locations = "data/raw/{pid}/locations_raw.csv",
+        phone_sensed_bins = rules.phone_sensed_bins.output
+    params:
+        bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"],
+        timezone = config["RESAMPLE_FUSED_LOCATION"]["TIMEZONE"],
+        consecutive_threshold = config["RESAMPLE_FUSED_LOCATION"]["CONSECUTIVE_THRESHOLD"],
+        time_since_valid_location = config["RESAMPLE_FUSED_LOCATION"]["TIME_SINCE_VALID_LOCATION"]
+    output:
+        "data/raw/{pid}/locations_resampled.csv"
+    script:
+        "../src/data/resample_fused_location.R"

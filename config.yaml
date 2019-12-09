@@ -46,6 +46,11 @@ PHONE_VALID_SENSED_DAYS:
   MIN_VALID_HOURS: 20 # (out of 24)
   MIN_BINS_PER_HOUR: 8 # (out of 60min/BIN_SIZE bins)
 
+RESAMPLE_FUSED_LOCATION:
+  CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
+  TIME_SINCE_VALID_LOCATION: 12 # hours, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
+  TIMEZONE: *timezone
+
 BARNETT_LOCATION:
   ACCURACY_LIMIT: 51 # filters location coordinates with an accuracy higher than this
   TIMEZONE: *timezone
