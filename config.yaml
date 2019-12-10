@@ -52,7 +52,8 @@ RESAMPLE_FUSED_LOCATION:
   TIMEZONE: *timezone
 
 BARNETT_LOCATION:
-  ACCURACY_LIMIT: 51 # filters location coordinates with an accuracy higher than this
+  LOCATIONS_TO_USE: ALL # ALL_EXCEPT_FUSED, RESAMPLE_FUSED
+  ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
   TIMEZONE: *timezone
 
 BLUETOOTH:

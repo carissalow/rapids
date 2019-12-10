@@ -48,8 +48,10 @@ rule google_activity_recognition_deltas:
 
 rule location_barnett_metrics:
     input:
-        "data/raw/{pid}/locations_with_datetime.csv"
+        raw = "data/raw/{pid}/locations_raw.csv",
+        fused = rules.resample_fused_location.output
     params:
+        locations_to_use = config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"],
         accuracy_limit = config["BARNETT_LOCATION"]["ACCURACY_LIMIT"],
         timezone = config["BARNETT_LOCATION"]["TIMEZONE"]
     output:

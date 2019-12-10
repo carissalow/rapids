@@ -26,11 +26,23 @@ write_empty_file <- function(file_path){
 file.sources = list.files(c("src/features/location_barnett"), pattern="*.R$", full.names=TRUE, ignore.case=TRUE)
 sapply(file.sources,source,.GlobalEnv)
 
+locations_to_use <- snakemake@params[["locations_to_use"]]
 accuracy_limit <- snakemake@params[["accuracy_limit"]]
 timezone <- snakemake@params[["timezone"]]
 
-location <- read.csv(snakemake@input[[1]], stringsAsFactors = F) %>%
+# By deafult we use all raw locations: fused without resampling and not fused (gps, network)
+location <- read.csv(snakemake@input[["raw"]], stringsAsFactors = F) %>%
   select(timestamp, latitude = double_latitude, longitude = double_longitude, altitude = double_altitude, accuracy)
+
+if(locations_to_use == "ALL_EXCEPT_FUSED"){
+  location <- location %>% filter(provider != "fused")
+} else if (locations_to_use == "RESAMPLE_FUSED"){
+  location <- read.csv(snakemake@input[["fused"]], stringsAsFactors = F) %>%
+    select(timestamp, latitude = double_latitude, longitude = double_longitude, altitude = double_altitude, accuracy)
+} else if (locations_to_use != "ALL"){
+  print("Unkown filter, provide one of the following three: ALL, ALL_EXCEPT_FUSED, or RESAMPLE_FUSED")
+  quit(save = "no", status = 1, runLast = FALSE)
+}
 
 if (nrow(location) > 1){
     features <- MobilityFeatures(location, ACCURACY_LIM = accuracy_limit, tz = timezone)
