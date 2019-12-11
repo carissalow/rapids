@@ -18,7 +18,7 @@ Install miniconda:
 	
 Clone our repo:
 
-- ``git clone https://github.com/JulioV/moshi-aware.git``
+- ``git clone https://github.com/carissalow/moshi-aware-pipeline``
 
 Create a python virtual environment:
 
