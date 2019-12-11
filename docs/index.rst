@@ -3,22 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-moshi-aware documentation!
-==============================================
+Pipeline for Human Behavior Analysis Using Mobile Data
+======================================================
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-   getting-started
-   commands
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   usage/getting-started
+   usage/installation
+   features/screen
