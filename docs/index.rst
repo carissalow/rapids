@@ -13,4 +13,10 @@ Contents:
 
    usage/getting-started
    usage/installation
+   features/battery
+   features/bluetooth
+   features/calls
+   features/gar
+   features/location_barnetts
    features/screen
+   features/sms
