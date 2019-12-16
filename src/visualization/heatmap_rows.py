@@ -21,7 +21,7 @@ def getHourlyRowCountHeatmap(dates, hourly_row_count, sensor_name, pid, output_p
 
 
 
-sensor_data = pd.read_csv(snakemake.input[0])
+sensor_data = pd.read_csv(snakemake.input[0], encoding="ISO-8859-1")
 sensor_name = snakemake.params["table"]
 pid = snakemake.params["pid"]
 
