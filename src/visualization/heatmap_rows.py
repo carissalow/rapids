@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import plotly.io as pio
 import plotly.graph_objects as go
 import datetime
@@ -57,4 +58,6 @@ else:
 
     # Create heatmap
     hourly_row_count = getComplianceMatrix(dates, resampled_hourly_bins)
+    hourly_row_count = np.asarray(hourly_row_count)
+    hourly_row_count = np.where(hourly_row_count == 0, np.nan, hourly_row_count)
     getHourlyRowCountHeatmap(dates, hourly_row_count, sensor_name, pid, snakemake.output[0])

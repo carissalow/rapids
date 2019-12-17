@@ -37,5 +37,8 @@ else:
     phone_sensed_bins = phone_sensed_bins.resample("1D").asfreq().fillna(0)
     # get dates and compliance_matrix
     dates, compliance_matrix = getDatesComplianceMatrix(phone_sensed_bins)
+    # convert compliance_matrix from list to np.array and replace 0 with np.nan
+    compliance_matrix = np.asarray(compliance_matrix)
+    compliance_matrix = np.where(compliance_matrix == 0, np.nan, compliance_matrix)
     # get heatmap
     getComplianceHeatmap(dates, compliance_matrix, pid, snakemake.output[0], bin_size)
