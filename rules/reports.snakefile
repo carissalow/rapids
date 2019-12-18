@@ -29,3 +29,12 @@ rule battery_consumption_rates_barchart:
         "reports/figures/{pid}/battery_consumption_rates_barchart.html"
     script:
         "../src/visualization/battery_consumption_rates_barchart.py"
+
+rule compliance_report:
+    input:
+        sensor_heatmaps =  expand("reports/figures/{{pid}}/{sensor}_heatmap_rows.html", sensor=config["SENSORS"]),
+        compliance_heatmap =  rules.compliance_heatmap.output
+    output:
+        "reports/compliance/{pid}/compliance_report.html",
+    script:
+        "../src/visualization/compliance_report.Rmd"
