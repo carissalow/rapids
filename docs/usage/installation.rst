@@ -61,6 +61,11 @@ Mac OS (tested on Catalina)
 Linux (tested on Ubuntu 16.04)
 ------------------------------
 
+#. Install dependenies:
+    - ``sudo apt-get install libmariadb-client-lgpl-dev libxml2-dev libssl-dev``
+    - Install brew_ for linux and add the following line to ~/.bashrc: ``export PATH=$HOME/.linuxbrew/bin:$PATH``
+    - ``source ~/.bashrc``
+
 #. Install MySQL
 
     - ``brew install mysql``
@@ -113,3 +118,4 @@ Linux (tested on Ubuntu 16.04)
 
 .. _bug: https://github.com/Homebrew/linuxbrew-core/issues/17812
 .. _instructions: https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
+.. _brew: https://docs.brew.sh/Homebrew-on-Linux
