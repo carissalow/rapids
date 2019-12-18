@@ -8,13 +8,18 @@ Install MySQL
 - ``brew install mysql``
 - ``brew services start mysql``
 
-Install R:
+Install R and rmarkdown:
 
 - ``brew install r``
+- ``brew install pandoc``
+- ``R -e 'install.packages(c( "rmarkdown"))'``
 
 Install miniconda:
 
-- ``brew cask install miniconda`` (for Mac)
+For Mac:
+
+- ``brew cask install miniconda``
+- ``conda init zsh`` or - ``conda init bash``
 	
 Clone our repo:
 
@@ -23,7 +28,6 @@ Clone our repo:
 Create a python virtual environment:
 
 - ``conda env create -f environment.yml``
-- ``conda init zsh/bash``
 - Restart terminal if necessary
 - ``conda activate moshi-env``
 
