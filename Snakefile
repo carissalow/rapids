@@ -1,4 +1,5 @@
 configfile: "config.yaml"
+include: "rules/packrat.snakefile"
 include: "rules/preprocessing.snakefile"
 include: "rules/features.snakefile"
 include: "rules/reports.snakefile"
@@ -37,25 +38,6 @@ rule all:
         expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"]),
         expand("reports/figures/{pid}/battery_consumption_rates_barchart.html", pid=config["PIDS"]),
 
-# --- Packrat Rules --- #
-## Taken from https://github.com/lachlandeer/snakemake-econ-r
-
-## packrat_install: installs packrat onto machine
-rule packrat_install:
+rule clean:
     shell:
-        "R -e 'install.packages(\"packrat\", repos=\"http://cran.us.r-project.org\")'"
-
-## packrat_install: initialize a packrat environment for this project
-rule packrat_init:
-    shell:
-        "R -e 'packrat::init()'"
-
-## packrat_snap   : Look for new R packages in files & archives them
-rule packrat_snap:
-    shell:
-        "R -e 'packrat::snapshot()'"
-
-## packrat_restore: Installs archived packages onto a new machine
-rule packrat_restore:
-    shell:
-        "R -e 'packrat::restore()'"
+        "rm -rf data/raw/* && rm -rf data/interim/* && rm -rf data/processed/* && rm -rf reports/figures/* && rm -rf reports/*.zip"
