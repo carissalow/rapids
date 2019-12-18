@@ -1,5 +1,5 @@
-Getting started
-===============
+Quick Introduction
+==================
 
 The goal of this pipeline is to standardize the data cleaning, featuring extraction, analysis, and evaluation of mobile sensing projects. It leverages Cookiecutter, Snakemake, Sphinx, Scypy, R, and Conda to create an end-to-end reproducible environment that can be published along with research papers. 
 

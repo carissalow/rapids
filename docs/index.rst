@@ -10,13 +10,13 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
+   :caption: Getting Started
 
-   usage/getting-started
+   usage/introduction
    usage/installation
-   features/battery
-   features/bluetooth
-   features/calls
-   features/gar
-   features/location_barnetts
-   features/screen
-   features/sms
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Features
+
+   features/extracted
