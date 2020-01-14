@@ -108,3 +108,14 @@ rule screen_metrics:
         "data/processed/{pid}/screen_{day_segment}.csv"
     script:
         "../src/features/screen_metrics.py"
+
+rule light_metrics:
+    input:
+        "data/raw/{pid}/light_with_datetime.csv",
+    params:
+        day_segment = "{day_segment}",
+        metrics = config["LIGHT"]["METRICS"],
+    output:
+        "data/processed/{pid}/light_{day_segment}.csv"
+    script:
+        "../src/features/light_metrics.py"

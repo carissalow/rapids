@@ -73,3 +73,7 @@ SCREEN:
   METRICS_EVENTS: ["counton", "countunlock", "unlocksperminute"]
   METRICS_DELTAS: ["sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
   EPISODES: ["unlock"]
+
+LIGHT:
+  DAY_SEGMENTS: *day_segments
+  METRICS: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
