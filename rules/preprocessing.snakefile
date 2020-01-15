@@ -15,6 +15,8 @@ rule readable_datetime:
     params:
         timezones = None,
         fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"]
+    wildcard_constraints:
+        sensor = "^fitbit.*"  # ignoring fitbit sensors
     output:
         "data/raw/{pid}/{sensor}_with_datetime.csv"
     script:
@@ -66,3 +68,33 @@ rule resample_fused_location:
         "data/raw/{pid}/locations_resampled.csv"
     script:
         "../src/data/resample_fused_location.R"
+
+rule fitbit_heartrate_with_datetime:
+    input:
+        "data/raw/{pid}/fitbit_data_raw.csv"
+    params:
+        local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
+    output:
+        "data/raw/{pid}/fitbit_heartrate_with_datetime.csv"
+    script:
+        "../src/data/fitbit_heartrate_with_datetime.py"
+
+rule fitbit_steps_with_datetime:
+    input:
+        "data/raw/{pid}/fitbit_data_raw.csv"
+    params:
+        local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"]
+    output:
+        "data/raw/{pid}/fitbit_steps_with_datetime.csv"
+    script:
+        "../src/data/fitbit_steps_with_datetime.py"
+
+rule fitbit_sleep_with_datetime:
+    input:
+        "data/raw/{pid}/fitbit_data_raw.csv"
+    params:
+        local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"]
+    output:
+        "data/raw/{pid}/fitbit_sleep_with_datetime.csv"
+    script:
+        "../src/data/fitbit_sleep_with_datetime.py"

@@ -7,6 +7,7 @@ include: "rules/reports.snakefile"
 rule all:
     input:
         expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
+        expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["FITBIT_TABLE"]),
         expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("data/processed/{pid}/battery_deltas.csv", pid=config["PIDS"]),
         expand("data/processed/{pid}/screen_deltas.csv", pid=config["PIDS"]),
@@ -37,8 +38,11 @@ rule all:
                             pid = config["PIDS"],
                             day_segment = config["LIGHT"]["DAY_SEGMENTS"]),
         expand("data/processed/{pid}/accelerometer_{day_segment}.csv",
-                    pid = config["PIDS"],
-                    day_segment = config["ACCELEROMETER"]["DAY_SEGMENTS"]),
+                            pid = config["PIDS"],
+                            day_segment = config["ACCELEROMETER"]["DAY_SEGMENTS"]),
+        expand("data/raw/{pid}/fitbit_{fitbit_sensor}_with_datetime.csv",
+                            pid=config["PIDS"],
+                            fitbit_sensor=config["FITBIT_SENSORS"]),
         # Reports
         expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"]),
