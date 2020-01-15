@@ -77,3 +77,7 @@ SCREEN:
 LIGHT:
   DAY_SEGMENTS: *day_segments
   METRICS: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
+
+ACCELEROMETER:
+  DAY_SEGMENTS: *day_segments
+  METRICS: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude", "ratioexertionalactivityepisodes", "sumexertionalactivityepisodes", "longestexertionalactivityepisode", "longestnonexertionalactivityepisode", "countexertionalactivityepisodes", "countnonexertionalactivityepisodes"]

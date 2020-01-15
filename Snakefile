@@ -36,6 +36,9 @@ rule all:
         expand("data/processed/{pid}/light_{day_segment}.csv",
                             pid = config["PIDS"],
                             day_segment = config["LIGHT"]["DAY_SEGMENTS"]),
+        expand("data/processed/{pid}/accelerometer_{day_segment}.csv",
+                    pid = config["PIDS"],
+                    day_segment = config["ACCELEROMETER"]["DAY_SEGMENTS"]),
         # Reports
         expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"]),
