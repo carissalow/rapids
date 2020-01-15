@@ -69,6 +69,19 @@ rule resample_fused_location:
     script:
         "../src/data/resample_fused_location.R"
 
+rule application_genres:
+    input:
+        "data/raw/{pid}/applications_foreground_with_datetime.csv"
+    params:
+        catalogue_source = config["APPLICATION_GENRES"]["CATALOGUE_SOURCE"],
+        catalogue_file = config["APPLICATION_GENRES"]["CATALOGUE_FILE"],
+        update_catalogue_file = config["APPLICATION_GENRES"]["UPDATE_CATALOGUE_FILE"],
+        scrape_missing_genres = config["APPLICATION_GENRES"]["SCRAPE_MISSING_GENRES"]
+    output:
+        "data/interim/{pid}/applications_foreground_with_datetime_with_genre.csv"
+    script:
+        "../src/data/application_genres.R"
+
 rule fitbit_heartrate_with_datetime:
     input:
         "data/raw/{pid}/fitbit_data_raw.csv"
@@ -98,3 +111,4 @@ rule fitbit_sleep_with_datetime:
         "data/raw/{pid}/fitbit_sleep_with_datetime.csv"
     script:
         "../src/data/fitbit_sleep_with_datetime.py"
+
