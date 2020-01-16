@@ -1,6 +1,23 @@
 Extracted Features
 ==================
 
+Accelerometer
+-------------
+
+Available epochs: daily, morning, afternoon, evening, and night
+
+- Max magnitude: maximum magnitude of acceleration (note: |acceleration| = sqrt(x^2 + y^2 + z^2))
+- Min magnitude: minimum magnitude of acceleration
+- Avg magnitude: average magnitude of acceleration
+- Median magnitude: median magnitude of acceleration
+- Std magnitude: standard deviation of acceleration
+- Ratio exertional activity episodes: ratio of exertional activity time periods to total time periods
+- Sum exertional activity episodes: total minutes of performing exertional activity during the epoch
+- Longest exertional activity episode: longest episode of performing exertional activity
+- Longest non-exertional activity episode: longest episode of performing non-exertional activity
+- Count exertional activity episodes: count of the episods of performing exertional activity
+- Count non-exertional activity episodes: count of the episodes of performing non-exertional activity
+
 Battery
 --------
 
@@ -43,6 +60,18 @@ Available epochs: daily, morning, afternoon, evening, and night
 -	Sum stationary: total duration of episodes of still and tilting (phone) activities
 -	Sum mobile: total duration of episodes of on foot, running, and on bicycle activities
 -	Sum vehicle: total duration of episodes of on vehicle activity
+
+Light
+-----
+
+Available epochs: daily, morning, afternoon, evening, and night
+
+- Count (number of rows)
+- Max lux: maximum ambient luminance in lux units
+- Min lux: minimum ambient luminance in lux units
+- Avg lux: average ambient luminance in lux units
+- median lux: median ambient luminance in lux units
+- Std lux: standard deviation of ambient luminance in lux units
 
 Location (Barnett’s) Fetures
 -----------------------------
