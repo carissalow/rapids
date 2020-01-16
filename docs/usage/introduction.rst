@@ -16,5 +16,7 @@ Available features:
 - Battery
 - Location (Barnett's)
 - Screen
+- Light
+- Accelerometer
 
 We are updating these docs constantly, but if you think something needs clarification, feel free to reach out or submit a pull request in GitHub.
