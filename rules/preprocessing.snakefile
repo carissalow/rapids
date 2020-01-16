@@ -16,7 +16,7 @@ rule readable_datetime:
         timezones = None,
         fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"]
     wildcard_constraints:
-        sensor = "^fitbit.*"  # ignoring fitbit sensors
+        sensor = '(' + '|'.join([re.escape(x) for x in config["SENSORS"]]) + ')' # only process smartphone sensors, not fitbit
     output:
         "data/raw/{pid}/{sensor}_with_datetime.csv"
     script:
@@ -82,33 +82,14 @@ rule application_genres:
     script:
         "../src/data/application_genres.R"
 
-rule fitbit_heartrate_with_datetime:
+rule fitbit_with_datetime:
     input:
         "data/raw/{pid}/fitbit_data_raw.csv"
     params:
         local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
+        fitbit_sensor = "{fitbit_sensor}"
     output:
-        "data/raw/{pid}/fitbit_heartrate_with_datetime.csv"
+        "data/raw/{pid}/fitbit_{fitbit_sensor}_with_datetime.csv"
     script:
-        "../src/data/fitbit_heartrate_with_datetime.py"
-
-rule fitbit_steps_with_datetime:
-    input:
-        "data/raw/{pid}/fitbit_data_raw.csv"
-    params:
-        local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"]
-    output:
-        "data/raw/{pid}/fitbit_steps_with_datetime.csv"
-    script:
-        "../src/data/fitbit_steps_with_datetime.py"
-
-rule fitbit_sleep_with_datetime:
-    input:
-        "data/raw/{pid}/fitbit_data_raw.csv"
-    params:
-        local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"]
-    output:
-        "data/raw/{pid}/fitbit_sleep_with_datetime.csv"
-    script:
-        "../src/data/fitbit_sleep_with_datetime.py"
+        "../src/data/fitbit_readable_datetime.py"
 
