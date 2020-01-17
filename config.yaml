@@ -1,5 +1,5 @@
 # Valid database table names
-SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, fitbit_data, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, screen]
+SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, screen]
 
 FITBIT_TABLE: [fitbit_data]
 FITBIT_SENSORS: [heartrate, steps, sleep]
@@ -71,7 +71,8 @@ BLUETOOTH:
 
 GOOGLE_ACTIVITY_RECOGNITION:
   DAY_SEGMENTS: *day_segments
-  METRICS: ['count','most_common_activity','number_unique_activities','activity_change_count']
+  METRICS: ['count','mostcommonactivity','countuniqueactivities','activitychangecount','sumstationary','summobile','sumvehicle']
+  
 
 BATTERY:
   DAY_SEGMENTS: *day_segments
