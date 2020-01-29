@@ -91,3 +91,11 @@ LIGHT:
 ACCELEROMETER:
   DAY_SEGMENTS: *day_segments
   METRICS: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude", "ratioexertionalactivityepisodes", "sumexertionalactivityepisodes", "longestexertionalactivityepisode", "longestnonexertionalactivityepisode", "countexertionalactivityepisodes", "countnonexertionalactivityepisodes"]
+
+STEP:
+  DAY_SEGMENTS: *day_segments
+  METRICS:
+    ALL_STEPS: ["sumallsteps", "maxallsteps", "minallsteps", "avgallsteps", "stdallsteps"]
+    SEDENTARY_BOUT: ["countsedentarybout", "maxdurationsedentarybout", "mindurationsedentarybout", "avgdurationsedentarybout", "stddurationsedentarybout"]
+    ACTIVE_BOUT: ["countactivebout", "maxdurationactivebout", "mindurationactivebout", "avgdurationactivebout", "stddurationactivebout"]
+  THRESHOLD_ACTIVE_BOUT: 10 # steps

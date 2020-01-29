@@ -130,3 +130,17 @@ rule accelerometer_metrics:
         "data/processed/{pid}/accelerometer_{day_segment}.csv"
     script:
         "../src/features/accelerometer_metrics.py"
+
+rule fitbit_step_metrics:
+    input:
+        steps_data = "data/raw/{pid}/fitbit_steps_with_datetime.csv",
+    params:
+        day_segment = "{day_segment}",
+        metrics_all_steps = config["STEP"]["METRICS"]["ALL_STEPS"],
+        metrics_sedentary_bout = config["STEP"]["METRICS"]["SEDENTARY_BOUT"],
+        metrics_active_bout = config["STEP"]["METRICS"]["ACTIVE_BOUT"],
+        threshold_active_bout = config["STEP"]["THRESHOLD_ACTIVE_BOUT"]
+    output:
+        "data/processed/{pid}/fitbit_step_{day_segment}.csv"
+    script:
+        "../src/features/fitbit_step_metrics.py"
