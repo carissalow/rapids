@@ -6,7 +6,7 @@ Accelerometer
 
 Available epochs: daily, morning, afternoon, evening, and night
 
-- Max magnitude: maximum magnitude of acceleration (note: |acceleration| = sqrt(x^2 + y^2 + z^2))
+- Max magnitude: maximum magnitude of acceleration (:math:`\|acceleration\| = \sqrt{x^2 + y^2 + z^2}`)
 - Min magnitude: minimum magnitude of acceleration
 - Avg magnitude: average magnitude of acceleration
 - Median magnitude: median magnitude of acceleration

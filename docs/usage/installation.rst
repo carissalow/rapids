@@ -18,13 +18,14 @@ Mac OS (tested on Catalina)
     - ``R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'``
 
 #. Install miniconda:
+
     - ``brew cask install miniconda``
     - ``conda init zsh`` or ``conda init bash``
     - Restart terminal if necessary
 
 #. Clone our repo:
 
-    - ``git clone https://github.com/carissalow/moshi-aware-pipeline``
+    - ``git clone https://github.com/carissalow/rapids``
 
 #. Create a python virtual environment:
 
@@ -43,6 +44,7 @@ Mac OS (tested on Catalina)
     - Add a line with the device_id(s) of that participant as it appears on the database. If multiple device ids, all data for this participant will be relabeled with the last one
     - Add a line with the mobile platform (android, or ios)
     - For example:
+
         .. code-block:: bash
 
             3a7b0d0a-a9ce-4059-ab98-93a7b189da8a,44f20139-50cc-4b13-bdde-0d5a3889e8f9
@@ -51,7 +53,8 @@ Mac OS (tested on Catalina)
 #. Configure the db connection:
 
     - Create an empty .env file in the root folder
-    - Add and complete the following lines
+    - Add and complete the following lines:
+
         | ``[MY_GROUP_NAME]``
         | ``user=MyUSER``
         | ``password=MyPassword``
@@ -62,6 +65,7 @@ Linux (tested on Ubuntu 16.04)
 ------------------------------
 
 #. Install dependenies:
+
     - ``sudo apt-get install libmariadb-client-lgpl-dev libxml2-dev libssl-dev``
     - Install brew_ for linux and add the following line to ~/.bashrc: ``export PATH=$HOME/.linuxbrew/bin:$PATH``
     - ``source ~/.bashrc``
@@ -82,7 +86,7 @@ Linux (tested on Ubuntu 16.04)
 
 #. Clone our repo:
 
-    - ``git clone https://github.com/carissalow/moshi-aware-pipeline``
+    - ``git clone https://github.com/carissalow/rapids``
 
 #. Create a python virtual environment:
 
@@ -101,6 +105,7 @@ Linux (tested on Ubuntu 16.04)
     - Add a line with the device_id(s) of that participant as it appears on the database. If multiple device ids, all data for this participant will be relabeled with the last one
     - Add a line with the mobile platform (android, or ios)
     - For example:
+
         .. code-block:: bash
 
             3a7b0d0a-a9ce-4059-ab98-93a7b189da8a,44f20139-50cc-4b13-bdde-0d5a3889e8f9
@@ -109,7 +114,8 @@ Linux (tested on Ubuntu 16.04)
 #. Configure the db connection:
 
     - Create an empty .env file in the root folder
-    - Add and complete the following lines
+    - Add and complete the following lines:
+
         | ``[MY_GROUP_NAME]``
         | ``user=MyUSER``
         | ``password=MyPassword``

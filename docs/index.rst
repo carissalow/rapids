@@ -6,7 +6,7 @@
 RAPIDS
 ======
 
-**R**eproducible **A**nalysis **Pi**pline for Data Streams
+**R**\ eproducible **A**\ nalysis **Pi**\ pline for **D**\ ata **S**\ treams
 
 Contents:
 
