@@ -3,8 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Pipeline for Human Behavior Analysis Using Mobile Data
-======================================================
+RAPIDS
+======
+
+**R**eproducible **A**nalysis **Pi**pline for Data Streams
 
 Contents:
 
