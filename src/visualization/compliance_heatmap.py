@@ -20,7 +20,7 @@ def getComplianceHeatmap(dates, compliance_matrix, pid, output_path, bin_size):
                                      y=[datetime.datetime.strftime(date, '%Y/%m/%d') for date in dates],
                                      colorscale='Viridis',
                                      colorbar={'tick0': 0,'dtick': 1}))
-    plot.update_layout(title="Compliance heatmap. Five-minute bins showing how many sensors logged at least one row of data in that period for " + pid)
+    plot.update_layout(title="Compliance heatmap.<br>Five-minute bins showing how many sensors logged at least one row of data in that period for " + pid)
     pio.write_html(plot, file=output_path, auto_open=False)
 
 # get current patient id
