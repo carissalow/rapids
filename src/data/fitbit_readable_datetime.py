@@ -11,7 +11,7 @@ HOUR2EPOCH = [NIGHT] * 6 + [MORNING] * 6 + [AFTERNOON] * 6 + [EVENING] * 6
 
 
 HR_COLUMNS = ("device_id",
-                "heartrate", 
+                "heartrate", "heartrate_zone",
                 "local_date_time", "local_date", "local_month", "local_day",
                 "local_day_of_week", "local_time", "local_hour", "local_minute", 
                 "local_day_segment")
@@ -42,6 +42,8 @@ def drop_duplicates(data, local_timezone):
     return data
 
 def parse_steps_data(steps_data):
+    if steps_data.empty:
+        return pd.DataFrame()
     device_id = steps_data["device_id"].iloc[0]
     records = []
     # Parse JSON into individual records
@@ -71,6 +73,8 @@ def parse_steps_data(steps_data):
     return pd.DataFrame(data=records, columns=STEPS_COLUMNS)
 
 def parse_sleep_data(sleep_data):
+    if sleep_data.empty:
+        return pd.DataFrame()
     device_id = sleep_data["device_id"].iloc[0]
     records = []
     # Parse JSON into individual records
@@ -105,8 +109,18 @@ def parse_sleep_data(sleep_data):
     return pd.DataFrame(data=records, columns=SLEEP_COLUMNS)
 
 def parse_heartrate_data(heartrate_data):
+    if heartrate_data.empty:
+        return pd.DataFrame()
     device_id = heartrate_data["device_id"].iloc[0]
     records = []
+
+    # Get the range of heartrate zones: outofrange, fatburn, cardio, peak
+    # refer to: https://help.fitbit.com/articles/en_US/Help_article/1565
+    heartrate_zones = json.loads(heartrate_data["fitbit_data"].iloc[0])["activities-heart"][0]["heartRateZones"]
+    heartrate_zones_range = {}
+    for hrzone in heartrate_zones:
+        heartrate_zones_range[hrzone["name"].lower().replace(" ", "")] = [hrzone["min"], hrzone["max"]]
+
     # Parse JSON into individual records
     for record in heartrate_data.fitbit_data:
         record = json.loads(record)  # Parse text into JSON
@@ -115,9 +129,18 @@ def parse_heartrate_data(heartrate_data):
         for data in dataset:
             d_time = datetime.strptime(data["time"], '%H:%M:%S').time()
             d_datetime = datetime.combine(curr_date, d_time)
+            d_hr =  data["value"]
+
+            # Get heartrate zone by range: min <= heartrate < max
+            d_hrzone = None
+            for hrzone, hrrange in heartrate_zones_range.items():
+                if d_hr >= hrrange[0] and d_hr < hrrange[1]:
+                    d_hrzone = hrzone
+                    break
 
             row = (device_id,
-                data["value"],
+                d_hr,
+                d_hrzone,
                 d_datetime,
                 d_datetime.date(),
                 d_datetime.month,
