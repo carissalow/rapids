@@ -12,11 +12,14 @@ def getComplianceMatrix(dates, compliance_bins):
     return compliance_matrix
 
 
-def getHourlyRowCountHeatmap(dates, hourly_row_count, sensor_name, pid, output_path):
-    plot = go.Figure(data=go.Heatmap(z=hourly_row_count,
-                                     x=[x for x in range(24)],
+def getRowCountHeatmap(dates, row_count_per_bin, sensor_name, pid, output_path, bin_size):
+    bins_per_hour = int(60 / bin_size)
+    x_axis_labels = ["{0:0=2d}".format(x // bins_per_hour) + ":" + \
+                    "{0:0=2d}".format(x % bins_per_hour * bin_size) for x in range(24 * bins_per_hour)]
+    plot = go.Figure(data=go.Heatmap(z=row_count_per_bin,
+                                     x=x_axis_labels,
                                      y=[datetime.datetime.strftime(date, '%Y/%m/%d') for date in dates],
-                                     colorscale='Viridis'))
+                                     colorscale="Viridis"))
     plot.update_layout(title="Row count heatmap for " + sensor_name + " of " + pid)
     pio.write_html(plot, file=output_path, auto_open=False)
 
@@ -25,6 +28,7 @@ def getHourlyRowCountHeatmap(dates, hourly_row_count, sensor_name, pid, output_p
 sensor_data = pd.read_csv(snakemake.input[0], encoding="ISO-8859-1")
 sensor_name = snakemake.params["table"]
 pid = snakemake.params["pid"]
+bin_size = snakemake.params["bin_size"]
 
 # check if we have sensor data
 if sensor_data.empty:
@@ -35,29 +39,24 @@ else:
     start_date = sensor_data["local_date"][0]
     end_date = sensor_data.at[sensor_data.index[-1],"local_date"]
 
-    # Make local hour double digit
-    sensor_data["local_hour"] = sensor_data["local_hour"].map("{0:0=2d}".format)
-
-    # Group and count by local_date and local_hour
-    sensor_data_hourly_bins = sensor_data.groupby(["local_date","local_hour"]).agg(count=("timestamp","count")).reset_index()
+    sensor_data["local_date_time"] = pd.to_datetime(sensor_data["local_date_time"])    
+    sensor_data = sensor_data[["local_date_time"]]
+    sensor_data["count"] = 1
 
     # Add first and last day boundaries for resampling
-    sensor_data_hourly_bins = sensor_data_hourly_bins.append([pd.Series([start_date, "00", 0], sensor_data_hourly_bins.columns),
-                                                            pd.Series([end_date, "23", 0], sensor_data_hourly_bins.columns)])
+    sensor_data = sensor_data.append([pd.Series([datetime.datetime.strptime(start_date + " 00:00:00", "%Y-%m-%d %H:%M:%S"), 0], sensor_data.columns),
+                                                            pd.Series([datetime.datetime.strptime(end_date + " 23:59:59", "%Y-%m-%d %H:%M:%S"),  0], sensor_data.columns)])
 
-    # Rebuild local date hour for resampling
-    sensor_data_hourly_bins["local_date_hour"] = pd.to_datetime(sensor_data_hourly_bins["local_date"] + \
-                                                " " + sensor_data_hourly_bins["local_hour"] + ":00:00")
-
-    resampled_hourly_bins = pd.DataFrame(sensor_data_hourly_bins.resample("1H", on="local_date_hour")["count"].sum())
-
+    # Resample into bins with the size of bin_size
+    resampled_bins = pd.DataFrame(sensor_data.resample(str(bin_size) + "T", on="local_date_time")["count"].sum())
+    
     # Extract list of dates for creating the heatmap
-    resampled_hourly_bins.reset_index(inplace=True)
-    resampled_hourly_bins["local_date"] = resampled_hourly_bins["local_date_hour"].dt.date
-    dates = resampled_hourly_bins["local_date"].drop_duplicates().tolist()
+    resampled_bins.reset_index(inplace=True)
+    resampled_bins["local_date"] = resampled_bins["local_date_time"].dt.date
+    dates = resampled_bins["local_date"].drop_duplicates().tolist()
 
     # Create heatmap
-    hourly_row_count = getComplianceMatrix(dates, resampled_hourly_bins)
-    hourly_row_count = np.asarray(hourly_row_count)
-    hourly_row_count = np.where(hourly_row_count == 0, np.nan, hourly_row_count)
-    getHourlyRowCountHeatmap(dates, hourly_row_count, sensor_name, pid, snakemake.output[0])
+    row_count_per_bin = getComplianceMatrix(dates, resampled_bins)
+    row_count_per_bin = np.asarray(row_count_per_bin)
+    row_count_per_bin = np.where(row_count_per_bin == 0, np.nan, row_count_per_bin)
+    getRowCountHeatmap(dates, row_count_per_bin, sensor_name, pid, snakemake.output[0], bin_size)

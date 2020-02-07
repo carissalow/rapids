@@ -3,7 +3,8 @@ rule heatmap_rows:
         "data/raw/{pid}/{sensor}_with_datetime.csv"
     params:
         table = "{sensor}",
-        pid = "{pid}"
+        pid = "{pid}",
+        bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"]
     output:
         "reports/figures/{pid}/{sensor}_heatmap_rows.html"
     script:
