@@ -131,6 +131,17 @@ rule accelerometer_metrics:
     script:
         "../src/features/accelerometer_metrics.py"
 
+rule fitbit_heartrate_metrics:
+    input:
+        "data/raw/{pid}/fitbit_heartrate_with_datetime.csv",
+    params:
+        day_segment = "{day_segment}",
+        metrics = config["HEARTRATE"]["METRICS"],
+    output:
+        "data/processed/{pid}/fitbit_heartrate_{day_segment}.csv"
+    script:
+        "../src/features/fitbit_heartrate_metrics.py"
+
 rule fitbit_step_metrics:
     input:
         steps_data = "data/raw/{pid}/fitbit_steps_with_datetime.csv",

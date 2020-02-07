@@ -72,7 +72,6 @@ BLUETOOTH:
 GOOGLE_ACTIVITY_RECOGNITION:
   DAY_SEGMENTS: *day_segments
   METRICS: ['count','mostcommonactivity','countuniqueactivities','activitychangecount','sumstationary','summobile','sumvehicle']
-  
 
 BATTERY:
   DAY_SEGMENTS: *day_segments
@@ -91,6 +90,10 @@ LIGHT:
 ACCELEROMETER:
   DAY_SEGMENTS: *day_segments
   METRICS: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude", "ratioexertionalactivityepisodes", "sumexertionalactivityepisodes", "longestexertionalactivityepisode", "longestnonexertionalactivityepisode", "countexertionalactivityepisodes", "countnonexertionalactivityepisodes"]
+
+HEARTRATE:
+  DAY_SEGMENTS: *day_segments
+  METRICS: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "lengthoutofrange", "lengthfatburn", "lengthcardio", "lengthpeak"]
 
 STEP:
   DAY_SEGMENTS: *day_segments
