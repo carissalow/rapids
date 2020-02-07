@@ -29,13 +29,13 @@ if not heartrate_data.empty:
         if "medianhr" in metrics:
             heartrate_features["heartrate_" + day_segment + "_medianhr"] = heartrate_data.groupby(["local_date"])["heartrate"].median()
         if "modehr" in metrics:
-            heartrate_features["heartrate_" + day_segment + "_modehr"] = heartrate_data.groupby(["local_date"])["heartrate"].agg(pd.Series.mode)
+            heartrate_features["heartrate_" + day_segment + "_modehr"] = heartrate_data.groupby(["local_date"])["heartrate"].agg(lambda x: pd.Series.mode(x)[0])
         if "stdhr" in metrics:
             heartrate_features["heartrate_" + day_segment + "_stdhr"] = heartrate_data.groupby(["local_date"])["heartrate"].std()
         if "diffmaxmodehr" in metrics:
-            heartrate_features["heartrate_" + day_segment + "_diffmaxmodehr"] = heartrate_data.groupby(["local_date"])["heartrate"].max() - heartrate_data.groupby(["local_date"])["heartrate"].agg(pd.Series.mode)
+            heartrate_features["heartrate_" + day_segment + "_diffmaxmodehr"] = heartrate_data.groupby(["local_date"])["heartrate"].max() - heartrate_data.groupby(["local_date"])["heartrate"].agg(lambda x: pd.Series.mode(x)[0])
         if "diffminmodehr" in metrics:
-            heartrate_features["heartrate_" + day_segment + "_diffminmodehr"] = heartrate_data.groupby(["local_date"])["heartrate"].agg(pd.Series.mode) - heartrate_data.groupby(["local_date"])["heartrate"].min()
+            heartrate_features["heartrate_" + day_segment + "_diffminmodehr"] = heartrate_data.groupby(["local_date"])["heartrate"].agg(lambda x: pd.Series.mode(x)[0]) - heartrate_data.groupby(["local_date"])["heartrate"].min()
         if "entropyhr" in metrics:
             heartrate_features["heartrate_" + day_segment + "_entropyhr"] = heartrate_data.groupby(["local_date"])["heartrate"].agg(entropy)
 
