@@ -131,6 +131,22 @@ rule accelerometer_metrics:
     script:
         "../src/features/accelerometer_metrics.py"
 
+rule applications_foreground_metrics:
+    input:
+        "data/interim/{pid}/applications_foreground_with_datetime_with_genre.csv",
+    params:
+        day_segment = "{day_segment}",
+        single_categories = config["APPLICATIONS_FOREGROUND"]["SINGLE_CATEGORIES"],
+        multiple_categories = config["APPLICATIONS_FOREGROUND"]["MULTIPLE_CATEGORIES"],
+        single_apps = config["APPLICATIONS_FOREGROUND"]["SINGLE_APPS"],
+        excluded_categories = config["APPLICATIONS_FOREGROUND"]["EXCLUDED_CATEGORIES"],
+        excluded_apps = config["APPLICATIONS_FOREGROUND"]["EXCLUDED_APPS"],
+        metrics = config["APPLICATIONS_FOREGROUND"]["METRICS"],
+    output:
+        "data/processed/{pid}/applications_foreground_{day_segment}.csv"
+    script:
+        "../src/features/applications_foreground_metrics.py"
+
 rule fitbit_heartrate_metrics:
     input:
         "data/raw/{pid}/fitbit_heartrate_with_datetime.csv",

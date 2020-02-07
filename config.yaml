@@ -91,6 +91,17 @@ ACCELEROMETER:
   DAY_SEGMENTS: *day_segments
   METRICS: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude", "ratioexertionalactivityepisodes", "sumexertionalactivityepisodes", "longestexertionalactivityepisode", "longestnonexertionalactivityepisode", "countexertionalactivityepisodes", "countnonexertionalactivityepisodes"]
 
+APPLICATIONS_FOREGROUND:
+  DAY_SEGMENTS: *day_segments
+  SINGLE_CATEGORIES: ["all", "video"]
+  MULTIPLE_CATEGORIES:
+    social: ["socialnetworks", "socialmediatools"]
+    entertainment: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
+  SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
+  EXCLUDED_CATEGORIES: ["system_apps", "video"]
+  EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
+  METRICS: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+
 HEARTRATE:
   DAY_SEGMENTS: *day_segments
   METRICS: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "lengthoutofrange", "lengthfatburn", "lengthcardio", "lengthpeak"]
