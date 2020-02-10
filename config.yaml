@@ -19,9 +19,16 @@ DAY_SEGMENTS: &day_segments
 TIMEZONE: &timezone
   America/New_York
 
+DATABASE_GROUP: &database_group
+  AAPECS
+
+DOWNLOAD_PARTICIPANTS:
+  IGNORED_DEVICE_IDS: [] # for example "5a1dd68c-6cd1-48fe-ae1e-14344ac5215f"
+  GROUP: *database_group
+
 # Download data config
 DOWNLOAD_DATASET:
-  GROUP: AAPECS
+  GROUP: *database_group
 
 # Readable datetime config
 READABLE_DATETIME:
