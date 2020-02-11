@@ -18,6 +18,16 @@ Available epochs: daily, morning, afternoon, evening, and night
 - Count exertional activity episodes: count of the episods of performing exertional activity
 - Count non-exertional activity episodes: count of the episodes of performing non-exertional activity
 
+Applications_foreground
+----------------------
+
+Available epochs: daily, morning, afternoon, evening, and night
+
+- Count: number of times using all_apps/single_app/single_category/multiple_category
+- Time of first use: time of first use all_apps/single_app/single_category/multiple_category in minutes
+- Time of last use: time of last use all_apps/single_app/single_category/multiple_category in minutes
+- Frenquency entropy: the entropy of the apps frequency for all_apps/single_app/single_category/multiple_category. There is no entropy for single_app.
+
 Battery
 --------
 
@@ -119,3 +129,47 @@ Available epochs: daily, morning, afternoon, evening, and night
 
 -	Sent: count, distinct contacts, time first sms, time last sms, count most frequent contact
 -	Received: count, distinct contacts, time first sms, time last sms, count most frequent contact
+
+Fitbit: heart rate
+------------------
+
+Available epochs: daily, morning, afternoon, evening, and night
+
+Notes. eart rate zones contain 4 zones: out_of_range zone, fat_burn zone, cardio zone, and peak zone. Please refer to the [Fitbit documentation](https://help.fitbit.com/articles/en_US/Help_article/1565) for the detailed informations of how to define those zones.
+
+- Max hr: maximum heart rate
+- Min hr: minimum heart rate
+- Avg hr: average heart rate
+- Median hr: median heart rate
+- Mode hr: mode heart rate
+- Std hr: standard deviation of heart rate
+- Diff max mode hr: maximum heart rate minus mode heart rate
+- Diff min mode hr: mode heart rate minus minimum heart rate
+- Entropy hr: entropy of heart rate
+- Length out of range: duration of heart rate in out_of_range zone in minute
+- Length fat burn: duration of heart rate in fat_burn zone in minute
+- Length cardio: duration of heart rate in cardio zone in minute
+- Length peak: duration of heart rate in peak zone in minute
+
+Fitbit: steps
+-------------
+
+Available epochs: daily, morning, afternoon, evening, and night
+
+Notes. If the step count per minute smaller than the THRESHOLD_ACTIVE_BOUT (default value is 10), it is defined as sedentary status. Otherwise, it is defined as active status. One active/sedentary bout is a period during with the user is under active/sedentary status.
+
+- Sum all steps: total step count
+- Max all steps: maximum step count
+- Min all steps: minimum step count
+- Avg all steps: average step count
+- Std all steps: standard deviation of step count
+- Count sedentary bout: count of sedentary bouts
+- Max duration sedentary bout: maximum duration of sedentary bouts
+- Min duration sedentary bout: minimum duration of sedentary bouts
+- Avg duration sedentary bout: average duration of sedentary bouts
+- Std duration sedentary bout: standard deviation of the duration of sedentary bouts
+- Count active bout: count of active bouts
+- Max duration active bout: maximum duration of active bouts
+- Min duration active bout: minimum duration of active bouts
+- Avg duration active bout: average duration of active bouts
+- Std duration active bout: standard deviation of the duration of active bouts
