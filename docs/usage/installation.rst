@@ -1,10 +1,14 @@
 Installation
 ===============
 
-This instructions have been tested on MacOS Catalina and Ubuntu 16.04. If you find a problem, please report it.
+This instructions have been tested on MacOS Catalina and Mojave and Ubuntu 16.04. If you find a problem, please report it.
 
 Mac OS (tested on Catalina)
 ----------------------------
+
+#. Install dependenies (if not installed):
+
+    - Install brew_ for Mac: ``/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"``
 
 #. Install MySQL
 
@@ -29,6 +33,7 @@ Mac OS (tested on Catalina)
 
 #. Create a python virtual environment:
 
+    - ``cd rapids``
     - ``conda env create -f environment.yml -n MY_ENV_NAME``
     - ``conda activate MY_ENV_NAME``
 
@@ -64,7 +69,7 @@ Mac OS (tested on Catalina)
 Linux (tested on Ubuntu 16.04)
 ------------------------------
 
-#. Install dependenies:
+#. Install dependenies (if not installed):
 
     - ``sudo apt-get install libmariadb-client-lgpl-dev libxml2-dev libssl-dev``
     - Install brew_ for linux and add the following line to ~/.bashrc: ``export PATH=$HOME/.linuxbrew/bin:$PATH``
@@ -90,6 +95,7 @@ Linux (tested on Ubuntu 16.04)
 
 #. Create a python virtual environment:
 
+    - ``cd rapids``
     - ``conda env create -f environment.yml -n MY_ENV_NAME``
     - ``conda activate MY_ENV_NAME``
 
@@ -121,6 +127,13 @@ Linux (tested on Ubuntu 16.04)
         | ``password=MyPassword``
         | ``host=MyIP``
         | ``port=3306``
+
+
+.. note::
+    - Ensure that ``MY_GROUP_NAME`` is the same value for GROUP in the ``DATABASE_GROUP`` variable in the config.yaml file. 
+    - Ensure that your list of ``SENSORS`` in the config.yaml file correspond to the sensors used in all rules in the Snakefile file (See Pipeline Structure Section for more information TBD)
+
+
 
 .. _bug: https://github.com/Homebrew/linuxbrew-core/issues/17812
 .. _instructions: https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html

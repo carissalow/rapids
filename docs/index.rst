@@ -22,3 +22,9 @@ Contents:
    :caption: Features
 
    features/extracted
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Developors
+
+   develop/documentation
