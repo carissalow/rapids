@@ -1,7 +1,8 @@
 rule download_participants:
     params:
         group = config["DOWNLOAD_PARTICIPANTS"]["GROUP"],
-        ignored_device_ids = config["DOWNLOAD_PARTICIPANTS"]["IGNORED_DEVICE_IDS"]
+        ignored_device_ids = config["DOWNLOAD_PARTICIPANTS"]["IGNORED_DEVICE_IDS"],
+        timezone = config["TIMEZONE"]
     script:
         "../src/data/download_participants.R"
 
