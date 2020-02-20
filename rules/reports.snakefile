@@ -1,6 +1,7 @@
 rule heatmap_rows:
     input:
-        "data/raw/{pid}/{sensor}_with_datetime.csv"
+        sensor = "data/raw/{pid}/{sensor}_with_datetime.csv",
+        pid_file = "data/external/{pid}"
     params:
         table = "{sensor}",
         pid = "{pid}",
@@ -12,7 +13,8 @@ rule heatmap_rows:
 
 rule compliance_heatmap:
     input:
-        "data/interim/{pid}/phone_sensed_bins.csv"
+        sensor = "data/interim/{pid}/phone_sensed_bins.csv",
+        pid_file = "data/external/{pid}"
     params:
         pid = "{pid}",
         bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"]
@@ -23,7 +25,8 @@ rule compliance_heatmap:
 
 rule battery_consumption_rates_barchart:
     input:
-        "data/processed/{pid}/battery_daily.csv"
+        sensor = "data/processed/{pid}/battery_daily.csv",
+        pid_file = "data/external/{pid}"
     params:
         pid = "{pid}"
     output:

@@ -20,17 +20,23 @@ def getComplianceHeatmap(dates, compliance_matrix, pid, output_path, bin_size):
                                      y=[datetime.datetime.strftime(date, '%Y/%m/%d') for date in dates],
                                      colorscale='Viridis',
                                      colorbar={'tick0': 0,'dtick': 1}))
-    plot.update_layout(title="Compliance heatmap.<br>Five-minute bins showing how many sensors logged at least one row of data in that period for " + pid)
+    plot.update_layout(title="Compliance heatmap.<br>Five-minute bins showing how many sensors logged at least one row of data in that period for " + pid + "<br>Label: " + label + ", device_id: " + device_id)
     pio.write_html(plot, file=output_path, auto_open=False)
 
 # get current patient id
 pid = snakemake.params["pid"]
 bin_size = snakemake.params["bin_size"]
-phone_sensed_bins = pd.read_csv(snakemake.input[0], parse_dates=["local_date"], index_col="local_date")
+
+with open(snakemake.input["pid_file"]) as external_file:
+    external_file_content = external_file.readlines()
+device_id = external_file_content[0].split(",")[-1]
+label = external_file_content[2]
+
+phone_sensed_bins = pd.read_csv(snakemake.input["sensor"], parse_dates=["local_date"], index_col="local_date")
 
 if phone_sensed_bins.empty:
     empty_html = open(snakemake.output[0], "w")
-    empty_html.write("There is no sensor data for " + pid)
+    empty_html.write("There is no sensor data for " + pid + "<br>Label: " + label + ", device_id: " + device_id)
     empty_html.close()
 else:
     # resample to impute missing dates

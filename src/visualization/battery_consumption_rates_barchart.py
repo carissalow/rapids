@@ -8,18 +8,24 @@ def getBatteryConsumptionRatesBarChart(battery_data, pid):
                     x=battery_data["battery_daily_avgconsumptionrate"],
                     y=battery_data["local_date"].apply(lambda x: x.strftime("%Y/%m/%d")).tolist(),
                     orientation='h'))
-    plot.update_layout(title="Daily battery consumption rates bar chart for " + pid,
+    plot.update_layout(title="Daily battery consumption rates bar chart for " + pid + "<br>Label: " + label + ", device_id: " + device_id,
                     xaxis_title="battery drains % per hour",
                     )
     return plot
 
 
 
-battery_data = pd.read_csv(snakemake.input[0], parse_dates=["local_date"])
+battery_data = pd.read_csv(snakemake.input["sensor"], parse_dates=["local_date"])
 pid = snakemake.params["pid"]
+
+with open(snakemake.input["pid_file"]) as external_file:
+    external_file_content = external_file.readlines()
+device_id = external_file_content[0].split(",")[-1]
+label = external_file_content[2]
+
 if battery_data.empty:
     empty_html = open(snakemake.output[0], "w")
-    empty_html.write("There is no battery data for " + pid)
+    empty_html.write("There is no battery data for " + pid + "<br>Label: " + label + ", device_id: " + device_id)
     empty_html.close()
 else:
     battery_data.set_index(["local_date"], inplace=True)

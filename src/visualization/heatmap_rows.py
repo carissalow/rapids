@@ -20,20 +20,26 @@ def getRowCountHeatmap(dates, row_count_per_bin, sensor_name, pid, output_path, 
                                      x=x_axis_labels,
                                      y=[datetime.datetime.strftime(date, '%Y/%m/%d') for date in dates],
                                      colorscale="Viridis"))
-    plot.update_layout(title="Row count heatmap for " + sensor_name + " of " + pid)
+    plot.update_layout(title="Row count heatmap for " + sensor_name + " of " + pid + "<br>Label: " + label + ", device_id: " + device_id)
     pio.write_html(plot, file=output_path, auto_open=False)
 
 
 
-sensor_data = pd.read_csv(snakemake.input[0], encoding="ISO-8859-1")
+sensor_data = pd.read_csv(snakemake.input["sensor"], encoding="ISO-8859-1")
 sensor_name = snakemake.params["table"]
 pid = snakemake.params["pid"]
 bin_size = snakemake.params["bin_size"]
 
+with open(snakemake.input["pid_file"]) as external_file:
+    external_file_content = external_file.readlines()
+device_id = external_file_content[0].split(",")[-1]
+label = external_file_content[2]
+
+
 # check if we have sensor data
 if sensor_data.empty:
     empty_html = open(snakemake.output[0], "w")
-    empty_html.write("There is no "+ sensor_name + " data for "+pid)
+    empty_html.write("There is no " + sensor_name + " data for " + pid + "<br>Label: " + label + ", device_id: " + device_id)
     empty_html.close()
 else:
     start_date = sensor_data["local_date"][0]
