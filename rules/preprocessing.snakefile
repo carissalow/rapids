@@ -11,7 +11,8 @@ rule download_dataset:
         "data/external/{pid}"
     params:
         group = config["DOWNLOAD_DATASET"]["GROUP"],
-        table = "{sensor}"
+        table = "{sensor}",
+        timezone = config["TIMEZONE"]
     output:
         "data/raw/{pid}/{sensor}_raw.csv"
     script:
