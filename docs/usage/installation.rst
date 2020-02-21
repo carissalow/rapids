@@ -1,3 +1,5 @@
+.. _install-page:
+
 Installation
 ===============
 
@@ -6,7 +8,7 @@ This instructions have been tested on MacOS Catalina and Mojave and Ubuntu 16.04
 Mac OS (tested on Catalina)
 ----------------------------
 
-#. Install dependenies (if not installed):
+#. Install dependenies (Homebrew if not installed):
 
     - Install brew_ for Mac: ``/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"``
 
@@ -43,6 +45,8 @@ Mac OS (tested on Catalina)
     - ``snakemake packrat_init``
     - ``snakemake packrat_restore``
 
+.. _install-step-8:
+
 #. Configure the participants to analyze:
 
     - Create a file per participant in the ``/data/external`` folder, no extension is necessary, its name will be the label for that participant in the pipeline: ``/data/external/pxx``
@@ -55,6 +59,7 @@ Mac OS (tested on Catalina)
             3a7b0d0a-a9ce-4059-ab98-93a7b189da8a,44f20139-50cc-4b13-bdde-0d5a3889e8f9
             android
 
+
 #. Configure the db connection:
 
     - Create an empty .env file in the root folder
@@ -66,10 +71,19 @@ Mac OS (tested on Catalina)
         | ``host=MyIP``
         | ``port=3306``
 
+
+#. Once the all of the installation and configurations has been completed the following command can be run to pull the default sample dataset that comes with this project.::
+
+    $ snakemake
+
+
+This pulls sample data from AWARE_ and processes it with the default rules that come with RAPIDS.
+
+
 Linux (tested on Ubuntu 16.04)
 ------------------------------
 
-#. Install dependenies (if not installed):
+#. Install dependenies (Homebrew - if not installed):
 
     - ``sudo apt-get install libmariadb-client-lgpl-dev libxml2-dev libssl-dev``
     - Install brew_ for linux and add the following line to ~/.bashrc: ``export PATH=$HOME/.linuxbrew/bin:$PATH``
@@ -129,12 +143,22 @@ Linux (tested on Ubuntu 16.04)
         | ``port=3306``
 
 
+#. Once the all of the installation and configurations has been completed the following command can be run to pull the default sample dataset that comes with this project.::
+
+    $ snakemake
+
+This pulls sample data from AWARE_ and processes it with the default rules that come with RAPIDS.
+
+.. _the-install-note:
+
 .. note::
-    - Ensure that ``MY_GROUP_NAME`` is the same value for GROUP in the ``DATABASE_GROUP`` variable in the config.yaml file. 
-    - Ensure that your list of ``SENSORS`` in the config.yaml file correspond to the sensors used in all rules in the Snakefile file (See Pipeline Structure Section for more information TBD)
+    - Ensure that ``MY_GROUP_NAME`` is the same value for GROUP in the ``DATABASE_GROUP`` variable in the ``config.yaml`` file. 
+    - Ensure that your list of ``SENSORS`` in the ``config.yaml`` file correspond to the sensors used in the ``all`` rule in the ``Snakefile`` file (See :ref:`rapids-structure` for more information)
+    
 
 
 
 .. _bug: https://github.com/Homebrew/linuxbrew-core/issues/17812
 .. _instructions: https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
 .. _brew: https://docs.brew.sh/Homebrew-on-Linux
+.. _AWARE: https://awareframework.com/what-is-aware/

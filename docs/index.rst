@@ -16,6 +16,7 @@ Contents:
 
    usage/introduction
    usage/installation
+   usage/snakemake_docs
 
 .. toctree::
    :maxdepth: 2
@@ -25,6 +26,6 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Developors
+   :caption: Developers
 
    develop/documentation

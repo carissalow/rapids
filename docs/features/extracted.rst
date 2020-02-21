@@ -1,8 +1,10 @@
 Extracted Features
 ==================
 
+.. _accelerometer:
+
 Accelerometer
--------------
+--------------
 
 Available epochs: daily, morning, afternoon, evening, and night
 
@@ -18,8 +20,10 @@ Available epochs: daily, morning, afternoon, evening, and night
 - Count exertional activity episodes: count of the episods of performing exertional activity
 - Count non-exertional activity episodes: count of the episodes of performing non-exertional activity
 
+.. _applications_foreground:
+
 Applications_foreground
-----------------------
+-------------------------
 
 Available epochs: daily, morning, afternoon, evening, and night
 
@@ -27,6 +31,8 @@ Available epochs: daily, morning, afternoon, evening, and night
 - Time of first use: time of first use all_apps/single_app/single_category/multiple_category in minutes
 - Time of last use: time of last use all_apps/single_app/single_category/multiple_category in minutes
 - Frenquency entropy: the entropy of the apps frequency for all_apps/single_app/single_category/multiple_category. There is no entropy for single_app.
+
+.. _battery:
 
 Battery
 --------
@@ -40,6 +46,8 @@ Available epochs: daily, morning, afternoon, evening, and night
 -	Count charge: number of battery charging episodes
 -	Sum duration charge: total duration of all charging episodes (time the phone was charging)
 
+.. _bluetooth:
+
 Bluetooth
 ---------
 
@@ -49,6 +57,8 @@ Available epochs: daily, morning, afternoon, evening, and night
 -	Unique devices (number of unique devices identified by their hardware address -bt_address field)
 -	Count of scans of the most unique device across each participant’s dataset 
 
+.. _calls:
+
 Calls
 -----
 
@@ -57,6 +67,8 @@ Available epochs: daily, morning, afternoon, evening, and night
 -	Outgoing: count, count of distinct contacts, mean duration, sum duration, min duration, max duration, std duration, mode duration, entropy duration, time of first call (hours), time of last call (hours), count of most frequent contact.
 -	Received: count, count of distinct contacts, mean duration, sum duration, min duration, max duration, std duration, mode duration, entropy duration, time of first call (hours), time of last call (hours), count of most frequent contact.
 -	Missed: count, distinct contacts, time of first call (hours), time of last call (hours), count of most frequent contact.
+
+.. _google-activity-recognition:
 
 Google Activity Recognition
 ---------------------------
@@ -71,6 +83,8 @@ Available epochs: daily, morning, afternoon, evening, and night
 -	Sum mobile: total duration of episodes of on foot, running, and on bicycle activities
 -	Sum vehicle: total duration of episodes of on vehicle activity
 
+.. _light:
+
 Light
 -----
 
@@ -83,7 +97,9 @@ Available epochs: daily, morning, afternoon, evening, and night
 - median lux: median ambient luminance in lux units
 - Std lux: standard deviation of ambient luminance in lux units
 
-Location (Barnett’s) Fetures
+.. _location-features:
+
+Location (Barnett’s) Features
 -----------------------------
 
 Available epochs: daily
@@ -105,6 +121,8 @@ Barnett’s location features are based on the concept of flights and pauses. GP
 -	Significant locations. The number of significant locations visited during the day. Significant locations are computed using k-means clustering over pauses found in the whole monitoring period. The number of clusters is found iterating from 1 to 200 stopping until the centroids of two significant locations are within 400 meters of one another.
 -	Significant location entropy. Entropy measurement based on the proportion of time spent at each significant location visited during a day.
 
+.. _screen:
+
 Screen
 ------
 
@@ -122,13 +140,17 @@ Notes. An unlock episode is considered as the time between an unlock event and a
 -	Average duration unlock: average duration of unlock episodes
 -	Std duration unlock: standard deviation of the duration of unlock episodes
 
+.. _sms:
+
 SMS
----
+----
 
 Available epochs: daily, morning, afternoon, evening, and night
 
 -	Sent: count, distinct contacts, time first sms, time last sms, count most frequent contact
 -	Received: count, distinct contacts, time first sms, time last sms, count most frequent contact
+
+.. _fitbit-heart-rate:
 
 Fitbit: heart rate
 ------------------
@@ -150,6 +172,8 @@ Notes. eart rate zones contain 4 zones: out_of_range zone, fat_burn zone, cardio
 - Length fat burn: duration of heart rate in fat_burn zone in minute
 - Length cardio: duration of heart rate in cardio zone in minute
 - Length peak: duration of heart rate in peak zone in minute
+
+.. _fitbit-steps:
 
 Fitbit: steps
 -------------

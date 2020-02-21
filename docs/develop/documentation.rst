@@ -1,7 +1,7 @@
 How to Edit Documentation
 ============================
 
-The following is a basic guide for editing the documentation for this project. The documentation is rendered using Sphinx_ documentation builder. This guide is intended to be a basic guide that will allow a contributer to start editing the documentation for the MoSHI AWARE Pipeline. The first step is to install Sphinx.
+The following is a basic guide for editing the documentation for this project. The documentation is rendered using Sphinx_ documentation builder. This guide is intended to be a basic guide that will allow a contributer to start editing the documentation for the RAPIDS Pipeline. The first step is to install Sphinx.
 
 Mac OS  
 
@@ -29,16 +29,16 @@ The ``toctree`` inserts a TOC tree at the current location using the individual 
 
 Thus the directory structure for the above example is shown below::
 
-    |__ index.rst
-    |__ usage
-        |__ introduction.rst
-        |__ installation.rst
+    ├── index.rst
+    └── usage
+        ├── introduction.rst
+        └── installation.rst
 
 Once the ``index.rst`` has been editted and content has been added and/or editted the documentation is built using the following command::
 
     $ make dirhtml
 
-This command creates the ``_build`` directory which contains the generated HTML files of the documentation.
+This command creates the ``_build`` directory which contains the generated HTML files of the documentation. It shoould be noted that once you have pushed your change to the repository the changes will be published even if you have not run ``make dirhtml``
 
 
 Basic reStructuredText Syntax
@@ -225,13 +225,15 @@ It refers to the section itself, see :ref:`my-reference-label`.
 
 - Labels that aren’t placed before a section title can still be referenced, but you must give the link an explicit title, using this syntax: ``:ref:`Link title <label-name>```.
 
+
 **Comments**
 
-Every explicit markup block which isn’t a valid markup construct (like the footnotes above) is regarded as a comment (ref). For example::
+Every explicit markup block which isn’t a valid markup construct is regarded as a comment. For example::
 
-.. This is a comment.
+    .. This is a comment.
 
 Go to Sphinx_ for more documentation. 
 
 .. _Sphinx: https://www.sphinx-doc.org
 .. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html
+
