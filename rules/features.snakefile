@@ -51,6 +51,7 @@ rule location_barnett_metrics:
         raw = "data/raw/{pid}/locations_raw.csv",
         fused = rules.resample_fused_location.output
     params:
+        metrics = config["BARNETT_LOCATION"]["METRICS"],
         locations_to_use = config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"],
         accuracy_limit = config["BARNETT_LOCATION"]["ACCURACY_LIMIT"],
         timezone = config["BARNETT_LOCATION"]["TIMEZONE"]
