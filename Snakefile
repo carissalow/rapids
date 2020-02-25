@@ -58,6 +58,7 @@ rule all:
         expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"]),
         expand("reports/figures/{pid}/battery_consumption_rates_barchart.html", pid=config["PIDS"]),
         expand("reports/compliance/{pid}/compliance_report.html", pid=config["PIDS"]),
+        expand("reports/figures/overall_compliance_heatmap.html"),
 
 rule clean:
     shell:

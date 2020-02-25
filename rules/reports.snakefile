@@ -23,6 +23,20 @@ rule compliance_heatmap:
     script:
         "../src/visualization/compliance_heatmap.py"
 
+rule overall_compliance_heatmap:
+    input:
+        phone_sensed_bins =  expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]),
+        phone_valid_sensed_days = expand("data/interim/{pid}/phone_valid_sensed_days.csv", pid=config["PIDS"]),
+        pid_files = expand("data/external/{pid}", pid=config["PIDS"])
+    params:
+        local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
+        bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"],
+        min_bins_per_hour = config["PHONE_VALID_SENSED_DAYS"]["MIN_BINS_PER_HOUR"]
+    output:
+        "reports/figures/overall_compliance_heatmap.html"
+    script:
+        "../src/visualization/overall_compliance_heatmap.py"
+
 rule battery_consumption_rates_barchart:
     input:
         sensor = "data/processed/{pid}/battery_daily.csv",
