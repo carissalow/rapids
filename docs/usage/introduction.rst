@@ -9,9 +9,9 @@ We recommend reading Snakemake_ docs, but the main idea behind the pipeline is t
 
 Available features:
 
-- :ref:`sms` 
-- :ref:`calls`
-- :ref:`bluetooth`
+- :ref:`sms-sensor-doc` 
+- :ref:`call-sensor-doc`
+- :ref:`bluetooth-sensor-doc`
 - :ref:`google-activity-recognition`
 - :ref:`battery`
 - :ref:`location-features`
