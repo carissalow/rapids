@@ -114,7 +114,7 @@ The ``config.yaml`` File
 The configurations for the pipeline are defined in the ``config.yaml`` (See `config.yaml`_). This contains global settings and variables that are used by the rules. Some of the global variables defined in the ``config.yaml`` file are briefly explained below:
 
     - ``SENSORS`` - This is a global variable that contains a list of the sensor/feature tables in the database that will be analyzed.
-    - ``PIDS`` - This is the list of the participant IDs to include in the analysis. Create a file for each participant with a matching name ``pXXX`` containing the device_id in the ``data/external/`` directory. (Remember installation :ref:`step 8 <install-step-8>`)
+    - ``PIDS`` - This is the list of the participant IDs to include in the analysis. Create a file for each participant with a matching name ``pXXX`` containing the device_id in the ``data/external/`` directory. (Remember step 8 on the :ref:`install-page` page)
     - ``DAY_SEGMENTS`` - A variable used to list all of the common day segments. 
     - ``TIMEZONE`` - Time variable. Use timezone names from the `List of Timezone`_ and double check your code, for example EST is not US Eastern Time.
     - ``DATABASE_GROUP`` - A variable for the name of the database group that the project uses. (Remember :ref:`Installation Note <the-install-note>`.)

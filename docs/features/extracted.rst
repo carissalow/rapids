@@ -1,5 +1,341 @@
-Extracted Features
-==================
+.. _rapids_metrics:
+
+RAPIDS Metrics
+===============
+
+This following is documentation of on the RAPIDS metrics settings in the configuation file. 
+
+.. _sensor-list:
+
+    - ``SENSORS`` - This varable stores a list of the names of the sensor data that are being pulled from the AWARE_ database. These names are the actual names of the  tables that the data is found in the database. See SENSORS_ variable in ``config`` file.  
+
+.. _fitbit-table:
+
+    - ``FITBIT_TABLE`` - The name of the fitbit database 
+
+.. _fitbit-sensors:
+
+    - ``FITBIT_SENSORS`` - The list of sensors that to be pulled from the fitbit database
+
+.. _pid: 
+
+    - ``PID`` - The list of participant ids included in the analysis. Remember that you must create a file named ``pXXX`` for each participant in the ``data/external`` directory containing there device_id. (Remember installation :ref:`step 8 <install-step-8>`)
+
+.. _day-segments: 
+
+    - ``DAY_SEGMENTS`` - The list of common day segments (time frequency/checkpoints) that data would be analyzed. See DAY_SEGMENTS_ in ``config`` file.
+
+.. _timezone:
+
+    - ``TIMEZONE`` - The timezone of the server. Use the timezone names from this `List of Timezones`_. Double check your code, for example EST is not US Eastern Time.
+
+.. _database_group:
+
+    - ``DATABASE_GROUP`` - The name of the research project database. 
+
+.. _download-dataset:
+
+    - ``DOWNLOAD_DATASET`` - The name of the dataset for the research project. 
+
+.. _readable-datetime:
+
+    - ``READABLE_DATETIME`` - Readable datetime configuration. Defines the format that the readable date and time should be. 
+
+.. _phone-valid-sensed-days:
+
+    - ``PHONE_VALID_SENSED_DAYS`` - Specifies the ``BIN_SIZE``, ``MIN_VALID_HOURS``, ``MIN_BINS_PER_HOUR``. ``BIN_SIZE`` is the time that the data is aggregated. ``MIN_VALID_HOURS`` is the minimum numbers of hours data will be gathered within a 24 hour period (a day). Finally ``MIN_BINS_PER_HOUR`` specifies minimum number of bins that are captured per hour. This is out of the total possible number of bins that can be captured in an hour i.e. out of 60min/``BIN_SIZE`` bins. See PHONE_VALID_SENSED_DAYS_ in ``config`` file.
+
+
+.. _individual-sensor-settings:
+
+List of Indvidual Sensors and There Settings
+---------------------------------------------
+
+.. _sms-sensor-doc:
+
+SMS
+"""""
+
+See `SMS Config Code`_
+
+**Available Epochs:**      
+
+    - daily 
+    - morning
+    - afternoon
+    - evening
+    - night
+
+**Available Platforms:**    
+
+    - Android
+
+**Snakefile Entry:**
+
+    - Download raw SMS dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
+
+    - Download raw SMS dataset with readable: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
+
+    - Extract SMS metrics
+
+      | ``expand("data/processed/{pid}/sms_{sms_type}_{day_segment}.csv".``
+      |                     ``pid=config["PIDS"],``
+      |                     ``sms_type = config["SMS"]["TYPES"],``
+      |                     ``day_segment = config["SMS"]["DAY_SEGMENTS"]),``
+
+**Rule Chain:**
+
+    - ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
+
+        - ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
+    
+    - ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
+
+        - ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
+
+    - ``rules/features.snakefile/sms_metrics`` - See the sms_metric_ rule.
+
+        - ``src/features/sms_metrics.R`` - See the sms_metrics.R_ script.
+
+.. _sms-parameters:
+
+**SMS Rule Parameters:**
+
+============    ===================
+Name	        Description
+============    ===================
+sms_type        The particular ``sms_type`` that will be analyzed. The options for this parameter is ``received`` or ``sent``.
+day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, 
+                ``evening``, ``night``
+metrics         The different measures that can be retrieved from the dataset. These metrics are available for both ``sent`` and ``received``
+                SMS messages. See :ref:`Available SMS Metrices <sms-available-metrics>` Table below
+============    ===================
+
+.. _sms-available-metrics:
+
+**Available SMS Metrics**
+
+The following table shows a list of the available metrics for both ``sent`` and ``received`` SMS. 
+
+=========================   =========     =============
+Name                        Units         Description
+=========================   =========     =============
+count                       SMS           A count of the number of times that particular ``sms_type`` occured for a particular ``day_segment``.
+distinctcontacts            contacts      A count of distinct contacts that were comunicated for a particular ``sms_type`` for a particular 
+                                          ``day_segment``.
+timefirstsms                minutes       The time in minutes from 12:00am (Midnight) that the first of a particular ``sms_type`` occured.
+timelastsms                 minutes       The time in minutes from 12:00am (Midnight) that the last of a particular ``sms_type`` occured.
+countmostfrequentcontact    SMS           The count of the number of sms meassages of a particular``sms_type`` for the most contacted contact for 
+                                          a particular ``day_segment``.
+=========================   =========     =============
+
+Assumptions/Observations: 
+
+    #. ``TYPES`` and ``METRICS`` keys need to match. From example::
+
+        SMS:
+            TYPES : [sent]
+            METRICS: 
+                sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
+
+In the above config setting code the ``TYPE``  ``sent`` matches the ``METRICS`` key ``sent``.
+
+
+.. _call-sensor-doc:
+
+Calls
+"""""""""""""
+
+See `Call Config Code`_
+
+**Available Epochs:**      
+
+    - daily 
+    - morning
+    - afternoon
+    - evening
+    - night
+
+**Available Platforms:**    
+
+    - Android
+    - iOS
+
+
+**Snakefile Entry:**
+
+    - Download raw Calls dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
+
+    - Download raw Calls dataset with readable: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
+    - Extract Calls Metrics
+    
+      | ``expand("data/processed/{pid}/call_{call_type}_{segment}.csv",``
+      |                      ``pid=config["PIDS"],`` 
+      |                      ``call_type=config["CALLS"]["TYPES"],``
+      |                      ``segment = config["CALLS"]["DAY_SEGMENTS"]),``
+    
+**Rule Chain:**
+
+    - ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
+
+         - ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
+    
+    - ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
+
+        - ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
+
+    - ``rules/features.snakefile/call_metrics`` - See the call_metrics_ rule.
+
+        - ``src/features/call_metrics.R`` - See the call_metrics.R_ script.
+
+    
+.. _calls-parameters:
+
+**Sensor Rule Parameters:**
+
+============    ===================
+Name	        Description
+============    ===================
+call_type       The particular ``call_type`` that will be analyzed. The options for this parameter are ``incoming``, ``outgoing`` or ``missed``.
+day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, 
+                ``evening``, ``night``
+metrics         The different measures that can be retrieved from the calls dataset. Note that the same metrics are available for both 
+                ``incoming`` and ``outgoing`` calls,  while ``missed`` calls has its own set of metrics. See :ref:`Available Incoming and Outgoing Call Metrices <available-in-and-out-call-metrics>` Table and :ref:`Available Missed Call Metrices <available-missed-call-metrics>` Table below.
+============    ===================
+
+.. _available-in-and-out-call-metrics:
+
+**Available Incoming and Outgoing Call Metrices**
+
+The following table shows a list of the available metrics for ``incoming`` and ``outgoing`` calls. 
+
+=========================   =========     =============
+Name                        Units         Description
+=========================   =========     =============
+count                       calls         A count of the number of times that a particular ``call_type`` occured for a particular ``day_segment``.
+distinctcontacts            contacts      A count of distinct contacts that were comunicated with for a particular ``call_type`` for a particular 
+                                          ``day_segment`` 
+meanduration                minutes       The mean duration of all calls for a particular ``call_type`` and ``day_segment``.
+sumduration                 minutes       The sum of the duration of all calls for a particular ``call_type`` and ``day_segment``.
+minduration                 minutes       The duration of the shortest call for a particular ``call_type`` and ``day_segment``.
+maxduration                 minutes       The duration of the longest call for a particular ``call_type`` and ``day_segment``.
+stdduration                 minutes       The standard deviation of all the calls for a particular ``call_type`` and ``day_segment``.
+modeduration                minutes       The mode duration of all the calls for a particular ``call_type`` and ``day_segment``.
+hubermduration                            The generalized Huber M-estimator of location of the MAD for the durations of all the calls for a 
+                                          particular ``call_type`` and ``day_segment``.
+varqnduration                             The location-Free Scale Estimator Qn of the durations of all the calls for a particular ``call_type`` 
+                                          and ``day_segment``.
+entropyduration                           The estimates the Shannon entropy H of the durations of all the calls for a particular ``call_type`` 
+                                          and ``day_segment``.
+timefirstcall               minutes       The time in minutes from 12:00am (Midnight) that the first of ``call_type`` occured.
+timelastcall                minutes       The time in minutes from 12:00am (Midnight) that the last of ``call_type`` occured.
+countmostfrequentcontact    calls         The count of the number of calls of a particular ``call_type`` and ``day_segment`` for the most contacted contact.
+=========================   =========     =============
+
+.. _available-missed-call-metrics:
+
+**Available Missed Call Metrices**
+
+The following table shows a list of the available metrics for ``missed`` calls. 
+
+=========================   =========     =============
+Name                        Units         Description
+=========================   =========     =============
+count                       calls         A count of the number of times a ``missed`` call occured for a particular ``day_segment``.
+distinctcontacts            contacts      A count of distinct contacts whose calls were ``missed``.
+timefirstcall               minutes       The time in minutes from 12:00am (Midnight) that the first ``missed`` call occured.
+timelastcall                minutes       The time in minutes from 12:00am (Midnight) that the last ``missed`` call occured.
+countmostfrequentcontact    SMS           The count of the number of ``missed`` calls for the contact with the most ``missed`` calls.
+=========================   =========     =============
+
+Assumptions/Observations: 
+
+    #. ``TYPES`` and ``METRICS`` keys need to match. From example::
+
+        SMS:
+            TYPES : [missed]
+            METRICS: 
+                missed: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
+
+In the above config setting code the ``TYPE``  ``missed`` matches the ``METRICS`` key ``missed``.
+
+
+.. _bluetooth-sensor-doc:
+
+Bluetooth
+""""""""""
+
+See `Bluetooth Config Code`_
+
+**Available Epochs:**      
+
+    - daily 
+    - morning
+    - afternoon
+    - evening
+    - night
+
+**Available Platforms:**    
+
+    - Android
+    - iOS
+
+
+**Snakefile Entry:**
+
+    - Download raw Bluetooth dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
+
+    - Download raw Bluetooth dataset with readable: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
+    - Extract Bluetooth Metrics
+    
+      | ``expand("data/processed/{pid}/bluetooth_{segment}.csv",``
+      |          ``pid=config["PIDS"],`` 
+      |          ``segment = config["BLUETOOTH"]["DAY_SEGMENTS"]),``
+    
+**Rule Chain:**
+
+    - ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
+
+        - ``src/data/download_dataset.R`` See the download_dataset.R_ script.
+    
+    - ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
+
+        - ``src/data/readable_datetime.R`` See the readable_datetime.R_ script.
+
+    - ``rules/features.snakefile/bluetooth_metrics`` - See the bluetooth_metric_ rule.
+
+        - ``src/features/bluetooth_metrics.R`` - See the bluetooth_metrics.R_ script.
+
+    
+.. _bluetooth-parameters:
+
+**Bluetooth Rule Parameters:**
+
+============    ===================
+Name	        Description
+============    ===================
+day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, 
+                ``evening``, ``night``
+metrics         The different measures that can be retrieved from the Bluetooth dataset. See :ref:`Available Bluetooth Metrices <bluetooth-available-metrics>` Table below
+============    ===================
+
+.. _bluetooth-available-metrics:
+
+**Available Bluetooth Metrics**
+
+The following table shows a list of the available metrics for Bluetooth. 
+
+===========================   =========     =============
+Name                          Units         Description
+===========================   =========     =============
+countscans                    scans         Count of scans (a scan is a row containing a single Bluetooth device detected by Aware)
+uniquedevices                 devices       Unique devices (number of unique devices identified by their hardware address -bt_address field)
+countscansmostuniquedevice    scans         Count of scans of the most unique device across each participant’s dataset
+===========================   =========     =============
+
+Assumptions/Observations: N/A 
+
+
 
 .. _accelerometer:
 
@@ -45,28 +381,6 @@ Available epochs: daily, morning, afternoon, evening, and night
 -	Max consumption rate: max of the ratios between discharging episodes’ battery delta and duration
 -	Count charge: number of battery charging episodes
 -	Sum duration charge: total duration of all charging episodes (time the phone was charging)
-
-.. _bluetooth:
-
-Bluetooth
----------
-
-Available epochs: daily, morning, afternoon, evening, and night
-
--	Count of scans (a scan is a row containing a single Bluetooth device detected by Aware)
--	Unique devices (number of unique devices identified by their hardware address -bt_address field)
--	Count of scans of the most unique device across each participant’s dataset 
-
-.. _calls:
-
-Calls
------
-
-Available epochs: daily, morning, afternoon, evening, and night
-
--	Outgoing: count, count of distinct contacts, mean duration, sum duration, min duration, max duration, std duration, mode duration, entropy duration, time of first call (hours), time of last call (hours), count of most frequent contact.
--	Received: count, count of distinct contacts, mean duration, sum duration, min duration, max duration, std duration, mode duration, entropy duration, time of first call (hours), time of last call (hours), count of most frequent contact.
--	Missed: count, distinct contacts, time of first call (hours), time of last call (hours), count of most frequent contact.
 
 .. _google-activity-recognition:
 
@@ -140,16 +454,6 @@ Notes. An unlock episode is considered as the time between an unlock event and a
 -	Average duration unlock: average duration of unlock episodes
 -	Std duration unlock: standard deviation of the duration of unlock episodes
 
-.. _sms:
-
-SMS
-----
-
-Available epochs: daily, morning, afternoon, evening, and night
-
--	Sent: count, distinct contacts, time first sms, time last sms, count most frequent contact
--	Received: count, distinct contacts, time first sms, time last sms, count most frequent contact
-
 .. _fitbit-heart-rate:
 
 Fitbit: heart rate
@@ -197,3 +501,24 @@ Notes. If the step count per minute smaller than the THRESHOLD_ACTIVE_BOUT (defa
 - Min duration active bout: minimum duration of active bouts
 - Avg duration active bout: average duration of active bouts
 - Std duration active bout: standard deviation of the duration of active bouts
+
+
+
+.. _SENSORS: https://github.com/carissalow/rapids/blob/f22d1834ee24ab3bcbf051bc3cc663903d822084/config.yaml#L2
+.. _`SMS Config Code`: https://github.com/carissalow/rapids/blob/f22d1834ee24ab3bcbf051bc3cc663903d822084/config.yaml#L38
+.. _AWARE: https://awareframework.com/what-is-aware/
+.. _`List of Timezones`: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+.. _sms_metric: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L1
+.. _sms_metrics.R: https://github.com/carissalow/rapids/blob/master/src/features/sms_metrics.R
+.. _download_dataset: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L9
+.. _download_dataset.R: https://github.com/carissalow/rapids/blob/master/src/data/download_dataset.R
+.. _readable_datetime: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L21
+.. _readable_datetime.R: https://github.com/carissalow/rapids/blob/master/src/data/readable_datetime.R
+.. _DAY_SEGMENTS: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L13
+.. _PHONE_VALID_SENSED_DAYS: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L60
+.. _`Call Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L46
+.. _call_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L13
+.. _call_metrics.R: https://github.com/carissalow/rapids/blob/master/src/features/call_metrics.R
+.. _`Bluetooth Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L76
+.. _bluetooth_metric: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L63
+.. _bluetooth_metrics.R: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/bluetooth_metrics.R

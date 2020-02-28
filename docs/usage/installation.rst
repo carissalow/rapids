@@ -45,7 +45,6 @@ Mac OS (tested on Catalina)
     - ``snakemake packrat_init``
     - ``snakemake packrat_restore``
 
-.. _install-step-8:
 
 #. Configure the participants to analyze:
 
