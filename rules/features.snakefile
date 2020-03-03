@@ -32,7 +32,8 @@ rule battery_deltas:
 
 rule screen_deltas:
     input:
-        "data/raw/{pid}/screen_with_datetime.csv"
+        screen = "data/raw/{pid}/screen_with_datetime.csv",
+        participant_info = "data/external/{pid}"
     output:
         "data/processed/{pid}/screen_deltas.csv"
     script:
