@@ -44,9 +44,12 @@ get_ios_screen_episodes <- function(screen){
               local_end_day_segment = last(local_day_segment))
 }
 
-get_android_screen_episodes <- function(screen){
+get_android_screen_episodes <- function(screen){  
+  # Aware logs LOCK events after turning the screen ON or OFF but we filter them out to simplify this analysis. 
+  # The code below only process UNLOCK to OFF episodes, but it's possible to modify it for ON to OFF (see line 61) or ON to UNLOCK episodes.
+
   episodes <- screen %>% 
-    # filter out UNLOCK events (2) that come within 50 milliseconds of an ON or OFF event
+    # filter out LOCK events (2) that come within 50 milliseconds of an ON (1) or OFF (0) event
     filter(!(screen_status == 2 & lag(screen_status) == 1 & timestamp - lag(timestamp) < 50)) %>% 
     filter(!(screen_status == 2 & lag(screen_status) == 0 & timestamp - lag(timestamp) < 50)) %>% 
     # in Android and after our filtering, screen episodes should end with a OFF event (0)
@@ -55,8 +58,10 @@ get_android_screen_episodes <- function(screen){
     group_by(episode_id)  %>% 
     # Rarely, UNLOCK events (3) get logged just before ON events (1). If this happens within 800ms, swap them
     swap_screen_status(3L, 1L, 800) %>% 
-    # to be consistent with iOS we get rid off events (and thus sequences) starting with an ON (1) event
+    # to be consistent with iOS we filter out events (and thus sequences) starting with an ON (1) event
     filter(screen_status != 1) %>%
+    # only keep consecutive 3,0 pairs (UNLOCK, OFF)
+    filter( (screen_status == 3 & lead(screen_status) == 0) | (screen_status == 0 & lag(screen_status) == 3) ) %>%
     summarise(episode = "unlock",
               screen_sequence = toString(screen_status),
               time_diff = (last(timestamp) - first(timestamp)) / 1000,
