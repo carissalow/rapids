@@ -30,7 +30,7 @@ sensor_name = snakemake.params["table"]
 pid = snakemake.params["pid"]
 bin_size = snakemake.params["bin_size"]
 
-with open(snakemake.input["pid_file"]) as external_file:
+with open(snakemake.input["pid_file"], encoding="ISO-8859-1") as external_file:
     external_file_content = external_file.readlines()
 device_id = external_file_content[0].split(",")[-1]
 label = external_file_content[2]

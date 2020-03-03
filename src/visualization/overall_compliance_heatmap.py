@@ -47,7 +47,7 @@ for date_offset in range(6,-1,-1):
 sensors_with_data_records, valid_sensed_hours_records = [], []
 for sensors_with_data_individual, valid_sensed_hours_individual, pid_file in zip(phone_sensed_bins, phone_valid_sensed_days, pid_files):
     
-    with open(pid_file) as external_file:
+    with open(pid_file, encoding="ISO-8859-1") as external_file:
         external_file_content = external_file.readlines()
     device_id = external_file_content[0].split(",")[-1].strip()
     label = external_file_content[2].strip()

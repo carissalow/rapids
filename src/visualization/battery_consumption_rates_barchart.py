@@ -18,7 +18,7 @@ def getBatteryConsumptionRatesBarChart(battery_data, pid):
 battery_data = pd.read_csv(snakemake.input["sensor"], parse_dates=["local_date"])
 pid = snakemake.params["pid"]
 
-with open(snakemake.input["pid_file"]) as external_file:
+with open(snakemake.input["pid_file"], encoding="ISO-8859-1") as external_file:
     external_file_content = external_file.readlines()
 device_id = external_file_content[0].split(",")[-1]
 label = external_file_content[2]

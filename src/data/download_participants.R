@@ -18,6 +18,7 @@ for(id in 1:nrow(participants)){
     device_id <- participants$device_id[[id]]
     brand <- ifelse(participants$brand[[id]] == "iPhone", "ios", "android")
     label <- ifelse(participants$label[[id]] == "", "EMPTY_LABEL", participants$label[[id]])
+    label <- iconv(label, from = "UTF-8", to = "UTF-8", sub='')
     start_date <- format(as.POSIXct(participants$timestamp[[id]] / 1000, origin = "1970-01-01", tz = timezone), "%Y/%m/%d")
     if(!(device_id %in% ignored_device_ids)){
         pid <- paste0("p", ifelse(id < 10, paste0("0", id), id))
