@@ -97,14 +97,12 @@ rule battery_metrics:
 
 rule screen_metrics:
     input:
-        screen_events = "data/raw/{pid}/screen_with_datetime.csv",
         screen_deltas = "data/processed/{pid}/screen_deltas.csv",
         phone_sensed_bins = "data/interim/{pid}/phone_sensed_bins.csv"
     params:
         day_segment = "{day_segment}",
-        metrics_events = config["SCREEN"]["METRICS_EVENTS"],
         metrics_deltas = config["SCREEN"]["METRICS_DELTAS"],
-        episodes = config["SCREEN"]["EPISODES"],
+        episode_types = config["SCREEN"]["EPISODE_TYPES"],
         bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"]
     output:
         "data/processed/{pid}/screen_{day_segment}.csv"

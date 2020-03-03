@@ -87,9 +87,8 @@ BATTERY:
 
 SCREEN:
   DAY_SEGMENTS: *day_segments
-  METRICS_EVENTS: ["counton", "countunlock", "unlocksperminute"]
-  METRICS_DELTAS: ["sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
-  EPISODES: ["unlock"]
+  METRICS_DELTAS: ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+  EPISODE_TYPES: ["unlock"]
 
 LIGHT:
   DAY_SEGMENTS: *day_segments

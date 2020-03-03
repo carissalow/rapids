@@ -5,9 +5,16 @@ import itertools
 from datetime import datetime, timedelta, time
 from features_utils import splitOvernightEpisodes, splitMultiSegmentEpisodes
 
-def getEpisodeDurationFeatures(screen_deltas, episode, metrics):
+def getEpisodeDurationFeatures(screen_deltas, episode, metrics, phone_sensed_bins, bin_size):
     screen_deltas_episode = screen_deltas[screen_deltas["episode"] == episode]
     duration_helper = pd.DataFrame()
+    if "countepisode" in metrics:
+        duration_helper = pd.concat([duration_helper, screen_deltas_episode.groupby(["local_start_date"]).count()[["time_diff"]].rename(columns = {"time_diff": "screen_" + day_segment + "_countepisode" + episode})], axis = 1)
+    if "episodepersensedminutes" in metrics:
+        for date, row in screen_deltas_episode.groupby(["local_start_date"]).count()[["time_diff"]].iterrows():
+            sensed_minutes = phone_sensed_bins.loc[date, :].sum() * bin_size
+            episode_per_sensedminutes = row["time_diff"] / (1 if sensed_minutes == 0 else sensed_minutes)
+            duration_helper.loc[date, "screen_" + day_segment + "_episodepersensedminutes" + episode] = episode_per_sensedminutes
     if "sumduration" in metrics:
         duration_helper = pd.concat([duration_helper, screen_deltas_episode.groupby(["local_start_date"]).sum()[["time_diff"]].rename(columns = {"time_diff": "screen_" + day_segment + "_sumduration" + episode})], axis = 1)
     if "maxduration" in metrics:
@@ -22,72 +29,31 @@ def getEpisodeDurationFeatures(screen_deltas, episode, metrics):
     duration_helper = duration_helper.fillna(0)
     return duration_helper
 
-def getEventFeatures(screen_data, metrics_events, phone_sensed_bins, bin_size):
-    if screen_data.empty:
-        return pd.DataFrame(columns=["screen_" + day_segment + "_" + x for x in metrics_events])
-    # get count_helper
-    screen_status = screen_data.groupby(["local_date", "screen_status"]).count()[["timestamp"]].reset_index()
-    count_on = screen_status[screen_status["screen_status"] == 0].set_index("local_date")[["timestamp"]].rename(columns = {"timestamp": "count_on"})
-    count_off = screen_status[screen_status["screen_status"] == 1].set_index("local_date")[["timestamp"]].rename(columns = {"timestamp": "count_off"})
-    count_lock = screen_status[screen_status["screen_status"] == 2].set_index("local_date")[["timestamp"]].rename(columns = {"timestamp": "count_lock"})
-    count_unlock = screen_status[screen_status["screen_status"] == 3].set_index("local_date")[["timestamp"]].rename(columns = {"timestamp": "count_unlock"})
-    
-    count_helper = pd.concat([count_on, count_off, count_lock, count_unlock], axis = 1)
-    count_helper = count_helper.fillna(0).astype(np.int64)
 
-    # get unlocks per minute
-    for date, row in count_helper.iterrows():
-        sensed_minutes = phone_sensed_bins.loc[date, :].sum() * bin_size
-        unlocks_per_minute = min(row["count_lock"], row["count_unlock"]) / (1 if sensed_minutes == 0 else sensed_minutes)
-        count_helper.loc[date, "unlocks_per_minute"] = unlocks_per_minute
-    
-    event_features = pd.DataFrame()
-    if "counton" in metrics_events:
-        event_features["screen_" + day_segment + "_counton"] = count_helper[["count_on", "count_off"]].min(axis=1)
-    if "countunlock" in metrics_events:
-        event_features["screen_" + day_segment + "_countunlock"] = count_helper[["count_lock", "count_unlock"]].min(axis=1)
-    if "unlocksperminute" in metrics_events:
-        event_features["screen_" + day_segment + "_unlocksperminute"] = count_helper["unlocks_per_minute"]
-
-    return event_features
-
-screen_data = pd.read_csv(snakemake.input["screen_events"], parse_dates=["local_date_time", "local_date"])
 screen_deltas = pd.read_csv(snakemake.input["screen_deltas"], parse_dates=["local_start_date_time", "local_end_date_time", "local_start_date", "local_end_date"])
 phone_sensed_bins = pd.read_csv(snakemake.input["phone_sensed_bins"], parse_dates=["local_date"], index_col="local_date")
 phone_sensed_bins[phone_sensed_bins > 0] = 1
 
 day_segment = snakemake.params["day_segment"]
-metrics_events = snakemake.params["metrics_events"]
 metrics_deltas = snakemake.params["metrics_deltas"]
-episodes = snakemake.params["episodes"]
+episode_types = snakemake.params["episode_types"]
 bin_size = snakemake.params["bin_size"]
 
-metrics_deltas_name = ["".join(metric) for metric in itertools.product(metrics_deltas, episodes)]
+metrics_deltas_name = ["".join(metric) for metric in itertools.product(metrics_deltas, episode_types)]
 
-if screen_data.empty:
-    screen_features = pd.DataFrame(columns=["local_date"]+["screen_" + day_segment + "_" + x for x in metrics_events + metrics_deltas_name])
-else:    
-    # drop consecutive duplicates of screen_status keeping the last one
-    screen_data = screen_data.loc[(screen_data[["screen_status"]].shift(-1) != screen_data[["screen_status"]]).any(axis=1)].reset_index(drop=True)
-
+screen_features = pd.DataFrame(columns=["local_date"]+["screen_" + day_segment + "_" + x for x in metrics_deltas_name])
+if not screen_deltas.empty:
     # preprocess day_segment and episodes
     screen_deltas = splitOvernightEpisodes(screen_deltas, [], ["episode"])
-    if day_segment != "daily":
-        screen_data = screen_data[screen_data["local_day_segment"] == day_segment]
+    if (not screen_deltas.empty) and (day_segment != "daily"):
         screen_deltas = splitMultiSegmentEpisodes(screen_deltas, day_segment, [])
     screen_deltas.set_index(["local_start_date"],inplace=True)
 
-    # extract features for events and episodes
-    event_features = getEventFeatures(screen_data, metrics_events, phone_sensed_bins, bin_size)
+    if not screen_deltas.empty:
+        screen_features = pd.DataFrame()
+        for episode in episode_types:
+            screen_features = pd.concat([screen_features, getEpisodeDurationFeatures(screen_deltas, episode, metrics_deltas, phone_sensed_bins, bin_size)], axis=1)
 
-    if screen_deltas.empty:
-        duration_features = pd.DataFrame(columns=["screen_" + day_segment + "_" + x for x in metrics_deltas_name])
-    else:
-        duration_features = pd.DataFrame()
-        for episode in episodes:
-            duration_features = pd.concat([duration_features, getEpisodeDurationFeatures(screen_deltas, episode, metrics_deltas)], axis=1)
-
-    screen_features = pd.concat([event_features, duration_features], axis = 1).fillna(0)
     screen_features = screen_features.rename_axis("local_date").reset_index()
 
 screen_features.to_csv(snakemake.output[0], index=False)
