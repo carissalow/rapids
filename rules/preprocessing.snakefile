@@ -3,6 +3,7 @@ rule download_participants:
         group = config["DOWNLOAD_PARTICIPANTS"]["GROUP"],
         ignored_device_ids = config["DOWNLOAD_PARTICIPANTS"]["IGNORED_DEVICE_IDS"],
         timezone = config["TIMEZONE"]
+    priority: 1
     script:
         "../src/data/download_participants.R"
 
