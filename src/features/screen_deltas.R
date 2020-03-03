@@ -79,7 +79,7 @@ get_android_screen_episodes <- function(screen){
                             ")$")))
 }
 
-if(nrow(screen) < 1){
+if(nrow(screen) < 2){
   episodes <- data.frame(episode = character(), 
                                 time_diff = numeric(),
                                 local_start_date_time = character(),
