@@ -5,7 +5,7 @@ import itertools
 from datetime import datetime, timedelta, time
 from features_utils import splitOvernightEpisodes, splitMultiSegmentEpisodes
 
-def getEpisodeDurationFeatures(screen_deltas, episode, metrics, phone_sensed_bins, bin_size):
+def getEpisodeDurationFeatures(screen_deltas, episode, metrics, phone_sensed_bins, bin_size, reference_hour_first_use):
     screen_deltas_episode = screen_deltas[screen_deltas["episode"] == episode]
     duration_helper = pd.DataFrame()
     if "countepisode" in metrics:
@@ -25,8 +25,8 @@ def getEpisodeDurationFeatures(screen_deltas, episode, metrics, phone_sensed_bin
         duration_helper = pd.concat([duration_helper, screen_deltas_episode.groupby(["local_start_date"]).mean()[["time_diff"]].rename(columns = {"time_diff":"screen_" + day_segment + "_avgduration" + episode})], axis = 1)
     if "stdduration" in metrics:
         duration_helper = pd.concat([duration_helper, screen_deltas_episode.groupby(["local_start_date"]).std()[["time_diff"]].rename(columns = {"time_diff":"screen_" + day_segment + "_stdduration" + episode})], axis = 1)
-    
-    duration_helper = duration_helper.fillna(0)
+    if "firstuseafter" + "{0:0=2d}".format(reference_hour_first_use) in metrics:
+        duration_helper = pd.concat([duration_helper, pd.DataFrame(screen_deltas_episode.groupby(["local_start_date"]).first()[["local_start_date_time"]].local_start_date_time.apply(lambda x: (x.to_pydatetime().hour - reference_hour_first_use) * 3600 + x.to_pydatetime().minute * 60 + x.to_pydatetime().second)).rename(columns = {"local_start_date_time":"screen_" + day_segment + "_firstuseafter" + "{0:0=2d}".format(reference_hour_first_use) + episode})], axis = 1)
     return duration_helper
 
 
@@ -35,9 +35,12 @@ phone_sensed_bins = pd.read_csv(snakemake.input["phone_sensed_bins"], parse_date
 phone_sensed_bins[phone_sensed_bins > 0] = 1
 
 day_segment = snakemake.params["day_segment"]
+reference_hour_first_use = snakemake.params["reference_hour_first_use"]
 metrics_deltas = snakemake.params["metrics_deltas"]
 episode_types = snakemake.params["episode_types"]
 bin_size = snakemake.params["bin_size"]
+
+metrics_deltas = ["firstuseafter" + "{0:0=2d}".format(reference_hour_first_use) if feature_name == "firstuseafter" else feature_name for feature_name in metrics_deltas]
 
 metrics_deltas_name = ["".join(metric) for metric in itertools.product(metrics_deltas, episode_types)]
 
@@ -52,7 +55,7 @@ if not screen_deltas.empty:
     if not screen_deltas.empty:
         screen_features = pd.DataFrame()
         for episode in episode_types:
-            screen_features = pd.concat([screen_features, getEpisodeDurationFeatures(screen_deltas, episode, metrics_deltas, phone_sensed_bins, bin_size)], axis=1)
+            screen_features = pd.concat([screen_features, getEpisodeDurationFeatures(screen_deltas, episode, metrics_deltas, phone_sensed_bins, bin_size, reference_hour_first_use)], axis=1)
 
     screen_features = screen_features.rename_axis("local_date").reset_index()
 

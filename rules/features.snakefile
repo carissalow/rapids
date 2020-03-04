@@ -101,6 +101,7 @@ rule screen_metrics:
         phone_sensed_bins = "data/interim/{pid}/phone_sensed_bins.csv"
     params:
         day_segment = "{day_segment}",
+        reference_hour_first_use = config["SCREEN"]["REFERENCE_HOUR_FIRST_USE"],
         metrics_deltas = config["SCREEN"]["METRICS_DELTAS"],
         episode_types = config["SCREEN"]["EPISODE_TYPES"],
         bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"]
