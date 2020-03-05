@@ -43,7 +43,7 @@ def drop_duplicates(data, local_timezone):
 
 def parse_steps_data(steps_data):
     if steps_data.empty:
-        return pd.DataFrame()
+        return pd.DataFrame(columns=STEPS_COLUMNS)
     device_id = steps_data["device_id"].iloc[0]
     records = []
     # Parse JSON into individual records
@@ -74,7 +74,7 @@ def parse_steps_data(steps_data):
 
 def parse_sleep_data(sleep_data):
     if sleep_data.empty:
-        return pd.DataFrame()
+        return pd.DataFrame(columns=SLEEP_COLUMNS)
     device_id = sleep_data["device_id"].iloc[0]
     records = []
     # Parse JSON into individual records
@@ -110,7 +110,7 @@ def parse_sleep_data(sleep_data):
 
 def parse_heartrate_data(heartrate_data):
     if heartrate_data.empty:
-        return pd.DataFrame()
+        return pd.DataFrame(columns=HR_COLUMNS)
     device_id = heartrate_data["device_id"].iloc[0]
     records = []
 
