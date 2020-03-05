@@ -55,9 +55,10 @@ rule location_barnett_metrics:
         metrics = config["BARNETT_LOCATION"]["METRICS"],
         locations_to_use = config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"],
         accuracy_limit = config["BARNETT_LOCATION"]["ACCURACY_LIMIT"],
-        timezone = config["BARNETT_LOCATION"]["TIMEZONE"]
+        timezone = config["BARNETT_LOCATION"]["TIMEZONE"],
+        day_segment = "{day_segment}"
     output:
-        "data/processed/{pid}/location_barnett.csv"
+        "data/processed/{pid}/location_barnett_{day_segment}.csv"
     script:
         "../src/features/location_barnett_metrics.R"
 
