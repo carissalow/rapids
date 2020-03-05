@@ -31,6 +31,7 @@ accuracy_limit <- snakemake@params[["accuracy_limit"]]
 timezone <- snakemake@params[["timezone"]]
 metrics_to_include <- intersect(unlist(snakemake@params["metrics"], use.names = F), 
                                 c("hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","minsmissing","circdnrtn","wkenddayrtn"))
+metrics_to_include <- c("local_date", metrics_to_include)
 
 # By deafult we use all raw locations: fused without resampling and not fused (gps, network)
 location <- read.csv(snakemake@input[["raw"]], stringsAsFactors = F) %>%
