@@ -43,6 +43,7 @@ if not heartrate_data.empty:
         for feature_name in list(set(["lengthoutofrange", "lengthfatburn", "lengthcardio", "lengthpeak"]) & set(metrics)):
             heartrate_zone = heartrate_data[heartrate_data["heartrate_zone"] == feature_name[6:]]
             heartrate_features["heartrate_" + day_segment + "_" + feature_name] = heartrate_zone.groupby(["local_date"])["device_id"].count() / num_rows_per_minute
+            heartrate_features.fillna(value={"heartrate_" + day_segment + "_" + feature_name: 0}, inplace=True)
 
         heartrate_features = heartrate_features.reset_index()
 
