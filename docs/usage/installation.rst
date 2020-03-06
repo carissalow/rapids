@@ -112,30 +112,31 @@ Once you have the installation for your specific operating system complete, you 
 
 #. Configure the database connection:
 
-    - Create an empty file called `.env` in the root directory (rapids/)
+    - Create an empty file called `.env` in the root directory (``rapids/``)
     - Add and complete the following lines:
+        .. code-block:: bash
+        
+            [MY_GROUP_NAME]
+            user=MyUSER
+            password=MyPassword
+            host=MyIP
+            port=3306
 
-        | ``[MY_GROUP_NAME]``
-        | ``user=MyUSER``
-        | ``password=MyPassword``
-        | ``host=MyIP``
-        | ``port=3306``
-        - Replace your database specific credentials with those listed above.  
+        - Replace your database specific credentials with those listed above.
+        - ``MY_GROUP_NAME`` is a custom label you assign when setting up the database configuration. It does not have to relate to your 
 
+.. _the-install-note:
+
+.. note::
+    - ``MY_GROUP_NAME`` must also be assigned to the ``DATABASE_GROUP`` variable in the ``config.yaml`` file, which is located in the root directory (``rapids/config.yaml``). 
+    - Ensure that your list of ``SENSORS`` in the ``config.yaml`` file correspond to the sensors used in the ``all`` rule in the ``Snakefile`` file (See :ref:`rapids-structure` for more information)
 
 #. Once the all of the installation and configurations has been completed the following command can be run to pull the default sample dataset that comes with this project.::
 
     $ snakemake
 
 
-This pulls sample data from AWARE_ and processes it with the default rules that come with RAPIDS.
-
-.. _the-install-note:
-
-.. note::
-    - Ensure that ``MY_GROUP_NAME`` is the same value for GROUP in the ``DATABASE_GROUP`` variable in the ``config.yaml`` file located in the root directory (rapids/config.yaml). 
-    - Ensure that your list of ``SENSORS`` in the ``config.yaml`` file correspond to the sensors used in the ``all`` rule in the ``Snakefile`` file (See :ref:`rapids-structure` for more information)
-    
+This pulls sample data from AWARE_ and processes it with the default rules that come with RAPIDS. 
 
 
 
