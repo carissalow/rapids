@@ -9,19 +9,18 @@ We recommend reading Snakemake_ docs, but the main idea behind the pipeline is t
 
 Available features:
 
-- :ref:`accelerometer`
-- :ref:`applications_foreground`
-- :ref:`battery`
+- :ref:`accelerometer-sensor-doc`
+- :ref:`applications-foreground-sensor-doc`
+- :ref:`battery-sensor-doc`
 - :ref:`bluetooth-sensor-doc`
 - :ref:`call-sensor-doc`
-- :ref:`fitbit-heart-rate`
-- :ref:`fitbit-steps`
-- :ref:`google-activity-recognition`
-- :ref:`light`
-- :ref:`location-features`
-- :ref:`screen`
+- :ref:`fitbit-heart-rate-sensor-doc`
+- :ref:`fitbit-steps-sensor-doc`
+- :ref:`google-activity-recognition-sensor-doc`
+- :ref:`light-doc`
+- :ref:`location-sensor-doc`
+- :ref:`screen-sensor-doc`
 - :ref:`sms-sensor-doc` 
-
 
 We are updating these docs constantly, but if you think something needs clarification, feel free to reach out or submit a pull request on GitHub.
 
