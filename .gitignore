@@ -93,7 +93,6 @@ packrat/*
 .snakemake/
 
 # exclude data from source control by default
-# exclude data from source control by default
 data/external/*
 !/data/external/.gitkeep
 !/data/external/stachl_application_genre_catalogue.csv
@@ -108,3 +107,6 @@ reports/
 *.Rproj
 .RData
 .Rhistory
+
+# analysis part
+models/*

@@ -122,3 +122,10 @@ STEP:
     SEDENTARY_BOUT: ["countsedentarybout", "maxdurationsedentarybout", "mindurationsedentarybout", "avgdurationsedentarybout", "stddurationsedentarybout"]
     ACTIVE_BOUT: ["countactivebout", "maxdurationactivebout", "mindurationactivebout", "avgdurationactivebout", "stddurationactivebout"]
   THRESHOLD_ACTIVE_BOUT: 10 # steps
+
+METRICS_FOR_ANALYSIS:
+  SOURCES: &sources ["phone_metrics", "fitbit_metrics", "phone_fitbit_metrics"]
+  DAY_SEGMENTS: *day_segments
+  PHONE_METRICS: [accelerometer, applications_foreground, battery, call_incoming, call_missed, call_outgoing, google_activity_recognition, light, location_barnett, screen, sms_received, sms_sent]
+  FITBIT_METRICS: [fitbit_heartrate, fitbit_step]
+  PHONE_FITBIT_METRICS: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile

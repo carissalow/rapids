@@ -2,6 +2,7 @@ configfile: "config.yaml"
 include: "rules/packrat.snakefile"
 include: "rules/preprocessing.snakefile"
 include: "rules/features.snakefile"
+include: "rules/models.snakefile"
 include: "rules/reports.snakefile"
 
 rule all:
@@ -55,6 +56,14 @@ rule all:
         expand("data/processed/{pid}/fitbit_step_{day_segment}.csv",
                             pid = config["PIDS"],
                             day_segment = config["STEP"]["DAY_SEGMENTS"]),
+        # Models
+        expand("models/input/merged_single_participant/{pid}/{source}_{day_segment}.csv",
+                                pid = config["PIDS"],
+                                source = config["METRICS_FOR_ANALYSIS"]["SOURCES"],
+                                day_segment = config["METRICS_FOR_ANALYSIS"]["DAY_SEGMENTS"]),
+        expand("models/input/merged_all_participants/{source}_{day_segment}.csv",
+                                source = config["METRICS_FOR_ANALYSIS"]["SOURCES"],
+                                day_segment = config["METRICS_FOR_ANALYSIS"]["DAY_SEGMENTS"]),
         # Reports
         expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"]),
