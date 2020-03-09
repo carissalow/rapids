@@ -27,6 +27,6 @@ if not light_data.empty:
         if "stdlux" in metrics:
             light_features["light_" + day_segment + "_stdlux"] = light_data.groupby(["local_date"])["double_light_lux"].std()
         
-        light_features = light_features.fillna(0).reset_index()
+        light_features = light_features.reset_index()
 
 light_features.to_csv(snakemake.output[0], index=False)
