@@ -122,6 +122,7 @@ STEP:
     SEDENTARY_BOUT: ["countsedentarybout", "maxdurationsedentarybout", "mindurationsedentarybout", "avgdurationsedentarybout", "stddurationsedentarybout"]
     ACTIVE_BOUT: ["countactivebout", "maxdurationactivebout", "mindurationactivebout", "avgdurationactivebout", "stddurationactivebout"]
   THRESHOLD_ACTIVE_BOUT: 10 # steps
+  INCLUDE_ZERO_STEP_ROWS: True
 
 METRICS_FOR_ANALYSIS:
   SOURCES: &sources ["phone_metrics", "fitbit_metrics", "phone_fitbit_metrics"]

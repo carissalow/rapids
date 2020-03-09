@@ -8,6 +8,7 @@ all_steps = snakemake.params["metrics_all_steps"]
 sedentary_bout = snakemake.params["metrics_sedentary_bout"]
 active_bout = snakemake.params["metrics_active_bout"]
 threshold_active_bout = snakemake.params['threshold_active_bout']
+include_zero_step_rows = snakemake.params["include_zero_step_rows"]
 
 #Read csv into a pandas dataframe
 data = pd.read_csv(snakemake.input['steps_data'],parse_dates=['local_date_time'])
@@ -92,6 +93,12 @@ else:
     
     if("stddurationactivebout" in active_bout):
         finalDataset["step_" + str(day_segment) + "_stddurationactivebout"] = statsMinutes[statsMinutes['active_sedentary']== 'active']['std']
+    
+    #Exclude data when the total step count is ZERO during the whole epoch
+    if not include_zero_step_rows:
+        finalDataset["sumallsteps_aux"] = resampledData["steps"].resample("D").sum()
+        finalDataset = finalDataset.query("sumallsteps_aux != 0")
+        del finalDataset["sumallsteps_aux"]
 
 finalDataset.index.names = ['local_date']
 finalDataset.to_csv(snakemake.output[0])    

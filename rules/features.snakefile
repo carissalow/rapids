@@ -168,7 +168,8 @@ rule fitbit_step_metrics:
         metrics_all_steps = config["STEP"]["METRICS"]["ALL_STEPS"],
         metrics_sedentary_bout = config["STEP"]["METRICS"]["SEDENTARY_BOUT"],
         metrics_active_bout = config["STEP"]["METRICS"]["ACTIVE_BOUT"],
-        threshold_active_bout = config["STEP"]["THRESHOLD_ACTIVE_BOUT"]
+        threshold_active_bout = config["STEP"]["THRESHOLD_ACTIVE_BOUT"],
+        include_zero_step_rows = config["STEP"]["INCLUDE_ZERO_STEP_ROWS"]
     output:
         "data/processed/{pid}/fitbit_step_{day_segment}.csv"
     script:
