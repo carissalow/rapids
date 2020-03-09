@@ -4,9 +4,7 @@ import itertools
 from scipy.stats import entropy
 
 
-def compute_metrics(filtered_data, apps_type, metrics, apps_features):
-    if "count" in metrics:
-        apps_features["apps_" + day_segment + "_count" + apps_type] = filtered_data.groupby(["local_date"]).count()["timestamp"]
+def compute_metrics(filtered_data, apps_type, metrics, apps_features):        
     if "timeoffirstuse" in metrics:
         time_first_event = filtered_data.sort_values(by="timestamp", ascending=True).drop_duplicates(subset="local_date", keep="first").set_index("local_date")
         apps_features["apps_" + day_segment + "_timeoffirstuse" + apps_type] = time_first_event["local_hour"] * 60 + time_first_event["local_minute"]
@@ -16,6 +14,9 @@ def compute_metrics(filtered_data, apps_type, metrics, apps_features):
     if "frequencyentropy" in metrics:
         apps_with_count = filtered_data.groupby(["local_date","application_name"]).count().sort_values(by="timestamp", ascending=False).reset_index()
         apps_features["apps_" + day_segment + "_frequencyentropy" + apps_type] = apps_with_count.groupby("local_date")["timestamp"].agg(entropy)
+    if "count" in metrics:
+        apps_features["apps_" + day_segment + "_count" + apps_type] = filtered_data.groupby(["local_date"]).count()["timestamp"]
+        apps_features.fillna(value={"apps_" + day_segment + "_count" + apps_type: 0}, inplace=True)
     return apps_features
 
 
