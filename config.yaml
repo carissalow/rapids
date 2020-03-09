@@ -20,7 +20,7 @@ TIMEZONE: &timezone
   America/New_York
 
 DATABASE_GROUP: &database_group
-  AAPECS
+  MY_GROUP
 
 DOWNLOAD_PARTICIPANTS:
   IGNORED_DEVICE_IDS: [] # for example "5a1dd68c-6cd1-48fe-ae1e-14344ac5215f"
