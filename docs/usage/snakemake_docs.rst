@@ -3,60 +3,6 @@
 RAPIDS Structure
 =================
 
-::
-
-    ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── config.yaml        <- The configuration settings for the pipeline.
-    ├── environment.yml    <- Environmental settings - channels and dependences that are installed in the env)
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── packrat            <- Installed R dependences. (Packrat is a dependency management system for R) 
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting.
-    │
-    ├── rules              
-    │   ├── features       <- Rules to process the feature data pulled in to pipeline.
-    │   ├── packrat        <- Rules for setting up packrat.
-    │   ├── preprocessing  <- Preprocessing rules to clean data before processing.
-    │   ├── analysis       <- Analytic rules that are applied to the data.
-    │   └── reports        <- Snakefile used to produce reports.
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── Snakemake          <- The root snakemake file (the equivalent of a Makefile)
-    ├── src                <- Source code for use in this project. Can be in any language e.g. Python, 
-    │   │                     R, Julia, etc.
-    │   │
-    │   ├── data           <- Scripts to download or generate data. Can be in any language e.g. Python, 
-    │   │                     R, Julia, etc.
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling. Can be in any language 
-    │   │                     e.g. Python, R, Julia, etc.
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make prediction. Can 
-    │   │                     be in any language e.g. Python, R, Julia, etc.
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations. Can be 
-    │                         in any language e.g. Python, R, Julia, etc.
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.testrun.org
-
-
 .. _the-snakefile-file:
 
 The ``Snakefile`` File
@@ -117,7 +63,7 @@ The configurations for the pipeline are defined in the ``config.yaml`` (See `con
     - ``PIDS`` - This is the list of the participant IDs to include in the analysis. Create a file for each participant with a matching name ``pXXX`` containing the device_id in the ``data/external/`` directory. (Remember step 8 on the :ref:`install-page` page)
     - ``DAY_SEGMENTS`` - A variable used to list all of the common day segments. 
     - ``TIMEZONE`` - Time variable. Use timezone names from the `List of Timezone`_ and double check your code, for example EST is not US Eastern Time.
-    - ``DATABASE_GROUP`` - A variable for the name of the database group that the project uses. (Remember :ref:`Installation Note <the-install-note>`.)
+    - ``DATABASE_GROUP`` - Label for the database credentials group. (See :ref:`Configure the database connection <db-configuration>`.)
     - ``DOWNLOAD_DATASET`` - Variable used to store the name of the dataset that will be download for analysis. 
 
 There are a number of other settings that are specific to the sensor/feature that will be pulled and analyzed by the pipeline. An example of the configuration settings for the :ref:`sms` data is shown below::
@@ -242,3 +188,57 @@ This contains the reports of the results of the analysis done by the pipeline.
     .. _`visualization directory`: https://github.com/carissalow/rapids/tree/master/src/visualization
     .. _`config.yaml`: https://github.com/carissalow/rapids/blob/master/config.yaml
     .. _`Snakefile`: https://github.com/carissalow/rapids/blob/master/Snakefile
+
+
+::
+
+    ├── LICENSE
+    ├── Makefile           <- Makefile with commands like `make data` or `make train`
+    ├── README.md          <- The top-level README for developers using this project.
+    ├── config.yaml        <- The configuration settings for the pipeline.
+    ├── environment.yml    <- Environmental settings - channels and dependences that are installed in the env)
+    ├── data
+    │   ├── external       <- Data from third party sources.
+    │   ├── interim        <- Intermediate data that has been transformed.
+    │   ├── processed      <- The final, canonical data sets for modeling.
+    │   └── raw            <- The original, immutable data dump.
+    │
+    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+    │
+    ├── models             <- Trained and serialized models, model predictions, or model summaries
+    │
+    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
+    │                         the creator's initials, and a short `-` delimited description, e.g.
+    │                         `1.0-jqp-initial-data-exploration`.
+    │
+    ├── packrat            <- Installed R dependences. (Packrat is a dependency management system for R) 
+    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+    │
+    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+    │   └── figures        <- Generated graphics and figures to be used in reporting.
+    │
+    ├── rules              
+    │   ├── features       <- Rules to process the feature data pulled in to pipeline.
+    │   ├── packrat        <- Rules for setting up packrat.
+    │   ├── preprocessing  <- Preprocessing rules to clean data before processing.
+    │   ├── analysis       <- Analytic rules that are applied to the data.
+    │   └── reports        <- Snakefile used to produce reports.
+    │
+    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
+    ├── Snakemake          <- The root snakemake file (the equivalent of a Makefile)
+    ├── src                <- Source code for use in this project. Can be in any language e.g. Python, 
+    │   │                     R, Julia, etc.
+    │   │
+    │   ├── data           <- Scripts to download or generate data. Can be in any language e.g. Python, 
+    │   │                     R, Julia, etc.
+    │   │
+    │   ├── features       <- Scripts to turn raw data into features for modeling. Can be in any language 
+    │   │                     e.g. Python, R, Julia, etc.
+    │   │
+    │   ├── models         <- Scripts to train models and then use trained models to make prediction. Can 
+    │   │                     be in any language e.g. Python, R, Julia, etc.
+    │   │
+    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations. Can be 
+    │                         in any language e.g. Python, R, Julia, etc.
+    │
+    └── tox.ini            <- tox file with settings for running tox; see tox.testrun.org

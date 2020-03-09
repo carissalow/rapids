@@ -43,7 +43,15 @@ This following is documentation of on the RAPIDS metrics settings in the configu
 
 .. _phone-valid-sensed-days:
 
-- ``PHONE_VALID_SENSED_DAYS`` - Specifies the ``BIN_SIZE``, ``MIN_VALID_HOURS``, ``MIN_BINS_PER_HOUR``. ``BIN_SIZE`` is the time that the data is aggregated. ``MIN_VALID_HOURS`` is the minimum numbers of hours data will be gathered within a 24-hour period (a day). Finally, ``MIN_BINS_PER_HOUR`` specifies minimum number of bins that are captured per hour. This is out of the total possible number of bins that can be captured in an hour i.e. out of 60min/``BIN_SIZE`` bins. See PHONE_VALID_SENSED_DAYS_ in ``config`` file.
+- ``PHONE_VALID_SENSED_DAYS``.
+    
+    Contains three attributes: ``BIN_SIZE``, ``MIN_VALID_HOURS``, ``MIN_BINS_PER_HOUR``. 
+
+    On any given day, Aware could have sensed data only for a few minutes or for 24 hours. Daily estimates of metrics should be considered more reliable the more hours Aware was running and logging data (for example, 10 calls logged on a day when only one hour of data was recorded is a less reliable measurement compared to 10 calls on a day when 23 hours of data were recorded. 
+
+    Therefore, we define a valid hour as those that contain at least a certain number of valid bins. In turn, a valid bin are those that contain at least one row of data from any sensor logged within that period. We divide an hour into N bins of size ``BIN_SIZE`` (in minutes) and we mark an hour as valid if contains at least ``MIN_BINS_PER_HOUR`` of valid bins (out of the total possible number of bins that can be captured in an hour i.e. out of 60min/``BIN_SIZE`` bins). Days with valid sensed hours less than ``MIN_VALID_HOURS`` will be excluded form the output of this file. See PHONE_VALID_SENSED_DAYS_ in ``config.yaml``.
+
+    In RAPIDS, you will find that we use ``phone_sensed_bins`` (a list of all valid and invalid bins of all monitored days) to improve the estimation of metrics that are ratios over time periods like ``episodepersensedminutes`` of :ref:`Screen<screen-sensor-doc>`.
 
 
 .. _individual-sensor-settings:

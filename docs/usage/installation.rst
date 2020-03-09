@@ -39,7 +39,7 @@ macOS (tested on Catalina 10.15)
     - ``conda env create -f environment.yml -n rapids``
     - ``conda activate rapids``
 
-#. Install r packages and virtual environment:
+#. Install R packages and virtual environment:
 
     - ``snakemake packrat_install``
     - ``snakemake packrat_init``
@@ -82,7 +82,7 @@ Linux (tested on Ubuntu 16.04)
     - ``conda env create -f environment.yml -n MY_ENV_NAME``
     - ``conda activate MY_ENV_NAME``
 
-#. Install r packages and virtual environment:
+#. Install R packages and virtual environment:
 
     - ``snakemake packrat_install``
     - ``snakemake packrat_init``
@@ -94,53 +94,74 @@ Linux (tested on Ubuntu 16.04)
 
 Usage
 ======
-Once you have the installation for your specific operating system complete, you can follow these steps to get starting using the pipeline.
+Once you have the installation for your specific operating system complete, you can follow these steps to start using RAPIDS.
 
-#. Configure the participants you want to analyze:
-
-    - Create one file per participant in the ``rapids/data/external/`` directory. The file should NOT have an extension (i.e. no .txt). The name of the file will become the label for that participant in the pipeline. 
-    - The first line of the file should be a comma separated list with each of the device ID numbers for that participant as it appears in AWARE.
-        - If AWARE is removed and reinstalled on the device, a new device ID is generated.
-    - The second line should list the device's operating system (Android or iOS)
-    - As an example. Let's say participant `p00` had 2 AWARE device_id numbers and was running Android OS. Their file would be named `p00` and contain:
-
-        .. code-block:: bash
-
-            3a7b0d0a-a9ce-4059-ab98-93a7b189da8a,44f20139-50cc-4b13-bdde-0d5a3889e8f9
-            android
-
+.. _db-configuration:
 
 #. Configure the database connection:
 
     - Create an empty file called `.env` in the root directory (``rapids/``)
-    - Add and complete the following lines:
+    - Add the following lines and replace your database specific credentials (user, password, and host):
+
         .. code-block:: bash
         
-            [MY_GROUP_NAME]
+            [MY_GROUP]
             user=MyUSER
             password=MyPassword
             host=MyIP
             port=3306
 
-        - Replace your database specific credentials with those listed above.
-        - ``MY_GROUP_NAME`` is a custom label you assign when setting up the database configuration. It does not have to relate to your 
+        .. note::
 
-.. _the-install-note:
+            ``MY_GROUP`` is a custom label you assign when setting up the database configuration. It has to match ``DATABASE_GROUP`` in the ``config.yaml`` file_. It does not have to relate to your database credentials.
 
-.. note::
-    - ``MY_GROUP_NAME`` must also be assigned to the ``DATABASE_GROUP`` variable in the ``config.yaml`` file, which is located in the root directory (``rapids/config.yaml``). 
-    - Ensure that your list of ``SENSORS`` in the ``config.yaml`` file correspond to the sensors used in the ``all`` rule in the ``Snakefile`` file (See :ref:`rapids-structure` for more information)
+#. Configure the participants you want to analyze:
 
-#. Once the all of the installation and configurations has been completed the following command can be run to pull the default sample dataset that comes with this project.::
+    - **Automatically**. You can automatically include all devices that are stored in the ``aware_device`` table, if you have especial requirements see the Manual configuration::
 
-    $ snakemake
+        snakemake download_participants
+
+    - **Manually**. Create one file per participant in the ``rapids/data/external/`` directory. The file should NOT have an extension (i.e. no .txt). The name of the file will become the label for that participant in the pipeline.
+
+        - The first line of the file should be the Aware ``device_id`` for that participant. If one participant has multiple device_ids (i.e. Aware had to be re-installed), add all device_ids separated by commas.
+        - The second line should list the device's operating system (``android`` or ``ios``)
+        - The third line is a human friendly label that will appear in any plots for that participant.
+        - The forth line contains a start and end date separated by a comma (e.g. ``20201301,20202505``). Only data wihtin these dates will be included in the pipeline.
+
+    For example, let's say participant `p01` had two AWARE device_ids and they were running Android between Feb 1st 2020 and March 3rd 2020. Their participant file would be named ``p01`` and contain:
+
+        .. code-block:: bash
+
+            3a7b0d0a-a9ce-4059-ab98-93a7b189da8a,44f20139-50cc-4b13-bdde-0d5a3889e8f9
+            android
+            Participant01
+            2020/02/01,2020/03/03
+
+#. Configure the sensors to process:
+
+    - The variable ``SENSORS`` in the ``config.yaml`` file_ should match existent sensor tables in your Aware database (See :ref:`rapids-structure` for more information). Each item in this list will be processed in RAPIDS.
 
 
-This pulls sample data from AWARE_ and processes it with the default rules that come with RAPIDS. 
+    .. note::
 
+        It is beneficial to list all collected sensors even if you don't plan to include them in a model later on in the pipeline. This is because we use all data available to estimate whether the phone was sensing data or not (i.e. to know if Aware crashed or the battery died). See :ref:`PHONE_VALID_SENSED_DAYS<phone-valid-sensed-days>` for more information.
 
+#. Execute RAPIDS
+
+    - Standard execution::
+
+        snakemake
+    
+    - Standard execution over multiple cores::
+
+        snakemake - j 8
+
+    - Force a rule (useful if you modify your code and want to update its results)::
+
+        snakemake -R RULE_NAME
 
 .. _bug: https://github.com/Homebrew/linuxbrew-core/issues/17812
 .. _instructions: https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
 .. _brew: https://docs.brew.sh/Homebrew-on-Linux
 .. _AWARE: https://awareframework.com/what-is-aware/
+.. _file: https://github.com/carissalow/rapids/blob/master/config.yaml#L22
