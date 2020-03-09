@@ -3,43 +3,49 @@
 RAPIDS Metrics
 ===============
 
-This following is documentation of on the RAPIDS metrics settings in the configuration file. 
+Global Parameters
+"""""""""""""""""
 
 .. _sensor-list:
 
-- ``SENSORS`` - This variable stores a list of the names of the sensor data that are being pulled from the AWARE_ database. These names are the actual names of the tables that the data is found in the database. See SENSORS_ variable in ``config`` file.  
+- ``SENSORS`` - List of sensors to include in the pipeline that have to match existent tables in your AWARE_ database. See SENSORS_ variable in ``config`` file.  
 
 .. _fitbit-table:
 
-- ``FITBIT_TABLE`` - The name of the fitbit database 
+- ``FITBIT_TABLE`` - The name of table in your database that contains Fitbit data. Its ``fitbit_data`` field should contain the data coming from the Fitbit API in JSON format. 
 
 .. _fitbit-sensors:
 
-- ``FITBIT_SENSORS`` - The list of sensors to be pulled from the fitbit database
+- ``FITBIT_SENSORS`` - The list of sensors to be parsed from the fitbit table: ``heartrate``, ``steps``, ``sleep``.
 
 .. _pid: 
 
-- ``PID`` - The list of participant ids included in the analysis. Remember that you must create a file named ``pXXX`` for each participant in the ``data/external`` directory containing their device_id. (Remember installation step 8 on the :ref:`install-page`)
+- ``PID`` - The list of participant ids to be included in the analysis. These should match the names of the files created in the ``data/external`` directory  (:ref:`see more details<db-configuration>`).
 
 .. _day-segments: 
 
-- ``DAY_SEGMENTS`` - The list of common day segments (time frequency/checkpoints) that will be analyzed. See DAY_SEGMENTS_ in ``config`` file.
+- ``DAY_SEGMENTS`` - The list of day epochs that metrics can be segmented into: ``daily``, ``morning`` (6am-12pm), ``afternnon`` (12pm-6pm), ``evening`` (6pm-12am) and ``night`` (12am-6am). This list can be modified globally or on a per sensor basis. See DAY_SEGMENTS_ in ``config`` file.
 
 .. _timezone:
 
-- ``TIMEZONE`` - The timezone of the server. Use the timezone names from this `List of Timezones`_. Double check your code, for example EST is not US Eastern Time.
+- ``TIMEZONE`` - The time zone where data was collected. Use the timezone names from this `List of Timezones`_. Double check your chosen name is correct, for example US Eastern Time is named New America/New_York, not EST.
 
 .. _database_group:
 
-- ``DATABASE_GROUP`` - The name of the research project database. 
+- ``DATABASE_GROUP`` - The name of your database credentials group, it should match the one in ``.env`` (:ref:`see the datbase configuration<db-configuration>`). 
 
 .. _download-dataset:
 
-- ``DOWNLOAD_DATASET`` - The name of the dataset for the research project. 
+- ``DOWNLOAD_DATASET``
+
+    - ``GROUP``. Credentials group to connect to the database containing ``SENSORS``. By default it points to ``DATABASE_GROUP``.
 
 .. _readable-datetime:
 
-- ``READABLE_DATETIME`` - Readable datetime configuration. Defines the format that the readable date and time should be. 
+- ``READABLE_DATETIME`` - Configuration to convert UNIX timestamps into readbale date time strings.
+
+    - ``FIXED_TIMEZONE``. See ``TIMEZONE`` above. This assumes that all data of all participants was collected within one time zone.
+    - Support for multiple time zones for each participant coming soon.
 
 .. _phone-valid-sensed-days:
 

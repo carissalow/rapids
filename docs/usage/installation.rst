@@ -141,7 +141,6 @@ Once you have the installation for your specific operating system complete, you 
 
     - The variable ``SENSORS`` in the ``config.yaml`` file_ should match existent sensor tables in your Aware database (See :ref:`rapids-structure` for more information). Each item in this list will be processed in RAPIDS.
 
-
     .. note::
 
         It is beneficial to list all collected sensors even if you don't plan to include them in a model later on in the pipeline. This is because we use all data available to estimate whether the phone was sensing data or not (i.e. to know if Aware crashed or the battery died). See :ref:`PHONE_VALID_SENSED_DAYS<phone-valid-sensed-days>` for more information.
