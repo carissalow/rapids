@@ -56,8 +56,6 @@ This following is documentation of on the RAPIDS metrics settings in the configu
 
 .. _individual-sensor-settings:
 
-List of Individual Sensors and Their Settings
----------------------------------------------
 
 .. _sms-sensor-doc:
 

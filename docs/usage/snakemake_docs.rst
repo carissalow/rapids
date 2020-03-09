@@ -66,7 +66,7 @@ The configurations for the pipeline are defined in the ``config.yaml`` (See `con
     - ``DATABASE_GROUP`` - Label for the database credentials group. (See :ref:`Configure the database connection <db-configuration>`.)
     - ``DOWNLOAD_DATASET`` - Variable used to store the name of the dataset that will be download for analysis. 
 
-There are a number of other settings that are specific to the sensor/feature that will be pulled and analyzed by the pipeline. An example of the configuration settings for the :ref:`sms` data is shown below::
+There are a number of other settings that are specific to the sensor/feature that will be pulled and analyzed by the pipeline. An example of the configuration settings for the :ref:`sms-sensor-doc` data is shown below::
 
     SMS:
         TYPES : [received, sent]
