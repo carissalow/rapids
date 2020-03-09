@@ -36,7 +36,7 @@ else:
 
         #Finding most common activity of the day
         if("mostcommonactivity" in metrics):
-            finalDataset["ar_" + str(day_segment) + "_mostcommonactivity"] = resampledData['activity_type'].resample('D').apply(lambda x:stats.mode(x)[0])
+            finalDataset["ar_" + str(day_segment) + "_mostcommonactivity"] = resampledData['activity_type'].resample('D').apply(lambda x: stats.mode(x)[0] if len(stats.mode(x)[0]) != 0 else None)
 
         #finding different number of activities during a day
         if("countuniqueactivities" in metrics):
