@@ -1,15 +1,15 @@
 Quick Rule 
 =============
 
-The following is a quick guide for creating and running a simple rule.
+The following is a guide for creating and running a simple pipeline to extract Call metrics for daily and night epochs of one participant monitored on the US East coast.
 
-#. Setup database connection credential the ``.env``. See step 1 under the :ref:`Usage Section of Install <db-configuration>` page.
+#. Make sure your database connection credentials in ``.env`` are correct. See step 1 of :ref:`Usage Section <db-configuration>`.
 
-#. Create at least one participant file ``p01`` in the ``data/external``. See step 2 under the :ref:`Usage Section of Install <db-configuration>` page.
+#. Create at least one participant file ``p01`` under ``data/external/``. See step 2 of :ref:`Usage Section <db-configuration>`.
 
-#. Activate the Conda (python) environment. See install step 2 on :ref:`install-page` page.
+#. Activate your Conda (python) environment. See step 6 of :ref:`install-page`.
 
-#. Prepare the ``Snakefile`` by replacing the code in the ``Snakefile`` with the following
+#. Replace the contents of the ``Snakefile`` with the following snippet
     
     ::
 
@@ -27,7 +27,7 @@ The following is a quick guide for creating and running a simple rule.
                                 day_segment = config["CALLS"]["DAY_SEGMENTS"]),
 
 
-#. Prepare the ``config.yaml`` changing the following settings only to values shown below (leave all other settings as they are)
+#. Modify the following settings in the ``config.yaml`` file with the values shown below (leave all other settings as they are)
 
     ::
 
@@ -49,11 +49,11 @@ The following is a quick guide for creating and running a simple rule.
     
     For more information on the ``calls`` sensor see :ref:`call-sensor-doc`
 
-#. Run the following command to execute the rule
+#. Run the following command to execute RAPIDS
 
     ::
 
         snakemake
 
-#. The results of the execution of the rule will be found in the ``data/processed/p01`` directory.
+#. Daily and night call metrics will be found in files under the ``data/processed/p01/`` directory.
 
