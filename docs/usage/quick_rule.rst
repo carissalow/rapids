@@ -1,13 +1,13 @@
-Quick Rule 
-=============
+Minimal Working Example 
+=======================
 
-The following is a guide for creating and running a simple pipeline to extract Call metrics for daily and night epochs of one participant monitored on the US East coast.
+The following is a quick guide for creating and running a simple pipeline to extract Call metrics for daily and night epochs of one participant monitored on the US East coast.
 
 #. Make sure your database connection credentials in ``.env`` are correct. See step 1 of :ref:`Usage Section <db-configuration>`.
 
 #. Create at least one participant file ``p01`` under ``data/external/``. See step 2 of :ref:`Usage Section <db-configuration>`.
 
-#. Activate your Conda (python) environment. See step 6 of :ref:`install-page`.
+#. Make sure your Conda (python) environment is active. See step 6 of :ref:`install-page`.
 
 #. Replace the contents of the ``Snakefile`` with the following snippet
     
