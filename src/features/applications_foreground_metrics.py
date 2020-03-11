@@ -20,7 +20,7 @@ def compute_metrics(filtered_data, apps_type, metrics, apps_features):
     return apps_features
 
 
-apps_data = pd.read_csv(snakemake.input[0], parse_dates=["local_date_time", "local_date"])
+apps_data = pd.read_csv(snakemake.input[0], parse_dates=["local_date_time", "local_date"], encoding="ISO-8859-1")
 day_segment = snakemake.params["day_segment"]
 single_categories = snakemake.params["single_categories"]
 multiple_categories_with_genres = snakemake.params["multiple_categories"]
