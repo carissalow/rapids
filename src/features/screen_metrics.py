@@ -57,6 +57,7 @@ if not screen_deltas.empty:
         for episode in episode_types:
             screen_features = pd.concat([screen_features, getEpisodeDurationFeatures(screen_deltas, episode, metrics_deltas, phone_sensed_bins, bin_size, reference_hour_first_use)], axis=1)
 
-    screen_features = screen_features.rename_axis("local_date").reset_index()
+    if not screen_features.empty:
+        screen_features = screen_features.rename_axis("local_date").reset_index()
 
 screen_features.to_csv(snakemake.output[0], index=False)
