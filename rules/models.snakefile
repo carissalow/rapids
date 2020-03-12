@@ -4,18 +4,22 @@ def input_merge_metrics_of_single_participant(wildcards):
     else:
         return expand("data/processed/{pid}/{metrics}_{day_segment}.csv", pid=wildcards.pid, metrics=config["METRICS_FOR_ANALYSIS"][wildcards.source.upper()], day_segment=wildcards.day_segment)
 
-rule merge_metrics_of_single_participant:
+rule merge_metrics_for_individual_model:
     input:
-        metric_files = input_merge_metrics_of_single_participant
+        metric_files = input_merge_metrics_of_single_participant,
+        phone_valid_sensed_days = "data/interim/{pid}/phone_valid_sensed_days.csv"
+    params:
+        drop_valid_sensed_days = config["METRICS_FOR_ANALYSIS"]["DROP_VALID_SENSED_DAYS"],
+        source = "{source}"
     output:
-        "models/input/merged_single_participant/{pid}/{source}_{day_segment}.csv"
+        "data/processed/{pid}/metrics_for_individual_model/{source}_{day_segment}.csv"
     script:
-        "../src/models/merge_metrics_of_single_participant.R"
+        "../src/models/merge_metrics_for_individual_model.R"
 
-rule merge_metrics_of_all_participants:
+rule merge_metrics_for_population_model:
     input:
-        metric_files = expand("models/input/merged_single_participant/{pid}/{{source}}_{{day_segment}}.csv", pid=config["PIDS"])
+        metric_files = expand("data/processed/{pid}/metrics_for_individual_model/{{source}}_{{day_segment}}.csv", pid=config["PIDS"])
     output:
-        "models/input/merged_all_participants/{source}_{day_segment}.csv" 
+        "data/processed/metrics_for_population_model/{source}_{day_segment}.csv" 
     script:
-        "../src/models/merge_metrics_of_all_participants.R"
+        "../src/models/merge_metrics_for_population_model.R"

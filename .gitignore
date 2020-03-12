@@ -107,6 +107,3 @@ reports/
 *.Rproj
 .RData
 .Rhistory
-
-# analysis part
-models/*

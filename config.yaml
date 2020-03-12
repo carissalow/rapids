@@ -130,3 +130,4 @@ METRICS_FOR_ANALYSIS:
   PHONE_METRICS: [accelerometer, applications_foreground, battery, call_incoming, call_missed, call_outgoing, google_activity_recognition, light, location_barnett, screen, sms_received, sms_sent]
   FITBIT_METRICS: [fitbit_heartrate, fitbit_step]
   PHONE_FITBIT_METRICS: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
+  DROP_VALID_SENSED_DAYS: True

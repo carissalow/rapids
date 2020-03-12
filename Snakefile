@@ -57,11 +57,11 @@ rule all:
                             pid = config["PIDS"],
                             day_segment = config["STEP"]["DAY_SEGMENTS"]),
         # Models
-        expand("models/input/merged_single_participant/{pid}/{source}_{day_segment}.csv",
+        expand("data/processed/{pid}/metrics_for_individual_model/{source}_{day_segment}.csv",
                                 pid = config["PIDS"],
                                 source = config["METRICS_FOR_ANALYSIS"]["SOURCES"],
                                 day_segment = config["METRICS_FOR_ANALYSIS"]["DAY_SEGMENTS"]),
-        expand("models/input/merged_all_participants/{source}_{day_segment}.csv",
+        expand("data/processed/metrics_for_population_model/{source}_{day_segment}.csv",
                                 source = config["METRICS_FOR_ANALYSIS"]["SOURCES"],
                                 day_segment = config["METRICS_FOR_ANALYSIS"]["DAY_SEGMENTS"]),
         # Reports
