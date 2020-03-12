@@ -44,4 +44,7 @@ for(metric in metrics){
   features <- merge(features, feature, by="local_date", all = TRUE)
 }
 
+if("countmostfrequentcontact" %in% metrics)
+  features <- features %>% mutate_at(vars(contains('countmostfrequentcontact')), funs(ifelse(is.na(.), 0, .)))
+
 write.csv(features, snakemake@output[[1]], row.names = FALSE)
