@@ -4,21 +4,21 @@ library(dplyr)
 
 write_empty_file <- function(file_path, metrics_to_include){
   write.csv(data.frame(local_date= character(), 
-                        hometime= numeric(), 
-                        disttravelled= numeric(), 
-                        rog= numeric(), 
-                        maxdiam= numeric(), 
-                        maxhomedist= numeric(), 
-                        siglocsvisited= numeric(), 
-                        avgflightlen= numeric(), 
-                        stdflightlen= numeric(), 
-                        avgflightdur= numeric(), 
-                        stdflightdur= numeric(), 
-                        probpause= numeric(), 
-                        siglocentropy= numeric(), 
-                        minsmissing= numeric(), 
-                        circdnrtn= numeric(), 
-                        wkenddayrtn= numeric()
+                        location_barnett_hometime= numeric(), 
+                        location_barnett_disttravelled= numeric(), 
+                        location_barnett_rog= numeric(), 
+                        location_barnett_maxdiam= numeric(), 
+                        location_barnett_maxhomedist= numeric(), 
+                        location_barnett_siglocsvisited= numeric(), 
+                        location_barnett_avgflightlen= numeric(), 
+                        location_barnett_stdflightlen= numeric(), 
+                        location_barnett_avgflightdur= numeric(), 
+                        location_barnett_stdflightdur= numeric(), 
+                        location_barnett_probpause= numeric(), 
+                        location_barnett_siglocentropy= numeric(), 
+                        location_barnett_minsmissing= numeric(), 
+                        location_barnett_circdnrtn= numeric(), 
+                        location_barnett_wkenddayrtn= numeric()
                       ) %>% select(metrics_to_include), file_path, row.names = F)
 }
 
@@ -31,7 +31,7 @@ accuracy_limit <- snakemake@params[["accuracy_limit"]]
 timezone <- snakemake@params[["timezone"]]
 metrics_to_include <- intersect(unlist(snakemake@params["metrics"], use.names = F), 
                                 c("hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","minsmissing","circdnrtn","wkenddayrtn"))
-metrics_to_include <- c("local_date", metrics_to_include)
+metrics_to_include <- c("local_date", paste("location_barnett", metrics_to_include, sep = "_"))
 
 # By deafult we use all raw locations: fused without resampling and not fused (gps, network)
 location <- read.csv(snakemake@input[["raw"]], stringsAsFactors = F) %>%
@@ -56,7 +56,7 @@ if (nrow(location) > 1){
       outmatrix <- cbind(rownames(features$featavg), features$featavg)
       outmatrix <- as.data.frame(outmatrix)
       outmatrix[-1] <- lapply(lapply(outmatrix[-1], as.character), as.numeric)
-      colnames(outmatrix)=c("local_date",tolower(colnames(features$featavg)))
+      colnames(outmatrix)=c("local_date",tolower(paste("location_barnett", colnames(features$featavg), sep = "_")))
       write.csv(outmatrix %>% select(metrics_to_include), snakemake@output[[1]], row.names = F)
     }
     
