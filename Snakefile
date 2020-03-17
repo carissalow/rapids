@@ -4,9 +4,18 @@ include: "rules/preprocessing.snakefile"
 include: "rules/features.snakefile"
 include: "rules/models.snakefile"
 include: "rules/reports.snakefile"
+include: "rules/mystudy.snakefile" # You can add snakfiles with rules tailored to your project
 
 rule all:
     input:
+        # My study (this is an example of a rule created specifically for a study)
+        expand("data/interim/{pid}/days_to_analyse_{days_before_surgery}_{days_in_hospital}_{days_after_discharge}.csv",
+                            pid=config["PIDS"],
+                            days_before_surgery = config["METRICS_FOR_ANALYSIS"]["DAYS_BEFORE_SURGERY"],
+                            days_after_discharge= config["METRICS_FOR_ANALYSIS"]["DAYS_AFTER_DISCHARGE"],
+                            days_in_hospital= config["METRICS_FOR_ANALYSIS"]["DAYS_IN_HOSPITAL"]),
+
+        # Feature extraction
         expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["FITBIT_TABLE"]),
         expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
@@ -64,7 +73,7 @@ rule all:
         expand("data/processed/metrics_for_population_model/{source}_{day_segment}.csv",
                                 source = config["METRICS_FOR_ANALYSIS"]["SOURCES"],
                                 day_segment = config["METRICS_FOR_ANALYSIS"]["DAY_SEGMENTS"]),
-        # Reports
+        # Vizualisations
         expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("reports/figures/{pid}/compliance_heatmap.html", pid=config["PIDS"]),
         expand("reports/figures/{pid}/battery_consumption_rates_barchart.html", pid=config["PIDS"]),

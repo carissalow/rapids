@@ -131,3 +131,6 @@ METRICS_FOR_ANALYSIS:
   FITBIT_METRICS: [fitbit_heartrate, fitbit_step]
   PHONE_FITBIT_METRICS: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
   DROP_VALID_SENSED_DAYS: True
+  DAYS_BEFORE_SURGERY: 15
+  DAYS_AFTER_DISCHARGE: 7
+  DAYS_IN_HOSPITAL: F
