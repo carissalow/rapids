@@ -107,4 +107,4 @@ reports/
 *.Rproj
 .RData
 .Rhistory
-*_profile/
+sn_profile_*/

@@ -1,11 +1,10 @@
 rule days_to_analyse:
     input:
-        participant_info = "data/external/participant_info.csv",
-        pid_file = "data/external/{pid}"
+        participant_info = "data/raw/{pid}/" + config["METRICS_FOR_ANALYSIS"]["GROUNDTRUTH_TABLE"] + "_raw.csv"
     params:
-        days_before_surgery = config["METRICS_FOR_ANALYSIS"]["DAYS_BEFORE_SURGERY"],
-        days_after_discharge = config["METRICS_FOR_ANALYSIS"]["DAYS_AFTER_DISCHARGE"],
-        days_in_hospital= config["METRICS_FOR_ANALYSIS"]["DAYS_IN_HOSPITAL"]
+        days_before_surgery = "{days_before_surgery}",
+        days_in_hospital = "{days_in_hospital}",
+        days_after_discharge= "{days_after_discharge}"
     output:
         "data/interim/{pid}/days_to_analyse_{days_before_surgery}_{days_in_hospital}_{days_after_discharge}.csv"
     script:

@@ -125,12 +125,28 @@ STEP:
   INCLUDE_ZERO_STEP_ROWS: True
 
 METRICS_FOR_ANALYSIS:
+  GROUNDTRUTH_TABLE: participant_info
   SOURCES: &sources ["phone_metrics", "fitbit_metrics", "phone_fitbit_metrics"]
   DAY_SEGMENTS: *day_segments
   PHONE_METRICS: [accelerometer, applications_foreground, battery, call_incoming, call_missed, call_outgoing, google_activity_recognition, light, location_barnett, screen, sms_received, sms_sent]
   FITBIT_METRICS: [fitbit_heartrate, fitbit_step]
   PHONE_FITBIT_METRICS: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
-  DROP_VALID_SENSED_DAYS: True
-  DAYS_BEFORE_SURGERY: 15
-  DAYS_AFTER_DISCHARGE: 7
-  DAYS_IN_HOSPITAL: F
+  
+  # Whether or not to include only days with enough valid sensed hours
+  # logic can be found in rule phone_valid_sensed_days of rules/preprocessing.snakefile
+  DROP_VALID_SENSED_DAYS: 
+    ENABLED: True
+
+  # Whether or not to include certain days in the analysis, logic can be found in rule days_to_analyse of rules/mystudy.snakefile
+  # If you want to include all days downloaded for each participant, set ENABLED to False
+  DAYS_TO_ANALYSE:
+    ENABLED: True
+    DAYS_BEFORE_SURGERY: 15
+    DAYS_IN_HOSPITAL: F # T or F
+    DAYS_AFTER_DISCHARGE: 7
+
+  # Cleaning Parameters
+  COLS_NAN_THRESHOLD: 0.5
+  COLS_VAR_THRESHOLD: True
+  ROWS_NAN_THRESHOLD: 0.5
+  PARTICIPANTS_DAY_THRESHOLD: 7
