@@ -21,7 +21,7 @@ def getComplianceHeatmap(dates, compliance_matrix, pid, output_path, bin_size):
                                      colorscale='Viridis',
                                      colorbar={'tick0': 0,'dtick': 1}))
     plot.update_layout(title="Compliance heatmap.<br>Five-minute bins showing how many sensors logged at least one row of data in that period for " + pid + "<br>Label: " + label + ", device_id: " + device_id)
-    pio.write_html(plot, file=output_path, auto_open=False)
+    pio.write_html(plot, file=output_path, auto_open=False, include_plotlyjs="cdn")
 
 # get current patient id
 pid = snakemake.params["pid"]

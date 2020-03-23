@@ -21,7 +21,7 @@ def getRowCountHeatmap(dates, row_count_per_bin, sensor_name, pid, output_path, 
                                      y=[datetime.datetime.strftime(date, '%Y/%m/%d') for date in dates],
                                      colorscale="Viridis"))
     plot.update_layout(title="Row count heatmap for " + sensor_name + " of " + pid + "<br>Label: " + label + ", device_id: " + device_id)
-    pio.write_html(plot, file=output_path, auto_open=False)
+    pio.write_html(plot, file=output_path, auto_open=False, include_plotlyjs="cdn")
 
 
 

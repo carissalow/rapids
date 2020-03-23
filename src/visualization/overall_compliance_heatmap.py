@@ -27,7 +27,7 @@ def getOverallComplianceHeatmap(sensors_with_data, valid_sensed_hours, last_seve
                                        showscale=True)
     plot.update_layout(title="Overall compliance heatmap for last seven days.<br>Bin's color shows how many sensors logged at least one row of data for that day.<br>Bin's text shows the valid hours of that day.(A valid hour has at least one row of any sensor in "+ str(min_bins_per_hour) +" out of " + str(int(60 / bin_size)) + " bins of " + str(bin_size) + " minutes)")
     plot["layout"]["xaxis"].update(side="bottom")
-    pio.write_html(plot, file=output_path, auto_open=False)
+    pio.write_html(plot, file=output_path, auto_open=False, include_plotlyjs="cdn")
 
 
 phone_sensed_bins = snakemake.input["phone_sensed_bins"]

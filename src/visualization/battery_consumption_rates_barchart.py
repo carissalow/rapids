@@ -31,4 +31,4 @@ else:
     battery_data.set_index(["local_date"], inplace=True)
     battery_data = battery_data.resample("1D").asfreq().fillna(0).reset_index()
     plot = getBatteryConsumptionRatesBarChart(battery_data, pid)
-    pio.write_html(plot, file=snakemake.output[0], auto_open=False)
+    pio.write_html(plot, file=snakemake.output[0], auto_open=False, include_plotlyjs="cdn")
