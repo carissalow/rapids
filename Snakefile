@@ -14,7 +14,9 @@ rule all:
                             days_before_surgery = config["METRICS_FOR_ANALYSIS"]["DAYS_BEFORE_SURGERY"],
                             days_after_discharge= config["METRICS_FOR_ANALYSIS"]["DAYS_AFTER_DISCHARGE"],
                             days_in_hospital= config["METRICS_FOR_ANALYSIS"]["DAYS_IN_HOSPITAL"]),
-
+        expand("data/processed/{pid}/targets_{summarised}.csv", 
+                            pid = config["PIDS"],
+                            summarised = config["METRICS_FOR_ANALYSIS"]["SUMMARISED"]),
         # Feature extraction
         expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["FITBIT_TABLE"]),
