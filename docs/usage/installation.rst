@@ -110,6 +110,7 @@ Once you have the installation for your specific operating system complete, you 
             password=MyPassword
             host=MyIP
             port=3306
+            database=MyDB
 
         .. note::
 
