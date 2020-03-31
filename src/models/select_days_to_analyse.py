@@ -1,8 +1,11 @@
+import numpy as np
 import pandas as pd
 from datetime import timedelta
 
 def appendDaysInRange(days_to_analyse, start_date, end_date):
     num_of_days = (end_date - start_date).days
+    if np.isnan(num_of_days):
+        return days_to_analyse
     for day in range(num_of_days + 1):
             days_to_analyse = days_to_analyse.append({"local_date": start_date + timedelta(days = day)}, ignore_index=True)
     return days_to_analyse
