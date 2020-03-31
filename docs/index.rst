@@ -18,6 +18,7 @@ Contents:
    usage/installation
    usage/quick_rule
    usage/snakemake_docs
+   usage/faq
 
 .. toctree::
    :maxdepth: 2
