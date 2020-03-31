@@ -41,9 +41,21 @@ This is expected behavior. The advantage of using ``snakemake`` under the hood i
 **Error:**
 ::
 
-    SyntaxError in line 19 of /Users/caomz/rapids/Snakefile:
+    SyntaxError in line 19 of /Users/rapids/Snakefile:
     Unexpected keyword expand in rule definition (Snakefile, line 19)
 
 **Solution:**
 
 Please make sure there are no extra whitespaces in Snakefile.
+
+5. Got an error like "Table XXX doesn't exist" while running the download_dataset rule.
+---------------------------------------------------------------------------------------
+::
+
+    Error in .local(conn, statement, ...) : 
+      could not run statement: Table 'db_name.table_name' doesn't exist
+    Calls: colnames ... .local -> dbSendQuery -> dbSendQuery -> .local -> .Call
+    Execution halted
+
+**Solution:**
+Please make sure your database do have table with the same name of SENSORS list in config.yaml file.
