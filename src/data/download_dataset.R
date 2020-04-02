@@ -3,6 +3,7 @@ source("packrat/init.R")
 library(RMySQL)
 library(stringr)
 library(dplyr)
+library(readr)
 
 participant <- snakemake@input[[1]]
 group <- snakemake@params[["group"]]
@@ -44,5 +45,5 @@ if("device_id" %in% available_columns){
 } else {
     print(paste0("Table ", table, "does not have a device_id column (Aware ID) to link its data to a participant"))
 }
-write.csv(sensor_data, sensor_file, row.names = FALSE)
+write_csv(sensor_data, sensor_file)
 dbDisconnect(stopDB)

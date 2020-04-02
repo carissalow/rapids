@@ -1,6 +1,7 @@
 source("packrat/init.R")
 
 library("tidyverse")
+library(readr)
 
 input <- read.csv(snakemake@input[[1]])
 sensor_output <- snakemake@output[[1]]
@@ -19,7 +20,7 @@ split_local_date_time <- function(data){
                                                 local_hour %in% 18:23 ~ "evening")))
 }
 if(!is.null(timezone_periods)){
-    timezones <- read.csv(timezone_periods)
+    timezones <- read_csv(timezone_periods)
     tz_starts <- timezones$start
     output <- input %>% 
                 mutate(timezone = findInterval(timestamp / 1000, tz_starts), # Set an interval ID based on timezones' start column
@@ -36,5 +37,5 @@ if(!is.null(timezone_periods)){
                 mutate(utc_date_time = as.POSIXct(timestamp/1000, origin="1970-01-01", tz="UTC"),
                         local_date_time = format(utc_date_time, tz = fixed_timezone, usetz = F))
     output <- split_local_date_time(output)
-    write.csv(output, sensor_output, row.names = FALSE)
+    write_csv(output, sensor_output)
 }
