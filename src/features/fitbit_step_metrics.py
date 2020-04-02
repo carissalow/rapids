@@ -43,7 +43,7 @@ else:
     minutesGroupedBy = resampledData.groupby(['local_date','active_sedentary','active_sedentary_groups'])['time_diff_minutes'].sum()
     
     #Get Stats for all episodes in terms of minutes
-    statsMinutes = minutesGroupedBy.groupby(['local_date','active_sedentary']).agg([max,min,np.mean,np.std])
+    statsMinutes = minutesGroupedBy.groupby(['local_date','active_sedentary']).agg([max,min,np.mean,np.std,np.sum])
     mux = pd.MultiIndex.from_product([statsMinutes.index.levels[0], statsMinutes.index.levels[1]],names=['local_date','active_sedentary'])
     statsMinutes = statsMinutes.reindex(mux, fill_value=None).reset_index()
     statsMinutes.set_index('local_date',inplace = True)
@@ -82,6 +82,9 @@ else:
     if("stddurationsedentarybout" in sedentary_bout):
         finalDataset["step_" + str(day_segment) + "_stddurationsedentarybout"] = statsMinutes[statsMinutes['active_sedentary']=='sedentary']['std']
     
+    if("sumdurationsedentarybout" in sedentary_bout):
+        finalDataset["step_" + str(day_segment) + "_sumdurationsedentarybout"] = statsMinutes[statsMinutes['active_sedentary']=='sedentary']['sum']
+
     if("maxdurationactivebout" in active_bout):
         finalDataset["step_" + str(day_segment) + "_maxdurationactivebout"] = statsMinutes[statsMinutes['active_sedentary']== 'active']['max']
     
@@ -93,6 +96,8 @@ else:
     
     if("stddurationactivebout" in active_bout):
         finalDataset["step_" + str(day_segment) + "_stddurationactivebout"] = statsMinutes[statsMinutes['active_sedentary']== 'active']['std']
+    
+        
     
     #Exclude data when the total step count is ZERO during the whole epoch
     if not include_zero_step_rows:
