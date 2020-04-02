@@ -365,7 +365,7 @@ See `Accelerometer Config Code`_
 
 ..  - Apply readable datetime to Accelerometer dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
 
-- Extract Calls Metrics
+- Extract Accelerometer Features
 
     | ``expand("data/processed/{pid}/accelerometer_{day_segment}.csv",``
     |                      ``pid=config["PIDS"],`` 
@@ -381,9 +381,9 @@ See `Accelerometer Config Code`_
 
     - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
 
-- **Rule:** ``rules/features.snakefile/accelerometer_metrics`` - See the accelerometer_metrics_ rule.
+- **Rule:** ``rules/features.snakefile/accelerometer_features`` - See the accelerometer_features_ rule.
 
-    - **Script:** ``src/features/accelerometer_metrics.py`` - See the accelerometer_metrics.py_ script.
+    - **Script:** ``src/features/accelerometer_features.py`` - See the accelerometer_features.py_ script.
 
     
 .. _Accelerometer-parameters:
@@ -394,14 +394,14 @@ See `Accelerometer Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-metrics         The different measures that can be retrieved from the dataset. See :ref:`Available Accelerometer Metrics <accelerometer-available-metrics>` Table below
+features         The different measures that can be retrieved from the dataset. See :ref:`Available Accelerometer Features <accelerometer-available-features>` Table below
 ============    ===================
 
-.. _accelerometer-available-metrics:
+.. _accelerometer-available-features:
 
-**Available Accelerometer Metrics**
+**Available Accelerometer Features**
 
-The following table shows a list of the available metrics the accelerometer sensor data for a particular ``day_segment``. 
+The following table shows a list of the available features the accelerometer sensor data for a particular ``day_segment``. 
 
 ====================================   ==============    =============
 Name                                   Units             Description

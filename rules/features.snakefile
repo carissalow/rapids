@@ -122,16 +122,16 @@ rule light_metrics:
     script:
         "../src/features/light_metrics.py"
 
-rule accelerometer_metrics:
+rule accelerometer_features:
     input:
         "data/raw/{pid}/accelerometer_with_datetime.csv",
     params:
         day_segment = "{day_segment}",
-        metrics = config["ACCELEROMETER"]["METRICS"],
+        features = config["ACCELEROMETER"]["FEATURES"],
     output:
         "data/processed/{pid}/accelerometer_{day_segment}.csv"
     script:
-        "../src/features/accelerometer_metrics.py"
+        "../src/features/accelerometer_features.py"
 
 rule applications_foreground_metrics:
     input:
