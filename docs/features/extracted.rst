@@ -289,7 +289,7 @@ See `Bluetooth Config Code`_
 
 ..    - Apply readable datetime to Bluetooth dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
     
-- Extract Bluetooth Metrics
+- Extract Bluetooth Features
     
       | ``expand("data/processed/{pid}/bluetooth_{segment}.csv",``
       |          ``pid=config["PIDS"],`` 
@@ -305,9 +305,9 @@ See `Bluetooth Config Code`_
 
     - **Script:** ``src/data/readable_datetime.R`` See the readable_datetime.R_ script.
 
-- **Rule:** ``rules/features.snakefile/bluetooth_metrics`` - See the bluetooth_metric_ rule.
+- **Rule:** ``rules/features.snakefile/bluetooth_features`` - See the bluetooth_feature_ rule.
 
-    - **Script:** ``src/features/bluetooth_metrics.R`` - See the bluetooth_metrics.R_ script.
+    - **Script:** ``src/features/bluetooth_features.R`` - See the bluetooth_features.R_ script.
 
     
 .. _bluetooth-parameters:
@@ -318,14 +318,14 @@ See `Bluetooth Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-metrics         The different measures that can be retrieved from the Bluetooth dataset. See :ref:`Available Bluetooth Metrics <bluetooth-available-metrics>` Table below
+features         The different measures that can be retrieved from the Bluetooth dataset. See :ref:`Available Bluetooth Features <bluetooth-available-features>` Table below
 ============    ===================
 
-.. _bluetooth-available-metrics:
+.. _bluetooth-available-features:
 
-**Available Bluetooth Metrics**
+**Available Bluetooth Features**
 
-The following table shows a list of the available metrics for Bluetooth. 
+The following table shows a list of the available features for Bluetooth. 
 
 ===========================   =========     =============
 Name                          Units         Description
@@ -1153,8 +1153,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _call_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L13
 .. _call_metrics.R: https://github.com/carissalow/rapids/blob/master/src/features/call_metrics.R
 .. _`Bluetooth Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L76
-.. _bluetooth_metric: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L63
-.. _bluetooth_metrics.R: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/bluetooth_metrics.R
+.. _bluetooth_feature: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L63
+.. _bluetooth_features.R: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/bluetooth_features.R
 .. _`Accelerometer Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L98
 .. _accelerometer_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L124
 .. _accelerometer_metrics.py: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/accelerometer_metrics.py

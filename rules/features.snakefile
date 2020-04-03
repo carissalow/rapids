@@ -62,16 +62,16 @@ rule location_barnett_metrics:
     script:
         "../src/features/location_barnett_metrics.R"
 
-rule bluetooth_metrics:
+rule bluetooth_features:
     input: 
         "data/raw/{pid}/bluetooth_with_datetime.csv"
     params:
         day_segment = "{day_segment}",
-        metrics = config["BLUETOOTH"]["METRICS"]
+        features = config["BLUETOOTH"]["FEATURES"]
     output:
         "data/processed/{pid}/bluetooth_{day_segment}.csv"
     script:
-        "../src/features/bluetooth_metrics.R"
+        "../src/features/bluetooth_features.R"
         
 rule activity_metrics:
     input:
