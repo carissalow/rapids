@@ -4,9 +4,9 @@ import datetime as dt
 from features_utils import splitOvernightEpisodes, splitMultiSegmentEpisodes
 
 day_segment = snakemake.params["day_segment"]
-all_steps = snakemake.params["metrics_all_steps"]
-sedentary_bout = snakemake.params["metrics_sedentary_bout"]
-active_bout = snakemake.params["metrics_active_bout"]
+all_steps = snakemake.params["features_all_steps"]
+sedentary_bout = snakemake.params["features_sedentary_bout"]
+active_bout = snakemake.params["features_active_bout"]
 threshold_active_bout = snakemake.params['threshold_active_bout']
 include_zero_step_rows = snakemake.params["include_zero_step_rows"]
 

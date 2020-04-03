@@ -1073,7 +1073,7 @@ See `Fitbit: Steps Config Code`_
       |                      ``pid=config["PIDS"],``
       |                     ``fitbit_sensor=config["FITBIT_SENSORS"]),``
  
-- Extract Fitbit: Steps Metrics:
+- Extract Fitbit: Steps Features:
 
     | ``expand("data/processed/{pid}/fitbit_step_{day_segment}.csv",``
     |                      ``pid=config["PIDS"],`` 
@@ -1089,9 +1089,9 @@ See `Fitbit: Steps Config Code`_
 
     - **Script:** ``src/data/fitbit_readable_datetime.py`` - See the fitbit_readable_datetime.py_ script.
 
-- **Rule:** ``rules/features.snakefile/fitbit_step_metrics`` - See the fitbit_step_metrics.py_ rule.
+- **Rule:** ``rules/features.snakefile/fitbit_step_features`` - See the fitbit_step_features.py_ rule.
 
-    - **Script:** ``src/features/fitbit_step_metrics.py`` - See the fitbit_step_metrics.py_ script.
+    - **Script:** ``src/features/fitbit_step_features.py`` - See the fitbit_step_features.py_ script.
 
     
 .. _fitbit-steps-parameters:
@@ -1195,8 +1195,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _fitbit_heartrate_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L151
 .. _fitbit_heartrate_metrics.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_heartrate_metrics.py
 .. _`Fitbit: Steps Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L117
-.. _fitbit_step_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L162
-.. _fitbit_step_metrics.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_step_metrics.py
+.. _fitbit_step_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L162
+.. _fitbit_step_features.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_step_features.py
 .. _`Fitbit documentation`: https://help.fitbit.com/articles/en_US/Help_article/1565
 .. _`Custom Catalogue File`: https://github.com/carissalow/rapids/blob/master/data/external/stachl_application_genre_catalogue.csv
 .. _top1global: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L108

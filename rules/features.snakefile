@@ -160,17 +160,17 @@ rule fitbit_heartrate_metrics:
     script:
         "../src/features/fitbit_heartrate_metrics.py"
 
-rule fitbit_step_metrics:
+rule fitbit_step_features:
     input:
         steps_data = "data/raw/{pid}/fitbit_steps_with_datetime.csv",
     params:
         day_segment = "{day_segment}",
-        metrics_all_steps = config["STEP"]["METRICS"]["ALL_STEPS"],
-        metrics_sedentary_bout = config["STEP"]["METRICS"]["SEDENTARY_BOUT"],
-        metrics_active_bout = config["STEP"]["METRICS"]["ACTIVE_BOUT"],
+        features_all_steps = config["STEP"]["FEATURES"]["ALL_STEPS"],
+        features_sedentary_bout = config["STEP"]["FEATURES"]["SEDENTARY_BOUT"],
+        features_active_bout = config["STEP"]["FEATURES"]["ACTIVE_BOUT"],
         threshold_active_bout = config["STEP"]["THRESHOLD_ACTIVE_BOUT"],
         include_zero_step_rows = config["STEP"]["INCLUDE_ZERO_STEP_ROWS"]
     output:
         "data/processed/{pid}/fitbit_step_{day_segment}.csv"
     script:
-        "../src/features/fitbit_step_metrics.py"
+        "../src/features/fitbit_step_features.py"

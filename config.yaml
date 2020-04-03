@@ -76,7 +76,7 @@ BARNETT_LOCATION:
 
 BLUETOOTH:
   DAY_SEGMENTS: *day_segments
-  METRICS: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+  FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
 
 GOOGLE_ACTIVITY_RECOGNITION:
   DAY_SEGMENTS: *day_segments
@@ -117,7 +117,7 @@ HEARTRATE:
 
 STEP:
   DAY_SEGMENTS: *day_segments
-  METRICS:
+  FEATURES:
     ALL_STEPS: ["sumallsteps", "maxallsteps", "minallsteps", "avgallsteps", "stdallsteps"]
     SEDENTARY_BOUT: ["countsedentarybout", "maxdurationsedentarybout", "mindurationsedentarybout", "avgdurationsedentarybout", "stddurationsedentarybout", "sumdurationsedentarybout"]
     ACTIVE_BOUT: ["countactivebout", "maxdurationactivebout", "mindurationactivebout", "avgdurationactivebout", "stddurationactivebout"]
