@@ -22,10 +22,10 @@ function(out){
   }
   if(l1+l2==0){phatall=length(ID2)/(length(ID1)+length(ID2))}
   #flight distances
-  fd=apply(out[ID1,],1,function(xx) sqrt((xx[2]-xx[5])^2+(xx[3]-xx[6])^2))
+  fd=apply(matrix(out[ID1,],ncol=7),1,function(xx) sqrt((xx[2]-xx[5])^2+(xx[3]-xx[6])^2))
   
   # flight times: ft
-  ft=apply(out[ID1,],1,function(xx) (xx[7]-xx[4]))
+  ft=apply(matrix(out[ID1,],ncol=7),1,function(xx) (xx[7]-xx[4]))
   fxs=out[ID1,2]
   fys=out[ID1,3]
   # flight angles range [0,2pi]: fa
