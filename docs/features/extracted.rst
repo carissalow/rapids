@@ -885,7 +885,7 @@ See `Screen Config Code`_
       - Apply readable dateime to Screen dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
       - Extract the deltas from the Screen dataset: expand("data/processed/{pid}/screen_deltas.csv", pid=config["PIDS"]),
     
-- Extract Screen Metrics:
+- Extract Screen Features:
     
       | ``expand("data/processed/{pid}/screen_{day_segment}.csv",``
       |                      ``pid=config["PIDS"],`` 
@@ -905,9 +905,9 @@ See `Screen Config Code`_
 
     - **Script:** ``src/features/screen_deltas.R`` - See the screen_deltas.R_ script.
 
-- **Rule:** ``rules/features.snakefile/screen_metrics`` - See the screen_metrics_ rule.
+- **Rule:** ``rules/features.snakefile/screen_features`` - See the screen_features_ rule.
 
-    - **Script:** ``src/features/screen_metrics.py`` - See the screen_metrics.py_ script.
+    - **Script:** ``src/features/screen_features.py`` - See the screen_features.py_ script.
 
 .. _screen-parameters:
 
@@ -917,16 +917,16 @@ See `Screen Config Code`_
 Name	           Description
 ===============    ===================
 day_segment        The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-metrics_events     The different measures that can be retrieved from the events in the Screen dataset. See :ref:`Available Screen Events Metrics <screen-events-available-metrics>` Table below
-metrics_deltas     The different measures that can be retrieved from the episodes extracted from the Screen dataset. See :ref:`Available Screen Episodes Metrics <screen-episodes-available-metrics>` Table below
+features_events     The different measures that can be retrieved from the events in the Screen dataset. See :ref:`Available Screen Events Features <screen-events-available-features>` Table below
+features_deltas     The different measures that can be retrieved from the episodes extracted from the Screen dataset. See :ref:`Available Screen Episodes Features <screen-episodes-available-features>` Table below
 episodes           The action that defines an episode
 ===============    ===================
 
-.. _screen-events-available-metrics:
+.. _screen-events-available-features:
 
 .. 
-    **Available Screen Events Metrics**
-    The following table shows a list of the available metrics for Screen Events. 
+    **Available Screen Events Features**
+    The following table shows a list of the available features for Screen Events. 
         =================   ==============    =============
         Name                Units             Description
         =================   ==============    =============
@@ -935,11 +935,11 @@ episodes           The action that defines an episode
         unlocksperminute    Unlock events     Unlock events per minute: The average of the number of unlock events that occur in a minute 
         =================   ==============    =============
 
-.. _screen-episodes-available-metrics:
+.. _screen-episodes-available-features:
 
-**Available Screen Episodes Metrics**
+**Available Screen Episodes Features**
 
-The following table shows a list of the available metrics for Screen Episodes. 
+The following table shows a list of the available features for Screen Episodes. 
 
 =============   =========    =============
 Name            Units        Description
@@ -1187,8 +1187,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _`Screen Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L88
 .. _screen_deltas: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L33
 .. _screen_deltas.R: https://github.com/carissalow/rapids/blob/master/src/features/screen_deltas.R
-.. _screen_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L97
-.. _screen_metrics.py: https://github.com/carissalow/rapids/blob/master/src/features/screen_metrics.py
+.. _screen_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L97
+.. _screen_features.py: https://github.com/carissalow/rapids/blob/master/src/features/screen_features.py
 .. _`Fitbit: Heart Rate Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L113
 .. _fitbit_with_datetime: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L94
 .. _fitbit_readable_datetime.py: https://github.com/carissalow/rapids/blob/master/src/data/fitbit_readable_datetime.py

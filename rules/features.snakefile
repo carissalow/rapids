@@ -96,20 +96,20 @@ rule battery_metrics:
     script:
         "../src/features/battery_metrics.py"
 
-rule screen_metrics:
+rule screen_features:
     input:
         screen_deltas = "data/processed/{pid}/screen_deltas.csv",
         phone_sensed_bins = "data/interim/{pid}/phone_sensed_bins.csv"
     params:
         day_segment = "{day_segment}",
         reference_hour_first_use = config["SCREEN"]["REFERENCE_HOUR_FIRST_USE"],
-        metrics_deltas = config["SCREEN"]["METRICS_DELTAS"],
+        features_deltas = config["SCREEN"]["FEATURES_DELTAS"],
         episode_types = config["SCREEN"]["EPISODE_TYPES"],
         bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"]
     output:
         "data/processed/{pid}/screen_{day_segment}.csv"
     script:
-        "../src/features/screen_metrics.py"
+        "../src/features/screen_features.py"
 
 rule light_metrics:
     input:

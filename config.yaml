@@ -89,7 +89,7 @@ BATTERY:
 SCREEN:
   DAY_SEGMENTS: *day_segments
   REFERENCE_HOUR_FIRST_USE: 0
-  METRICS_DELTAS: ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]
+  FEATURES_DELTAS: ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]
   EPISODE_TYPES: ["unlock"]
 
 LIGHT:
