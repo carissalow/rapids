@@ -42,10 +42,10 @@ SMS:
     sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments  
 
-# Communication call features config, TYPES and METRICS keys need to match
+# Communication call features config, TYPES and FEATURES keys need to match
 CALLS:
   TYPES: [missed, incoming, outgoing]
-  METRICS:
+  FEATURES:
     missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
     incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
     outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]

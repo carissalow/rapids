@@ -10,17 +10,17 @@ rule sms_metrics:
     script:
         "../src/features/sms_metrics.R"
 
-rule call_metrics:
+rule call_features:
     input: 
         "data/raw/{pid}/calls_with_datetime_unified.csv"
     params:
         call_type = "{call_type}",
         day_segment = "{day_segment}",
-        metrics = lambda wildcards: config["CALLS"]["METRICS"][wildcards.call_type]
+        features = lambda wildcards: config["CALLS"]["FEATURES"][wildcards.call_type]
     output:
         "data/processed/{pid}/call_{call_type}_{day_segment}.csv"
     script:
-        "../src/features/call_metrics.R"
+        "../src/features/call_features.R"
 
 rule battery_deltas:
     input:

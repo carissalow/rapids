@@ -176,7 +176,7 @@ See `Call Config Code`_
 
 ..    - Apply readable datetime to Calls dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
     
-- Extract Calls Metrics
+- Extract Calls Features
     
       | ``expand("data/processed/{pid}/call_{call_type}_{segment}.csv",``
       |                      ``pid=config["PIDS"],`` 
@@ -193,9 +193,9 @@ See `Call Config Code`_
 
     - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
 
-- **Rule:** ``rules/features.snakefile/call_metrics`` - See the call_metrics_ rule.
+- **Rule:** ``rules/features.snakefile/call_features`` - See the call_features_ rule.
 
-    - **Script:** ``src/features/call_metrics.R`` - See the call_metrics.R_ script.
+    - **Script:** ``src/features/call_features.R`` - See the call_features.R_ script.
 
     
 .. _calls-parameters:
@@ -207,14 +207,14 @@ Name	        Description
 ============    ===================
 call_type       The particular ``call_type`` that will be analyzed. The options for this parameter are ``incoming``, ``outgoing`` or ``missed``.
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-metrics         The different measures that can be retrieved from the calls dataset. Note that the same metrics are available for both ``incoming`` and ``outgoing`` calls, while ``missed`` calls has its own set of metrics. See :ref:`Available Incoming and Outgoing Call Metrics <available-in-and-out-call-metrics>` Table and :ref:`Available Missed Call Metrics <available-missed-call-metrics>` Table below.
+features         The different measures that can be retrieved from the calls dataset. Note that the same features are available for both ``incoming`` and ``outgoing`` calls, while ``missed`` calls has its own set of features. See :ref:`Available Incoming and Outgoing Call Features <available-in-and-out-call-features>` Table and :ref:`Available Missed Call Features <available-missed-call-features>` Table below.
 ============    ===================
 
-.. _available-in-and-out-call-metrics:
+.. _available-in-and-out-call-features:
 
-**Available Incoming and Outgoing Call Metrics**
+**Available Incoming and Outgoing Call Features**
 
-The following table shows a list of the available metrics for ``incoming`` and ``outgoing`` calls. 
+The following table shows a list of the available features for ``incoming`` and ``outgoing`` calls. 
 
 =========================   =========     =============
 Name                        Units         Description
@@ -235,11 +235,11 @@ timelastcall                minutes       The time in minutes from 12:00am (Midn
 countmostfrequentcontact    calls         The count of the number of calls of a particular ``call_type`` and ``day_segment`` for the most contacted contact.
 =========================   =========     =============
 
-.. _available-missed-call-metrics:
+.. _available-missed-call-features:
 
-**Available Missed Call Metrics**
+**Available Missed Call Features**
 
-The following table shows a list of the available metrics for ``missed`` calls. 
+The following table shows a list of the available features for ``missed`` calls. 
 
 =========================   =========     =============
 Name                        Units         Description
@@ -248,19 +248,19 @@ count                       calls         A count of the number of times a ``mis
 distinctcontacts            contacts      A count of distinct contacts whose calls were ``missed``.
 timefirstcall               minutes       The time in minutes from 12:00am (Midnight) that the first ``missed`` call occurred.
 timelastcall                minutes       The time in minutes from 12:00am (Midnight) that the last ``missed`` call occurred.
-countmostfrequentcontact    SMS           The count of the number of ``missed`` calls for the contact with the most ``missed`` calls.
+countmostfrequentcontact    CALLS           The count of the number of ``missed`` calls for the contact with the most ``missed`` calls.
 =========================   =========     =============
 
 **Assumptions/Observations:** 
 
-    #. ``TYPES`` and ``METRICS`` keys need to match. From example::
+    #. ``TYPES`` and ``FEATURES`` keys need to match. From example::
 
-        SMS:
+        CALLS:
             TYPES: [missed]
-            METRICS: 
-                missed: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
+            FEATURES: 
+                missed: [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
 
-In the above config setting code the ``TYPE`` ``missed`` matches the ``METRICS`` key ``missed``.
+In the above config setting code the ``TYPE`` ``missed`` matches the ``FEATURES`` key ``missed``.
 
 
 .. _bluetooth-sensor-doc:
@@ -1150,8 +1150,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _DAY_SEGMENTS: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L13
 .. _PHONE_VALID_SENSED_DAYS: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L60
 .. _`Call Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L46
-.. _call_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L13
-.. _call_metrics.R: https://github.com/carissalow/rapids/blob/master/src/features/call_metrics.R
+.. _call_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L13
+.. _call_features.R: https://github.com/carissalow/rapids/blob/master/src/features/call_features.R
 .. _`Bluetooth Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L76
 .. _bluetooth_feature: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L63
 .. _bluetooth_features.R: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/bluetooth_features.R
