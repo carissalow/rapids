@@ -111,16 +111,16 @@ rule screen_features:
     script:
         "../src/features/screen_features.py"
 
-rule light_metrics:
+rule light_features:
     input:
         "data/raw/{pid}/light_with_datetime.csv",
     params:
         day_segment = "{day_segment}",
-        metrics = config["LIGHT"]["METRICS"],
+        features = config["LIGHT"]["FEATURES"],
     output:
         "data/processed/{pid}/light_{day_segment}.csv"
     script:
-        "../src/features/light_metrics.py"
+        "../src/features/light_features.py"
 
 rule accelerometer_features:
     input:

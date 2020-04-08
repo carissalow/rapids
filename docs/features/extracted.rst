@@ -703,7 +703,7 @@ See `Light Config Code`_
 
 ..    - Apply readable dateime to Sensor dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
     
-- Extract Light Metrics:
+- Extract Light Features:
 
     | ``expand("data/processed/{pid}/light_{day_segment}.csv",``
     |                      ``pid=config["PIDS"],`` 
@@ -719,9 +719,9 @@ See `Light Config Code`_
 
     - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
 
-- **Rule:** ``rules/features.snakefile/light_metrics`` - See the light_metrics_ rule.
+- **Rule:** ``rules/features.snakefile/light_features`` - See the light_features_ rule.
 
-    - **Script:** ``src/features/light_metrics.py`` - See the light_metrics.py_ script.
+    - **Script:** ``src/features/light_features.py`` - See the light_features.py_ script.
 
 .. _light-parameters:
 
@@ -731,14 +731,14 @@ See `Light Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-metrics         The different measures that can be retrieved from the Light dataset. See :ref:`Available Light Metrics <light-available-metrics>` Table below
+features         The different measures that can be retrieved from the Light dataset. See :ref:`Available Light Metrics <light-available-features>` Table below
 ============    ===================
 
-.. _light-available-metrics:
+.. _light-available-features:
 
-**Available Light Metrics**
+**Available Light Features**
 
-The following table shows a list of the available metrics for the Light dataset. 
+The following table shows a list of the available features for the Light dataset. 
 
 ===========   =========     =============
 Name          Units         Description
@@ -1175,8 +1175,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _activity_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L74
 .. _google_activity_recognition.py: https://github.com/carissalow/rapids/blob/master/src/features/google_activity_recognition.py
 .. _`Light Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L94
-.. _light_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L113
-.. _light_metrics.py: https://github.com/carissalow/rapids/blob/master/src/features/light_metrics.py
+.. _light_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L113
+.. _light_features.py: https://github.com/carissalow/rapids/blob/master/src/features/light_features.py
 .. _`Location (Barnett’s) Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L70
 .. _phone_sensed_bins: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L46
 .. _phone_sensed_bins.R: https://github.com/carissalow/rapids/blob/master/src/data/phone_sensed_bins.R
