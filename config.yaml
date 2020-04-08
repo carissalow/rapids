@@ -109,7 +109,7 @@ APPLICATIONS_FOREGROUND:
   SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
   EXCLUDED_CATEGORIES: ["system_apps", "video"]
   EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
-  METRICS: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+  FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
 
 HEARTRATE:
   DAY_SEGMENTS: *day_segments

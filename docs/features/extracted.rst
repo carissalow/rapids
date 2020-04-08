@@ -451,7 +451,7 @@ See `Applications Foreground Config Code`_
     
 ..  - Genre categorization of Applications Foreground dataset: ``expand("data/interim/{pid}/applications_foreground_with_datetime_with_genre.csv", pid=config["PIDS"]),``
 
-- Extract Applications Foreground Metrics:
+- Extract Applications Foreground Features:
 
     | ``expand("data/processed/{pid}/applications_foreground_{day_segment}.csv",``
     |                      ``pid=config["PIDS"],`` 
@@ -471,9 +471,9 @@ See `Applications Foreground Config Code`_
 
     - **Script:** ``../src/data/application_genres.R`` - See the application_genres.R_ script
 
-- **Rule:** ``rules/features.snakefile/applications_foreground_metrics`` - See the applications_foreground_metrics_ rule.
+- **Rule:** ``rules/features.snakefile/applications_foreground_features`` - See the applications_foreground_features_ rule.
 
-    - **Script:** ``src/features/applications_foreground_metrics.py`` - See the applications_foreground_metrics.py_ script.
+    - **Script:** ``src/features/applications_foreground_features.py`` - See the applications_foreground_features.py_ script.
    
 .. _applications-foreground-parameters:
 
@@ -488,14 +488,14 @@ multiple_categories     Categories of apps that will be included  for the data c
 single_apps             Any Android app can be included in the list of apps used to collect data by adding the package name to this list. (E.g. Youtube)
 excluded_categories     Categories of apps that will be excluded for the data collection. The available categories can be defined in the ``APPLICATION_GENRES`` in the ``config`` file. See :ref:`Assumtions and Observations <applications-foreground-observations>`. 
 excluded_apps           Any Android app can be excluded from the list of apps used to collect data by adding the package name to this list.
-metrics                 The different measures that can be retrieved from the dataset. See :ref:`Available Applications Foreground Metrics <applications-foreground-available-metrics>` Table below
+features                 The different measures that can be retrieved from the dataset. See :ref:`Available Applications Foreground Features <applications-foreground-available-features>` Table below
 ====================    ===================
 
-.. _applications-foreground-available-metrics:
+.. _applications-foreground-available-features:
 
-**Available Applications Foreground Metrics**
+**Available Applications Foreground Features**
 
-The following table shows a list of the available metrics for the Applications Foreground dataset 
+The following table shows a list of the available features for the Applications Foreground dataset 
 
 ==================   =========   =============
 Name                 Units       Description
@@ -1162,8 +1162,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _`Application Genres Config`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L54
 .. _application_genres: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L81
 .. _application_genres.R: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/data/application_genres.R
-.. _applications_foreground_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L135
-.. _applications_foreground_metrics.py: https://github.com/carissalow/rapids/blob/master/src/features/accelerometer_metrics.py
+.. _applications_foreground_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L135
+.. _applications_foreground_features.py: https://github.com/carissalow/rapids/blob/master/src/features/accelerometer_features.py
 .. _`Battery Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L84
 .. _battery_deltas: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L25
 .. _battery_deltas.R: https://github.com/carissalow/rapids/blob/master/src/features/battery_deltas.R
