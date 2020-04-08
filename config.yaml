@@ -34,10 +34,10 @@ DOWNLOAD_DATASET:
 READABLE_DATETIME:
   FIXED_TIMEZONE: *timezone
 
-# Communication SMS features config, TYPES and METRICS keys need to match
+# Communication SMS features config, TYPES and FEATURES keys need to match
 SMS:
   TYPES : [received, sent]
-  METRICS: 
+  FEATURES: 
     received: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
     sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments  

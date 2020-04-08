@@ -1,6 +1,6 @@
-.. _rapids_metrics:
+.. _rapids_features:
 
-RAPIDS Metrics
+RAPIDS Features
 ===============
 
 Global Parameters
@@ -24,7 +24,7 @@ Global Parameters
 
 .. _day-segments: 
 
-- ``DAY_SEGMENTS`` - The list of day epochs that metrics can be segmented into: ``daily``, ``morning`` (6am-12pm), ``afternnon`` (12pm-6pm), ``evening`` (6pm-12am) and ``night`` (12am-6am). This list can be modified globally or on a per sensor basis. See DAY_SEGMENTS_ in ``config`` file.
+- ``DAY_SEGMENTS`` - The list of day epochs that features can be segmented into: ``daily``, ``morning`` (6am-12pm), ``afternnon`` (12pm-6pm), ``evening`` (6pm-12am) and ``night`` (12am-6am). This list can be modified globally or on a per sensor basis. See DAY_SEGMENTS_ in ``config`` file.
 
 .. _timezone:
 
@@ -53,11 +53,11 @@ Global Parameters
     
     Contains three attributes: ``BIN_SIZE``, ``MIN_VALID_HOURS``, ``MIN_BINS_PER_HOUR``. 
 
-    On any given day, Aware could have sensed data only for a few minutes or for 24 hours. Daily estimates of metrics should be considered more reliable the more hours Aware was running and logging data (for example, 10 calls logged on a day when only one hour of data was recorded is a less reliable measurement compared to 10 calls on a day when 23 hours of data were recorded. 
+    On any given day, Aware could have sensed data only for a few minutes or for 24 hours. Daily estimates of features should be considered more reliable the more hours Aware was running and logging data (for example, 10 calls logged on a day when only one hour of data was recorded is a less reliable measurement compared to 10 calls on a day when 23 hours of data were recorded. 
 
     Therefore, we define a valid hour as those that contain at least a certain number of valid bins. In turn, a valid bin are those that contain at least one row of data from any sensor logged within that period. We divide an hour into N bins of size ``BIN_SIZE`` (in minutes) and we mark an hour as valid if contains at least ``MIN_BINS_PER_HOUR`` of valid bins (out of the total possible number of bins that can be captured in an hour i.e. out of 60min/``BIN_SIZE`` bins). Days with valid sensed hours less than ``MIN_VALID_HOURS`` will be excluded form the output of this file. See PHONE_VALID_SENSED_DAYS_ in ``config.yaml``.
 
-    In RAPIDS, you will find that we use ``phone_sensed_bins`` (a list of all valid and invalid bins of all monitored days) to improve the estimation of metrics that are ratios over time periods like ``episodepersensedminutes`` of :ref:`Screen<screen-sensor-doc>`.
+    In RAPIDS, you will find that we use ``phone_sensed_bins`` (a list of all valid and invalid bins of all monitored days) to improve the estimation of features that are ratios over time periods like ``episodepersensedminutes`` of :ref:`Screen<screen-sensor-doc>`.
 
 
 .. _individual-sensor-settings:
@@ -88,7 +88,7 @@ See `SMS Config Code`_
 
 ..    - Apply readable datetime to SMS dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
 
-- Extract SMS metrics:
+- Extract SMS features:
 
       | ``expand("data/processed/{pid}/sms_{sms_type}_{day_segment}.csv".``
       |                     ``pid=config["PIDS"],``
@@ -105,9 +105,9 @@ See `SMS Config Code`_
 
     - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
 
-- **Rule:** ``rules/features.snakefile/sms_metrics`` - See the sms_metric_ rule.
+- **Rule:** ``rules/features.snakefile/sms_features`` - See the sms_feature_ rule.
 
-    - **Script:** ``src/features/sms_metrics.R`` - See the sms_metrics.R_ script.
+    - **Script:** ``src/features/sms_features.R`` - See the sms_features.R_ script.
 
 
 .. _sms-parameters:
@@ -119,14 +119,14 @@ Name	        Description
 ============    ===================
 sms_type        The particular ``sms_type`` that will be analyzed. The options for this parameter are ``received`` or ``sent``.
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-metrics         The different measures that can be retrieved from the dataset. These metrics are available for both ``sent`` and ``received`` SMS messages. See :ref:`Available SMS Metrics <sms-available-metrics>` Table below
+features         The different measures that can be retrieved from the dataset. These features are available for both ``sent`` and ``received`` SMS messages. See :ref:`Available SMS Features <sms-available-features>` Table below
 ============    ===================
 
-.. _sms-available-metrics:
+.. _sms-available-featues:
 
-**Available SMS Metrics**
+**Available SMS Featues**
 
-The following table shows a list of the available metrics for both ``sent`` and ``received`` SMS. 
+The following table shows a list of the available featues for both ``sent`` and ``received`` SMS. 
 
 =========================   =========     =============
 Name                        Units         Description
@@ -140,14 +140,14 @@ countmostfrequentcontact    SMS           The count of the number of sms message
 
 **Assumptions/Observations:** 
 
-    #. ``TYPES`` and ``METRICS`` keys need to match. From example::
+    #. ``TYPES`` and ``FEATURES`` keys need to match. From example::
 
         SMS:
             TYPES: [sent]
-            METRICS: 
+            FEATURES: 
                 sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
 
-In the above config setting code the ``TYPE`` ``sent`` matches the ``METRICS`` key ``sent``.
+In the above config setting code the ``TYPE`` ``sent`` matches the ``FEATURES`` key ``sent``.
 
 
 .. _call-sensor-doc:
@@ -731,7 +731,7 @@ See `Light Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features         The different measures that can be retrieved from the Light dataset. See :ref:`Available Light Metrics <light-available-features>` Table below
+features         The different measures that can be retrieved from the Light dataset. See :ref:`Available Light Features <light-available-features>` Table below
 ============    ===================
 
 .. _light-available-features:
@@ -1102,15 +1102,15 @@ See `Fitbit: Steps Config Code`_
 Name	                   Description
 =======================    ===================
 day_segment                The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-metrics                    The different measures that can be retrieved from the dataset. See :ref:`Available Fitbit: Steps Metrics <fitbit-steps-available-metrics>` Table below
+features                    The different measures that can be retrieved from the dataset. See :ref:`Available Fitbit: Steps Metrics <fitbit-steps-available-metrics>` Table below
 threshold_active_bout      The maximum number of steps per minute necessary for a bout to be ``sedentary``. That is, if the step count per minute is greater than this value the bout has a status of ``active``. 
 =======================    ===================
 
-.. _fitbit-steps-available-metrics:
+.. _fitbit-steps-available-features:
 
-**Available Fitbit: Steps Metrics**
+**Available Fitbit: Steps Features**
 
-The following table shows a list of the available metrics for the Fitbit: Steps dataset. 
+The following table shows a list of the available features for the Fitbit: Steps dataset. 
 
 =========================   =========     =============
 Name                        Units         Description
@@ -1141,8 +1141,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _`SMS Config Code`: https://github.com/carissalow/rapids/blob/f22d1834ee24ab3bcbf051bc3cc663903d822084/config.yaml#L38
 .. _AWARE: https://awareframework.com/what-is-aware/
 .. _`List of Timezones`: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-.. _sms_metric: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L1
-.. _sms_metrics.R: https://github.com/carissalow/rapids/blob/master/src/features/sms_metrics.R
+.. _sms_featue: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L1
+.. _sms_featues.R: https://github.com/carissalow/rapids/blob/master/src/features/sms_featues.R
 .. _download_dataset: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L9
 .. _download_dataset.R: https://github.com/carissalow/rapids/blob/master/src/data/download_dataset.R
 .. _readable_datetime: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L21
@@ -1156,8 +1156,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _bluetooth_feature: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L63
 .. _bluetooth_features.R: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/bluetooth_features.R
 .. _`Accelerometer Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L98
-.. _accelerometer_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L124
-.. _accelerometer_metrics.py: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/accelerometer_metrics.py
+.. _accelerometer_featues: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L124
+.. _accelerometer_featues.py: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/accelerometer_featues.py
 .. _`Applications Foreground Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L102
 .. _`Application Genres Config`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L54
 .. _application_genres: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L81
@@ -1172,7 +1172,7 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _`Google Activity Recognition Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L80
 .. _google_activity_recognition_deltas: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L41
 .. _google_activity_recognition_deltas.R: https://github.com/carissalow/rapids/blob/master/src/features/google_activity_recognition_deltas.R
-.. _activity_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L74
+.. _activity_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L74
 .. _google_activity_recognition.py: https://github.com/carissalow/rapids/blob/master/src/features/google_activity_recognition.py
 .. _`Light Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L94
 .. _light_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L113
