@@ -73,13 +73,13 @@ rule bluetooth_features:
     script:
         "../src/features/bluetooth_features.R"
         
-rule activity_metrics:
+rule activity_features:
     input:
         gar_events = "data/raw/{pid}/plugin_google_activity_recognition_with_datetime.csv",
         gar_deltas = "data/processed/{pid}/plugin_google_activity_recognition_deltas.csv"
     params:
         segment = "{day_segment}",
-        metrics = config["GOOGLE_ACTIVITY_RECOGNITION"]["METRICS"]
+        features = config["GOOGLE_ACTIVITY_RECOGNITION"]["FEATURES"]
     output:
         "data/processed/{pid}/google_activity_recognition_{day_segment}.csv"
     script:

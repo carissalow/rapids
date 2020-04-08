@@ -624,7 +624,7 @@ See `Google Activity Recognition Config Code`_
     
 ..  - Extract the deltas in Google Activity Recognition dataset: ``expand("data/processed/{pid}/plugin_google_activity_recognition_deltas.csv", pid=config["PIDS"]),``
     
-- Extract Sensor Metrics:
+- Extract Sensor Features:
 
     | ``expand("data/processed/{pid}/google_activity_recognition_{segment}.csv",pid=config["PIDS"],``
     |                ``segment = config["GOOGLE_ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]),``
@@ -643,7 +643,7 @@ See `Google Activity Recognition Config Code`_
 
     - **Script:** ``src/features/google_activity_recognition_deltas.R`` - See the google_activity_recognition_deltas.R_ script.
 
-- **Rule:** ``rules/features.snakefile/activity_metrics`` - See the activity_metrics_ rule.
+- **Rule:** ``rules/features.snakefile/activity_features`` - See the activity_features_ rule.
 
     - **Script:** ``ssrc/features/google_activity_recognition.py`` - See the google_activity_recognition.py_ script.
     
@@ -655,14 +655,14 @@ See `Google Activity Recognition Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-metrics         The different measures that can be retrieved from the Google Activity Recognition dataset. See :ref:`Available Google Activity Recognition Metrics <google-activity-recognition-available-metrics>` Table below
+features         The different measures that can be retrieved from the Google Activity Recognition dataset. See :ref:`Available Google Activity Recognition Features <google-activity-recognition-available-features>` Table below
 ============    ===================
 
-.. _google-activity-recognition-available-metrics:
+.. _google-activity-recognition-available-features:
 
-**Available Google Activity Recognition Metrics**
+**Available Google Activity Recognition Features**
 
-The following table shows a list of the available metrics for the Google Activity Recognition dataset. 
+The following table shows a list of the available features for the Google Activity Recognition dataset. 
 
 ======================   ============    =============
 Name                     Units           Description
