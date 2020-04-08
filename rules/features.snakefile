@@ -149,16 +149,16 @@ rule applications_foreground_features:
     script:
         "../src/features/applications_foreground_features.py"
 
-rule fitbit_heartrate_metrics:
+rule fitbit_heartrate_features:
     input:
         "data/raw/{pid}/fitbit_heartrate_with_datetime.csv",
     params:
         day_segment = "{day_segment}",
-        metrics = config["HEARTRATE"]["METRICS"],
+        features = config["HEARTRATE"]["FEATURES"],
     output:
         "data/processed/{pid}/fitbit_heartrate_{day_segment}.csv"
     script:
-        "../src/features/fitbit_heartrate_metrics.py"
+        "../src/features/fitbit_heartrate_features.py"
 
 rule fitbit_step_features:
     input:

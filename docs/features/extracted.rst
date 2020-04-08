@@ -985,7 +985,7 @@ See `Fitbit: Heart Rate Config Code`_
       |                      ``pid=config["PIDS"],``
       |                     ``fitbit_sensor=config["FITBIT_SENSORS"]),``
       
-- Extract Sensor Metrics:
+- Extract Sensor Features:
 
     | ``expand("data/processed/{pid}/fitbit_heartrate_{day_segment}.csv",``
     |                      ``pid=config["PIDS"],`` 
@@ -1001,9 +1001,9 @@ See `Fitbit: Heart Rate Config Code`_
 
     - **Script:** ``src/data/fitbit_readable_datetime.py`` - See the fitbit_readable_datetime.py_ script.
 
-- **Rule:** ``rules/features.snakefile/fitbit_heartrate_metrics`` - See the fitbit_heartrate_metrics_ rule.
+- **Rule:** ``rules/features.snakefile/fitbit_heartrate_features`` - See the fitbit_heartrate_features_ rule.
 
-    - **Script:** ``src/features/fitbit_heartrate_metrics.py`` - See the fitbit_heartrate_metrics.py_ script.
+    - **Script:** ``src/features/fitbit_heartrate_features.py`` - See the fitbit_heartrate_features.py_ script.
 
     
 .. _fitbit-heart-rate-parameters:
@@ -1014,15 +1014,15 @@ See `Fitbit: Heart Rate Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-metrics         The different measures that can be retrieved from the Fitbit: Heart Rate dataset. 
-                See :ref:`Available Fitbit: Heart Rate Metrics <fitbit-heart-rate-available-metrics>` Table below
+features         The different measures that can be retrieved from the Fitbit: Heart Rate dataset. 
+                See :ref:`Available Fitbit: Heart Rate Features <fitbit-heart-rate-available-features>` Table below
 ============    ===================
 
-.. _fitbit-heart-rate-available-metrics:
+.. _fitbit-heart-rate-available-features:
 
-**Available Fitbit: Heart Rate Metrics**
+**Available Fitbit: Heart Rate Features**
 
-The following table shows a list of the available metrics for the Fitbit: Heart Rate dataset. 
+The following table shows a list of the available features for the Fitbit: Heart Rate dataset. 
 
 ==================   ===========    =============
 Name                 Units          Description
@@ -1192,8 +1192,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _`Fitbit: Heart Rate Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L113
 .. _fitbit_with_datetime: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L94
 .. _fitbit_readable_datetime.py: https://github.com/carissalow/rapids/blob/master/src/data/fitbit_readable_datetime.py
-.. _fitbit_heartrate_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L151
-.. _fitbit_heartrate_metrics.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_heartrate_metrics.py
+.. _fitbit_heartrate_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L151
+.. _fitbit_heartrate_features.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_heartrate_features.py
 .. _`Fitbit: Steps Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L117
 .. _fitbit_step_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L162
 .. _fitbit_step_features.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_step_features.py

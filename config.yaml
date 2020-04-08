@@ -113,7 +113,7 @@ APPLICATIONS_FOREGROUND:
 
 HEARTRATE:
   DAY_SEGMENTS: *day_segments
-  METRICS: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "lengthoutofrange", "lengthfatburn", "lengthcardio", "lengthpeak"]
+  FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "lengthoutofrange", "lengthfatburn", "lengthcardio", "lengthpeak"]
 
 STEP:
   DAY_SEGMENTS: *day_segments
