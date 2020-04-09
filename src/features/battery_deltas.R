@@ -8,7 +8,7 @@ if(nrow(battery) > 0){
   consumption <- battery %>%
     mutate(group = ifelse(lag(battery_status) != battery_status, 1, 0) %>% coalesce(0),
            group_id = cumsum(group) + 1) %>%
-    filter(battery_status == 2 || battery_status == 3) %>%
+    filter(battery_status == 2 | battery_status == 3) %>%
     group_by(group_id) %>%
     summarize(battery_diff = first(battery_level) - last(battery_level),
               time_diff = (last(timestamp) - first(timestamp)) / (1000 * 60 * 60),
