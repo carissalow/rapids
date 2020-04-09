@@ -759,7 +759,7 @@ stdlux        lux           The standard deviation of ambient luminance in lux u
 Location (Barnett’s) Features
 """"""""""""""""""""""""""""""
 Barnett’s location features are based on the concept of flights and pauses. GPS coordinates are converted into a 
-sequence of flights (straight line movements) and pauses (time spent stationary). Data is imputed before metrics 
+sequence of flights (straight line movements) and pauses (time spent stationary). Data is imputed before features 
 are computed (https://arxiv.org/abs/1606.06328)
 
 See `Location (Barnett’s) Config Code`_
@@ -779,7 +779,7 @@ See `Location (Barnett’s) Config Code`_
 
 ..    - Apply readable dateime to Sensor dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
 
-- Extract Sensor Metrics: ``expand("data/processed/{pid}/location_barnett.csv", pid=config["PIDS"]),``
+- Extract Sensor Features: ``expand("data/processed/{pid}/location_barnett.csv", pid=config["PIDS"]),``
     
 **Rule Chain:**
 
@@ -799,9 +799,9 @@ See `Location (Barnett’s) Config Code`_
 
     - **Script:** ``src/data/resample_fused_location.R`` - See the resample_fused_location.R_ script.
 
-- **Rule:** ``rules/features.snakefile/location_barnett_metrics`` - See the location_barnett_metrics_ rule.
+- **Rule:** ``rules/features.snakefile/location_barnett_features`` - See the location_barnett_features_ rule.
 
-    - **Script:** ``src/features/location_barnett_metrics.R`` - See the location_barnett_metrics.R_ script.
+    - **Script:** ``src/features/location_barnett_features.R`` - See the location_barnett_features.R_ script.
 
     
 .. _location-parameters:
@@ -814,14 +814,14 @@ Name	             Description
 location_to_use      The specifies which of the location data will be use in the analysis. Possible options are ``ALL``, ``ALL_EXCEPT_FUSED`` OR ``RESAMPLE_FUSED``
 accuracy_limit       This is in meters. The sensor drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius specified.
 timezone             The timezone used to calculate location. 
-metrics              The different measures that can be retrieved from the Location dataset. See :ref:`Available Location Metrics <location-available-metrics>` Table below
+features              The different measures that can be retrieved from the Location dataset. See :ref:`Available Location Features <location-available-features>` Table below
 =================    ===================
 
-.. _location-available-metrics:
+.. _location-available-features:
 
-**Available Location Metrics**
+**Available Location Features**
 
-The following table shows a list of the available metrics for Location dataset. 
+The following table shows a list of the available features for Location dataset. 
 
 ================   =========     =============
 Name               Units         Description
@@ -839,7 +839,7 @@ stdflightdur       meters        Std flight duration. The standard deviation of 
 probpause                        Pause probability. The fraction of a day spent in a pause (as opposed to a flight)
 siglocentropy                    Significant location entropy. Entropy measurement based on the proportion of time spent at each significant location visited during a day.
 minsmissing                            
-circdnrtn           	         Circadian routine. A continuous metric that can take any value between 0 and 1, where 0 represents a daily routine completely different from any other sensed days and 1 a routine the same as every other sensed day.
+circdnrtn           	         Circadian routine. A continuous feature that can take any value between 0 and 1, where 0 represents a daily routine completely different from any other sensed days and 1 a routine the same as every other sensed day.
 wkenddayrtn        Weekend       circadian routine. Same as Circadian routine but computed separately for weekends and weekdays.
 ================   =========     =============
 
@@ -1102,7 +1102,7 @@ See `Fitbit: Steps Config Code`_
 Name	                   Description
 =======================    ===================
 day_segment                The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features                    The different measures that can be retrieved from the dataset. See :ref:`Available Fitbit: Steps Metrics <fitbit-steps-available-metrics>` Table below
+features                    The different measures that can be retrieved from the dataset. See :ref:`Available Fitbit: Steps Features <fitbit-steps-available-features>` Table below
 threshold_active_bout      The maximum number of steps per minute necessary for a bout to be ``sedentary``. That is, if the step count per minute is greater than this value the bout has a status of ``active``. 
 =======================    ===================
 
@@ -1182,8 +1182,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _phone_sensed_bins.R: https://github.com/carissalow/rapids/blob/master/src/data/phone_sensed_bins.R
 .. _resample_fused_location: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L67
 .. _resample_fused_location.R: https://github.com/carissalow/rapids/blob/master/src/data/resample_fused_location.R
-.. _location_barnett_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L49
-.. _location_barnett_metrics.R: https://github.com/carissalow/rapids/blob/master/src/features/location_barnett_metrics.R
+.. _location_barnett_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L49
+.. _location_barnett_features.R: https://github.com/carissalow/rapids/blob/master/src/features/location_barnett_features.R
 .. _`Screen Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L88
 .. _screen_deltas: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L33
 .. _screen_deltas.R: https://github.com/carissalow/rapids/blob/master/src/features/screen_deltas.R

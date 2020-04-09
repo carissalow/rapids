@@ -47,12 +47,12 @@ rule google_activity_recognition_deltas:
     script:
         "../src/features/google_activity_recognition_deltas.R"
 
-rule location_barnett_metrics:
+rule location_barnett_features:
     input:
         raw = "data/raw/{pid}/locations_raw.csv",
         fused = rules.resample_fused_location.output
     params:
-        metrics = config["BARNETT_LOCATION"]["METRICS"],
+        features = config["BARNETT_LOCATION"]["FEATURES"],
         locations_to_use = config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"],
         accuracy_limit = config["BARNETT_LOCATION"]["ACCURACY_LIMIT"],
         timezone = config["BARNETT_LOCATION"]["TIMEZONE"],
@@ -60,7 +60,7 @@ rule location_barnett_metrics:
     output:
         "data/processed/{pid}/location_barnett_{day_segment}.csv"
     script:
-        "../src/features/location_barnett_metrics.R"
+        "../src/features/location_barnett_features.R"
 
 rule bluetooth_features:
     input: 
