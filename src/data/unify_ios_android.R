@@ -9,6 +9,7 @@ unify_ios_battery <- function(ios_battery){
         ios_battery <- ios_battery %>%
             mutate(battery_status = replace(battery_status, battery_status == 3, 5),
                 battery_status = replace(battery_status, battery_status == 1, 3))
+    return(ios_battery)
 }
 
 unify_ios_calls <- function(ios_calls){
