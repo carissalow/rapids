@@ -68,7 +68,7 @@ RESAMPLE_FUSED_LOCATION:
   TIMEZONE: *timezone
 
 BARNETT_LOCATION:
-  DAY_SEGMENTS: [daily] # These metrics are only available on a daily basis
+  DAY_SEGMENTS: [daily] # These features are only available on a daily basis
   FEATURES: ["hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","circdnrtn","wkenddayrtn"]
   LOCATIONS_TO_USE: ALL # ALL, ALL_EXCEPT_FUSED OR RESAMPLE_FUSED
   ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
@@ -84,7 +84,7 @@ GOOGLE_ACTIVITY_RECOGNITION:
 
 BATTERY:
   DAY_SEGMENTS: *day_segments
-  METRICS: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
+  FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
 
 SCREEN:
   DAY_SEGMENTS: *day_segments

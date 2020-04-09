@@ -85,16 +85,16 @@ rule activity_features:
     script:
         "../src/features/google_activity_recognition.py"
 
-rule battery_metrics:
+rule battery_features:
     input:
         "data/processed/{pid}/battery_deltas.csv"
     params:
         day_segment = "{day_segment}",
-        metrics = config["BATTERY"]["METRICS"]
+        features = config["BATTERY"]["FEATURES"]
     output:
         "data/processed/{pid}/battery_{day_segment}.csv"
     script:
-        "../src/features/battery_metrics.py"
+        "../src/features/battery_features.py"
 
 rule screen_features:
     input:

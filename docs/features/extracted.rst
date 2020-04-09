@@ -542,7 +542,7 @@ See `Battery Config Code`_
     
 ..  - Extract the deltas in Battery charge : ``expand("data/processed/{pid}/battery_deltas.csv", pid=config["PIDS"]),``
 
-- Extract Battery Metrics:
+- Extract Battery Features:
 
     | ``expand("data/processed/{pid}/battery_{day_segment}.csv",``
     |                      ``pid=config["PIDS"],`` 
@@ -562,9 +562,9 @@ See `Battery Config Code`_
 
     - **Script:** ``src/features/battery_deltas.R`` - See the battery_deltas.R_ script.
     
-- **Rule:** ``rules/features.snakefile/battery_metrics`` - See the battery_metrics_ rule
+- **Rule:** ``rules/features.snakefile/battery_features`` - See the battery_features_ rule
 
-    - **Script:** ``src/features/battery_metrics.py`` - See the battery_metrics.py_ script.
+    - **Script:** ``src/features/battery_features.py`` - See the battery_features.py_ script.
     
 .. _battery-parameters:
 
@@ -574,14 +574,14 @@ See `Battery Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-metrics         The different measures that can be retrieved from the Battery dataset. See :ref:`Available Battery Metrics <battery-available-metrics>` Table below
+features         The different measures that can be retrieved from the Battery dataset. See :ref:`Available Battery Features <battery-available-features>` Table below
 ============    ===================
 
-.. _battery-available-metrics:
+.. _battery-available-features:
 
-**Available Battery Metrics**
+**Available Battery Features**
 
-The following table shows a list of the available metrics for Battery data. 
+The following table shows a list of the available features for Battery data. 
 
 =====================   ===============   =============
 Name                    Units             Description
@@ -1167,8 +1167,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _`Battery Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L84
 .. _battery_deltas: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L25
 .. _battery_deltas.R: https://github.com/carissalow/rapids/blob/master/src/features/battery_deltas.R
-.. _battery_metrics: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L86
-.. _battery_metrics.py : https://github.com/carissalow/rapids/blob/master/src/features/battery_metrics.py
+.. _battery_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L86
+.. _battery_features.py : https://github.com/carissalow/rapids/blob/master/src/features/battery_features.py
 .. _`Google Activity Recognition Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L80
 .. _google_activity_recognition_deltas: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L41
 .. _google_activity_recognition_deltas.R: https://github.com/carissalow/rapids/blob/master/src/features/google_activity_recognition_deltas.R
