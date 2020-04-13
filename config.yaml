@@ -124,6 +124,10 @@ STEP:
   THRESHOLD_ACTIVE_BOUT: 10 # steps
   INCLUDE_ZERO_STEP_ROWS: True
 
+WIFI:
+  DAY_SEGMENTS: *day_segments
+  FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+
 METRICS_FOR_ANALYSIS:
   GROUNDTRUTH_TABLE: participant_info
   SOURCES: &sources ["phone_metrics", "fitbit_metrics", "phone_fitbit_metrics"]

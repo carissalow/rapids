@@ -174,3 +174,14 @@ rule fitbit_step_features:
         "data/processed/{pid}/fitbit_step_{day_segment}.csv"
     script:
         "../src/features/fitbit_step_features.py"
+
+rule wifi_features:
+    input: 
+        "data/raw/{pid}/wifi_with_datetime.csv"
+    params:
+        day_segment = "{day_segment}",
+        features = config["WIFI"]["FEATURES"]
+    output:
+        "data/processed/{pid}/wifi_{day_segment}.csv"
+    script:
+        "../src/features/wifi_features.R"

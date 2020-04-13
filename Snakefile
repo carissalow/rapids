@@ -67,6 +67,9 @@ rule all:
         expand("data/processed/{pid}/fitbit_step_{day_segment}.csv",
                             pid = config["PIDS"],
                             day_segment = config["STEP"]["DAY_SEGMENTS"]),
+        expand("data/processed/{pid}/wifi_{segment}.csv",
+                            pid=config["PIDS"], 
+                            segment = config["WIFI"]["DAY_SEGMENTS"]),
         # Models
         expand("data/processed/{pid}/metrics_for_individual_model/{source}_{day_segment}_original.csv",
                                 pid = config["PIDS"],
