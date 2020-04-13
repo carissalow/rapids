@@ -27,7 +27,7 @@ if(nrow(clean_metrics))
     clean_metrics <- clean_metrics %>% select_if(~ sum(is.na(.)) / length(.) <= cols_nan_threshold )
 
 if(drop_zero_variance_columns)
-  clean_metrics <- clean_metrics %>% select_if(grepl("pid|local_date",names(.)) | sapply(., n_distinct) > 1)
+  clean_metrics <- clean_metrics %>% select_if(grepl("pid|local_date",names(.)) | sapply(., n_distinct, na.rm = T) > 1)
 
 # drop rows with a percentage of NA values above rows_nan_threshold
 clean_metrics <- clean_metrics %>% 
