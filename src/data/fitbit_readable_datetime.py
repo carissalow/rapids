@@ -116,7 +116,15 @@ def parse_heartrate_data(heartrate_data):
 
     # Get the range of heartrate zones: outofrange, fatburn, cardio, peak
     # refer to: https://help.fitbit.com/articles/en_US/Help_article/1565
-    heartrate_zones = json.loads(heartrate_data["fitbit_data"].iloc[0])["activities-heart"][0]["heartRateZones"]
+
+    heartrate_fitbit_data = json.loads(heartrate_data["fitbit_data"].iloc[0])["activities-heart"][0]
+    if "heartRateZones" in heartrate_fitbit_data:
+        heartrate_zones = heartrate_fitbit_data["heartRateZones"]
+    elif "value" in heartrate_fitbit_data:
+        heartrate_zones = heartrate_fitbit_data["value"]["heartRateZones"]
+    else:
+        raise ValueError("Please check the format of fitbit heartrate raw data.")
+    
     heartrate_zones_range = {}
     for hrzone in heartrate_zones:
         heartrate_zones_range[hrzone["name"].lower().replace(" ", "")] = [hrzone["min"], hrzone["max"]]
