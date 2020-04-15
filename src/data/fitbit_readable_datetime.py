@@ -28,6 +28,12 @@ STEPS_COLUMNS = ("device_id",
                     "local_day_of_week", "local_time", "local_hour", "local_minute",
                     "local_day_segment")
 
+CALORIES_COLUMNS = ("device_id",
+                    "level", "mets", "value",
+                    "local_date_time", "local_date", "local_month", "local_day",
+                    "local_day_of_week", "local_time", "local_hour", "local_minute",
+                    "local_day_segment")
+
 def drop_duplicates(data, local_timezone):
     """
     Data is pulled in intraday manner. Since data will be duplicated until the
@@ -163,6 +169,39 @@ def parse_heartrate_data(heartrate_data):
 
     return pd.DataFrame(data=records, columns=HR_COLUMNS)
 
+def parse_calories_data(calories_data):
+    if calories_data.empty:
+        return pd.DataFrame(columns=CALORIES_COLUMNS)
+    device_id = calories_data["device_id"].iloc[0]
+    records = []
+    # Parse JSON into individual records
+    for record in calories_data.fitbit_data:
+        record = json.loads(record)  # Parse text into JSON
+        curr_date = datetime.strptime(
+            record["activities-calories"][0]["dateTime"], "%Y-%m-%d")
+        dataset = record["activities-calories-intraday"]["dataset"]
+        for data in dataset:
+            d_time = datetime.strptime(data["time"], '%H:%M:%S').time()
+            d_datetime = datetime.combine(curr_date, d_time)
+
+            row = (device_id,
+                data["level"],
+                data["mets"],
+                data["value"],
+                d_datetime,
+                d_datetime.date(),
+                d_datetime.month,
+                d_datetime.day,
+                d_datetime.weekday(),
+                d_datetime.time(),
+                d_datetime.hour,
+                d_datetime.minute,
+                HOUR2EPOCH[d_datetime.hour])
+
+            records.append(row)
+
+    return pd.DataFrame(data=records, columns=CALORIES_COLUMNS)
+
 
 fitbit_data = pd.read_csv(snakemake.input[0])
 local_timezone = pytz.timezone(snakemake.params["local_timezone"])
@@ -177,5 +216,9 @@ elif sensor == "sleep":
     data_preprocesed = parse_sleep_data(data)
 elif sensor == "steps":
     data_preprocesed = parse_steps_data(data)
+elif sensor == "calories":
+    data_preprocesed = parse_calories_data(data)
+else:
+    raise ValueError("Please check the FITBIT_SENSORS list in config.yaml file.")
 
 data_preprocesed.to_csv(snakemake.output[0], index=False)

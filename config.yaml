@@ -2,7 +2,7 @@
 SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, screen]
 
 FITBIT_TABLE: [fitbit_data]
-FITBIT_SENSORS: [heartrate, steps, sleep]
+FITBIT_SENSORS: [heartrate, steps, sleep, calories]
 
 # Participants to include in the analysis
 # You must create a file for each participant
