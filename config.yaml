@@ -128,13 +128,14 @@ WIFI:
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
 
-METRICS_FOR_ANALYSIS:
+PARAMS_FOR_ANALYSIS:
   GROUNDTRUTH_TABLE: participant_info
-  SOURCES: &sources ["phone_metrics", "fitbit_metrics", "phone_fitbit_metrics"]
+  SOURCES: &sources ["phone_features", "fitbit_features", "phone_fitbit_features"]
   DAY_SEGMENTS: *day_segments
-  PHONE_METRICS: [accelerometer, applications_foreground, battery, call_incoming, call_missed, call_outgoing, google_activity_recognition, light, location_barnett, screen, sms_received, sms_sent]
-  FITBIT_METRICS: [fitbit_heartrate, fitbit_step]
-  PHONE_FITBIT_METRICS: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
+  PHONE_FEATURES: [accelerometer, applications_foreground, battery, call_incoming, call_missed, call_outgoing, google_activity_recognition, light, location_barnett, screen, sms_received, sms_sent]
+  FITBIT_FEATURES: [fitbit_heartrate, fitbit_step]
+  PHONE_FITBIT_FEATURES: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
+  DEMOGRAPHIC_FEATURES: [age, gender, inpatientdays]
   
   # Whether or not to include only days with enough valid sensed hours
   # logic can be found in rule phone_valid_sensed_days of rules/preprocessing.snakefile
@@ -154,3 +155,8 @@ METRICS_FOR_ANALYSIS:
   COLS_VAR_THRESHOLD: True
   ROWS_NAN_THRESHOLD: 0.5
   PARTICIPANTS_DAY_THRESHOLD: 7
+
+  # Target Settings:
+  # 1 => TARGETS_RATIO_THRESHOLD (ceiling) or more of available CESD scores were TARGETS_VALUE_THRESHOLD or higher; 0 => otherwise
+  TARGETS_RATIO_THRESHOLD: 0.5
+  TARGETS_VALUE_THRESHOLD: 16
