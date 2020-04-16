@@ -10,10 +10,10 @@ rule all:
     input:
         # My study (this is an example of a rule created specifically for a study)
         expand("data/interim/{pid}/days_to_analyse_{days_before_surgery}_{days_in_hospital}_{days_after_discharge}.csv",
-                            pid=config["PIDS"],
-                            days_before_surgery = config["PARAMS_FOR_ANALYSIS"]["DAYS_BEFORE_SURGERY"],
-                            days_after_discharge= config["PARAMS_FOR_ANALYSIS"]["DAYS_AFTER_DISCHARGE"],
-                            days_in_hospital= config["PARAMS_FOR_ANALYSIS"]["DAYS_IN_HOSPITAL"]),
+                            pid = config["PIDS"],
+                            days_before_surgery = config["PARAMS_FOR_ANALYSIS"]["DAYS_TO_ANALYSE"]["DAYS_BEFORE_SURGERY"],
+                            days_after_discharge = config["PARAMS_FOR_ANALYSIS"]["DAYS_TO_ANALYSE"]["DAYS_AFTER_DISCHARGE"],
+                            days_in_hospital = config["PARAMS_FOR_ANALYSIS"]["DAYS_TO_ANALYSE"]["DAYS_IN_HOSPITAL"]),
         expand("data/processed/{pid}/targets_{summarised}.csv", 
                             pid = config["PIDS"],
                             summarised = config["PARAMS_FOR_ANALYSIS"]["SUMMARISED"]),
