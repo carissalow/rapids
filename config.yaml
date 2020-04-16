@@ -156,6 +156,8 @@ PARAMS_FOR_ANALYSIS:
   ROWS_NAN_THRESHOLD: 0.5
   PARTICIPANTS_DAY_THRESHOLD: 7
 
+  SUMMARISED: ["summarised"] # "summarised" or "notsummarised"
+
   # Target Settings:
   # 1 => TARGETS_RATIO_THRESHOLD (ceiling) or more of available CESD scores were TARGETS_VALUE_THRESHOLD or higher; 0 => otherwise
   TARGETS_RATIO_THRESHOLD: 0.5

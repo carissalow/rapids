@@ -29,15 +29,31 @@ rule merge_features_for_individual_model:
     params:
         source = "{source}"
     output:
-        "data/processed/{pid}/features_for_individual_model/{source}_{day_segment}_original.csv"
+        "data/processed/{pid}/data_for_individual_model/{source}_{day_segment}_original.csv"
     script:
         "../src/models/merge_features_for_individual_model.R"
+
+rule merge_features_for_population_model:
+    input:
+        feature_files = expand("data/processed/{pid}/data_for_individual_model/{{source}}_{{day_segment}}_original.csv", pid=config["PIDS"])
+    output:
+        "data/processed/data_for_population_model/{source}_{day_segment}_original.csv"
+    script:
+        "../src/models/merge_features_for_population_model.R"
+
+rule merge_demographicfeatures_for_population_model:
+    input:
+        data_files = expand("data/processed/{pid}/demographic_features.csv", pid=config["PIDS"])
+    output:
+        "data/processed/data_for_population_model/demographic_features.csv"
+    script:
+        "../src/models/merge_data_for_population_model.py"
 
 rule merge_targets_for_population_model:
     input:
         data_files = expand("data/processed/{pid}/targets_{{summarised}}.csv", pid=config["PIDS"])
     output:
-        "data/processed/features_for_population_model/targets_{summarised}.csv"
+        "data/processed/data_for_population_model/targets_{summarised}.csv"
     script:
         "../src/models/merge_data_for_population_model.py"
 
@@ -50,7 +66,7 @@ rule clean_features_for_individual_model:
         rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
         participants_day_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANTS_DAY_THRESHOLD"]
     output:
-        "data/processed/{pid}/features_for_individual_model/{source}_{day_segment}_clean.csv"
+        "data/processed/{pid}/data_for_individual_model/{source}_{day_segment}_clean.csv"
     script:
         "../src/models/clean_features_for_model.R"
 
@@ -63,7 +79,7 @@ rule clean_features_for_population_model:
         rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
         participants_day_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANTS_DAY_THRESHOLD"]
     output:
-        "data/processed/features_for_population_model/{source}_{day_segment}_clean.csv"
+        "data/processed/data_for_population_model/{source}_{day_segment}_clean.csv"
     script:
         "../src/models/clean_features_for_model.R"
 
