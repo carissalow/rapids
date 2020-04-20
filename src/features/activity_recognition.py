@@ -50,7 +50,7 @@ else:
 
 
         deltas_features = {'sumstationary':['still','tilting'], 
-                        'summobile':['on_foot','running','on_bicycle'],
+                        'summobile':['on_foot','walking','running','on_bicycle'],
                         'sumvehicle':['in_vehicle']}
         
         for column, activity_labels in deltas_features.items():
