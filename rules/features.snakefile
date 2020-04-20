@@ -1,3 +1,14 @@
+def optional_ar_input(wildcards):
+    with open("data/external/"+wildcards.pid, encoding="ISO-8859-1") as external_file:
+        external_file_content = external_file.readlines()
+    platform = external_file_content[1].strip()
+    if platform == "android":
+        return ["data/raw/{pid}/plugin_google_activity_recognition_with_datetime_unified.csv",
+                "data/processed/{pid}/plugin_google_activity_recognition_deltas.csv"]
+    else:
+        return ["data/raw/{pid}/plugin_ios_activity_recognition_with_datetime_unified.csv",
+                "data/processed/{pid}/plugin_ios_activity_recognition_deltas.csv"]
+
 rule sms_features:
     input: 
         "data/raw/{pid}/messages_with_datetime.csv"
@@ -41,11 +52,19 @@ rule screen_deltas:
 
 rule google_activity_recognition_deltas:
     input:
-        "data/raw/{pid}/plugin_google_activity_recognition_with_datetime.csv"
+        "data/raw/{pid}/plugin_google_activity_recognition_with_datetime_unified.csv"
     output:
         "data/processed/{pid}/plugin_google_activity_recognition_deltas.csv"
     script:
-        "../src/features/google_activity_recognition_deltas.R"
+        "../src/features/activity_recognition_deltas.R"
+
+rule ios_activity_recognition_deltas:
+    input:
+        "data/raw/{pid}/plugin_ios_activity_recognition_with_datetime_unified.csv"
+    output:
+        "data/processed/{pid}/plugin_ios_activity_recognition_deltas.csv"
+    script:
+        "../src/features/activity_recognition_deltas.R"
 
 rule location_barnett_features:
     input:
@@ -72,18 +91,17 @@ rule bluetooth_features:
         "data/processed/{pid}/bluetooth_{day_segment}.csv"
     script:
         "../src/features/bluetooth_features.R"
-        
+
 rule activity_features:
     input:
-        gar_events = "data/raw/{pid}/plugin_google_activity_recognition_with_datetime.csv",
-        gar_deltas = "data/processed/{pid}/plugin_google_activity_recognition_deltas.csv"
+        optional_ar_input
     params:
         segment = "{day_segment}",
-        features = config["GOOGLE_ACTIVITY_RECOGNITION"]["FEATURES"]
+        features = config["ACTIVITY_RECOGNITION"]["FEATURES"]
     output:
-        "data/processed/{pid}/google_activity_recognition_{day_segment}.csv"
+        "data/processed/{pid}/activity_recognition_{day_segment}.csv"
     script:
-        "../src/features/google_activity_recognition.py"
+        "../src/features/activity_recognition.py"
 
 rule battery_features:
     input:

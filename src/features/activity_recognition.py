@@ -7,8 +7,8 @@ day_segment = snakemake.params["segment"]
 features = snakemake.params["features"]
 
 #Read csv into a pandas dataframe
-data = pd.read_csv(snakemake.input['gar_events'],parse_dates=['local_date_time'])
-ar_deltas = pd.read_csv(snakemake.input['gar_deltas'],parse_dates=["local_start_date_time", "local_end_date_time", "local_start_date", "local_end_date"])
+data = pd.read_csv(snakemake.input[0],parse_dates=["local_date_time"])
+ar_deltas = pd.read_csv(snakemake.input[1],parse_dates=["local_start_date_time", "local_end_date_time", "local_start_date", "local_end_date"])
 columns = list("ar_" + str(day_segment) + "_" + column for column in features)
 
 if data.empty:

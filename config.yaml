@@ -1,5 +1,5 @@
 # Valid database table names
-SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, screen]
+SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, plugin_ios_activity_recognition, screen]
 
 FITBIT_TABLE: [fitbit_data]
 FITBIT_SENSORS: [heartrate, steps, sleep, calories]
@@ -78,7 +78,7 @@ BLUETOOTH:
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
 
-GOOGLE_ACTIVITY_RECOGNITION:
+ACTIVITY_RECOGNITION:
   DAY_SEGMENTS: *day_segments
   FEATURES: ['count','mostcommonactivity','countuniqueactivities','activitychangecount','sumstationary','summobile','sumvehicle']
 
@@ -132,7 +132,7 @@ PARAMS_FOR_ANALYSIS:
   GROUNDTRUTH_TABLE: participant_info
   SOURCES: &sources ["phone_features", "fitbit_features", "phone_fitbit_features"]
   DAY_SEGMENTS: *day_segments
-  PHONE_FEATURES: [accelerometer, applications_foreground, battery, call_incoming, call_missed, call_outgoing, google_activity_recognition, light, location_barnett, screen, sms_received, sms_sent]
+  PHONE_FEATURES: [accelerometer, applications_foreground, battery, call_incoming, call_missed, call_outgoing, activity_recognition, light, location_barnett, screen, sms_received, sms_sent]
   FITBIT_FEATURES: [fitbit_heartrate, fitbit_step]
   PHONE_FITBIT_FEATURES: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
   DEMOGRAPHIC_FEATURES: [age, gender, inpatientdays]

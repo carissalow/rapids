@@ -1,6 +1,7 @@
 source("packrat/init.R")
 
 library(dplyr)
+library(stringr)
 
 unify_ios_battery <- function(ios_battery){
     # We only need to unify battery data for iOS client V1. V2 does it out-of-the-box
@@ -64,6 +65,50 @@ unify_ios_calls <- function(ios_calls){
     return(ios_calls)
 }
 
+clean_ios_activity_column <- function(ios_gar){
+    ios_gar <- ios_gar %>%
+        mutate(activities = str_replace_all(activities, pattern = '("|\\[|\\])', replacement = ""))
+
+    existent_multiple_activities <- ios_gar %>%
+        filter(str_detect(activities, ",")) %>% 
+        group_by(activities) %>%
+        summarise(mutiple_activities = unique(activities)) %>% 
+        pull(mutiple_activities)
+
+    known_multiple_activities <- c("stationary,automotive")
+    unkown_multiple_actvities <- setdiff(existent_multiple_activities, known_multiple_activities)
+    if(length(unkown_multiple_actvities) > 0){
+        stop(paste0("There are unkwown combinations of ios activities, you need to implement the decision of the ones to keep: ", unkown_multiple_actvities))
+    }
+
+    ios_gar <- ios_gar %>%
+        mutate(activities = str_replace_all(activities, pattern = "stationary,automotive", replacement = "automotive"))
+    
+    return(ios_gar)
+}
+
+unify_ios_gar <- function(ios_gar){
+    # We only need to unify Google Activity Recognition data for iOS
+    # discard rows where activities column is blank
+    ios_gar <- ios_gar[-which(ios_gar$activities == ""), ]
+    # clean "activities" column of ios_gar
+    ios_gar <- clean_ios_activity_column(ios_gar)
+
+    # make it compatible with android version: generate "activity_name" and "activity_type" columns
+    ios_gar  <-  ios_gar %>% 
+        mutate(activity_name = case_when(activities == "automotive" ~ "in_vehicle",
+                                         activities == "cycling" ~ "on_bicycle",
+                                         activities == "walking" | activities == "running" ~ "on_foot",
+                                         activities == "stationary" ~ "still"),
+               activity_type = case_when(activities == "automotive" ~ 0,
+                                         activities == "cycling" ~ 1,
+                                         activities == "walking" | activities == "running" ~ 2,
+                                         activities == "stationary" ~ 3,
+                                         activities == "unknown" ~ 4))
+    
+    return(ios_gar)
+}
+
 
 sensor_data <- read.csv(snakemake@input[["sensor_data"]], stringsAsFactors = FALSE)
 participant_info <- snakemake@input[["participant_info"]]
@@ -80,5 +125,7 @@ if(sensor == "calls"){
         sensor_data = unify_ios_battery(sensor_data)
     }
     # android battery remains unchanged
+} else if(sensor == "plugin_ios_activity_recognition"){
+    sensor_data = unify_ios_gar(sensor_data)
 }
 write.csv(sensor_data, snakemake@output[[1]], row.names = FALSE)
