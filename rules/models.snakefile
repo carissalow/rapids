@@ -85,3 +85,28 @@ rule clean_features_for_population_model:
     script:
         "../src/models/clean_features_for_model.R"
 
+rule modeling:
+    input:
+        cleaned_features = "data/processed/data_for_population_model/{source}_{day_segment}_clean.csv",
+        demographic_features = "data/processed/data_for_population_model/demographic_features.csv",
+        targets = "data/processed/data_for_population_model/targets_{summarised}.csv",
+    params:
+        model = "{model}",
+        cv_method = "{cv_method}",
+        source = "{source}",
+        day_segment = "{day_segment}",
+        summarised = "{summarised}",
+        scaler = "{scaler}",
+        cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
+        numerical_operators = config["PARAMS_FOR_ANALYSIS"]["NUMERICAL_OPERATORS"],
+        categorical_operators = config["PARAMS_FOR_ANALYSIS"]["CATEGORICAL_OPERATORS"],
+        categorical_demographic_features = config["PARAMS_FOR_ANALYSIS"]["CATEGORICAL_DEMOGRAPHIC_FEATURES"],
+        model_hyperparams = config["PARAMS_FOR_ANALYSIS"]["MODEL_HYPERPARAMS"],
+        rowsnan_colsnan_days_colsvar_threshold = "{rows_nan_threshold}_{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}"
+    output:
+        fold_predictions = "data/processed/output_population_model/{rows_nan_threshold}_{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/fold_predictions.csv",
+        fold_metrics = "data/processed/output_population_model/{rows_nan_threshold}_{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/fold_metrics.csv",
+        overall_results = "data/processed/output_population_model/{rows_nan_threshold}_{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/overall_results.csv",
+        fold_feature_importances = "data/processed/output_population_model/{rows_nan_threshold}_{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/fold_feature_importances.csv"
+    script:
+        "../src/models/modeling.py"
