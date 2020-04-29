@@ -2,9 +2,6 @@ language: python
 python:
   - "3.7"
 
-before_install:
-  - R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'
-
 before_script:
   # Install Packrat 
   - snakemake packrat_install
@@ -12,6 +9,7 @@ before_script:
   - snakemake packrat_restore
 
 install:
+  - R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
   - bash miniconda.sh -b -p $HOME/miniconda
   - source "$HOME/miniconda/bin:$PATH"
