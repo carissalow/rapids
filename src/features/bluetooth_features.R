@@ -1,6 +1,7 @@
 source("packrat/init.R")
 
 library(dplyr)
+library(tidyr)
 
 filter_by_day_segment <- function(data, day_segment) {
   if(day_segment %in% c("morning", "afternoon", "evening", "night"))
@@ -37,5 +38,7 @@ for(requested_feature in requested_features){
   feature <- compute_bluetooth_feature(data, requested_feature, day_segment)
   features <- merge(features, feature, by="local_date", all = TRUE)
 }
+
+features <- features %>% mutate_at(vars(contains("countscansmostuniquedevice")), list( ~ replace_na(., 0)))
 
 write.csv(features, snakemake@output[[1]], row.names = FALSE)
