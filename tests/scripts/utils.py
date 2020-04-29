@@ -58,8 +58,7 @@ def generate_file_list(configs, sensor):
         if 'TYPES' in configs[sensor_cap]:
             for each in configs[sensor_cap]['TYPES']:
                 sensor_type.append(each+'_')
-            
-    
+
     act_file_list = expand(act_str,pid=configs["PIDS"],
                                    sensor = sensor,
                                    sensor_type = sensor_type,
@@ -77,7 +76,7 @@ def generate_sensor_file_lists(configs):
     # Go through the configs and select those sensors with DAY_SEGMENTS,
     # optionally TYPES then create expected files Return dictionary with 
     # list of file paths of expected and actual files for each sensor 
-    # listed in the config file. 
+    # listed in the config file. Added for Travis.
     
     # Initialize string of file path for both expected and actual metric values
     act_str = "data/processed/{pid}/{sensor}_{sensor_type}{day_segment}.csv"
