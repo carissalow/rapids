@@ -1,0 +1,19 @@
+# Valid database table name
+SENSORS: [messages]
+
+# Test Participant data to include in the unit testing
+# You must create a file for each participant
+# named pXXX containing their device_id
+PIDS: [test01]
+
+# Global var with common day segments
+DAY_SEGMENTS: &day_segments
+    [daily]
+
+# Communication SMS features config, TYPES and FEATURES keys need to match
+SMS:
+  TYPES : [received, sent]
+  FEATURES: 
+    received: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
+    sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
+  DAY_SEGMENTS: *day_segments  
