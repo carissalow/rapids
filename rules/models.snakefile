@@ -64,7 +64,8 @@ rule clean_features_for_individual_model:
         cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"],
         cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
         rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
-        participants_day_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANTS_DAY_THRESHOLD"]
+        days_before_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_BEFORE_THRESHOLD"],
+        days_after_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_AFTER_THRESHOLD"]
     output:
         "data/processed/{pid}/data_for_individual_model/{source}_{day_segment}_clean.csv"
     script:
@@ -77,7 +78,8 @@ rule clean_features_for_population_model:
         cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"],
         cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
         rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
-        participants_day_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANTS_DAY_THRESHOLD"]
+        days_before_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_BEFORE_THRESHOLD"],
+        days_after_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_AFTER_THRESHOLD"]
     output:
         "data/processed/data_for_population_model/{source}_{day_segment}_clean.csv"
     script:
