@@ -4,16 +4,18 @@ python:
 
 before_script:
   # Install Packrat 
-  - sudo python snakemake packrat_install
-  - sudo python snakemake packrat_init
-  - sudo python snakemake packrat_restore
+  - snakemake packrat_install
+  - snakemake packrat_init
+  - snakemake packrat_restore
   #  - R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'  
 
 before_install:
   - sudo apt-get install -y r-base
+  - sudo chmod ugo+rw /usr/local/lib/R/site-library 
+  - R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'  
 
-r_binary_packages:
-  - rmarkdown
+# r_binary_packages:
+#   - rmarkdown
 
 install:
 
