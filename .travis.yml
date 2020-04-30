@@ -2,8 +2,12 @@ language: python
 python:
   - "3.7"
 
-services: 
-  - mysql
+before_script:
+  # Install Packrat 
+  - sudo python snakemake packrat_install
+  - sudo python snakemake packrat_init
+  - sudo python snakemake packrat_restore
+  #  - R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'  
 
 before_install:
   - sudo apt-get install -y r-base
@@ -11,10 +15,8 @@ before_install:
 r_binary_packages:
   - rmarkdown
 
-repos:
-  CRAN: https://cran.us.r-project.org
-
 install:
+
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
   - bash miniconda.sh -b -p $HOME/miniconda
   - source "$HOME/miniconda/etc/profile.d/conda.sh"
@@ -24,17 +26,11 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
 
-  # Replace dep1 dep2 ... with your dependencies
-
   - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
   - conda activate test-environment
 
-before_script:
-  # Install Packrat 
-  - R -e "0" --args --bootstrap-packrat
-  - R -e "packrat::install"
-  - R -e "packrat::init"
-  - R -e "packrat::restore"
+services: 
+  - mysql
 
 script:
   - cp -r tests/data/raw/* data/raw
