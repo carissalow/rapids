@@ -7,8 +7,12 @@ services:
 
 before_install:
   - sudo apt-get install -y r-base
-  - chmod ugo+rw /usr/local/lib/R/site-library 
-  - R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'  
+
+r_binary_packages:
+  - rmarkdown
+
+repos:
+  CRAN: https://cran.us.r-project.org
 
 install:
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
@@ -27,9 +31,9 @@ install:
 
 before_script:
   # Install Packrat 
-  - snakemake packrat_install
-  - snakemake packrat_init
-  - snakemake packrat_restore
+  - R -e "packrat::install"
+  - R -e "packrat::init"
+  - R -e "packrat::restore"
 
 script:
   - cp -r tests/data/raw/* data/raw
