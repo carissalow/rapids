@@ -7,7 +7,8 @@ python:
 
 before_install:
   - sudo apt-get install -y r-base
-  - sudo apt-get install r-base-dev
+  # - sudo apt-get install r-base-dev
+  - sudo apt-get install gfortran
   - sudo chmod ugo+rw /usr/local/lib/R/site-library 
   - R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'  
 
@@ -33,4 +34,4 @@ before_script:
 script:
   - cp -r tests/data/raw/* data/raw
   - snakemake --profile tests/settings -R sensor_features
-  - ./env/bin/python -m unittest discover tests/scripts/ -v
+  - python -m unittest discover tests/scripts/ -v
