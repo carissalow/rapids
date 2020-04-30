@@ -95,6 +95,9 @@ rowsnan_colsnan_days_colsvar_threshold = snakemake.params["rowsnan_colsnan_days_
 demographic_features = pd.read_csv(snakemake.input["demographic_features"], index_col=["pid"])
 targets = pd.read_csv(snakemake.input["targets"], index_col=["pid"])
 features = pd.read_csv(snakemake.input["cleaned_features"], parse_dates=["local_date"])
+# Compute the proportion of missing value cells among all features
+nan_ratio = features.isnull().sum().sum() / (features.shape[0] * features.shape[1])
+
 
 # Step 2. Extract summarised features based on daily features:
 # for categorical features: calculate variance across all days
@@ -134,12 +137,11 @@ for train_index, test_index in outer_cv.split(data_x):
     test_x = preprocesFeatures(train_numerical_features, test_numerical_features, test_categorical_features, mode_categorical_features, scaler, "test")
     train_x, test_x = train_x.align(test_x, join='outer', axis=1, fill_value=0) # in case we get rid off categorical columns
 
-    # Compute number of participants, features and proportion of missing value cells among all features,
+    # Compute number of participants and features
     # values do not change between folds
     if fold_count == 1:
         num_of_participants = train_x.shape[0] + test_x.shape[0]
         num_of_features = train_x.shape[1]
-        nan_ratio = (train_x.isnull().sum().sum() + test_x.isnull().sum().sum()) / ((train_x.shape[0] + test_x.shape[0]) * train_x.shape[1])
 
     # Inner cross validation
     clf = GridSearchCV(estimator=pipeline, param_grid=model_hyperparams, cv=inner_cv, scoring="f1_micro")
