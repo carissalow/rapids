@@ -6,15 +6,10 @@ python:
   - "3.7"
 
 before_install:
-  # Install Linuxbrew
-  - git clone https://github.com/Linuxbrew/brew.git $HOME/.linuxbrew
-  - PATH="$HOME/.linuxbrew/bin:$PATH"
-  - echo 'export PATH="$HOME/.linuxbrew/bin:$PATH"' >>~/.bash_profile
-  - export MANPATH="$(brew --prefix)/share/man:$MANPATH"
-  - export INFOPATH="$(brew --prefix)/share/info:$INFOPATH"
-  - brew --version
-  - brew install r
-  - brew install pandoc
+  - sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran40/'
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+  - sudo apt-get update
+  - sudo apt-get install -y r-base r-base-dev
   - sudo chmod ugo+rw /usr/local/lib/R/site-library 
   - R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'  
 
