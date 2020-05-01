@@ -33,5 +33,5 @@ before_script:
 
 script:
   - cp -r tests/data/raw/* data/raw
-  - snakemake --profile tests/settings -R sensor_features
+  - snakemake --profile tests/settings -R sms_features
   - python -m unittest discover tests/scripts/ -v
