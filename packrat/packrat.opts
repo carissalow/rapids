@@ -11,7 +11,7 @@ ignored.directories:
     data
     inst
 quiet.package.installation: TRUE
-snapshot.recommended.packages: FALSE
+snapshot.recommended.packages: TRUE
 snapshot.fields:
     Imports
     Depends
