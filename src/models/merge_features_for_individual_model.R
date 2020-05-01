@@ -1,8 +1,17 @@
-source("packrat/init.R")
+source("renv/activate.R")
 
 library(tidyr)
 library(purrr)
 library(dplyr)
+library("methods")
+library("mgm")
+library("qgraph")
+library("dplyr")
+library("scales")
+library("ggplot2")
+library("purrr")
+library("tidyr")
+library("reshape2")
 
 feature_files  <- snakemake@input[["feature_files"]]
 phone_valid_sensed_days  <- snakemake@input[["phone_valid_sensed_days"]]

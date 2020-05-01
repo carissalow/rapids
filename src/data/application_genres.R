@@ -1,4 +1,4 @@
-source("packrat/init.R")
+source("renv/activate.R")
 
 library(tidyr)
 library(dplyr)

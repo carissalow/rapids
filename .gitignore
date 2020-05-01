@@ -108,3 +108,5 @@ reports/
 .RData
 .Rhistory
 sn_profile_*/
+renv/
+

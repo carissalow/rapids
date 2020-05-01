@@ -1,7 +1,7 @@
 # If you want to implement extra features, source(..) a new file and duplicate the line "features  <- merge(...)", then
 # swap base_sms_features(...) for your own function
 
-source("packrat/init.R")
+source("renv/activate.R")
 source("src/features/sms/sms_base.R")
 library(dplyr, warn.conflicts = FALSE)
 

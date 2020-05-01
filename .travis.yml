@@ -20,9 +20,11 @@ install:
 - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
 - conda activate test-environment
 before_script:
-- snakemake packrat_install
-- snakemake packrat_init
-- snakemake packrat_restore
+# Install renv and library 
+- snakemake renv_install
+- snakemake renv_init
+- snakemake renv_restore
+
 script:
 - cp -r tests/data/raw/* data/raw
 - snakemake --profile tests/settings -R sms_features
@@ -40,4 +42,4 @@ notifications:
 
 cache:
     directories:
-     - /usr/local/lib/R
+      - /usr/local/lib/R

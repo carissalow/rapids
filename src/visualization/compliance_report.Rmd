@@ -18,7 +18,7 @@ output:
 ---
 
 ```{r include=FALSE}
-source("packrat/init.R")
+source("renv/activate.R")
 ```
 
 ## Overall phone compliance

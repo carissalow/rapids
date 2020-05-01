@@ -1,5 +1,5 @@
 configfile: "config.yaml"
-include: "rules/packrat.snakefile"
+include: "rules/renv.snakefile"
 include: "rules/preprocessing.snakefile"
 include: "rules/features.snakefile"
 include: "rules/models.snakefile"
