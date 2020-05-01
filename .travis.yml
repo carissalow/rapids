@@ -1,38 +1,34 @@
-services: 
-  - mysql
-
+services:
+- mysql
 language: python
 python:
-  - "3.7"
-
+- '3.7'
 before_install:
-  - sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran40/'
-  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
-  # - sudo apt-get update
-  - sudo apt-get install -y r-base r-base-dev
-  - sudo chmod ugo+rw /usr/local/lib/R/site-library 
-  - R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'  
-
+- sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran40/'
+- sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+- sudo apt-get install -y r-base r-base-dev
+- sudo chmod ugo+rw /usr/local/lib/R/site-library
+- R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'
 install:
-  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - source "$HOME/miniconda/etc/profile.d/conda.sh"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  # Useful for debugging any issues with conda
-  - conda info -a
-
-  - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
-  - conda activate test-environment
-
+- wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+- bash miniconda.sh -b -p $HOME/miniconda
+- source "$HOME/miniconda/etc/profile.d/conda.sh"
+- hash -r
+- conda config --set always_yes yes --set changeps1 no
+- conda update -q conda
+- conda info -a
+- conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
+- conda activate test-environment
 before_script:
-  # Install Packrat 
-  - snakemake packrat_install
-  - snakemake packrat_init
-  - snakemake packrat_restore
-
+- snakemake packrat_install
+- snakemake packrat_init
+- snakemake packrat_restore
 script:
-  - cp -r tests/data/raw/* data/raw
-  - snakemake --profile tests/settings -R sms_features
-  - python -m unittest discover tests/scripts/ -v
+- cp -r tests/data/raw/* data/raw
+- snakemake --profile tests/settings -R sms_features
+- python -m unittest discover tests/scripts/ -v
+
+notifications:
+  slack:
+    secure: cJIpmIjb3zA5AMDBo9axF1v6fYNIgMm6s6UdMNOlHiT511xHGsaLUFej3lACwQLig4Gr94ySI61YdrP+RX1lFcYxusH+kUU/c8LX0PmSKNeKnycM3w/pCM+yTp/6oQG6ZrJD7pNm6zhB0xPL61uSmYhcr+JJ1sh4iLiON+J8/C+IfnAHm1ORkxJ0IxASkiP/LvaiAQDw8lNyYIZNWjSDNZbx68o1VNakyk6Vik3x8omiE3w33rzI2/JAx//QTxOq2J0dtV1AqYYSOWS4iXblV09NLBqgGrhAhrQ6+TbPHSPIyL/4EdhvS+YXO+SBWS7ODD7j/MuL6XiA4SujW72od2rgXNmOjFnlQvIrULO5bzv39BKKDkldvz9+XCyXLcjoLIwA/rmUnwMndNoC7NoD/CkQEevUxswXXB9811BmIFx/7GOHouVxwB2gaMAzkCroZJVwgbrc6ESSOVE5SMcb3wPMbpd8cXOgVZXJcmk5wK206zxXPigCvFfknqOnwDqRgyIWSFoTd/2wHppA7ND3R5U42nQTbEQ7MiONsOo61GlJTTxJELz32sLKl388AuAgOY7+0sqPibxMaHJkF1V4nYVTH0/H5bO/edK4VHMloJ6s0kuyko7LT5EMQf3pBJij5TnYmD2E60t+bSBAxHuH7WA5dvL+igjGEwROnxDc9pc=
+    on_success: always
