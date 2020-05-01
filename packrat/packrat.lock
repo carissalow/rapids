@@ -1,7 +1,7 @@
 PackratFormat: 1.4
 PackratVersion: 0.5.0
 RVersion: 4.0.0
-Repos: CRAN=http://ftp.ussg.iu.edu/CRAN/
+Repos: CRAN=http://cran.us.r-project.org/
 
 Package: BDgraph
 Source: CRAN
