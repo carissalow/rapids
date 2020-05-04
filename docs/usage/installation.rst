@@ -41,9 +41,9 @@ macOS (tested on Catalina 10.15)
 
 #. Install R packages and virtual environment:
 
-    - ``snakemake packrat_install``
-    - ``snakemake packrat_init``
-    - ``snakemake packrat_restore``
+    - ``snakemake renv_install``
+    - ``snakemake renv_init``
+    - ``snakemake renv_restore``
         - This step will take several minutes to complete. Please be patient and let it run until completion. 
 
 #. See Usage section below. 
@@ -84,9 +84,9 @@ Linux (tested on Ubuntu 16.04)
 
 #. Install R packages and virtual environment:
 
-    - ``snakemake packrat_install``
-    - ``snakemake packrat_init``
-    - ``snakemake packrat_restore``
+    - ``snakemake renv_install``
+    - ``snakemake renv_init``
+    - ``snakemake renv_restore``
         - This step will take several minutes to complete. Please be patient and let it run until completion. 
 
 #. See Usage section below.
