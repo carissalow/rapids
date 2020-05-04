@@ -1,8 +1,8 @@
 name: moshi-env
 channels:
   - anaconda
-  - defaults
   - conda-forge
+  - defaults
 dependencies:
   - appdirs=1.4.3
   - arrow=0.15.2

@@ -1,12 +1,12 @@
 ## renv_install: installs renv onto machine
 rule renv_install:
     shell:
-        "R -e 'install.packages(\"renv\", repos=\"http://cran.us.r-project.org\")'"
+        "R -e 'if (!requireNamespace(\"renv\", quietly = TRUE)) install.packages(\"renv\", repos=\"http://cran.us.r-project.org\")'"
 
 ## renv_install: initialize a renv environment for this project
 rule renv_init:
     shell:
-        "R -e 'options(renv.consent = TRUE)' && R -e 'renv::init()'"
+        "R -e 'renv::init()'"
 
 ## renv_snap   : Look for new R packages in files & archives them
 rule renv_snap:

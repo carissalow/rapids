@@ -85,7 +85,6 @@ target/
 
 # Mypy cache
 .mypy_cache/
-.Rprofile
 packrat/lib*/
 packrat/*
 !packrat/packrat.lock
@@ -108,5 +107,4 @@ reports/
 .RData
 .Rhistory
 sn_profile_*/
-renv/
-
+settings.dcf
