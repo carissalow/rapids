@@ -148,17 +148,17 @@ Once you have the installation for your specific operating system complete, you 
 
 #. Execute RAPIDS
 
-    - Standard execution::
+    - Standard execution over a single core::
 
-        snakemake
+        snakemake -j1
     
     - Standard execution over multiple cores::
 
-        snakemake - j 8
+        snakemake -j8
 
     - Force a rule (useful if you modify your code and want to update its results)::
 
-        snakemake -R RULE_NAME
+        snakemake -j1 -R RULE_NAME
 
 .. _bug: https://github.com/Homebrew/linuxbrew-core/issues/17812
 .. _instructions: https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
