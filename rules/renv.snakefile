@@ -6,7 +6,7 @@ rule renv_install:
 ## renv_install: initialize a renv environment for this project
 rule renv_init:
     shell:
-        "R -e 'renv::init()'"
+        "R -e 'options(renv.consent = TRUE)' && R -e 'renv::init()'"
 
 ## renv_snap   : Look for new R packages in files & archives them
 rule renv_snap:
