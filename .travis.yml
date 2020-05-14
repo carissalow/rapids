@@ -1,34 +1,48 @@
 services:
-- mysql
+  - mysql
+
+os: linux
+
+dist: xenial
+
 language: python
 python:
-- '3.7'
+  - '3.7'
+
+cache:
+  directories:
+    - /home/linuxbrew/.linuxbrew
+    - $HOME/.local/share/renv
+    - $TRAVIS_BUILD_DIR/renv/library
+
 before_install:
-- sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran40/'
-- sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
-- sudo apt-get install -y r-base r-base-dev
-- sudo chmod ugo+rw /usr/local/lib/R/site-library
-- R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'
+  - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  - export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+  - source ~/.bashrc
+  - sudo apt-get install linuxbrew-wrapper
+  - brew install r
+  # - sudo chmod ugo+rw /usr/local/lib/R/site-library
+  - R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'
+  - R --version
+
 install:
-- wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-- bash miniconda.sh -b -p $HOME/miniconda
-- source "$HOME/miniconda/etc/profile.d/conda.sh"
-- hash -r
-- conda config --set always_yes yes --set changeps1 no
-- conda update -q conda
-- conda info -a
-- conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
-- conda activate test-environment
-before_script:
-# Install renv and library 
-- snakemake renv_install
-- snakemake renv_init
-- snakemake renv_restore
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - source "$HOME/miniconda/etc/profile.d/conda.sh"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
+  - conda activate test-environment
+  - snakemake renv_install
+  - snakemake renv_init
+  - snakemake renv_restore
 
 script:
-- cp -r tests/data/raw/* data/raw
-- snakemake --profile tests/settings -R sms_features
-- python -m unittest discover tests/scripts/ -v
+  - cp -r tests/data/raw/* data/raw
+  - snakemake --profile tests/settings -R sms_features
+  - python -m unittest discover tests/scripts/ -v
 
 notifications:
   email: false
@@ -40,6 +54,9 @@ notifications:
       - "Execution time: *%{duration}*"
       - "Message: %{message}"
 
-cache:
-    directories:
-      - /usr/local/lib/R
+branches:
+  except:
+  - master
+
+  only:
+  - travis_test
