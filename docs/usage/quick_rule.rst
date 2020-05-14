@@ -53,7 +53,7 @@ The following is a quick guide for creating and running a simple pipeline to ext
 
     ::
 
-        snakemake
+        snakemake -j1
 
 #. Daily and night call metrics will be found in files under the ``data/processed/p01/`` directory.
 
