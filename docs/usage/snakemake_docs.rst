@@ -15,10 +15,12 @@ Includes
 """""""""
 There are 5 included files in the ``Snakefile`` file. 
 
-    - ``packrat.snakefile`` - This file defines the rules to manager the R packages that are used by RAPIDS. (See `packrat`_)
-    - ``preprocessing.snakefile`` - The rules that are used to preprocess the data by cleaning and formatting are contained in this file. (See `preprocessing`_)
-    - ``features.snakefile`` - This file contains the rules that define how the sensor/feature data is processed. (See `features`_)
-    - ``reports.snakefile`` - The file contains the rules that are used to produce the reports. (See `reports`_)
+    - ``renv.snakefile`` - This file defines the rules to manager the R packages that are used by RAPIDS. (See `renv`_)
+    - ``preprocessing.snakefile`` - This file contains the rules that are used to preprocess the data such as downloading, cleaning and formatting. (See `preprocessing`_)
+    - ``features.snakefile`` - This file contains the rules that used for behavioral feature extraction. (See `features`_)
+    - ``models.snakefile`` - This file contains the rules that are used to build models from features that have been extreacted from the sensor data. (See `models`_)
+    - ``reports.snakefile`` - The file contains the rules that are used to produce the reports based on the models produced. (See `reports`_)
+    - ``mystudy.snakefile`` - The file contains the rules that you add that are specifically tailored to your project/study. (See `mystudy`_)
 
 ..  - ``analysis.snakefile`` - The rules that define how the data is analyzed is outlined in this file. (see `analysis <https://github.com/carissalow/rapids/blob/master/rules/analysis.snakefile>`_)
     
@@ -70,12 +72,12 @@ There are a number of other settings that are specific to the sensor/feature tha
 
     SMS:
         TYPES : [received, sent]
-        METRICS: 
+        FEATURES: 
             received: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
             sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
         DAY_SEGMENTS: *day_segments  
 
-The ``TYPES`` setting defines the type of SMS data that will be analyzed. ``METRICS`` defines the metric data for each the type of SMS data being analyzed. Finally, ``DAY_SEGMENTS`` list the day segment (times of day) that the data is captured.
+The ``TYPES`` setting defines the type of SMS data that will be analyzed. ``FEATURES`` defines the features of the data for each the type of SMS data being analyzed. Finally, ``DAY_SEGMENTS`` list the day segment (times of day) that the data is captured.
 
 .. _rules-syntax:
 
@@ -98,24 +100,24 @@ A Snakemake workflow is defined by specifying rules in a ``Snakefile`` (See the 
 
 A sample rule from the RAPIDS source code is shown below::
 
-    rule sms_metrics:
+    rule sms_features:
         input: 
             "data/raw/{pid}/messages_with_datetime.csv"
         params:
             sms_type = "{sms_type}",
             day_segment = "{day_segment}",
-            metrics = lambda wildcards: config["SMS"]["METRICS"][wildcards.sms_type]
+            features = lambda wildcards: config["SMS"]["FEATURES"][wildcards.sms_type]
         output:
             "data/processed/{pid}/sms_{sms_type}_{day_segment}.csv"
         script:
-            "../src/features/sms_metrics.R"
+            "../src/features/sms_features.R"
 
 
-The ``rule`` directive specifies the name of the rule that is being defined. ``params`` defines the additional parameters that needs to be set for the rule. In the example immediately above, the parameters will be pasted to the script defined in the ``script`` directive of the rule. Instead of ``script`` a shell command call can also be called by replacing the ``script`` directive of the rule and replacing it with the lines similar to the folllowing::
+The ``rule`` directive specifies the name of the rule that is being defined. ``params`` defines the additional parameters that needs to be set for the rule. In the example immediately above, the parameters will be pasted to the script defined in the ``script`` directive of the rule. Instead of ``script`` a ``shell`` command call can also be called by replacing the ``script`` directive of the rule and replacing it with the lines similar to the folllowing::
 
         shell: "somecommand {input} {output}"
 
-Here input and output (and in general any list or tuple) automatically evaluate to a space-separated list of files (i.e. ``path/to/inputfile path/to/other/inputfile``).  It should be noted that rules can defined without input and output as seen in the ``packrat`` snakefile. For more information see `Rules documentation`_ and for an actual example see the `packrat`_ snakefile.
+Here input and output (and in general any list or tuple) automatically evaluate to a space-separated list of files (i.e. ``path/to/inputfile path/to/other/inputfile``).  It should be noted that rules can defined without input and output as seen in the ``renv.snakemake``. For more information see `Rules documentation`_ and for an actual example see the `renv`_ snakefile.
 
 .. _wildcards:
 
@@ -123,19 +125,19 @@ Wildcards
 """"""""""
 There are times that it would be useful to generalize a rule to be applicable to a number of e.g. datasets. For this purpose, wildcards can be used. Consider the sample code from above again repeated below for quick reference.::
 
-    rule sms_metrics:
+    rule sms_features:
         input: 
             "data/raw/{pid}/messages_with_datetime.csv"
         params:
             sms_type = "{sms_type}",
             day_segment = "{day_segment}",
-            metrics = lambda wildcards: config["SMS"]["METRICS"][wildcards.sms_type]
+            features = lambda wildcards: config["SMS"]["FEATURES"][wildcards.sms_type]
         output:
             "data/processed/{pid}/sms_{sms_type}_{day_segment}.csv"
         script:
-            "../src/features/sms_metrics.R"
+            "../src/features/sms_features.R"
 
-If the rule’s output matches a requested file, the substrings matched by the wildcards are propagated to the input and params directives. For example, if another rule in the workflow requires the file ``data/processed/p01/sms_sent_daily.csv``, Snakemake recognizes that the above rule is able to produce it by setting ``pid=p01``, ``sms_type=sent`` and ``day_segment=daily``. Thus, it requests the input file ``data/raw/p01/messages_with_datetime.csv`` as input, sets ``sms_type=sent``, ``day_segment=daily`` in the ``params`` directive and executes the script. ``../src/features/sms_metrics.R``. See the preprocessing_ snakefile for an actual example. 
+If the rule’s output matches a requested file, the substrings matched by the wildcards are propagated to the input and params directives. For example, if another rule in the workflow requires the file ``data/processed/p01/sms_sent_daily.csv``, Snakemake recognizes that the above rule is able to produce it by setting ``pid=p01``, ``sms_type=sent`` and ``day_segment=daily``. Thus, it requests the input file ``data/raw/p01/messages_with_datetime.csv`` as input, sets ``sms_type=sent``, ``day_segment=daily`` in the ``params`` directive and executes the script. ``../src/features/sms_features.R``. See the preprocessing_ snakefile for an actual example. 
 
 
 .. _the-data-directory:
@@ -156,12 +158,12 @@ This directory contains the data files for the project. These directories are as
 The ``src`` Directory
 ----------------------
 
-The ``src`` directory holds all of the scripts used by the pipeline. These scripts can be in any programming language including but not limited to Python_, R_ and Julia_. This directory is organized into the following directories:
+The ``src`` directory holds all of the scripts used by the pipeline for data manipulation. These scripts can be in any programming language including but not limited to Python_, R_ and Julia_. This directory is organized into the following directories:
 
-    - ``data`` - This directory contains scripts that are used to pull and clean the data to be analyzed. See `data directory`_
-    - ``features`` - This directory contains scripts that deal with processing feature and sensor data. See `features directory`_
+    - ``data`` - This directory contains scripts that are used to download and preprocess raw data that will be used in analysis. See `data directory`_
+    - ``features`` - This directory contains scripts to extract behavioral features. See `features directory`_
     - ``models`` - This directory contains the model scripts for building and training models. See `models directory`_
-    - ``visualization`` - This directory contains the scripts that visualize the results of the models. See `visualization directory`_
+    - ``visualization`` - This directory contains the scripts to create plots and reports that visualize the results of the models. See `visualization directory`_
 
 
 .. _the-report-directory:
@@ -177,10 +179,12 @@ This contains the reports of the results of the analysis done by the pipeline.
     .. _`List of Timezone`: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
     .. _`The Expand Function`: https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#the-expand-function
     .. _`example snakefile`: https://github.com/carissalow/rapids/blob/master/rules/features.snakefile
-    .. _packrat: https://github.com/carissalow/rapids/blob/master/rules/packrat.snakefile
+    .. _renv: https://github.com/carissalow/rapids/blob/master/rules/renv.snakefile
     .. _preprocessing: https://github.com/carissalow/rapids/blob/master/rules/preprocessing.snakefile
     .. _features: https://github.com/carissalow/rapids/blob/master/rules/features.snakefile
+    .. _models: https://github.com/carissalow/rapids/blob/master/rules/models.snakefile
     .. _reports: https://github.com/carissalow/rapids/blob/master/rules/reports.snakefile
+    .. _mystudy: https://github.com/carissalow/rapids/blob/master/rules/mystudy.snakefile
     .. _`Rules documentation`: https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#rules
     .. _`data directory`: https://github.com/carissalow/rapids/tree/master/src/data
     .. _`features directory`: https://github.com/carissalow/rapids/tree/master/src/features
@@ -212,16 +216,21 @@ This contains the reports of the results of the analysis done by the pipeline.
     │                         `1.0-jqp-initial-data-exploration`.
     │
     ├── packrat            <- Installed R dependences. (Packrat is a dependency management system for R) 
+    │                         (Depreciated - replaced by renv)
     ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+    │
+    ├── renv.lock          <- List of R packages and dependences for that are installed for the pipeline.
     │
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
     │   └── figures        <- Generated graphics and figures to be used in reporting.
     │
     ├── rules              
     │   ├── features       <- Rules to process the feature data pulled in to pipeline.
-    │   ├── packrat        <- Rules for setting up packrat.
+    │   ├── models         <- Rules for building models.
+    │   ├── mystudy        <- Rules added by you that are specifically tailored to your project/study.
+    │   ├── packrat        <- Rules for setting up packrat. (Depreciated replaced by renv)
     │   ├── preprocessing  <- Preprocessing rules to clean data before processing.
-    │   ├── analysis       <- Analytic rules that are applied to the data.
+    │   ├── renv           <- Rules for setting up renv and R packages.
     │   └── reports        <- Snakefile used to produce reports.
     │
     ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
@@ -240,5 +249,10 @@ This contains the reports of the results of the analysis done by the pipeline.
     │   │
     │   └── visualization  <- Scripts to create exploratory and results oriented visualizations. Can be 
     │                         in any language e.g. Python, R, Julia, etc.
+    ├── tests
+    │   ├── data           <- Replication of the project root data directory for testing.
+    │   ├── scripts        <- Scripts for testing. The initial scripts are Python but eventually be any language.
+    │   ├── settings       <- The config and settings files for running tests.
+    │   └── Snakefile      <- The Snakefile for testing only.
     │
     └── tox.ini            <- tox file with settings for running tox; see tox.testrun.org

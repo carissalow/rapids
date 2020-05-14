@@ -24,7 +24,7 @@ Global Parameters
 
 .. _day-segments: 
 
-- ``DAY_SEGMENTS`` - The list of day epochs that features can be segmented into: ``daily``, ``morning`` (6am-12pm), ``afternnon`` (12pm-6pm), ``evening`` (6pm-12am) and ``night`` (12am-6am). This list can be modified globally or on a per sensor basis. See DAY_SEGMENTS_ in ``config`` file.
+- ``DAY_SEGMENTS`` - The list of day epochs that feature data can be segmented into: ``daily``, ``morning`` (6am-12pm), ``afternnon`` (12pm-6pm), ``evening`` (6pm-12am) and ``night`` (12am-6am). This list can be modified globally or on a per sensor basis. See DAY_SEGMENTS_ in ``config`` file.
 
 .. _timezone:
 
@@ -38,7 +38,7 @@ Global Parameters
 
 - ``DOWNLOAD_DATASET``
 
-    - ``GROUP``. Credentials group to connect to the database containing ``SENSORS``. By default it points to ``DATABASE_GROUP``.
+    - ``GROUP`` - Credential group to connect to the database containing ``SENSORS``. By default it points to ``DATABASE_GROUP``.
 
 .. _readable-datetime:
 
@@ -53,7 +53,7 @@ Global Parameters
     
     Contains three attributes: ``BIN_SIZE``, ``MIN_VALID_HOURS``, ``MIN_BINS_PER_HOUR``. 
 
-    On any given day, Aware could have sensed data only for a few minutes or for 24 hours. Daily estimates of features should be considered more reliable the more hours Aware was running and logging data (for example, 10 calls logged on a day when only one hour of data was recorded is a less reliable measurement compared to 10 calls on a day when 23 hours of data were recorded. 
+    On any given day, AWARE could have sensed data only for a few minutes or for 24 hours. Daily estimates of features should be considered more reliable the more hours AWARE was running and logging data (for example, 10 calls logged on a day when only one hour of data was recorded is a less reliable measurement compared to 10 calls on a day when 23 hours of data were recorded. 
 
     Therefore, we define a valid hour as those that contain at least a certain number of valid bins. In turn, a valid bin are those that contain at least one row of data from any sensor logged within that period. We divide an hour into N bins of size ``BIN_SIZE`` (in minutes) and we mark an hour as valid if contains at least ``MIN_BINS_PER_HOUR`` of valid bins (out of the total possible number of bins that can be captured in an hour i.e. out of 60min/``BIN_SIZE`` bins). Days with valid sensed hours less than ``MIN_VALID_HOURS`` will be excluded form the output of this file. See PHONE_VALID_SENSED_DAYS_ in ``config.yaml``.
 
@@ -119,10 +119,10 @@ Name	        Description
 ============    ===================
 sms_type        The particular ``sms_type`` that will be analyzed. The options for this parameter are ``received`` or ``sent``.
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features         The different measures that can be retrieved from the dataset. These features are available for both ``sent`` and ``received`` SMS messages. See :ref:`Available SMS Features <sms-available-features>` Table below
+features        The different measures that can be retrieved from the dataset. These features are available for both ``sent`` and ``received`` SMS messages. See :ref:`Available SMS Features <sms-available-features>` Table below
 ============    ===================
 
-.. _sms-available-featues:
+.. _sms-available-features:
 
 **Available SMS Featues**
 
@@ -132,7 +132,7 @@ The following table shows a list of the available featues for both ``sent`` and 
 Name                        Units         Description
 =========================   =========     =============
 count                       SMS           A count of the number of times that particular ``sms_type`` occurred for a particular ``day_segment``.
-distinctcontacts            contacts      A count of distinct contacts that were communicated for a particular ``sms_type`` for a particular ``day_segment``.
+distinctcontacts            contacts      A count of distinct contacts that are associated with a particular ``sms_type`` for a particular ``day_segment``.
 timefirstsms                minutes       The time in minutes from 12:00am (Midnight) that the first of a particular ``sms_type`` occurred.
 timelastsms                 minutes       The time in minutes from 12:00am (Midnight) that the last of a particular ``sms_type`` occurred.
 countmostfrequentcontact    SMS           The count of the number of sms messages of a particular``sms_type`` for the most contacted contact for a particular ``day_segment``.
@@ -207,7 +207,7 @@ Name	        Description
 ============    ===================
 call_type       The particular ``call_type`` that will be analyzed. The options for this parameter are ``incoming``, ``outgoing`` or ``missed``.
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features         The different measures that can be retrieved from the calls dataset. Note that the same features are available for both ``incoming`` and ``outgoing`` calls, while ``missed`` calls has its own set of features. See :ref:`Available Incoming and Outgoing Call Features <available-in-and-out-call-features>` Table and :ref:`Available Missed Call Features <available-missed-call-features>` Table below.
+features        The different measures that can be retrieved from the calls dataset. Note that the same features are available for both ``incoming`` and ``outgoing`` calls, while ``missed`` calls has its own set of features. See :ref:`Available Incoming and Outgoing Call Features <available-in-and-out-call-features>` Table and :ref:`Available Missed Call Features <available-missed-call-features>` Table below.
 ============    ===================
 
 .. _available-in-and-out-call-features:
@@ -220,16 +220,14 @@ The following table shows a list of the available features for ``incoming`` and 
 Name                        Units         Description
 =========================   =========     =============
 count                       calls         A count of the number of times that a particular ``call_type`` occurred for a particular ``day_segment``.
-distinctcontacts            contacts      A count of distinct contacts that were communicated with for a particular ``call_type`` for a particular ``day_segment`` 
+distinctcontacts            contacts      A count of distinct contacts that are associated with a particular ``call_type`` for a particular ``day_segment`` 
 meanduration                minutes       The mean duration of all calls for a particular ``call_type`` and ``day_segment``.
 sumduration                 minutes       The sum of the duration of all calls for a particular ``call_type`` and ``day_segment``.
 minduration                 minutes       The duration of the shortest call for a particular ``call_type`` and ``day_segment``.
 maxduration                 minutes       The duration of the longest call for a particular ``call_type`` and ``day_segment``.
 stdduration                 minutes       The standard deviation of all the calls for a particular ``call_type`` and ``day_segment``.
 modeduration                minutes       The mode duration of all the calls for a particular ``call_type`` and ``day_segment``.
-hubermduration                            The generalized Huber M-estimator of location of the MAD for the durations of all the calls for a particular ``call_type`` and ``day_segment``.
-varqnduration                             The Location-Free Scale Estimator Qn of the durations of all the calls for a particular ``call_type`` and ``day_segment``.
-entropyduration                           The estimate of the Shannon entropy H of the durations of all the calls for a particular ``call_type`` and ``day_segment``.
+entropyduration             nats          The estimate of the Shannon entropy H of the durations of all the calls for a particular ``call_type`` and ``day_segment``.
 timefirstcall               minutes       The time in minutes from 12:00am (Midnight) that the first of ``call_type`` occurred.
 timelastcall                minutes       The time in minutes from 12:00am (Midnight) that the last of ``call_type`` occurred.
 countmostfrequentcontact    calls         The count of the number of calls of a particular ``call_type`` and ``day_segment`` for the most contacted contact.
@@ -248,7 +246,7 @@ count                       calls         A count of the number of times a ``mis
 distinctcontacts            contacts      A count of distinct contacts whose calls were ``missed``.
 timefirstcall               minutes       The time in minutes from 12:00am (Midnight) that the first ``missed`` call occurred.
 timelastcall                minutes       The time in minutes from 12:00am (Midnight) that the last ``missed`` call occurred.
-countmostfrequentcontact    CALLS           The count of the number of ``missed`` calls for the contact with the most ``missed`` calls.
+countmostfrequentcontact    CALLS         The count of the number of ``missed`` calls for the contact with the most ``missed`` calls.
 =========================   =========     =============
 
 **Assumptions/Observations:** 
@@ -281,7 +279,7 @@ See `Bluetooth Config Code`_
 **Available Platforms:**    
 
 - Android
-- iOS
+- iOS (Low Energy Devices Only)
 
 **Snakefile Entry:**
 
@@ -318,7 +316,7 @@ See `Bluetooth Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features         The different measures that can be retrieved from the Bluetooth dataset. See :ref:`Available Bluetooth Features <bluetooth-available-features>` Table below
+features        The different measures that can be retrieved from the Bluetooth dataset. See :ref:`Available Bluetooth Features <bluetooth-available-features>` Table below
 ============    ===================
 
 .. _bluetooth-available-features:
@@ -330,9 +328,9 @@ The following table shows a list of the available features for Bluetooth.
 ===========================   =========     =============
 Name                          Units         Description
 ===========================   =========     =============
-countscans                    scans         Count of scans (a scan is a row containing a single Bluetooth device detected by Aware)
-uniquedevices                 devices       Unique devices (number of unique devices identified by their hardware address -bt_address field)
-countscansmostuniquedevice    scans         Count of scans of the most unique device across each participant’s dataset
+countscans                    scans         Count of scanned devices during a ``day_segment`` (a scan is a row containing a single Bluetooth device detected by Aware). , a device can be detected multiple times over time and these appearances are counted separately
+uniquedevices                 devices       Count of Unique devices during a ``day_segment``  (number of unique devices identified by their hardware address -bt_address field)
+countscansmostuniquedevice    scans         Count of scans of the most scanned device during a ``day_segment`` across the entire study period
 ===========================   =========     =============
 
 **Assumptions/Observations:** N/A 
@@ -394,7 +392,7 @@ See `Accelerometer Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features         The different measures that can be retrieved from the dataset. See :ref:`Available Accelerometer Features <accelerometer-available-features>` Table below
+features        The different measures that can be retrieved from the dataset. See :ref:`Available Accelerometer Features <accelerometer-available-features>` Table below
 ============    ===================
 
 .. _accelerometer-available-features:
@@ -406,21 +404,22 @@ The following table shows a list of the available features the accelerometer sen
 ====================================   ==============    =============
 Name                                   Units             Description
 ====================================   ==============    =============
-maxmagnitude                           m/s\ :sup:`2`      The maximum magnitude of acceleration (:math:`\|acceleration\| = \sqrt{x^2 + y^2 + z^2}`).
+maxmagnitude                           m/s\ :sup:`2`     The maximum magnitude of acceleration (:math:`\|acceleration\| = \sqrt{x^2 + y^2 + z^2}`).
 minmagnitude                           m/s\ :sup:`2`     The minimum magnitude of acceleration.
 avgmagnitude                           m/s\ :sup:`2`     The average magnitude of acceleration.
 medianmagnitude                        m/s\ :sup:`2`     The median magnitude of acceleration.
 stdmagnitude                           m/s\ :sup:`2`     The standard deviation of acceleration.
 ratioexertionalactivityepisodes                          The ratio of exertional activity time periods to total time periods.
-sumexertionalactivityepisodes          minutes           The total minutes of performing exertional activity during the epoch
-longestexertionalactivityepisode       minutes           The longest episode of performing exertional activity
-longestnonexertionalactivityepisode    minutes           The longest episode of performing non-exertional activity
+sumexertionalactivityepisodes          minutes           The total duration in minutes of performing exertional activity during the epoch
+longestexertionalactivityepisode       minutes           The duration of the longest episode of performing exertional activity
+longestnonexertionalactivityepisode    minutes           The duration of the longest episode of performing non-exertional activity
 countexertionalactivityepisodes        episodes          The count of the episodes of performing exertional activity
 countnonexertionalactivityepisodes     episodes          The count of the episodes of performing non-exertional activity
 ====================================   ==============    =============
 
-**Assumptions/Observations:** N/A
+**Assumptions/Observations:** 
 
+    #. The first six features are computed over the magnitude of the three-axis acceleration vector (x,y,z) the rest are based on exertional and non-exertional activity episodes
 
 
 .. _applications-foreground-sensor-doc:
@@ -441,7 +440,6 @@ See `Applications Foreground Config Code`_
 **Available Platforms:**    
 
 - Android
-- iOS
 
 **Snakefile entry:**
 
@@ -488,7 +486,7 @@ multiple_categories     Categories of apps that will be included  for the data c
 single_apps             Any Android app can be included in the list of apps used to collect data by adding the package name to this list. (E.g. Youtube)
 excluded_categories     Categories of apps that will be excluded for the data collection. The available categories can be defined in the ``APPLICATION_GENRES`` in the ``config`` file. See :ref:`Assumtions and Observations <applications-foreground-observations>`. 
 excluded_apps           Any Android app can be excluded from the list of apps used to collect data by adding the package name to this list.
-features                 The different measures that can be retrieved from the dataset. See :ref:`Available Applications Foreground Features <applications-foreground-available-features>` Table below
+features                The different measures that can be retrieved from the dataset. See :ref:`Available Applications Foreground Features <applications-foreground-available-features>` Table below
 ====================    ===================
 
 .. _applications-foreground-available-features:
@@ -500,10 +498,10 @@ The following table shows a list of the available features for the Applications 
 ==================   =========   =============
 Name                 Units       Description
 ==================   =========   =============
-count                apps        A count number of times using ``all_apps``, ``single_app``, ``single_category`` apps or ``multiple_category`` apps.
-timeoffirstuse       contacts    The time in minutes from 12:00am (Midnight) to first use of any app (i.e. ``all_apps``), ``single_app``, ``single_category`` apps or ``multiple_category`` apps.
-timeoflastuse        minutes     The time in minutes from 12:00am (Midnight) to the last of use of any app (i.e. ``all_apps``), ``single_app``, ``single_category`` apps or ``multiple_category`` apps.
-frequencyentropy     shannons    The entropy of the apps frequency for ``all_apps``, ``single_category`` apps or ``multiple_category`` apps. There is no entropy for ``single_app`` apos.
+count                apps        A count number of times using ``all_apps``, ``single_app``, ``single_category`` apps or ``multiple_category`` apps. (i.e. they were brought to the foreground either by tapping their icon or switching to it from another app)
+timeoffirstuse       contacts    The time in minutes from 12:00am (Midnight) to first use of any app within a category during a ``day_segment``(i.e. ``all_apps``, ``single_app``, ``single_category`` apps or ``multiple_category`` apps). 
+timeoflastuse        minutes     The time in minutes from 12:00am (Midnight) to the last of use of any app within a category during a ``day_segment``(i.e. ``all_apps``, ``single_app``, ``single_category`` apps or ``multiple_category`` apps). 
+frequencyentropy     shannons    The entropy of the used apps within a category during a ``day_segment``  for ``all_apps``, ``single_category`` apps or ``multiple_category`` apps. (each app is seen as a unique event, the more apps were used, the higher the entropy). This is especially relevant when computed over all apps. There is no entropy for ``single_app`` apos.
 ==================   =========   =============
 
 .. _applications-foreground-observations:
@@ -574,7 +572,7 @@ See `Battery Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features         The different measures that can be retrieved from the Battery dataset. See :ref:`Available Battery Features <battery-available-features>` Table below
+features        The different measures that can be retrieved from the Battery dataset. See :ref:`Available Battery Features <battery-available-features>` Table below
 ============    ===================
 
 .. _battery-available-features:
@@ -590,8 +588,8 @@ countdischarge          episodes          A count of the number of battery disch
 sumdurationdischarge    hours             The total duration of all discharging episodes (time the phone was discharging)
 countcharge             episodes          A count of the number of battery charging episodes
 sumdurationcharge       hours             The total duration of all charging episodes (time the phone was charging)
-avgconsumptionrate      episodes/hours    The average of the ratios between discharging episodes’ battery delta and duration
-maxconsumptionrate      episodes/hours    The maximum of the ratios between discharging episodes’ battery delta and duration
+avgconsumptionrate      episodes/hours    The average of all episodes’ consumption rates. An episode’s consumption rate is defined as the ratio between its battery delta and duration
+maxconsumptionrate      episodes/hours    The highest of all episodes’ consumption rates. An episode’s consumption rate is defined as the ratio between its battery delta and duration
 =====================   ===============   =============
 
 **Assumptions/Observations:** 
@@ -655,7 +653,7 @@ See `Google Activity Recognition Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features         The different measures that can be retrieved from the Google Activity Recognition dataset. See :ref:`Available Google Activity Recognition Features <google-activity-recognition-available-features>` Table below
+features        The different measures that can be retrieved from the Google Activity Recognition dataset. See :ref:`Available Google Activity Recognition Features <google-activity-recognition-available-features>` Table below
 ============    ===================
 
 .. _google-activity-recognition-available-features:
@@ -669,14 +667,16 @@ Name                     Units           Description
 ======================   ============    =============
 count                    rows            A count of the number of rows of registered activities.
 mostcommonactivity                       The most common activity.
-countuniqueactivities    activities       A count of the number of unique activities.
+countuniqueactivities    activities      A count of the number of unique activities.
 activitychangecount      transitions     A count of any transition between two different activities, sitting to running for example.
 sumstationary            minutes         The total duration of episodes of still and tilting (phone) activities.
 summobile                minutes         The total duration of episodes of on foot, running, and on bicycle activities
 sumvehicle               minutes         The total duration of episodes of on vehicle activity
 ======================   ============    =============
 
-**Assumptions/Observations:** N/A
+**Assumptions/Observations:** 
+
+    #. These features are based on activity episodes (deltas) which are defined as consecutive detections of the same activity type. The activities should come from `Google’s Activity Recognition API`_: in vehicle, on bicycle, on foot, running, still, tilting, unknown and walking
 
 .. _light-doc:
 
@@ -731,7 +731,7 @@ See `Light Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features         The different measures that can be retrieved from the Light dataset. See :ref:`Available Light Features <light-available-features>` Table below
+features        The different measures that can be retrieved from the Light dataset. See :ref:`Available Light Features <light-available-features>` Table below
 ============    ===================
 
 .. _light-available-features:
@@ -758,9 +758,7 @@ stdlux        lux           The standard deviation of ambient luminance in lux u
 
 Location (Barnett’s) Features
 """"""""""""""""""""""""""""""
-Barnett’s location features are based on the concept of flights and pauses. GPS coordinates are converted into a 
-sequence of flights (straight line movements) and pauses (time spent stationary). Data is imputed before features 
-are computed (https://arxiv.org/abs/1606.06328)
+This method was originally implemented by Barnett et al.(Barnett & Onnela, 2018), these features are based on the concept of flights and pauses where GPS coordinates are converted into a sequence of straight line movements and stationary clusters, imputing missing mobility traces. This method relies on location coordinates being collected at a regular interval, thus if location data was sensed using AWARE’s Fused location plugin which relies on Google’s Fused location API that only records data when a user’s location has changed, we fill missing intervals with the last known coordinate pair only if the AWARE client was active and therefore the smartphone was collecting data. We re use the code kindly provided by Ian Barnett and reproduce the list of available features, for more details please refer to their paper (Barnett & Onnela, 2018). (https://arxiv.org/abs/1606.06328)
 
 See `Location (Barnett’s) Config Code`_
 
@@ -814,7 +812,7 @@ Name	             Description
 location_to_use      The specifies which of the location data will be use in the analysis. Possible options are ``ALL``, ``ALL_EXCEPT_FUSED`` OR ``RESAMPLE_FUSED``
 accuracy_limit       This is in meters. The sensor drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius specified.
 timezone             The timezone used to calculate location. 
-features              The different measures that can be retrieved from the Location dataset. See :ref:`Available Location Features <location-available-features>` Table below
+features             The different measures that can be retrieved from the Location dataset. See :ref:`Available Location Features <location-available-features>` Table below
 =================    ===================
 
 .. _location-available-features:
@@ -826,34 +824,35 @@ The following table shows a list of the available features for Location dataset.
 ================   =========     =============
 Name               Units         Description
 ================   =========     =============
-hometime           minutes       Time at home. Time spent at home in minutes. Home is the most visited significant location between 8 pm and 8 am including any pauses within a 200-meter radius.
+hometime           minutes       Time spent at home in minutes. Home is the most visited significant location between 8 pm and 8 am including any pauses within a 200-meter radius.
 disttravelled      meters        Distance travelled. This is total distance travelled over a day.
 rog                meters        The Radius of Gyration (RoG). It is a measure in meters of the area covered by a person over a day. A centroid is calculated for all the places (pauses) visited during a day and a weighted distance between all the places and the centroid is computed. The weights are proportional to the time spent in each place.
-maxdiam            meters        The Maximum diameter. The largest distance in meters between any two pauses.
-maxhomedist        meters        Max home distance. The maximum distance from home in meters.
-siglocsvisited     locations     Significant locations. The number of significant locations visited during the day. Significant locations are computed using k-means clustering over pauses found in the whole monitoring period. The number of clusters is found iterating from 1 to 200 stopping until the centroids of two significant locations are within 400 meters of one another.
-avgflightlen       meters        Avg flight length. Mean length of all flights
-stdflightlen       meters        Std flight length. The standard deviation of the length of all flights.
-avgflightdur       meters        Avg flight duration. Mean duration of all flights.
-stdflightdur       meters        Std flight duration. The standard deviation of the duration of all flights.
-probpause                        Pause probability. The fraction of a day spent in a pause (as opposed to a flight)
-siglocentropy                    Significant location entropy. Entropy measurement based on the proportion of time spent at each significant location visited during a day.
-minsmissing                            
-circdnrtn           	         Circadian routine. A continuous feature that can take any value between 0 and 1, where 0 represents a daily routine completely different from any other sensed days and 1 a routine the same as every other sensed day.
-wkenddayrtn        Weekend       circadian routine. Same as Circadian routine but computed separately for weekends and weekdays.
+maxdiam            meters        The largest distance in meters between any two pauses.
+maxhomedist        meters        The maximum distance from home in meters.
+siglocsvisited     locations     The number of significant locations visited during the day. Significant locations are computed using k-means clustering over pauses found in the whole monitoring period. The number of clusters is found iterating k from 1 to 200 stopping until the centroids of two significant locations are within 400 meters of one another.
+avgflightlen       meters        Mean length of all flights
+stdflightlen       meters        The standard deviation of the length of all flights.
+avgflightdur       meters        Mean duration of all flights.
+stdflightdur       meters        The standard deviation of the duration of all flights.
+probpause                        The fraction of a day spent in a pause (as opposed to a flight)
+siglocentropy      nats          Entropy measurement based on the proportion of time spent at each significant location visited during a day.
+circdnrtn           	         A continuous feature that can take any value between 0 and 1, where 0 represents a daily routine completely different from any other sensed days and 1 a routine the same as every other sensed day.
+wkenddayrtn        Weekend       Same as Circadian routine but computed separately for weekends and weekdays.
 ================   =========     =============
 
 **Assumptions/Observations:** 
 
+
+
 *Significant Locations Identified*
 
 (i.e. The clustering method used)
-Significant locations are determined using K-means clustering on locations that a patient visit over the course of the period of data collection. By setting K=K+1 and repeat clustering until two significant locations are within 100 meters of one another, the results from the previous step (K-1) can   be used as the total number of significant locations. See `Beiwe Summary Statistics`_. 
+Significant locations are determined using K-means clustering on locations that a patient visit over the course of the period of data collection. By setting K=K+1 and repeat clustering until two significant locations are within 100 meters of one another, the results from the previous step (K-1) can be used as the total number of significant locations. See `Beiwe Summary Statistics`_. 
 
 *Definition of Stationarity*
 
 (i.e., The length of time a person have to be not moving to qualify)
-This is based on a Pause-Flight model, The parameters used is a minimum pause duration of 300sec and a minimum pause distance of 60m. See the `Pause-Flight Model`_.
+This is based on a Pause-Flight model, The parameters used is a minimum pause duration of 300 seconds and a minimum pause distance of 60m. See the `Pause-Flight Model`_.
 
 *The Circadian Calculation*
 
@@ -913,14 +912,14 @@ See `Screen Config Code`_
 
 **Screen Rule Parameters:**
 
-===============    ===================
-Name	           Description
-===============    ===================
-day_segment        The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features_events     The different measures that can be retrieved from the events in the Screen dataset. See :ref:`Available Screen Events Features <screen-events-available-features>` Table below
-features_deltas     The different measures that can be retrieved from the episodes extracted from the Screen dataset. See :ref:`Available Screen Episodes Features <screen-episodes-available-features>` Table below
-episodes           The action that defines an episode
-===============    ===================
+=========================    ===================
+Name	                     Description
+=========================    ===================
+day_segment                  The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
+reference_hour_first_use     The reference point from which ``firstuseafter`` is to be computed, default is midnight
+features_deltas              The different measures that can be retrieved from the episodes extracted from the Screen dataset. See :ref:`Available Screen Episodes Features <screen-episodes-available-features>` Table below
+episode_types                The action that defines an episode
+=========================    ===================
 
 .. _screen-events-available-features:
 
@@ -941,15 +940,18 @@ episodes           The action that defines an episode
 
 The following table shows a list of the available features for Screen Episodes. 
 
-=============   =========    =============
-Name            Units        Description
-=============   =========    =============
-sumduration     seconds      Sum duration unlock: The sum duration of unlock episodes 
-maxduration     seconds      Max duration unlock: The maximum duration of unlock episodes
-minduration     seconds      Min duration unlock: The minimum duration of unlock episodes
-avgduration     seconds      Average duration unlock: The average duration of unlock episodes
-stdduration     seconds      Std duration unlock: The standard deviation of the duration of unlock episodes
-=============   =========    =============
+========================   =================    =============
+Name                       Units                Description
+========================   =================    =============
+countepisode               episodes             A count of the number of all unlock episodes within the ``day_segment``
+sumduration                seconds              The sum of the durations of all unlock episodes 
+maxduration                seconds              The maximum duration of any unlock episodes
+minduration                seconds              The minimum duration of any unlock episodes
+avgduration                seconds              The average duration of all unlock episodes
+stdduration                seconds              The standard deviation of the duration of all unlock episodes
+episodepersensedminutes    episodes/minutes     The ratio between the total number of unlock episodes in a ``day_segment`` divided by the total time (minutes) the phone was sensing data
+firstuseafter              seconds              The time in seconds at which the phone was used for the first time in the ``day_segment`` (including daily)
+========================   =================    =============
 
 **Assumptions/Observations:** 
 
@@ -1014,8 +1016,7 @@ See `Fitbit: Heart Rate Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features         The different measures that can be retrieved from the Fitbit: Heart Rate dataset. 
-                See :ref:`Available Fitbit: Heart Rate Features <fitbit-heart-rate-available-features>` Table below
+features        The different measures that can be retrieved from the Fitbit: Heart Rate dataset. See :ref:`Available Fitbit: Heart Rate Features <fitbit-heart-rate-available-features>` Table below
 ============    ===================
 
 .. _fitbit-heart-rate-available-features:
@@ -1033,16 +1034,18 @@ avghr                beats/mins     The average heart rate.
 medianhr             beats/mins     The median heart rate.
 modehr               beats/mins     The mode heart rate.
 stdhr                beats/mins     The standard deviation of heart rate.
-diffmaxmodehr        beats/mins     Diff max mode heart rate: The maximum heart rate minus mode heart rate.
-diffminmodehr        beats/mins     Diff min mode heart rate: The mode heart rate minus minimum heart rate.
-entropyhr                           Entropy heart rate: The entropy of heart rate.
-lengthoutofrange     minutes        Length out of range: The duration of time the heart rate is in the ``out_of_range`` zone in minute.
-lengthfatburn        minutes        Length fat burn: The duration of time the heart rate is in the ``fat_burn`` zone in minute.
-lengthcardio         minutes        Length cardio: The duration of time the heart rate is in the ``cardio`` zone in minute.
-lengthpeak           minutes        Length peak: The duration of time the heart rate is in the ``peak`` zone in minute
+diffmaxmodehr        beats/mins     The maximum heart rate minus mode heart rate.
+diffminmodehr        beats/mins     The mode heart rate minus minimum heart rate.
+entropyhr                           The entropy of heart rate.
+lengthoutofrange     minutes        The duration of time the heart rate is in the ``out_of_range`` zone in minute.
+lengthfatburn        minutes        The duration of time the heart rate is in the ``fat_burn`` zone in minute.
+lengthcardio         minutes        The duration of time the heart rate is in the ``cardio`` zone in minute.
+lengthpeak           minutes        The duration of time the heart rate is in the ``peak`` zone in minute
 ==================   ===========    =============
 
-**Assumptions/Observations:** Heart rate zones contain 4 zones: ``out_of_range`` zone, ``fat_burn`` zone, ``cardio`` zone, and ``peak`` zone. Please refer to the `Fitbit documentation`_ for detailed information of how to define those zones.
+**Assumptions/Observations:** 
+
+Heart rate zones contain 4 zones: ``out_of_range`` zone, ``fat_burn`` zone, ``cardio`` zone, and ``peak`` zone. Please refer to the `Fitbit documentation`_ for detailed information of how to define those zones.
 
 .. _fitbit-steps-sensor-doc:
 
@@ -1102,8 +1105,9 @@ See `Fitbit: Steps Config Code`_
 Name	                   Description
 =======================    ===================
 day_segment                The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features                    The different measures that can be retrieved from the dataset. See :ref:`Available Fitbit: Steps Features <fitbit-steps-available-features>` Table below
+features                   The different measures that can be retrieved from the dataset. See :ref:`Available Fitbit: Steps Features <fitbit-steps-available-features>` Table below
 threshold_active_bout      The maximum number of steps per minute necessary for a bout to be ``sedentary``. That is, if the step count per minute is greater than this value the bout has a status of ``active``. 
+include_zero_step_rows     Specifies whether the rows with steps will be used in analysis.
 =======================    ===================
 
 .. _fitbit-steps-available-features:
@@ -1115,24 +1119,27 @@ The following table shows a list of the available features for the Fitbit: Steps
 =========================   =========     =============
 Name                        Units         Description
 =========================   =========     =============
-sumallsteps                 steps         Sum all steps: The total step count.
-maxallsteps                 steps         Max all steps: The maximum step count
-minallsteps                 steps         Min all steps: The minimum step count
-avgallsteps                 steps         Avg all steps: The average step count
-stdallsteps                 steps         Std all steps: The standard deviation of step count
-countsedentarybout          bouts         Count sedentary bout: A count of sedentary bouts
-maxdurationsedentarybout    minutes       Max duration sedentary bout: The maximum duration of sedentary bouts
-mindurationsedentarybout    minutes       Min duration sedentary bout: The minimum duration of sedentary bouts
-avgdurationsedentarybout    minutes       Avg duration sedentary bout: The average duration of sedentary bouts
-stddurationsedentarybout    minutes       Std duration sedentary bout: The standard deviation of the duration of sedentary bouts
-countactivebout             bouts         Count active bout: A count of active bouts
-maxdurationactivebout       minutes       Max duration active bout: The maximum duration of active bouts
-mindurationactivebout       minutes       Min duration active bout: The minimum duration of active bouts
-avgdurationactivebout       minutes       Avg duration active bout: The average duration of active bouts
-stddurationactivebout       minutes       Std duration active bout: The standard deviation of the duration of active bouts
+sumallsteps                 steps         The total step count.
+maxallsteps                 steps         The maximum step count
+minallsteps                 steps         The minimum step count
+avgallsteps                 steps         The average step count
+stdallsteps                 steps         The standard deviation of step count
+countsedentarybout          bouts         A count of sedentary bouts
+maxdurationsedentarybout    minutes       The maximum duration of sedentary bouts
+mindurationsedentarybout    minutes       The minimum duration of sedentary bouts
+avgdurationsedentarybout    minutes       The average duration of sedentary bouts
+stddurationsedentarybout    minutes       The standard deviation of the duration of sedentary bouts
+sumdurationsedentarybout    minutes       The sum of durations of sedentary bouts.
+countactivebout             bouts         A count of active bouts
+maxdurationactivebout       minutes       The maximum duration of active bouts
+mindurationactivebout       minutes       The minimum duration of active bouts
+avgdurationactivebout       minutes       The average duration of active bouts
+stddurationactivebout       minutes       The standard deviation of the duration of active bouts
 =========================   =========     =============
 
-**Assumptions/Observations:** If the step count per minute smaller than the ``THRESHOLD_ACTIVE_BOUT`` (default value is 10), it is defined as sedentary status. Otherwise, it is defined as active status. One active/sedentary bout is a period during with the user is under ``active``/``sedentary`` status.
+**Assumptions/Observations:** 
+
+If the step count per minute smaller than the ``THRESHOLD_ACTIVE_BOUT`` (default value is 10), it is defined as sedentary status. Otherwise, it is defined as active status. One active/sedentary bout is a period during with the user is under ``active``/``sedentary`` status.
 	
 
 .. -------------------------Links ------------------------------------ ..
@@ -1141,8 +1148,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _`SMS Config Code`: https://github.com/carissalow/rapids/blob/f22d1834ee24ab3bcbf051bc3cc663903d822084/config.yaml#L38
 .. _AWARE: https://awareframework.com/what-is-aware/
 .. _`List of Timezones`: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-.. _sms_featue: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L1
-.. _sms_featues.R: https://github.com/carissalow/rapids/blob/master/src/features/sms_featues.R
+.. _sms_feature: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L1
+.. _sms_features.R: https://github.com/carissalow/rapids/blob/master/src/features/sms_featues.R
 .. _download_dataset: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L9
 .. _download_dataset.R: https://github.com/carissalow/rapids/blob/master/src/data/download_dataset.R
 .. _readable_datetime: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L21
@@ -1156,8 +1163,8 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _bluetooth_feature: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L63
 .. _bluetooth_features.R: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/bluetooth_features.R
 .. _`Accelerometer Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L98
-.. _accelerometer_featues: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L124
-.. _accelerometer_featues.py: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/accelerometer_featues.py
+.. _accelerometer_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L124
+.. _accelerometer_features.py: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/accelerometer_featues.py
 .. _`Applications Foreground Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L102
 .. _`Application Genres Config`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L54
 .. _application_genres: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L81
@@ -1174,6 +1181,7 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _google_activity_recognition_deltas.R: https://github.com/carissalow/rapids/blob/master/src/features/google_activity_recognition_deltas.R
 .. _activity_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L74
 .. _google_activity_recognition.py: https://github.com/carissalow/rapids/blob/master/src/features/google_activity_recognition.py
+.. _`Google’s Activity Recognition API`: https://developers.google.com/android/reference/com/google/android/gms/location/DetectedActivity
 .. _`Light Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L94
 .. _light_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L113
 .. _light_features.py: https://github.com/carissalow/rapids/blob/master/src/features/light_features.py

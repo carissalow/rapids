@@ -36,20 +36,8 @@ use the following code instead:
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 This is expected behavior. The advantage of using ``snakemake`` under the hood is that every time a file containing data is modified every rule that depends on that file will be re-executed to update their results. In this case, since ``download_dataset`` updates all the raw data, every single rule that depends on those raw files will be executed.
 
-4. Got an error while running ``snakemake packrat_install`` to setup the RAPIDS environment
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-**Error:**
-::
-
-    SyntaxError in line 19 of /Users/rapids/Snakefile:
-    Unexpected keyword expand in rule definition (Snakefile, line 19)
-
-**Solution:**
-
-Please make sure there are no extra whitespaces in Snakefile.
-
-5. Got an error like "Table XXX doesn't exist" while running the download_dataset rule.
----------------------------------------------------------------------------------------
+4. Got an error like ``Table XXX doesn't exist`` while running the download_dataset rule.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 ::
 
     Error in .local(conn, statement, ...) : 
