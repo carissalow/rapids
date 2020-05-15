@@ -150,6 +150,20 @@ rule all:
             zip, 
             model = models,
             scaler = scalers),
+        expand(
+            expand("data/processed/output_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{{model}}/{cv_method}/{source}_{day_segment}_{summarised}_{{scaler}}/merged_population_model_results.csv",
+                rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
+                cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"],
+                days_before_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_BEFORE_THRESHOLD"],
+                days_after_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_AFTER_THRESHOLD"],
+                cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
+                cv_method = config["PARAMS_FOR_ANALYSIS"]["CV_METHODS"],
+                source = config["PARAMS_FOR_ANALYSIS"]["SOURCES"],
+                day_segment = config["PARAMS_FOR_ANALYSIS"]["DAY_SEGMENTS"],
+                summarised = config["PARAMS_FOR_ANALYSIS"]["SUMMARISED"]), 
+            zip, 
+            model = models,
+            scaler = scalers),
 
         # Vizualisations
         expand("reports/figures/{pid}/{sensor}_heatmap_rows.html", pid=config["PIDS"], sensor=config["SENSORS"]),
