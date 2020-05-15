@@ -61,13 +61,13 @@ rule clean_features_for_individual_model:
     input:
         rules.merge_features_for_individual_model.output
     params:
-        cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"],
-        cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
-        rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
-        days_before_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_BEFORE_THRESHOLD"],
-        days_after_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_AFTER_THRESHOLD"]
+        cols_nan_threshold = "{cols_nan_threshold}",
+        cols_var_threshold = "{cols_var_threshold}",
+        days_before_threshold = "{days_before_threshold}",
+        days_after_threshold = "{days_after_threshold}",
+        rows_nan_threshold = "{rows_nan_threshold}",
     output:
-        "data/processed/{pid}/data_for_individual_model/{source}_{day_segment}_clean.csv"
+        "data/processed/{pid}/data_for_individual_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv"
     script:
         "../src/models/clean_features_for_model.R"
 
@@ -75,13 +75,13 @@ rule clean_features_for_population_model:
     input:
         rules.merge_features_for_population_model.output
     params:
-        cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"],
-        cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
-        rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
-        days_before_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_BEFORE_THRESHOLD"],
-        days_after_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_AFTER_THRESHOLD"]
+        cols_nan_threshold = "{cols_nan_threshold}",
+        cols_var_threshold = "{cols_var_threshold}",
+        days_before_threshold = "{days_before_threshold}",
+        days_after_threshold = "{days_after_threshold}",
+        rows_nan_threshold = "{rows_nan_threshold}",
     output:
-        "data/processed/data_for_population_model/{source}_{day_segment}_clean.csv"
+        "data/processed/data_for_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv"
     script:
         "../src/models/clean_features_for_model.R"
 
