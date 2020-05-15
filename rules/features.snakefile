@@ -167,12 +167,25 @@ rule applications_foreground_features:
     script:
         "../src/features/applications_foreground_features.py"
 
+rule wifi_features:
+    input: 
+        "data/raw/{pid}/wifi_with_datetime.csv"
+    params:
+        day_segment = "{day_segment}",
+        features = config["WIFI"]["FEATURES"]
+    output:
+        "data/processed/{pid}/wifi_{day_segment}.csv"
+    script:
+        "../src/features/wifi_features.R"
+
 rule fitbit_heartrate_features:
     input:
-        "data/raw/{pid}/fitbit_heartrate_with_datetime.csv",
+        heartrate_summary_data = "data/raw/{pid}/fitbit_heartrate_summary_with_datetime.csv",
+        heartrate_intraday_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv"
     params:
         day_segment = "{day_segment}",
         features = config["HEARTRATE"]["FEATURES"],
+        daily_features_from_summary_data = config["HEARTRATE"]["DAILY_FEATURES_FROM_SUMMARY_DATA"]
     output:
         "data/processed/{pid}/fitbit_heartrate_{day_segment}.csv"
     script:
@@ -193,13 +206,15 @@ rule fitbit_step_features:
     script:
         "../src/features/fitbit_step_features.py"
 
-rule wifi_features:
-    input: 
-        "data/raw/{pid}/wifi_with_datetime.csv"
+rule fitbit_sleep_features:
+    input:
+        sleep_summary_data = "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv",
+        sleep_intraday_data = "data/raw/{pid}/fitbit_sleep_intraday_with_datetime.csv"
     params:
         day_segment = "{day_segment}",
-        features = config["WIFI"]["FEATURES"]
+        sleep_types = config["SLEEP"]["SLEEP_TYPES"],
+        daily_features_from_summary_data = config["SLEEP"]["DAILY_FEATURES_FROM_SUMMARY_DATA"]
     output:
-        "data/processed/{pid}/wifi_{day_segment}.csv"
+        "data/processed/{pid}/fitbit_sleep_{day_segment}.csv"
     script:
-        "../src/features/wifi_features.R"
+        "../src/features/fitbit_sleep_features.py"

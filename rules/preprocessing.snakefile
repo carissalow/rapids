@@ -99,7 +99,8 @@ rule fitbit_with_datetime:
         local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
         fitbit_sensor = "{fitbit_sensor}"
     output:
-        "data/raw/{pid}/fitbit_{fitbit_sensor}_with_datetime.csv"
+        summary_data = "data/raw/{pid}/fitbit_{fitbit_sensor}_summary_with_datetime.csv",
+        intraday_data = "data/raw/{pid}/fitbit_{fitbit_sensor}_intraday_with_datetime.csv"
     script:
         "../src/data/fitbit_readable_datetime.py"
 

@@ -3,6 +3,7 @@ SENSORS: [applications_crashes, applications_foreground, applications_notificati
 
 FITBIT_TABLE: [fitbit_data]
 FITBIT_SENSORS: [heartrate, steps, sleep, calories]
+FITBIT_DATA_TYPE: [summary, intraday]
 
 # Participants to include in the analysis
 # You must create a file for each participant
@@ -114,6 +115,7 @@ APPLICATIONS_FOREGROUND:
 HEARTRATE:
   DAY_SEGMENTS: *day_segments
   FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "lengthoutofrange", "lengthfatburn", "lengthcardio", "lengthpeak"]
+  DAILY_FEATURES_FROM_SUMMARY_DATA: ["restinghr"] # calories related features might be inaccurate: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
 
 STEP:
   DAY_SEGMENTS: *day_segments
@@ -124,6 +126,11 @@ STEP:
   THRESHOLD_ACTIVE_BOUT: 10 # steps
   INCLUDE_ZERO_STEP_ROWS: True
 
+SLEEP:
+  DAY_SEGMENTS: *day_segments
+  SLEEP_TYPES: ["main", "nap", "all"]
+  DAILY_FEATURES_FROM_SUMMARY_DATA: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
+
 WIFI:
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
@@ -133,7 +140,7 @@ PARAMS_FOR_ANALYSIS:
   SOURCES: &sources ["phone_features", "fitbit_features", "phone_fitbit_features"]
   DAY_SEGMENTS: *day_segments
   PHONE_FEATURES: [accelerometer, applications_foreground, battery, call_incoming, call_missed, call_outgoing, activity_recognition, light, location_barnett, screen, sms_received, sms_sent]
-  FITBIT_FEATURES: [fitbit_heartrate, fitbit_step]
+  FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
   PHONE_FITBIT_FEATURES: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
   DEMOGRAPHIC_FEATURES: [age, gender, inpatientdays]
   CATEGORICAL_DEMOGRAPHIC_FEATURES: ["gender"]
