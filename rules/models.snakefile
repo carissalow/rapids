@@ -110,6 +110,21 @@ rule merge_features_and_targets:
     script:
         "../src/models/merge_features_and_targets.py"
  
+rule baseline:
+    input:
+        "data/processed/data_for_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_{summarised}.csv"
+    params:
+        cv_method = "{cv_method}",
+        rowsnan_colsnan_days_colsvar_threshold = "{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}",
+        demographic_features = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC_FEATURES"]
+    output:
+        "data/processed/output_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_{summarised}_{cv_method}_baseline.csv"
+    log:
+        "data/processed/output_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_{summarised}_{cv_method}_notes.log"
+    script:
+        "../src/models/baseline.py"
+ 
+ 
 rule modeling:
     input:
         data = "data/processed/data_for_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_{summarised}.csv"

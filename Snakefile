@@ -6,6 +6,11 @@ include: "rules/models.snakefile"
 include: "rules/reports.snakefile"
 include: "rules/mystudy.snakefile" # You can add snakfiles with rules tailored to your project
 
+models, scalers = [], []
+for model_name in config["PARAMS_FOR_ANALYSIS"]["MODEL_NAMES"]:
+    models = models + [model_name] * len(config["PARAMS_FOR_ANALYSIS"]["MODEL_SCALER"][model_name])
+    scalers = scalers + config["PARAMS_FOR_ANALYSIS"]["MODEL_SCALER"][model_name]
+
 rule all:
     input:
         # My study (this is an example of a rule created specifically for a study)
@@ -117,6 +122,16 @@ rule all:
                             days_before_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_BEFORE_THRESHOLD"],
                             days_after_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_AFTER_THRESHOLD"],
                             cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
+                            source = config["PARAMS_FOR_ANALYSIS"]["SOURCES"],
+                            day_segment = config["PARAMS_FOR_ANALYSIS"]["DAY_SEGMENTS"],
+                            summarised = config["PARAMS_FOR_ANALYSIS"]["SUMMARISED"]),
+        expand("data/processed/output_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_{summarised}_{cv_method}_baseline.csv",
+                            rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
+                            cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"],
+                            days_before_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_BEFORE_THRESHOLD"],
+                            days_after_threshold = config["PARAMS_FOR_ANALYSIS"]["PARTICIPANT_DAYS_AFTER_THRESHOLD"],
+                            cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
+                            cv_method = config["PARAMS_FOR_ANALYSIS"]["CV_METHODS"],
                             source = config["PARAMS_FOR_ANALYSIS"]["SOURCES"],
                             day_segment = config["PARAMS_FOR_ANALYSIS"]["DAY_SEGMENTS"],
                             summarised = config["PARAMS_FOR_ANALYSIS"]["SUMMARISED"]),
