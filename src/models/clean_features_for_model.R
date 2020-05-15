@@ -25,11 +25,11 @@ filter_participant_without_enough_days <- function(clean_features, days_before_t
 }
 
 clean_features <- read.csv(snakemake@input[[1]])
-cols_nan_threshold <- snakemake@params[["cols_nan_threshold"]]
-drop_zero_variance_columns <- snakemake@params[["cols_var_threshold"]]
-rows_nan_threshold <- snakemake@params[["rows_nan_threshold"]]
-days_before_threshold <- snakemake@params[["days_before_threshold"]]
-days_after_threshold <- snakemake@params[["days_after_threshold"]]
+cols_nan_threshold <- as.numeric(snakemake@params[["cols_nan_threshold"]])
+drop_zero_variance_columns <- as.logical(snakemake@params[["cols_var_threshold"]])
+rows_nan_threshold <- as.numeric(snakemake@params[["rows_nan_threshold"]])
+days_before_threshold <- as.numeric(snakemake@params[["days_before_threshold"]])
+days_after_threshold <- as.numeric(snakemake@params[["days_after_threshold"]])
 
 
 # We have to do this before and after dropping rows, that's why is duplicated
