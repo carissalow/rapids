@@ -251,7 +251,7 @@ This contains the reports of the results of the analysis done by the pipeline.
     │                         in any language e.g. Python, R, Julia, etc.
     ├── tests
     │   ├── data           <- Replication of the project root data directory for testing.
-    │   ├── scripts        <- Scripts for testing. The initial scripts are Python but eventually be any language.
+    │   ├── scripts        <- Scripts for testing.
     │   ├── settings       <- The config and settings files for running tests.
     │   └── Snakefile      <- The Snakefile for testing only.
     │

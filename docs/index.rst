@@ -32,3 +32,4 @@ Contents:
 
    develop/documentation
    develop/contributors
+   develop/testing
