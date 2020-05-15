@@ -85,6 +85,14 @@ rule clean_features_for_population_model:
     script:
         "../src/models/clean_features_for_model.R"
 
+rule nan_cells_ratio_of_cleaned_features:
+    input:
+        cleaned_features = "data/processed/data_for_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv"
+    output:
+        "data/processed/data_for_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_nancellsratio.csv"
+    script:
+        "../src/models/nan_cells_ratio_of_cleaned_features.py"
+ 
 rule modeling:
     input:
         cleaned_features = "data/processed/data_for_population_model/{source}_{day_segment}_clean.csv",
