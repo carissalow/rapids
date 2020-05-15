@@ -31,3 +31,4 @@ Contents:
    :caption: Developers
 
    develop/documentation
+   develop/contributors
