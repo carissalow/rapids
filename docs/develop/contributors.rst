@@ -46,7 +46,7 @@ Echhit Joshi, BS
 
 Echhit Joshi is a Masters student at the School of Computing and Information at University of Pittsburgh. His areas of interest are Machine/Deep Learning, Data Mining, and Analytics.
 
-`Echhit Joshi Linkedin Profile`_ https://www.linkedin.com/in/echhitjoshi/
+`Echhit Joshi Linkedin Profile`_
 
 Nicolas Leo, BS
 """"""""""""""""
