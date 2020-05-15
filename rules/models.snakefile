@@ -1,3 +1,5 @@
+ruleorder: nan_cells_ratio_of_cleaned_features > merge_features_and_targets
+
 def input_merge_features_of_single_participant(wildcards):
     if wildcards.source == "phone_fitbit_features":
         return expand("data/processed/{pid}/{features}_{day_segment}.csv", pid=wildcards.pid, features=config["PARAMS_FOR_ANALYSIS"]["PHONE_FEATURES"] + config["PARAMS_FOR_ANALYSIS"]["FITBIT_FEATURES"], day_segment=wildcards.day_segment)
@@ -93,11 +95,24 @@ rule nan_cells_ratio_of_cleaned_features:
     script:
         "../src/models/nan_cells_ratio_of_cleaned_features.py"
  
-rule modeling:
+rule merge_features_and_targets:
     input:
-        cleaned_features = "data/processed/data_for_population_model/{source}_{day_segment}_clean.csv",
+        cleaned_features = "data/processed/data_for_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv",
         demographic_features = "data/processed/data_for_population_model/demographic_features.csv",
         targets = "data/processed/data_for_population_model/targets_{summarised}.csv",
+    params:
+        summarised = "{summarised}",
+        cols_var_threshold = "{cols_var_threshold}",
+        numerical_operators = config["PARAMS_FOR_ANALYSIS"]["NUMERICAL_OPERATORS"],
+        categorical_operators = config["PARAMS_FOR_ANALYSIS"]["CATEGORICAL_OPERATORS"]
+    output:
+        "data/processed/data_for_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_{summarised}.csv"
+    script:
+        "../src/models/merge_features_and_targets.py"
+ 
+rule modeling:
+    input:
+        data = "data/processed/data_for_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_{summarised}.csv"
     params:
         model = "{model}",
         cv_method = "{cv_method}",
@@ -105,16 +120,16 @@ rule modeling:
         day_segment = "{day_segment}",
         summarised = "{summarised}",
         scaler = "{scaler}",
-        cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
-        numerical_operators = config["PARAMS_FOR_ANALYSIS"]["NUMERICAL_OPERATORS"],
         categorical_operators = config["PARAMS_FOR_ANALYSIS"]["CATEGORICAL_OPERATORS"],
         categorical_demographic_features = config["PARAMS_FOR_ANALYSIS"]["CATEGORICAL_DEMOGRAPHIC_FEATURES"],
         model_hyperparams = config["PARAMS_FOR_ANALYSIS"]["MODEL_HYPERPARAMS"],
-        rowsnan_colsnan_days_colsvar_threshold = "{rows_nan_threshold}_{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}"
+        rowsnan_colsnan_days_colsvar_threshold = "{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}"
     output:
-        fold_predictions = "data/processed/output_population_model/{rows_nan_threshold}_{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/fold_predictions.csv",
-        fold_metrics = "data/processed/output_population_model/{rows_nan_threshold}_{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/fold_metrics.csv",
-        overall_results = "data/processed/output_population_model/{rows_nan_threshold}_{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/overall_results.csv",
-        fold_feature_importances = "data/processed/output_population_model/{rows_nan_threshold}_{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/fold_feature_importances.csv"
+        fold_predictions = "data/processed/output_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/fold_predictions.csv",
+        fold_metrics = "data/processed/output_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/fold_metrics.csv",
+        overall_results = "data/processed/output_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/overall_results.csv",
+        fold_feature_importances = "data/processed/output_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/fold_feature_importances.csv"
+    log:
+        "data/processed/output_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/notes.log"
     script:
         "../src/models/modeling.py"

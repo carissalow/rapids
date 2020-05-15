@@ -144,7 +144,7 @@ PARAMS_FOR_ANALYSIS:
   PHONE_FITBIT_FEATURES: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
   DEMOGRAPHIC_FEATURES: [age, gender, inpatientdays]
   CATEGORICAL_DEMOGRAPHIC_FEATURES: ["gender"]
-  
+
   # Whether or not to include only days with enough valid sensed hours
   # logic can be found in rule phone_valid_sensed_days of rules/preprocessing.snakefile
   DROP_VALID_SENSED_DAYS: 
@@ -166,26 +166,35 @@ PARAMS_FOR_ANALYSIS:
   PARTICIPANT_DAYS_AFTER_THRESHOLD: 4
 
   # Extract summarised features from daily features with any of the following substrings
-  NUMERICAL_OPERATORS: ["count", "sum", "length", "avg"]
+  NUMERICAL_OPERATORS: ["count", "sum", "length", "avg", "restinghr"]
   CATEGORICAL_OPERATORS: ["mostcommon"]
-  
+
   MODEL_NAMES: ["LogReg", "kNN", "SVM", "DT", "RF", "GB", "XGBoost", "LightGBM"]
   CV_METHODS: ["LeaveOneOut"]
   SUMMARISED: ["summarised"] # "summarised" or "notsummarised"
-  SCALER: ["notnormalized", "minmaxscaler", "standardscaler", "robustscaler"]
   RESULT_COMPONENTS: ["fold_predictions", "fold_metrics", "overall_results", "fold_feature_importances"]
+
+  MODEL_SCALER:
+    LogReg: ["notnormalized", "minmaxscaler", "standardscaler", "robustscaler"]
+    kNN: ["minmaxscaler", "standardscaler", "robustscaler"]
+    SVM:  ["minmaxscaler", "standardscaler", "robustscaler"]
+    DT: ["notnormalized"]
+    RF: ["notnormalized"]
+    GB: ["notnormalized"]
+    XGBoost: ["notnormalized"]
+    LightGBM: ["notnormalized"]
 
   MODEL_HYPERPARAMS:
     LogReg:
       {"clf__C": [0.01, 0.1, 1, 10, 100], "clf__solver": ["newton-cg", "lbfgs", "liblinear", "saga"], "clf__penalty": ["l2"]}
     kNN:
-      {"clf__n_neighbors": range(1, 21, 2), "clf__weights": ["uniform", "distance"], "clf__metric": ["euclidean", "manhattan", "minkowski"]}
+      {"clf__n_neighbors": [1, 3, 5], "clf__weights": ["uniform", "distance"], "clf__metric": ["euclidean", "manhattan", "minkowski"]}
     SVM:
       {"clf__C": [0.01, 0.1, 1, 10, 100], "clf__gamma": ["scale", "auto"], "clf__kernel": ["rbf", "poly", "sigmoid"]}
     DT:
-      {"clf__criterion": ["gini", "entropy"], "clf__max_depth": [None, 3, 5, 7, 9], "clf__max_features": [None, "auto", "sqrt", "log2"]}
+      {"clf__criterion": ["gini", "entropy"], "clf__max_depth": [null, 3, 5, 7, 9], "clf__max_features": [null, "auto", "sqrt", "log2"]}
     RF:
-      {"clf__n_estimators": [2, 5, 10, 100],"clf__max_depth": [None, 3, 5, 7, 9]}
+      {"clf__n_estimators": [2, 5, 10, 100],"clf__max_depth": [null, 3, 5, 7, 9]}
     GB:
       {"clf__learning_rate": [0.01, 0.1, 1], "clf__n_estimators": [5, 10, 100, 200], "clf__subsample": [0.5, 0.7, 1.0], "clf__max_depth": [3, 5, 7, 9]}
     XGBoost:
