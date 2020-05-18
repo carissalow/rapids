@@ -114,13 +114,13 @@ Once RAPIDS is installed, follow these steps to start processing mobile data.
 
             ``MY_GROUP`` is a custom label for your credentials. It has to match ``DATABASE_GROUP`` in the ``config.yaml`` file_. It is not related to your database configuration.
 
-#. Setup the participants' devices whose data you want to analyze:
+#. Setup the participants' devices whose data you want to analyze, for this you have two options:
 
-    - **Automatically**. You can automatically include all devices that are stored in the ``aware_device`` table. If you want to control what devices and dates are included, see the Manual configuration::
+    #. **Automatically**. You can automatically include all devices that are stored in the ``aware_device`` table. If you want to control what devices and dates are included, see the Manual configuration::
 
         snakemake -j1 download_participants
 
-    - **Manually**. Create one file per participant in the ``rapids/data/external/`` directory. The file should NOT have an extension (i.e., no .txt). The name of the file will become the label for that participant in the pipeline.
+    #. **Manually**. Create one file per participant in the ``rapids/data/external/`` directory. The file should NOT have an extension (i.e., no .txt). The name of the file will become the label for that participant in the pipeline.
 
         - The first line of the file should be the Aware ``device_id`` for that participant. If one participant has multiple device_ids (i.e. Aware had to be re-installed), add all device_ids separated by commas.
         - The second line should list the device's operating system (``android`` or ``ios``)
