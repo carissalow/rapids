@@ -3,7 +3,7 @@
 Installation
 ===============
 
-This instructions have been tested on macOS (Catalina and Mojave) and Ubuntu 16.04. If you find a problem, please report it on our GitHub page.
+These instructions have been tested on macOS (Catalina and Mojave) and Ubuntu 16.04. If you find a problem, please create a GitHub issue or contact us.
 
 macOS (tested on Catalina 10.15)
 --------------------------------
@@ -17,11 +17,10 @@ macOS (tested on Catalina 10.15)
     - ``brew install mysql``
     - ``brew services start mysql``
 
-#. Install R, pandoc and rmarkdown:
+#. Install R and pandoc:
 
     - ``brew install r``
     - ``brew install pandoc``
-    - ``R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'``
 
 #. Install miniconda:
 
@@ -44,7 +43,7 @@ macOS (tested on Catalina 10.15)
     - ``snakemake renv_install``
     - ``snakemake renv_init``
     - ``snakemake renv_restore``
-        - This step will take several minutes to complete. Please be patient and let it run until completion. 
+        - This step could take several minutes to complete. Please be patient and let it run until completion. 
 
 #. See Usage section below. 
 
@@ -68,7 +67,6 @@ Linux (tested on Ubuntu 16.04)
     - ``brew install r``
     - ``brew install gcc@6`` (needed due to this bug_)
     - ``HOMEBREW_CC=gcc-6 brew install pandoc``
-    - ``R -e 'install.packages(c( "rmarkdown"), repos = "http://cran.us.r-project.org")'``
 
 #. Install miniconda using these instructions_
 
@@ -87,47 +85,47 @@ Linux (tested on Ubuntu 16.04)
     - ``snakemake renv_install``
     - ``snakemake renv_init``
     - ``snakemake renv_restore``
-        - This step will take several minutes to complete. Please be patient and let it run until completion. 
+        - This step could take several minutes to complete. Please be patient and let it run until completion. 
 
 #. See Usage section below.
 
 
 Usage
 ======
-Once you have the installation for your specific operating system complete, you can follow these steps to start using RAPIDS.
+Once RAPIDS is installed, follow these steps to start processing mobile data.
 
 .. _db-configuration:
 
 #. Configure the database connection:
 
     - Create an empty file called `.env` in the root directory (``rapids/``)
-    - Add the following lines and replace your database specific credentials (user, password, and host):
+    - Add the following lines and replace your database specific credentials (user, password, host, and database):
 
         .. code-block:: bash
         
             [MY_GROUP]
-            user=MyUSER
-            password=MyPassword
-            host=MyIP
+            user=MY_USER
+            password=MY_PASSWORD
+            host=MY_HOST
             port=3306
-            database=MyDB
+            database=MY_DATABASE
 
         .. note::
 
-            ``MY_GROUP`` is a custom label you assign when setting up the database configuration. It has to match ``DATABASE_GROUP`` in the ``config.yaml`` file_. It does not have to relate to your database credentials.
+            ``MY_GROUP`` is a custom label for your credentials. It has to match ``DATABASE_GROUP`` in the ``config.yaml`` file_. It is not related to your database configuration.
 
-#. Configure the participants you want to analyze:
+#. Setup the participants' devices whose data you want to analyze:
 
-    - **Automatically**. You can automatically include all devices that are stored in the ``aware_device`` table, if you have especial requirements see the Manual configuration::
+    - **Automatically**. You can automatically include all devices that are stored in the ``aware_device`` table. If you have especial requirements see the Manual configuration::
 
-        snakemake download_participants
+        snakemake -j1 download_participants
 
     - **Manually**. Create one file per participant in the ``rapids/data/external/`` directory. The file should NOT have an extension (i.e. no .txt). The name of the file will become the label for that participant in the pipeline.
 
         - The first line of the file should be the Aware ``device_id`` for that participant. If one participant has multiple device_ids (i.e. Aware had to be re-installed), add all device_ids separated by commas.
         - The second line should list the device's operating system (``android`` or ``ios``)
-        - The third line is a human friendly label that will appear in any plots for that participant.
-        - The forth line contains a start and end date separated by a comma (e.g. ``20201301,20202505``). Only data wihtin these dates will be included in the pipeline.
+        - The third line is an optional human friendly label that will appear in any plots for that participant.
+        - The forth line is optional and contains a start and end date separated by a comma ``YYYYMMDD,YYYYMMDD`` (e.g. ``20201301,20202505``). Only data wihtin these dates will be included in the pipeline, if no dates are specified all data from that device will be included.
 
     For example, let's say participant `p01` had two AWARE device_ids and they were running Android between Feb 1st 2020 and March 3rd 2020. Their participant file would be named ``p01`` and contain:
 
@@ -140,7 +138,7 @@ Once you have the installation for your specific operating system complete, you 
 
 #. Configure the sensors to process:
 
-    - The variable ``SENSORS`` in the ``config.yaml`` file_ should match existent sensor tables in your Aware database (See :ref:`rapids-structure` for more information). Each item in this list will be processed in RAPIDS.
+    - The variable ``SENSORS`` in the ``config.yaml`` file_ should match existent sensor tables in your Aware database (See :ref:`rapids-structure` for more information). Each sensor in this list will be processed in RAPIDS.
 
     .. note::
 
