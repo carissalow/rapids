@@ -8,7 +8,7 @@ These instructions have been tested on macOS (Catalina and Mojave) and Ubuntu 16
 macOS (tested on Catalina 10.15)
 --------------------------------
 
-#. Install dependenies (Homebrew if not installed):
+#. Install dependencies (Homebrew if not installed):
 
     - Install brew_ for Mac: ``/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"``
 
@@ -51,7 +51,7 @@ macOS (tested on Catalina 10.15)
 Linux (tested on Ubuntu 16.04)
 ------------------------------
 
-#. Install dependenies (Homebrew - if not installed):
+#. Install dependencies (Homebrew - if not installed):
 
     - ``sudo apt-get install libmariadb-client-lgpl-dev libxml2-dev libssl-dev``
     - Install brew_ for linux and add the following line to ~/.bashrc: ``export PATH=$HOME/.linuxbrew/bin:$PATH``
@@ -99,7 +99,7 @@ Once RAPIDS is installed, follow these steps to start processing mobile data.
 #. Configure the database connection:
 
     - Create an empty file called `.env` in the root directory (``rapids/``)
-    - Add the following lines and replace your database specific credentials (user, password, host, and database):
+    - Add the following lines and replace your database-specific credentials (user, password, host, and database):
 
         .. code-block:: bash
         
@@ -116,18 +116,18 @@ Once RAPIDS is installed, follow these steps to start processing mobile data.
 
 #. Setup the participants' devices whose data you want to analyze:
 
-    - **Automatically**. You can automatically include all devices that are stored in the ``aware_device`` table. If you have especial requirements see the Manual configuration::
+    - **Automatically**. You can automatically include all devices that are stored in the ``aware_device`` table. If you want to control what devices and dates are included, see the Manual configuration::
 
         snakemake -j1 download_participants
 
-    - **Manually**. Create one file per participant in the ``rapids/data/external/`` directory. The file should NOT have an extension (i.e. no .txt). The name of the file will become the label for that participant in the pipeline.
+    - **Manually**. Create one file per participant in the ``rapids/data/external/`` directory. The file should NOT have an extension (i.e., no .txt). The name of the file will become the label for that participant in the pipeline.
 
         - The first line of the file should be the Aware ``device_id`` for that participant. If one participant has multiple device_ids (i.e. Aware had to be re-installed), add all device_ids separated by commas.
         - The second line should list the device's operating system (``android`` or ``ios``)
-        - The third line is an optional human friendly label that will appear in any plots for that participant.
-        - The forth line is optional and contains a start and end date separated by a comma ``YYYYMMDD,YYYYMMDD`` (e.g. ``20201301,20202505``). Only data wihtin these dates will be included in the pipeline, if no dates are specified all data from that device will be included.
+        - The third line is an optional human-friendly label that will appear in any plots for that participant.
+        - The fourth line is optional and contains a start and end date separated by a comma ``YYYYMMDD,YYYYMMDD`` (e.g., ``20201301,20202505``). If these dates are specified, only data within this range will be processed, otherwise, all data from the device(s) will be used.
 
-    For example, let's say participant `p01` had two AWARE device_ids and they were running Android between Feb 1st 2020 and March 3rd 2020. Their participant file would be named ``p01`` and contain:
+    For example, let's say participant `p01` had two AWARE device_ids and they were running Android between February 1st 2020 and March 3rd 2020. Their participant file would be named ``p01`` and contain:
 
         .. code-block:: bash
 
@@ -139,6 +139,7 @@ Once RAPIDS is installed, follow these steps to start processing mobile data.
 #. Configure the sensors to process:
 
     - The variable ``SENSORS`` in the ``config.yaml`` file_ should match existent sensor tables in your Aware database (See :ref:`rapids-structure` for more information). Each sensor in this list will be processed in RAPIDS.
+
 
     .. note::
 
