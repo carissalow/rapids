@@ -22,11 +22,11 @@ The following is a simple guide to testing RAPIDS. All files necessary for testi
     │   └── Snakefile                   <- The Snakefile for testing only. It contains the rules that you would be testing.
     │
 
-To begin testing  RAPIDS place the input data ``csv`` files in the ``tests/data/raw`` directory. The expected output of RAPIDS with the raw input data should be placed in the ``tests/data/processesd``. 
+To begin testing  RAPIDS place the input data ``csv`` files in ``tests/data/raw`` and ``data/raw``. The expected output files of RAPIDS after processing the input data should be placed in ``tests/data/processesd``. 
 
-Copy all files from ``tests/data/raw`` directory into the ``data/raw`` directory. The rule(s) that are to be tested must be placed in the ``tests/Snakemake`` file. The current ``tests/Snakemake`` is a good example of how to define the rules that are to be tested. 
+The Snakemake rule(s) that are to be tested must be placed in the ``tests/Snakemake`` file. The current ``tests/Snakemake`` is a good example of how to define them. 
 
-Store your test scripts in the ``tests/scripts`` directory. Next, you can run all rules in the ``tests/Snakemake`` with:
+After storing your test scripts in ``tests/scripts``, you can run all rules in the ``tests/Snakemake`` with:
 
 ::
 
@@ -38,7 +38,7 @@ Or run a single rule with
 
     snakemake --profile tests/settings -R sms_features
 
-The above example runs the ``sms_features`` rule that is defined in the ``tests/Snakemake`` file. Replace this with the name of the rule you want to test. The ``--profile`` flag is used to run ``Snakemake`` with the ``Snakfile`` and ``confi.yaml`` file stored in ``tests/settings``. 
+The above example runs the ``sms_features`` rule that is defined in the ``tests/Snakemake`` file. Replace this with the name of the rule you want to test. The ``--profile`` flag is used to run Snakemake with the ``Snakfile`` and ``testing_config.yaml`` file stored in ``tests/settings``. 
 
 Once RAPIDS has processed the sample data, the next step is to test the output. Testing is implemented using Python's Unittest. To run all the tests scripts stored in the ``tests/scripts`` directory use the following command:
 
@@ -46,7 +46,7 @@ Once RAPIDS has processed the sample data, the next step is to test the output. 
 
     python -m unittest discover tests/scripts/ -v
 
-The ``discover`` flag finds and runs all of the test scripts within the ``tests/scripts`` directory that start with ``test_``. The name of all test methods in the these scripts should also start with ``test_``.
+The ``discover`` flag finds and runs all the test scripts within the ``tests/scripts`` directory that start with ``test_``. The name of all test methods in these scripts should also start with ``test_``.
 
 The following is a snippet of the output you should see after running your test. 
 
