@@ -1,7 +1,7 @@
 RAPIDS Contributors
 ====================
 
-Currently the main contributors are from the Mobile Sensing + Health Institute (MoSHI) and they are listed below but if you are interested in contributing feel free to submit a pull request or contact any of the contributors
+Currently, RAPIDS is being developed by the Mobile Sensing + Health Institute (MoSHI) but if you are interested in contributing feel free to submit a pull request or contact us.
 
 
 Julio Vega, PhD
