@@ -511,7 +511,7 @@ Features can be computed by app, by apps grouped under a single category (genre)
 
 We provide three ways of classifying and app within a category (genre): a) by automatically scraping its official category from the Google Play Store, b) by using the catalogue created by Stachl et al. which we provide in RAPIDS (``data/external/``), or c) by manually creating a personalized catalogue.
 
-The way you choose strategy a, b or c is by modifying ``APPLICATION_GENRES`` keys and values. Set ``CATALOGUE_SOURCE`` to ``FILE`` if you want to use a CSV file as catalogue or to ``GOOGLE`` if you want to scrape the genres from the Play Store. By default``CATALOGUE_FILE`` points to the catalogue created by  Stachl et al. and you can change this path to your own catalogue that follows the same format. In addition, set ``SCRAPE_MISSING_GENRES`` to true if you are using a FILE catalogue and you want to scrape from the Play Store any missing genres and ``UPDATE_CATALOGUE_FILE`` to true if you want to save those scrapped genres back into the FILE.
+The way you choose strategy a, b or c is by modifying ``APPLICATION_GENRES`` keys and values. Set ``CATALOGUE_SOURCE`` to ``FILE`` if you want to use a CSV file as catalogue or to ``GOOGLE`` if you want to scrape the genres from the Play Store. By default ``CATALOGUE_FILE`` points to the catalogue created by  Stachl et al. and you can change this path to your own catalogue that follows the same format. In addition, set ``SCRAPE_MISSING_GENRES`` to true if you are using a FILE catalogue and you want to scrape from the Play Store any missing genres and ``UPDATE_CATALOGUE_FILE`` to true if you want to save those scrapped genres back into the FILE.
 
 .. _battery-sensor-doc:
 
