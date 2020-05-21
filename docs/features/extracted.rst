@@ -439,7 +439,6 @@ See `Applications Foreground Config Code`_
 **Available Platforms:**    
 
 - Android
-- iOS
 
 **Snakefile entry:**
 
@@ -481,12 +480,12 @@ See `Applications Foreground Config Code`_
 Name	                Description
 ====================    ===================
 day_segment             The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-single_categories       A single category of apps that will be included  for the data collection. The available categories can be defined in the ``APPLICATION_GENRES`` in the ``config`` file. See :ref:`Assumtions and Observations <applications-foreground-observations>`.
-multiple_categories     Categories of apps that will be included  for the data collection. The available categories can be defined in the ``APPLICATION_GENRES`` in the ``config`` file. See :ref:`Assumtions and Observations <applications-foreground-observations>`. 
-single_apps             Any Android app can be included in the list of apps used to collect data by adding the package name to this list. (E.g. Youtube)
-excluded_categories     Categories of apps that will be excluded for the data collection. The available categories can be defined in the ``APPLICATION_GENRES`` in the ``config`` file. See :ref:`Assumtions and Observations <applications-foreground-observations>`. 
-excluded_apps           Any Android app can be excluded from the list of apps used to collect data by adding the package name to this list.
-features                The different measures that can be retrieved from the dataset. See :ref:`Available Applications Foreground Features <applications-foreground-available-features>` Table below
+single_categories       App categories to be included in the feature extraction computation. See ``APPLICATION_GENRES`` in this file to add new categories or use the catalogue we provide and read :ref:`Assumtions and Observations <applications-foreground-observations>` for more information.
+multiple_categories     You can group multiple categories into meta categories, for example ``social: ["socialnetworks", "socialmediatools"]``.
+single_apps             Apps to be included in the feature extraction computation. Use their package name, for example, ``com.google.android.youtube`` or the reserved word ``top1global`` (the most used app by a participant over the whole monitoring study).
+excluded_categories     App categories to be excluded in the feature extraction computation. See ``APPLICATION_GENRES`` in this file to add new categories or use the catalogue we provide and read :ref:`Assumtions and Observations <applications-foreground-observations>` for more information.
+excluded_apps           Apps to be excluded in the feature extraction computation. Use their package name, for example: ``com.google.android.youtube``
+features                The features to be extracted. See :ref:`Available Applications Foreground Features <applications-foreground-available-features>` Table below
 ====================    ===================
 
 .. _applications-foreground-available-features:
@@ -508,9 +507,11 @@ frequencyentropy     nats        The entropy of the used apps within a category 
 
 **Assumptions/Observations:** 
 
-The ``APPLICATION_GENRES`` configuration (See `Application Genres Config`_ setting defines that catalogue of categories of apps that available for the pipeline. The ``CATALOGUE_SOURCE`` defines the source of the catalogue which can be ``FILE`` i.e. a custom file like the file provided with this project (See `Custom Catalogue File`_) or ``GOOGLE`` which is category classifications provided by Google. The ``CATALOGUE_FILE`` variable defines the path to the location of the custom file that contains the custom app catalogue. If ``CATALOGUE_SOURCE`` is equal to ``FILE``, the ``UPDATE_CATALOGUE_FILE`` variable specifies (``TRUE`` or ``FALSE``) whether or not to update ``CATALOGUE_FILE``, if ``CATALOGUE_SOURCE`` is equal to ``GOOGLE`` all scraped genres will be saved to ``CATALOGUE_FILE``. The ``SCRAPE_MISSING_GENRES`` is a ``TRUE`` or ``FALSE`` variable that specifies whether or not to scrape missing genres, only effective if ``CATALOGUE_SOURCE`` is equal to ``FILE``. If ``CATALOGUE_SOURCE`` is equal to ``GOOGLE``, all genres are scraped anyway. It should be noted that the ``top1global`` option finds and uses the most used app for that participant for the study. 
+Features can be computed by app, by apps grouped under a single category (genre) and by multiple categories grouped together (meta categories). For example, we can get features for Facebook, for Social Network Apps (including Facebook and others) or for a meta category called Social formed by Social Network and Social Media Tools categories. 
 
+We provide three ways of classifying and app within a category (genre): a) by automatically scraping its official category from the Google Play Store, b) by using the catalogue created by Stachl et al. which we provide in RAPIDS (``data/external/``), or c) by manually creating a personalized catalogue.
 
+The way you choose strategy a, b or c is by modifying ``APPLICATION_GENRES`` keys and values. Set ``CATALOGUE_SOURCE`` to ``FILE`` if you want to use a CSV file as catalogue or to ``GOOGLE`` if you want to scrape the genres from the Play Store. By default``CATALOGUE_FILE`` points to the catalogue created by  Stachl et al. and you can change this path to your own catalogue that follows the same format. In addition, set ``SCRAPE_MISSING_GENRES`` to true if you are using a FILE catalogue and you want to scrape from the Play Store any missing genres and ``UPDATE_CATALOGUE_FILE`` to true if you want to save those scrapped genres back into the FILE.
 
 .. _battery-sensor-doc:
 
