@@ -221,15 +221,15 @@ Name                        Units         Description
 =========================   =========     =============
 count                       calls         Number of calls of a particular ``call_type`` occurred during a particular ``day_segment``.
 distinctcontacts            contacts      Number of distinct contacts that are associated with a particular ``call_type`` for a particular ``day_segment``
-meanduration                minutes       The mean duration of all calls of a particular ``call_type`` during a particular ``day_segment``.
-sumduration                 minutes       The sum of the duration of all calls of a particular ``call_type`` during a particular ``day_segment``.
-minduration                 minutes       The duration of the shortest call of a particular ``call_type`` during a particular ``day_segment``.
-maxduration                 minutes       The duration of the longest call of a particular ``call_type`` during a particular ``day_segment``.
-stdduration                 minutes       The standard deviation of the duration of all the calls of a particular ``call_type`` during a particular ``day_segment``.
-modeduration                minutes       The mode of the duration of all the calls of a particular ``call_type`` during a particular ``day_segment``.
+meanduration                seconds       The mean duration of all calls of a particular ``call_type`` during a particular ``day_segment``.
+sumduration                 seconds       The sum of the duration of all calls of a particular ``call_type`` during a particular ``day_segment``.
+minduration                 seconds       The duration of the shortest call of a particular ``call_type`` during a particular ``day_segment``.
+maxduration                 seconds       The duration of the longest call of a particular ``call_type`` during a particular ``day_segment``.
+stdduration                 seconds       The standard deviation of the duration of all the calls of a particular ``call_type`` during a particular ``day_segment``.
+modeduration                seconds       The mode of the duration of all the calls of a particular ``call_type`` during a particular ``day_segment``.
 entropyduration             nats          The estimate of the Shannon entropy for the the duration of all the calls of a particular ``call_type`` during a particular ``day_segment``.
-timefirstcall               minutes       The time in minutes between 12:00am (midnight) and the first call of ``call_type``.
-timelastcall                minutes       The time in minutes between 12:00am (midnight) and the last call of ``call_type``.
+timefirstcall               hours         The time in hours between 12:00am (midnight) and the first call of ``call_type``.
+timelastcall                hours         The time in hours between 12:00am (midnight) and the last call of ``call_type``.
 countmostfrequentcontact    calls         The number of calls of a particular ``call_type`` during a particular ``day_segment`` of the most frequent contact throughout the monitored period.
 =========================   =========     =============
 
@@ -244,8 +244,8 @@ Name                        Units         Description
 =========================   =========     =============
 count                       calls         Number of ``missed`` calls that occurred during a particular ``day_segment``.
 distinctcontacts            contacts      Number of distinct contacts that are associated with ``missed`` calls for a particular ``day_segment``
-timefirstcall               minutes       The time in minutes from 12:00am (Midnight) that the first ``missed`` call occurred.
-timelastcall                minutes       The time in minutes from 12:00am (Midnight) that the last ``missed`` call occurred.
+timefirstcall               hours         The time in hours from 12:00am (Midnight) that the first ``missed`` call occurred.
+timelastcall                hours         The time in hours from 12:00am (Midnight) that the last ``missed`` call occurred.
 countmostfrequentcontact    calls         The number of ``missed`` calls during a particular ``day_segment`` of the most frequent contact throughout the monitored period.
 =========================   =========     =============
 
