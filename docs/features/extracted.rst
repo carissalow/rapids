@@ -596,7 +596,7 @@ maxconsumptionrate      episodes/hours    The highest of all episodes’ consump
 **Assumptions/Observations:** 
 
 
-.. _google-activity-recognition-sensor-doc:
+.. _activity-recognition-sensor-doc:
 
 Activity Recognition
 """"""""""""""""""""""""""""
@@ -607,34 +607,32 @@ Activity Recognition
 
 **Snakefile entry to compute these features:**
 
-    | ``expand("data/processed/{pid}/google_activity_recognition_{segment}.csv",pid=config["PIDS"],``
-    |                ``segment = config["GOOGLE_ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]),``
+    | expand("data/processed/{pid}/activity_recognition_{segment}.csv",pid=config["PIDS"], 
+    |                        segment = config["ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]),
     
 **Snakemake rule chain:**
 
-- Rule ``rules/preprocessing.snakefile/download_dataset`` runs ``src/data/download_dataset.R``
-- Rule ``rules/preprocessing.snakefile/readable_datetime`` runs ``src/data/readable_datetime.R``
-- Rule ``rules/preprocessing.snakefile/unify_ios_android`` runs ``src/data/unify_ios_android.R``
-- Rule ``rules/features.snakefile/google_activity_recognition_deltas`` runs ``src/features/activity_recognition_deltas.R``
-- Rule ``rules/features.snakefile/ios_activity_recognition_deltas`` runs ``src/features/activity_recognition_deltas.R``
-- Rule ``rules/features.snakefile/activity_features`` runs ``src/features/activity_recognition.py``
+- Rule ``rules/preprocessing.snakefile/download_dataset`` 
+- Rule ``rules/preprocessing.snakefile/readable_datetime`` 
+- Rule ``rules/preprocessing.snakefile/unify_ios_android`` 
+- Rule ``rules/features.snakefile/google_activity_recognition_deltas``
+- Rule ``rules/features.snakefile/ios_activity_recognition_deltas``
+- Rule ``rules/features.snakefile/activity_features``
     
 .. _activity-recognition-parameters:
 
-**Activity Recognition Rule Parameters:**
+**Rule Parameters (activity_features):**
 
 ============    ===================
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features        Features that can be computed. See :ref:`Activity Recognition Features <activity-recognition-available-features>` Table below
+features        Features to be computed, see table below
 ============    ===================
 
 .. _activity-recognition-available-features:
 
 **Available Activity Recognition Features**
-
-The following table shows a list of the available features for the Google Activity Recognition dataset. 
 
 ======================   ============    =============
 Name                     Units           Description
@@ -650,9 +648,9 @@ sumvehicle               minutes         The total duration of episodes of on ve
 
 **Assumptions/Observations:**
 
-iOS Activity Recognition data labels are unified with Google Activity Recognition levels this way, "automotive" to "in_vehicle", cycling" to "on_bicycle", "walking" and "running" to "on_foot, "stationary" to "still". In addition, iOS activity pairs formed by stationary and automotive labels (driving but stopped at a traffic light) are transformed to automotive only.
+iOS Activity Recognition data labels are unified with Google Activity Recognition labels: "automotive" to "in_vehicle", "cycling" to "on_bicycle", "walking" and "running" to "on_foot", "stationary" to "still". In addition, iOS activity pairs formed by "stationary" and "automotive" labels (driving but stopped at a traffic light) are transformed to "automotive" only.
 
-In AWARE, Activity Recognition data for Google (Android) and iOS is stored in two different database tables, RAPIDS (via Snakemake) automatically infers what platform each participant belongs to based on their participant file (``data/external/``) which in turn takes this information from the ``aware_device`` table (see ``optional_ar_input`` function in ``rules/features.snakefile``. 
+In AWARE, Activity Recognition data for Google (Android) and iOS are stored in two different database tables, RAPIDS (via Snakemake) automatically infers what platform each participant belongs to based on their participant file (``data/external/``) which in turn takes this information from the ``aware_device`` table (see ``optional_ar_input`` function in ``rules/features.snakefile``). 
 
 .. _light-doc:
 
