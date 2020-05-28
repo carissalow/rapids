@@ -321,53 +321,26 @@ Applications Foreground
 
 See `Applications Foreground Config Code`_
 
-**Available Epochs:**      
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
-- daily 
-- morning
-- afternoon
-- evening
-- night
+**Available Platforms:** Android
 
-**Available Platforms:**    
-
-- Android
-
-**Snakefile entry:**
-
-..  - Download raw Applications Foreground dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-
-..  - Apply readable dateime Applications Foreground dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-    
-..  - Genre categorization of Applications Foreground dataset: ``expand("data/interim/{pid}/applications_foreground_with_datetime_with_genre.csv", pid=config["PIDS"]),``
-
-- Extract Applications Foreground Features:
+**Snakefile entry to compute these features:**
 
     | ``expand("data/processed/{pid}/applications_foreground_{day_segment}.csv",``
     |                      ``pid=config["PIDS"],`` 
     |                      ``day_segment = config["APPLICATIONS_FOREGROUND"]["DAY_SEGMENTS"]),``
 
-**Rule Chain:**
+**Snakemake rule chain:**
 
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-        - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
-
-    - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/application_genres`` - See the application_genres_ rule
-
-    - **Script:** ``../src/data/application_genres.R`` - See the application_genres.R_ script
-
-- **Rule:** ``rules/features.snakefile/applications_foreground_features`` - See the applications_foreground_features_ rule.
-
-    - **Script:** ``src/features/applications_foreground_features.py`` - See the applications_foreground_features.py_ script.
+- Rule ``rules/preprocessing.snakefile/download_dataset`` 
+- Rule ``rules/preprocessing.snakefile/readable_datetime`` 
+- Rule ``rules/preprocessing.snakefile/application_genres``
+- Rule ``rules/features.snakefile/applications_foreground_features`` 
    
 .. _applications-foreground-parameters:
 
-**Applications Foreground Rule Parameters:**
+**Applications Foreground Rule Parameters (applications_foreground_features):**
 
 ====================    ===================
 Name	                Description
@@ -378,14 +351,12 @@ multiple_categories     You can group multiple categories into meta categories, 
 single_apps             Apps to be included in the feature extraction computation. Use their package name, for example, ``com.google.android.youtube`` or the reserved word ``top1global`` (the most used app by a participant over the whole monitoring study).
 excluded_categories     App categories to be excluded in the feature extraction computation. See ``APPLICATION_GENRES`` in this file to add new categories or use the catalogue we provide and read :ref:`Assumtions and Observations <applications-foreground-observations>` for more information.
 excluded_apps           Apps to be excluded in the feature extraction computation. Use their package name, for example: ``com.google.android.youtube``
-features                The features to be extracted. See :ref:`Available Applications Foreground Features <applications-foreground-available-features>` Table below
+features        Features to be computed, see table below
 ====================    ===================
 
 .. _applications-foreground-available-features:
 
 **Available Applications Foreground Features**
-
-The following table shows a list of the available features for the Applications Foreground dataset 
 
 ==================   =========   =============
 Name                 Units       Description
@@ -404,7 +375,9 @@ Features can be computed by app, by apps grouped under a single category (genre)
 
 We provide three ways of classifying and app within a category (genre): a) by automatically scraping its official category from the Google Play Store, b) by using the catalogue created by Stachl et al. which we provide in RAPIDS (``data/external/``), or c) by manually creating a personalized catalogue.
 
-The way you choose strategy a, b or c is by modifying ``APPLICATION_GENRES`` keys and values. Set ``CATALOGUE_SOURCE`` to ``FILE`` if you want to use a CSV file as catalogue or to ``GOOGLE`` if you want to scrape the genres from the Play Store. By default ``CATALOGUE_FILE`` points to the catalogue created by  Stachl et al. and you can change this path to your own catalogue that follows the same format. In addition, set ``SCRAPE_MISSING_GENRES`` to true if you are using a FILE catalogue and you want to scrape from the Play Store any missing genres and ``UPDATE_CATALOGUE_FILE`` to true if you want to save those scrapped genres back into the FILE.
+The way you choose strategy a, b or c is by modifying ``APPLICATION_GENRES`` keys and values. Set ``CATALOGUE_SOURCE`` to ``FILE`` if you want to use a CSV file as catalogue (strategy b and c) or to ``GOOGLE`` if you want to scrape the genres from the Play Store (strategy a). By default ``CATALOGUE_FILE`` points to the catalogue created by  Stachl et al. (strategy b) and you can change this path to your own catalogue that follows the same format (strategy c). In addition, set ``SCRAPE_MISSING_GENRES`` to true if you are using a FILE catalogue and you want to scrape from the Play Store any missing genres and ``UPDATE_CATALOGUE_FILE`` to true if you want to save those scrapped genres back into the FILE.
+
+The genre catalogue we provide was shared as part of the Supplemental Materials of Stachl, C., Au, Q., Schoedel, R., Buschek, D., Völkel, S., Schuwerk, T., … Bühner, M. (2019, June 12). Behavioral Patterns in Smartphone Usage Predict Big Five Personality Traits. https://doi.org/10.31234/osf.io/ks4vd 
 
 .. _battery-sensor-doc:
 
