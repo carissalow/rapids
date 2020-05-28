@@ -704,6 +704,7 @@ See `Fitbit: Sleep Config Code`_
 
     
 **Snakemake rule chain:**
+
 - Rule ``rules/preprocessing.snakefile/download_dataset``
 - Rule ``rules/preprocessing.snakefile/fitbit_with_datetime``
 - Rule ``rules/features.snakefile/fitbit_sleep_features``
