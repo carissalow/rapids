@@ -1,3 +1,4 @@
+.. _minimal-working-example:
 Minimal Working Example 
 =======================
 
