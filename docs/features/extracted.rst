@@ -57,7 +57,7 @@ Global Parameters
 
     Therefore, we define a valid hour as those that contain at least a certain number of valid bins. In turn, a valid bin are those that contain at least one row of data from any sensor logged within that period. We divide an hour into N bins of size ``BIN_SIZE`` (in minutes) and we mark an hour as valid if contains at least ``MIN_BINS_PER_HOUR`` of valid bins (out of the total possible number of bins that can be captured in an hour i.e. out of 60min/``BIN_SIZE`` bins). Days with valid sensed hours less than ``MIN_VALID_HOURS`` will be excluded form the output of this file. See PHONE_VALID_SENSED_DAYS_ in ``config.yaml``.
 
-    In RAPIDS, you will find that we use ``phone_sensed_bins`` (a list of all valid and invalid bins of all monitored days) to improve the estimation of features that are ratios over time periods like ``episodepersensedminutes`` of :ref:`Screen<screen-sensor-doc>`.
+    In RAPIDS, you will find that we use ``phone_sensed_bins`` (a list of all valid and invalid bins of all monitored days) to improve the estimation of features that are ratios over time periods like ``episodepersensedminutes`` of :ref:`Screen<screen-sensor-doc>` or for resampling data like fused location coordinates.
 
 
 .. _individual-sensor-settings:
@@ -430,6 +430,7 @@ maxconsumptionrate      episodes/hours    The highest of all episodes’ consump
 =====================   ===============   =============
 
 **Assumptions/Observations:** 
+
 For Aware iOS client V1 we swap battery status 3 to 5 and 1 to 3, client V2 does not have this problem.
 
 .. _activity-recognition-sensor-doc:
@@ -443,8 +444,8 @@ Activity Recognition
 
 **Snakefile entry to compute these features:**
 
-    | ``expand("data/processed/{pid}/activity_recognition_{segment}.csv",pid=config["PIDS"], 
-    |                        segment = config["ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]),``
+    | ``expand("data/processed/{pid}/activity_recognition_{segment}.csv",pid=config["PIDS"],`` 
+    |                        ``segment = config["ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]),``
     
 **Snakemake rule chain:**
 
@@ -495,25 +496,11 @@ Light
 
 See `Light Config Code`_
 
-**Available Epochs:**      
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
-    - daily 
-    - morning
-    - afternoon
-    - evening
-    - night
+**Available Platforms:** Android
 
-**Available Platforms:**    
-
-    - Android
-
-**Snakefile entry:**
-
-..    - Download raw Sensor dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-
-..    - Apply readable dateime to Sensor dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-    
-- Extract Light Features:
+**Snakefile entry to compute these features:**
 
     | ``expand("data/processed/{pid}/light_{day_segment}.csv",``
     |                      ``pid=config["PIDS"],`` 
@@ -522,33 +509,23 @@ See `Light Config Code`_
 **Rule Chain:**
 
 - **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-    - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
-
 - **Rule:** ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
-
-    - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
-
 - **Rule:** ``rules/features.snakefile/light_features`` - See the light_features_ rule.
-
-    - **Script:** ``src/features/light_features.py`` - See the light_features.py_ script.
 
 .. _light-parameters:
 
-**Light Rule Parameters:**
+**Light Rule Parameters (light_features):**
 
 ============    ===================
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features        The different measures that can be retrieved from the Light dataset. See :ref:`Available Light Features <light-available-features>` Table below
+features        Features to be computed, see table below
 ============    ===================
 
 .. _light-available-features:
 
 **Available Light Features**
-
-The following table shows a list of the available features for the Light dataset. 
 
 ===========   =========     =============
 Name          Units         Description
@@ -570,68 +547,46 @@ Location (Barnett’s) Features
 """"""""""""""""""""""""""""""
 Barnett’s location features are based on the concept of flights and pauses. GPS coordinates are converted into a 
 sequence of flights (straight line movements) and pauses (time spent stationary). Data is imputed before features 
-are computed (https://arxiv.org/abs/1606.06328)
+are computed. See Ian Barnett, Jukka-Pekka Onnela, Inferring mobility measures from GPS traces with missing data, Biostatistics, Volume 21, Issue 2, April 2020, Pages e98–e112, https://doi.org/10.1093/biostatistics/kxy059. The code for these features was made open source by Ian Barnett (https://scholar.harvard.edu/ibarnett/software/gpsmobility).
 
 See `Location (Barnett’s) Config Code`_
 
-**Available Epochs:**      
+**Available Epochs (day_segment) :** daily
 
-    - daily 
+**Available Platforms:** Android and iOS
 
-**Available Platforms:**    
+**Snakefile entry to compute these features:**
 
-    - Android
-    - iOS
-
-**Snakefile entry:**
-
-..    - Download raw Sensor dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-
-..    - Apply readable dateime to Sensor dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-
-- Extract Sensor Features: ``expand("data/processed/{pid}/location_barnett.csv", pid=config["PIDS"]),``
+    | ``expand("data/processed/{pid}/location_barnett_{segment}.csv", ``
+    |                        ``pid=config["PIDS"],``
+    |                        ``segment = config["BARNETT_LOCATION"]["DAY_SEGMENTS"]),``
     
-**Rule Chain:**
+**Snakemake rule chain:**
 
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-    - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
-
-    - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/phone_sensed_bins`` - See the phone_sensed_bins_ rule.
-
-    - **Script:** ``src/data/phone_sensed_bins.R`` - See the phone_sensed_bins.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/resample_fused_location`` - See the resample_fused_location_ rule.
-
-    - **Script:** ``src/data/resample_fused_location.R`` - See the resample_fused_location.R_ script.
-
-- **Rule:** ``rules/features.snakefile/location_barnett_features`` - See the location_barnett_features_ rule.
-
-    - **Script:** ``src/features/location_barnett_features.R`` - See the location_barnett_features.R_ script.
-
+- Rule ``rules/preprocessing.snakefile/download_dataset``
+- Rule ``rules/preprocessing.snakefile/readable_datetime``
+- Rule ``rules/preprocessing.snakefile/phone_sensed_bins``
+- Rule ``rules/preprocessing.snakefile/resample_fused_location`` (only relevant if setting ``location_to_use`` to ````RESAMPLE_FUSED``.
+- Rule ``rules/features.snakefile/location_barnett_features``
     
 .. _location-parameters:
 
-**Location Rule Parameters:**
+**Location Rule Parameters (location_barnett_features):**
 
 =================    ===================
 Name	             Description
 =================    ===================
-location_to_use      The specifies which of the location data will be use in the analysis. Possible options are ``ALL``, ``ALL_EXCEPT_FUSED`` OR ``RESAMPLE_FUSED``
+location_to_use      The specifies what type of location data will be use in the analysis. Possible options are ``ALL``, ``ALL_EXCEPT_FUSED`` OR ``RESAMPLE_FUSED``
 accuracy_limit       This is in meters. The sensor drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius specified.
 timezone             The timezone used to calculate location. 
-features             The different measures that can be retrieved from the Location dataset. See :ref:`Available Location Features <location-available-features>` Table below
+features             Features to be computed, see table below
 =================    ===================
 
 .. _location-available-features:
 
 **Available Location Features**
 
-The following table shows a list of the available features for Location dataset. 
+Description taken from `Beiwe Summary Statistics`_.
 
 ================   =========     =============
 Name               Units         Description
@@ -649,24 +604,26 @@ stdflightdur       meters        The standard deviation of the duration of all f
 probpause                        The fraction of a day spent in a pause (as opposed to a flight)
 siglocentropy      nats          Shannon’s entropy measurement based on the proportion of time spent at each significant location visited during a day.
 circdnrtn           	         A continuous metric quantifying a person’s circadian routine that can take any value between 0 and 1, where 0 represents a daily routine completely different from any other sensed days and 1 a routine the same as every other sensed day.
-wkenddayrtn        Weekend       Same as circdnrtn but computed separately for weekends and weekdays.
+wkenddayrtn                      Same as circdnrtn but computed separately for weekends and weekdays.
 ================   =========     =============
 
 **Assumptions/Observations:** 
 
+Types of location data to use. Aware Android and iOS clients can collect location coordinates through the phone's GPS or Google's fused location API. If your Aware client was ONLY configured to use GPS set ``location_to_use`` to ``ALL``, if your client was configured to use BOTH GPS and fused location set ``location_to_use`` to  ``ALL_EXCEPT_FUSED`` to ignore fused coordinates, if your client was configured to use fused location  set ``location_to_use`` to ``RESAMPLE_FUSED``. ``RESAMPLE_FUSED`` takes the original fused location coordinates and replicates each pair forward in time as long as the phone was sensing data as indicated by ``phone_sensed_bins`` (see :ref:`Phone valid sensed days <phone-valid-sensed-days>`), this is done because Google's API only logs a new location coordinate pair when it is sufficiently different from the previous one.
+
 *Significant Locations Identified*
 
 (i.e. The clustering method used)
-Significant locations are determined using K-means clustering on locations that a patient visit over the course of the period of data collection. By setting K=K+1 and repeat clustering until two significant locations are within 100 meters of one another, the results from the previous step (K-1) can   be used as the total number of significant locations. See `Beiwe Summary Statistics`_. 
+Significant locations are determined using K-means clustering on locations that a patient visit over the course of the period of data collection. By setting K=K+1 and repeat clustering until two significant locations are within 100 meters of one another, the results from the previous step (K-1) can   be used as the total number of significant locations. Taken from `Beiwe Summary Statistics`_. 
 
 *Definition of Stationarity*
 
-(i.e., The length of time a person have to be not moving to qualify)
-This is based on a Pause-Flight model, The parameters used is a minimum pause duration of 300sec and a minimum pause distance of 60m. See the `Pause-Flight Model`_.
+(i.e., The length of time and distance a person has to be around the same place to be labelled as a pause)
+This is based on a Pause-Flight model, The parameters used are a minimum pause duration of 300sec and a minimum pause distance of 60m. See the `Pause-Flight Model`_.
 
 *The Circadian Calculation*
 
-For a detailed description of how this measure is calculated, see Canzian and Musolesi's 2015 paper in the Proceedings of the 2015 ACM International Joint Conference on Pervasive and Ubiquitous Computing, titled "Trajectories of depression: unobtrusive monitoring of depressive states by means of smartphone mobility traces analysis." Their procedure was followed using 30-min increments as a bin size. See `Beiwe Summary Statistics`_.
+For a detailed description of how this is calculated, see Canzian, L., & Musolesi, M. (2015, September). Trajectories of depression: unobtrusive monitoring of depressive states by means of smartphone mobility traces analysis. In Proceedings of the 2015 ACM international joint conference on pervasive and ubiquitous computing (pp. 1293-1304). Their procedure was followed using 30-min increments as a bin size. Taken from `Beiwe Summary Statistics`_.
 
 .. _screen-sensor-doc:
 
