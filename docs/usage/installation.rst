@@ -138,7 +138,7 @@ Once RAPIDS is installed, follow these steps to start processing mobile data.
 
 #. Configure the sensors to process:
 
-    - The variable ``SENSORS`` in the ``config.yaml`` file_ should match existent sensor tables in your Aware database (See :ref:`rapids-structure` for more information). Each sensor in this list will be processed in RAPIDS.
+    - See :ref:`Minimal Working Example<minimal-working-example>`. The variable ``SENSORS`` in the ``config.yaml`` file_ should match existent sensor tables in your Aware database (See :ref:`rapids-structure` for more information). Each sensor in this list will be processed in RAPIDS.
 
 
     .. note::

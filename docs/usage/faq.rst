@@ -24,19 +24,19 @@ Frequently Asked Questions
 
 **Solution:**
 
-Please make sure the ``MY_GROUP`` in ``config.yaml`` and ``.env`` are the same.
+Please make sure the ``MY_GROUP`` in ``config.yaml`` and ``.env`` match.
 
-2. Cannot start mysql for linux via ``brew services start mysql``
+2. Cannot start mysql in linux via ``brew services start mysql``
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-use the following code instead:
+use the following command instead:
 
 ``mysql.server start``
 
 3. Every time I run ``snakemake -R download_dataset`` all rules are executed
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-This is expected behavior. The advantage of using ``snakemake`` under the hood is that every time a file containing data is modified every rule that depends on that file will be re-executed to update their results. In this case, since ``download_dataset`` updates all the raw data, every single rule that depends on those raw files will be executed.
+This is expected behavior. The advantage of using ``snakemake`` under the hood is that every time a file containing data is modified every rule that depends on that file will be re-executed to update their results. In this case, since ``download_dataset`` updates all the raw data, and you are forcing the rule with the flag ``-R`` every single rule that depends on those raw files will be executed.
 
-4. Got an error like ``Table XXX doesn't exist`` while running the download_dataset rule.
+4. Got an error ``Table XXX doesn't exist`` while running the download_dataset rule.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 ::
 
@@ -46,4 +46,4 @@ This is expected behavior. The advantage of using ``snakemake`` under the hood i
     Execution halted
 
 **Solution:**
-Please make sure your database do have table with the same name of SENSORS list in config.yaml file.
+Please make sure the sensors listed in SENSORS in ``config.yaml`` match your database tables.
