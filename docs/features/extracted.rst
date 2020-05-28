@@ -692,41 +692,25 @@ Fitbit: Sleep
 
 See `Fitbit: Sleep Config Code`_
 
-**Available Epochs:**      
+**Available Epochs (day_segment) :** daily
 
-    - daily 
+**Available Platforms:**: Fitbit
 
-**Available Platforms:**    
-
-    - Fitbit
-
-**Snakefile entry:**
-
-- Extract Sensor Features:
+**Snakefile entry to compute these features:**
 
     | ``expand("data/processed/{pid}/fitbit_sleep_{day_segment}.csv",``
     |                      ``pid = config["PIDS"],``
     |                      ``day_segment = config["SLEEP"]["DAY_SEGMENTS"]),``
 
     
-**Rule Chain:**
-
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-    - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/fitbit_with_datetime`` - See the fitbit_with_datetime_ rule.
-
-    - **Script:** ``src/data/fitbit_readable_datetime.py`` - See the fitbit_readable_datetime.py_ script.
-
-- **Rule:** ``rules/features.snakefile/fitbit_sleep_features`` - See the fitbit_sleep_features_ rule.
-
-    - **Script:** ``src/features/fitbit_sleep_features.py`` - See the fitbit_sleep_features.py_ script.
-
+**Snakemake rule chain:**
+- Rule ``rules/preprocessing.snakefile/download_dataset``
+- Rule ``rules/preprocessing.snakefile/fitbit_with_datetime``
+- Rule ``rules/features.snakefile/fitbit_sleep_features``
     
 .. _fitbit-sleep-parameters:
 
-**Fitbit: Sleep Rule Parameters:**
+**Fitbit: Sleep Rule Parameters (fitbit_sleep_features):**
 
 ==================================    ===================
 Name	                              Description
@@ -739,8 +723,6 @@ daily_features_from_summary_data      The sleep features that can be computed ba
 .. _fitbit-sleep-available-features:
 
 **Available Fitbit: Sleep Features**
-
-The following table shows a list of the available features for the Fitbit: Sleep dataset. 
 
 ========================   ===========    =============
 Name                       Units          Description
@@ -767,53 +749,26 @@ Fitbit: Heart Rate
 
 See `Fitbit: Heart Rate Config Code`_
 
-**Available Epochs:**      
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
-    - daily 
-    - morning
-    - afternoon
-    - evening
-    - night
+**Available Platforms:**: Fitbit
 
-**Available Platforms:**    
+**Snakefile entry to compute these features:**
 
-    - Fitbit
-
-**Snakefile entry:**
-
-..    - Download raw Fitbit: Heart Rate dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["FITBIT_TABLE"]),``
-
-..    - Apply readable datetime to Fitbit: Heart Rate dataset: 
-
-..    
-      | ``expand("data/raw/{pid}/fitbit_{fitbit_sensor}_with_datetime.csv",``
-      |                      ``pid=config["PIDS"],``
-      |                     ``fitbit_sensor=config["FITBIT_SENSORS"]),``
-      
-- Extract Sensor Features:
 
     | ``expand("data/processed/{pid}/fitbit_heartrate_{day_segment}.csv",``
     |                      ``pid=config["PIDS"],`` 
     |                      ``day_segment = config["HEARTRATE"]["DAY_SEGMENTS"]),``
     
-**Rule Chain:**
+**Snakemake rule chain:**
 
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-    - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/fitbit_with_datetime`` - See the fitbit_with_datetime_ rule.
-
-    - **Script:** ``src/data/fitbit_readable_datetime.py`` - See the fitbit_readable_datetime.py_ script.
-
-- **Rule:** ``rules/features.snakefile/fitbit_heartrate_features`` - See the fitbit_heartrate_features_ rule.
-
-    - **Script:** ``src/features/fitbit_heartrate_features.py`` - See the fitbit_heartrate_features.py_ script.
-
+- Rule ``rules/preprocessing.snakefile/download_dataset``
+- Rule ``rules/preprocessing.snakefile/fitbit_with_datetime``
+- Rule ``rules/features.snakefile/fitbit_heartrate_features``
     
 .. _fitbit-heart-rate-parameters:
 
-**Fitbit: Heart Rate Rule Parameters:**
+**Fitbit: Heart Rate Rule Parameters (fitbit_heartrate_features):**
 
 ============    ===================
 Name	        Description
@@ -825,8 +780,6 @@ features        The heartrate features that can be computed. See :ref:`Available
 .. _fitbit-heart-rate-available-features:
 
 **Available Fitbit: Heart Rate Features**
-
-The following table shows a list of the available features for the Fitbit: Heart Rate dataset. 
 
 ==================   ===========    =============
 Name                 Units          Description
@@ -858,52 +811,25 @@ Fitbit: Steps
 
 See `Fitbit: Steps Config Code`_
 
-**Available Epochs:**      
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
-    - daily 
-    - morning
-    - afternoon
-    - evening
-    - night
+**Available Platforms:**: Fitbit
 
-**Available Platforms:**    
-
-    - Fitbit
-
-**Snakefile entry:**
-
-..    - Download raw Fitbit: Steps dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["FITBIT_TABLE"]),``
-
-.. 
-    - Apply readable datetime to Fitbit: Steps dataset: 
-      | ``expand("data/raw/{pid}/fitbit_{fitbit_sensor}_with_datetime.csv",``
-      |                      ``pid=config["PIDS"],``
-      |                     ``fitbit_sensor=config["FITBIT_SENSORS"]),``
- 
-- Extract Fitbit: Steps Features:
+**Snakefile entry to compute these features:**
 
     | ``expand("data/processed/{pid}/fitbit_step_{day_segment}.csv",``
     |                      ``pid=config["PIDS"],`` 
     |                      ``day_segment = config["STEP"]["DAY_SEGMENTS"]),``
     
-**Rule Chain:**
+**Snakemake rule chain:**
 
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-    - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/fitbit_with_datetime`` - See the fitbit_with_datetime_ rule.
-
-    - **Script:** ``src/data/fitbit_readable_datetime.py`` - See the fitbit_readable_datetime.py_ script.
-
-- **Rule:** ``rules/features.snakefile/fitbit_step_features`` - See the fitbit_step_features.py_ rule.
-
-    - **Script:** ``src/features/fitbit_step_features.py`` - See the fitbit_step_features.py_ script.
-
+- Rule ``rules/preprocessing.snakefile/download_dataset``
+- Rule ``rules/preprocessing.snakefile/fitbit_with_datetime``
+- Rule ``rules/features.snakefile/fitbit_step_features``
     
 .. _fitbit-steps-parameters:
 
-**Fitbit: Steps Rule Parameters:**
+**Fitbit: Steps Rule Parameters (fitbit_step_features):**
 
 =======================    ===================
 Name	                   Description
@@ -916,8 +842,6 @@ threshold_active_bout      Every minute with Fitbit step data wil be labelled as
 .. _fitbit-steps-available-features:
 
 **Available Fitbit: Steps Features**
-
-The following table shows a list of the available features for the Fitbit: Steps dataset. 
 
 =========================   =========     =============
 Name                        Units         Description
