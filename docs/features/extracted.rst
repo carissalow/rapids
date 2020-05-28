@@ -1005,9 +1005,8 @@ See `Fitbit: Sleep Config Code`_
 Name	                              Description
 ==================================    ===================
 day_segment                           The particular ``day_segment`` that will be analyzed. For this sensor only ``daily`` is used.
-sleep_types                           The different types of sleep that can be analyzed from the Fitbit: Sleep dataset. The available options are ``main``, ``nap``, ``all``.
-daily_features_from_summary_data      The different measures that can be retrieved from the dataset.
-                                      See :ref:`Available Fitbit: Sleep Features <fitbit-sleep-available-features>` Table below
+sleep_types                           The types of sleep provided by Fitbit: ``main``, ``nap``, ``all``.
+daily_features_from_summary_data      The sleep features that can be computed based on Fitbit's summary data. See :ref:`Available Fitbit: Sleep Features <fitbit-sleep-available-features>` Table below
 ==================================    ===================
 
 .. _fitbit-sleep-available-features:
@@ -1019,12 +1018,12 @@ The following table shows a list of the available features for the Fitbit: Sleep
 ========================   ===========    =============
 Name                       Units          Description
 ========================   ===========    =============
-sumdurationafterwakeup     minutes        Total duration of staying in bed after waking up for ``sleep_type`` during ``day_segment``.
-sumdurationasleep          minutes        Total duration of sleep for ``sleep_type`` during ``day_segment``.
-sumdurationawake           minutes        Total duration of being awake but still in bed for ``sleep_type`` during ``day_segment``.
-sumdurationtofallasleep    minutes        Total duration to fall asleep for ``sleep_type`` during ``day_segment``.
-sumdurationinbed           minutes        Total duration of staying in bed for ``sleep_type`` during ``day_segment``.
-avgefficiency              scores         Average of sleep efficiency for ``sleep_type`` during ``day_segment``.
+sumdurationafterwakeup     minutes        Time the user stayed in bed after waking up for ``sleep_type`` during ``day_segment``.
+sumdurationasleep          minutes        Sleep duration for ``sleep_type`` during ``day_segment``.
+sumdurationawake           minutes        Time the user was awake but still in bed for ``sleep_type`` during ``day_segment``.
+sumdurationtofallasleep    minutes        Time it took the user to fall asleep for ``sleep_type`` during ``day_segment``.
+sumdurationinbed           minutes        Time the user stayed in bed for ``sleep_type`` during ``day_segment``.
+avgefficiency              scores         Sleep efficiency average for ``sleep_type`` during ``day_segment``.
 countepisode               episodes       Number of sleep episodes for ``sleep_type`` during ``day_segment``.
 ========================   ===========    =============
 
@@ -1093,8 +1092,7 @@ See `Fitbit: Heart Rate Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features        The different measures that can be retrieved from the Fitbit: Heart Rate dataset. 
-                See :ref:`Available Fitbit: Heart Rate Features <fitbit-heart-rate-available-features>` Table below
+features        The heartrate features that can be computed. See :ref:`Available Fitbit: Heart Rate Features <fitbit-heart-rate-available-features>` Table below
 ============    ===================
 
 .. _fitbit-heart-rate-available-features:
@@ -1114,16 +1112,17 @@ avghr                beats/mins     The average heart rate during ``day_segment`
 medianhr             beats/mins     The median of heart rate during ``day_segment`` epoch.
 modehr               beats/mins     The mode of heart rate during ``day_segment`` epoch.
 stdhr                beats/mins     The standard deviation of heart rate during ``day_segment`` epoch.
-diffmaxmodehr        beats/mins     The difference between maximum heart rate and mode of heart rate during ``day_segment`` epoch.
-diffminmodehr        beats/mins     The difference between mode of heart rate and minimum heart rate during ``day_segment`` epoch.
+diffmaxmodehr        beats/mins     The difference between the maximum and mode heart rate during ``day_segment`` epoch.
+diffminmodehr        beats/mins     The difference between the mode and minimum heart rate during ``day_segment`` epoch.
 entropyhr            nats           Shannon’s entropy measurement based on heart rate during ``day_segment`` epoch.
-length               minutes        Number of minutes in each ``heartrate_zone`` during ``day_segment`` epoch.
+lengthZONE           minutes        Number of minutes the user's heartrate fell within each ``heartrate_zone`` during ``day_segment`` epoch.
 ==================   ===========    =============
 
 **Assumptions/Observations:** 
 
-Heart rate zones contain 4 zones: ``out_of_range`` zone, ``fat_burn`` zone, ``cardio`` zone, and ``peak`` zone. Please refer to the `Fitbit documentation`_ for detailed information of how to define those zones.
-Calories features might be inaccurate as they depend on users’ Fitbit profile (weight, height, etc.)
+There are four heart rate zones: ``out_of_range``, ``fat_burn``, ``cardio``, and ``peak``. Please refer to `Fitbit documentation`_ for more information about the way they are computed.
+
+Calories' accuracy depends on the users’ Fitbit profile (weight, height, etc.).
 
 .. _fitbit-steps-sensor-doc:
 
@@ -1183,8 +1182,8 @@ See `Fitbit: Steps Config Code`_
 Name	                   Description
 =======================    ===================
 day_segment                The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features                   The different measures that can be retrieved from the dataset. See :ref:`Available Fitbit: Steps Features <fitbit-steps-available-features>` Table below
-threshold_active_bout      The maximum number of steps per minute necessary for a bout to be ``sedentary``. That is, if the step count per minute is greater than this value the bout has a status of ``active``. 
+features                   The features that can be computed. See :ref:`Available Fitbit: Steps Features <fitbit-steps-available-features>` Table below
+threshold_active_bout      Every minute with Fitbit step data wil be labelled as ``sedentary`` if its step count is below this threshold, otherwise, ``active``. 
 =======================    ===================
 
 .. _fitbit-steps-available-features:
@@ -1202,20 +1201,20 @@ minallsteps                 steps         The minimum step count during ``day_se
 avgallsteps                 steps         The average step count during ``day_segment`` epoch.
 stdallsteps                 steps         The standard deviation of step count during ``day_segment`` epoch.
 countsedentarybout          bouts         Number of sedentary bouts during ``day_segment`` epoch.
-maxdurationsedentarybout    minutes       The maximum duration of sedentary bouts during ``day_segment`` epoch.
-mindurationsedentarybout    minutes       The minimum duration of sedentary bouts during ``day_segment`` epoch.
+maxdurationsedentarybout    minutes       The maximum duration of any sedentary bout during ``day_segment`` epoch.
+mindurationsedentarybout    minutes       The minimum duration of any sedentary bout during ``day_segment`` epoch.
 avgdurationsedentarybout    minutes       The average duration of sedentary bouts during ``day_segment`` epoch.
 stddurationsedentarybout    minutes       The standard deviation of the duration of sedentary bouts during ``day_segment`` epoch.
 countactivebout             bouts         Number of active bouts during ``day_segment`` epoch.
-maxdurationactivebout       minutes       The maximum duration of active bouts during ``day_segment`` epoch.
-mindurationactivebout       minutes       The minimum duration of active bouts during ``day_segment`` epoch.
+maxdurationactivebout       minutes       The maximum duration of any active bout during ``day_segment`` epoch.
+mindurationactivebout       minutes       The minimum duration of any active bout during ``day_segment`` epoch.
 avgdurationactivebout       minutes       The average duration of active bouts during ``day_segment`` epoch.
 stddurationactivebout       minutes       The standard deviation of the duration of active bouts during ``day_segment`` epoch.
 =========================   =========     =============
 
 **Assumptions/Observations:** 
 
-If the step count per minute smaller than the ``THRESHOLD_ACTIVE_BOUT`` (default value is 10), it is defined as sedentary status. Otherwise, it is defined as active status. One active/sedentary bout is a period during with the user is under ``active``/``sedentary`` status.
+Active and sedentary bouts. If the step count per minute is smaller than ``THRESHOLD_ACTIVE_BOUT`` (default value is 10), that minute is labelled as sedentary, otherwise, is labelled as active. Active and sedentary bouts are periods of consecutive minutes labelled as ``active`` or ``sedentary``.
 	
 
 .. -------------------------Links ------------------------------------ ..
