@@ -598,68 +598,41 @@ maxconsumptionrate      episodes/hours    The highest of all episodes’ consump
 
 .. _google-activity-recognition-sensor-doc:
 
-Google Activity Recognition
+Activity Recognition
 """"""""""""""""""""""""""""
 
-See `Google Activity Recognition Config Code`_
+**Available Epochs:** daily, morning, afternoon, evening, night
 
-**Available Epochs:**      
+**Available Platforms:** Android and iOS
 
-- daily 
-- morning
-- afternoon
-- evening
-- night
-
-**Available Platforms:**    
-
-- Android
-
-**Snakefile entry:**
-
-..  - Download raw Google Activity Recognition dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-
-..  - Apply readable dateime to Google Activity Recognition dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-    
-..  - Extract the deltas in Google Activity Recognition dataset: ``expand("data/processed/{pid}/plugin_google_activity_recognition_deltas.csv", pid=config["PIDS"]),``
-    
-- Extract Sensor Features:
+**Snakefile entry to compute these features:**
 
     | ``expand("data/processed/{pid}/google_activity_recognition_{segment}.csv",pid=config["PIDS"],``
     |                ``segment = config["GOOGLE_ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]),``
     
-**Rule Chain:**
+**Snakemake rule chain:**
 
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-    - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
-
-    - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
-
-- **Rule:** ``rules/features.snakefile/google_activity_recognition_deltas`` - See the google_activity_recognition_deltas_ rule.
-
-    - **Script:** ``src/features/google_activity_recognition_deltas.R`` - See the google_activity_recognition_deltas.R_ script.
-
-- **Rule:** ``rules/features.snakefile/activity_features`` - See the activity_features_ rule.
-
-    - **Script:** ``ssrc/features/google_activity_recognition.py`` - See the google_activity_recognition.py_ script.
+- Rule ``rules/preprocessing.snakefile/download_dataset`` runs ``src/data/download_dataset.R``
+- Rule ``rules/preprocessing.snakefile/readable_datetime`` runs ``src/data/readable_datetime.R``
+- Rule ``rules/preprocessing.snakefile/unify_ios_android`` runs ``src/data/unify_ios_android.R``
+- Rule ``rules/features.snakefile/google_activity_recognition_deltas`` runs ``src/features/activity_recognition_deltas.R``
+- Rule ``rules/features.snakefile/ios_activity_recognition_deltas`` runs ``src/features/activity_recognition_deltas.R``
+- Rule ``rules/features.snakefile/activity_features`` runs ``src/features/activity_recognition.py``
     
-.. _google-activity-recognition-parameters:
+.. _activity-recognition-parameters:
 
-**Google Activity Recognition Rule Parameters:**
+**Activity Recognition Rule Parameters:**
 
 ============    ===================
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features        The different measures that can be retrieved from the Google Activity Recognition dataset. See :ref:`Available Google Activity Recognition Features <google-activity-recognition-available-features>` Table below
+features        Features that can be computed. See :ref:`Activity Recognition Features <activity-recognition-available-features>` Table below
 ============    ===================
 
-.. _google-activity-recognition-available-features:
+.. _activity-recognition-available-features:
 
-**Available Google Activity Recognition Features**
+**Available Activity Recognition Features**
 
 The following table shows a list of the available features for the Google Activity Recognition dataset. 
 
@@ -675,7 +648,11 @@ summobile                minutes         The total duration of episodes of on fo
 sumvehicle               minutes         The total duration of episodes of on vehicle activity
 ======================   ============    =============
 
-**Assumptions/Observations:** N/A
+**Assumptions/Observations:**
+
+iOS Activity Recognition data labels are unified with Google Activity Recognition levels this way, "automotive" to "in_vehicle", cycling" to "on_bicycle", "walking" and "running" to "on_foot, "stationary" to "still". In addition, iOS activity pairs formed by stationary and automotive labels (driving but stopped at a traffic light) are transformed to automotive only.
+
+In AWARE, Activity Recognition data for Google (Android) and iOS is stored in two different database tables, RAPIDS (via Snakemake) automatically infers what platform each participant belongs to based on their participant file (``data/external/``) which in turn takes this information from the ``aware_device`` table (see ``optional_ar_input`` function in ``rules/features.snakefile``. 
 
 .. _light-doc:
 
@@ -1018,11 +995,11 @@ The following table shows a list of the available features for the Fitbit: Sleep
 ========================   ===========    =============
 Name                       Units          Description
 ========================   ===========    =============
-sumdurationafterwakeup     minutes        Time the user stayed in bed after waking up for ``sleep_type`` during ``day_segment``.
-sumdurationasleep          minutes        Sleep duration for ``sleep_type`` during ``day_segment``.
-sumdurationawake           minutes        Time the user was awake but still in bed for ``sleep_type`` during ``day_segment``.
 sumdurationtofallasleep    minutes        Time it took the user to fall asleep for ``sleep_type`` during ``day_segment``.
-sumdurationinbed           minutes        Time the user stayed in bed for ``sleep_type`` during ``day_segment``.
+sumdurationawake           minutes        Time the user was awake but still in bed for ``sleep_type`` during ``day_segment``.
+sumdurationasleep          minutes        Sleep duration for ``sleep_type`` during ``day_segment``.
+sumdurationafterwakeup     minutes        Time the user stayed in bed after waking up for ``sleep_type`` during ``day_segment``.
+sumdurationinbed           minutes        Total time the user stayed in bed (sumdurationtofallasleep + sumdurationawake + sumdurationasleep + sumdurationafterwakeup) for ``sleep_type`` during ``day_segment``.
 avgefficiency              scores         Sleep efficiency average for ``sleep_type`` during ``day_segment``.
 countepisode               episodes       Number of sleep episodes for ``sleep_type`` during ``day_segment``.
 ========================   ===========    =============
