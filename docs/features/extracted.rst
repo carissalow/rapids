@@ -351,7 +351,7 @@ multiple_categories     You can group multiple categories into meta categories, 
 single_apps             Apps to be included in the feature extraction computation. Use their package name, for example, ``com.google.android.youtube`` or the reserved word ``top1global`` (the most used app by a participant over the whole monitoring study).
 excluded_categories     App categories to be excluded in the feature extraction computation. See ``APPLICATION_GENRES`` in this file to add new categories or use the catalogue we provide and read :ref:`Assumtions and Observations <applications-foreground-observations>` for more information.
 excluded_apps           Apps to be excluded in the feature extraction computation. Use their package name, for example: ``com.google.android.youtube``
-features        Features to be computed, see table below
+features                Features to be computed, see table below
 ====================    ===================
 
 .. _applications-foreground-available-features:
