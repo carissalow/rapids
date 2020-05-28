@@ -196,14 +196,14 @@ countmostfrequentcontact    calls         The number of ``missed`` calls during 
 
 **Assumptions/Observations:** 
 
-``TYPES`` and ``FEATURES`` keys need to match. From example::
+``TYPES`` and ``FEATURES`` keys in ``config.yaml`` need to match. For example, below the ``TYPE`` ``missed`` matches the ``FEATURES`` key ``missed``::
 
     CALLS:
         TYPES: [missed]
         FEATURES: 
             missed: [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
 
-In the above config setting code the ``TYPE`` ``missed`` matches the ``FEATURES`` key ``missed``.
+Aware Android client stores call types 1=incoming, 2=outgoing, 3=missed while Aware iOS client stores call status 1=incoming, 2=connected, 3=dialing, 4=disconnected. We extract iOS call types based on call status sequences: (1,2,4)=incoming=1, (3,2,4)=outgoing=2, (1,4) or (3,4)=missed=3. Sometimes (due to a possible bug in Aware) sequences get logged on the exact same timestamp, thus 3-item sequences can be 2,3,4 or 3,2,4. Although iOS stores the duration of ringing/dialing stages for missed calls, we set it to 0 to match Android.
 
 
 .. _bluetooth-sensor-doc:
@@ -213,45 +213,21 @@ Bluetooth
 
 See `Bluetooth Config Code`_
 
-**Available Epochs:**      
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
-- daily 
-- morning
-- afternoon
-- evening
-- night
+**Available Platforms:** Android and iOS
 
-**Available Platforms:**    
-
-- Android
-- iOS
-
-**Snakefile Entry:**
-
-..    - Download raw Bluetooth dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-
-..    - Apply readable datetime to Bluetooth dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-    
-- Extract Bluetooth Features
+**Snakefile entry to compute these features:**
     
       | ``expand("data/processed/{pid}/bluetooth_{segment}.csv",``
       |          ``pid=config["PIDS"],`` 
       |          ``segment = config["BLUETOOTH"]["DAY_SEGMENTS"]),``
     
-**Rule Chain:**
+**Snakemake rule chain:**
 
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-    - **Script:** ``src/data/download_dataset.R`` See the download_dataset.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
-
-    - **Script:** ``src/data/readable_datetime.R`` See the readable_datetime.R_ script.
-
-- **Rule:** ``rules/features.snakefile/bluetooth_features`` - See the bluetooth_feature_ rule.
-
-    - **Script:** ``src/features/bluetooth_features.R`` - See the bluetooth_features.R_ script.
-
+- Rule ``rules/preprocessing.snakefile/download_dataset``
+- Rule ``rules/preprocessing.snakefile/readable_datetime``
+- Rule ``rules/features.snakefile/bluetooth_features``
     
 .. _bluetooth-parameters:
 
@@ -261,14 +237,12 @@ See `Bluetooth Config Code`_
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features        The different measures that can be retrieved from the Bluetooth dataset. See :ref:`Available Bluetooth Features <bluetooth-available-features>` Table below
+features        Features to be computed, see table below
 ============    ===================
 
 .. _bluetooth-available-features:
 
 **Available Bluetooth Features**
-
-The following table shows a list of the available features for Bluetooth. 
 
 ===========================   =========     =============
 Name                          Units         Description
@@ -279,7 +253,6 @@ countscansmostuniquedevice    scans         Number of scans of the most scanned 
 ===========================   =========     =============
 
 **Assumptions/Observations:** N/A 
-
 
 
 .. _accelerometer-sensor-doc:
