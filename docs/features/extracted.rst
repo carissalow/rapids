@@ -607,8 +607,8 @@ Activity Recognition
 
 **Snakefile entry to compute these features:**
 
-    | expand("data/processed/{pid}/activity_recognition_{segment}.csv",pid=config["PIDS"], 
-    |                        segment = config["ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]),
+    | ``expand("data/processed/{pid}/activity_recognition_{segment}.csv",pid=config["PIDS"], 
+    |                        segment = config["ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]),``
     
 **Snakemake rule chain:**
 
