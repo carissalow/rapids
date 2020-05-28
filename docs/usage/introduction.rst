@@ -16,7 +16,7 @@ Available features:
 - :ref:`call-sensor-doc`
 - :ref:`fitbit-heart-rate-sensor-doc`
 - :ref:`fitbit-steps-sensor-doc`
-- :ref:`google-activity-recognition-sensor-doc`
+- :ref:`activity-recognition-sensor-doc`
 - :ref:`light-doc`
 - :ref:`location-sensor-doc`
 - :ref:`screen-sensor-doc`
