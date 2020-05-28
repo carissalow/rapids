@@ -108,8 +108,8 @@ Name                        Units         Description
 =========================   =========     =============
 count                       SMS           Number of SMS of type ``sms_type`` that occurred during a particular ``day_segment``.
 distinctcontacts            contacts      Number of distinct contacts that are associated with a particular ``sms_type`` during a particular ``day_segment``.
-timefirstsms                minutes       Number of minutes between 12:00am (midnight) and the first ``SMS`` of a particular ``sms_type``.
-timelastsms                 minutes       Number of minutes between 12:00am (midnight) and the last ``SMS`` of a particular ``sms_type``.
+timefirstsms                hours         Number of hours between 12:00am (midnight) and the first ``SMS`` of a particular ``sms_type``.
+timelastsms                 hours         Number of hours between 12:00am (midnight) and the last ``SMS`` of a particular ``sms_type``.
 countmostfrequentcontact    SMS           The count of the number of ``SMS`` messages of a particular ``sms_type`` for the most contacted contact for a particular ``day_segment``.
 =========================   =========     =============
 
