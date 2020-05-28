@@ -386,67 +386,37 @@ Battery
 
 See `Battery Config Code`_
 
-**Available Epochs:**      
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
-- daily 
-- morning
-- afternoon
-- evening
-- night
+**Available Platforms:** Android and iOS
 
-**Available Platforms:**    
-
-- Android
-- iOS
-
-**Snakefile entry:**
-
-..  - Download raw Battery dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-
-..  - Apply readable dateime to Battery dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-    
-..  - Extract the deltas in Battery charge : ``expand("data/processed/{pid}/battery_deltas.csv", pid=config["PIDS"]),``
-
-- Extract Battery Features:
+**Snakefile entry to compute these features:**
 
     | ``expand("data/processed/{pid}/battery_{day_segment}.csv",``
     |                      ``pid=config["PIDS"],`` 
     |                      ``day_segment = config["BATTERY"]["DAY_SEGMENTS"]),``
     
-**Rule Chain:**
+**Snakemake rule chain:**
 
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-        - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
-
-    - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
-
-- **Rule:** ``rules/features.snakefile/battery_deltas`` - See the battery_deltas_ rule.
-
-    - **Script:** ``src/features/battery_deltas.R`` - See the battery_deltas.R_ script.
-    
-- **Rule:** ``rules/features.snakefile/battery_features`` - See the battery_features_ rule
-
-    - **Script:** ``src/features/battery_features.py`` - See the battery_features.py_ script.
+- Rule ``rules/preprocessing.snakefile/download_dataset`` 
+- Rule ``rules/preprocessing.snakefile/readable_datetime`` 
+- Rule ``rules/features.snakefile/battery_deltas`` 
+- Rule ``rules/features.snakefile/battery_features``
     
 .. _battery-parameters:
 
-**Battery Rule Parameters:**
+**Battery Rule Parameters (battery_features):**
 
 ============    ===================
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features        The different measures that can be retrieved from the Battery dataset. See :ref:`Available Battery Features <battery-available-features>` Table below
+features        Features to be computed, see table below
 ============    ===================
 
 .. _battery-available-features:
 
 **Available Battery Features**
-
-The following table shows a list of the available features for Battery data. 
 
 =====================   ===============   =============
 Name                    Units             Description
@@ -460,7 +430,7 @@ maxconsumptionrate      episodes/hours    The highest of all episodes’ consump
 =====================   ===============   =============
 
 **Assumptions/Observations:** 
-
+For Aware iOS client V1 we swap battery status 3 to 5 and 1 to 3, client V2 does not have this problem.
 
 .. _activity-recognition-sensor-doc:
 
