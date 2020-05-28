@@ -231,7 +231,7 @@ See `Bluetooth Config Code`_
     
 .. _bluetooth-parameters:
 
-**Bluetooth Rule Parameters:**
+**Bluetooth Rule Parameters (bluetooth_features):**
 
 ============    ===================
 Name	        Description
@@ -262,26 +262,11 @@ Accelerometer
 
 See `Accelerometer Config Code`_
 
-**Available epochs:**      
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
-- daily 
-- morning
-- afternoon
-- evening
-- night
+**Available Platforms:** Android and iOS
 
-**Available platforms:**    
-
-- Android
-- iOS
-
-**Snakefile entry:**
-
-..  - Download raw Accelerometer dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-
-..  - Apply readable datetime to Accelerometer dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-
-- Extract Accelerometer Features
+**Snakefile entry to compute these features:**
 
     | ``expand("data/processed/{pid}/accelerometer_{day_segment}.csv",``
     |                      ``pid=config["PIDS"],`` 
@@ -289,35 +274,24 @@ See `Accelerometer Config Code`_
 
 **Rule chain:**
 
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-    - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
-
-    - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
-
-- **Rule:** ``rules/features.snakefile/accelerometer_features`` - See the accelerometer_features_ rule.
-
-    - **Script:** ``src/features/accelerometer_features.py`` - See the accelerometer_features.py_ script.
-
+- Rule ``rules/preprocessing.snakefile/download_dataset``
+- Rule ``rules/preprocessing.snakefile/readable_datetime``
+- Rule ``rules/features.snakefile/accelerometer_features``
     
 .. _Accelerometer-parameters:
 
-**Accelerometer Rule Parameters:**
+**Accelerometer Rule Parameters (accelerometer_features):**
 
 ============    ===================
 Name	        Description
 ============    ===================
 day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features        The different measures that can be retrieved from the dataset. See :ref:`Available Accelerometer Features <accelerometer-available-features>` Table below
+features        Features to be computed, see table below
 ============    ===================
 
 .. _accelerometer-available-features:
 
 **Available Accelerometer Features**
-
-The following table shows a list of the available features the accelerometer sensor data for a particular ``day_segment``. 
 
 ====================================   ==============    =============
 Name                                   Units             Description
@@ -335,8 +309,9 @@ countexertionalactivityepisodes        episodes          Number of the exertiona
 countnonexertionalactivityepisodes     episodes          Number of the non-exertional activity episodes during ``day_segment``.
 ====================================   ==============    =============
 
-**Assumptions/Observations:** N/A
+**Assumptions/Observations:**
 
+Exertional activity episodes are based on this paper: Panda N, Solsky I, Huang EJ, et al. Using Smartphones to Capture Novel Recovery Metrics After Cancer Surgery. JAMA Surg. 2020;155(2):123–129. doi:10.1001/jamasurg.2019.4702
 
 
 .. _applications-foreground-sensor-doc:
