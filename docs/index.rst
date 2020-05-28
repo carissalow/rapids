@@ -31,5 +31,6 @@ Contents:
    :caption: Developers
 
    develop/documentation
+   develop/features
    develop/contributors
    develop/testing
