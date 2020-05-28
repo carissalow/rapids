@@ -70,17 +70,11 @@ SMS
 
 See `SMS Config Code`_
 
-**Available Epochs:** daily, morning, afternoon, evening, night
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
 **Available Platforms:** Android
 
 **Snakefile entry to compute these features:**
-
-..    - Download raw SMS dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-
-..    - Apply readable datetime to SMS dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-
-- Extract SMS features:
 
       | ``expand("data/processed/{pid}/sms_{sms_type}_{day_segment}.csv".``
       |                     ``pid=config["PIDS"],``
@@ -95,7 +89,7 @@ See `SMS Config Code`_
 
 .. _sms-parameters:
 
-**SMS Rule Parameters:**
+**SMS Rule Parameters (sms_features):**
 
 ============    ===================
 Name	        Description
@@ -121,7 +115,7 @@ countmostfrequentcontact    SMS           The count of the number of ``SMS`` mes
 
 **Assumptions/Observations:** 
 
-#. ``TYPES`` and ``FEATURES`` keys need to match. For example, in the config setting below the ``TYPE`` ``sent`` matches the ``FEATURES`` key ``sent``::
+``TYPES`` and ``FEATURES`` keys in ``config.yaml`` need to match. For example, below the ``TYPE`` ``sent`` matches the ``FEATURES`` key ``sent``::
 
         SMS:
             TYPES: [sent]
@@ -136,27 +130,12 @@ Calls
 
 See `Call Config Code`_
 
-**Available Epochs:**      
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
-- daily 
-- morning
-- afternoon
-- evening
-- night
+**Available Platforms:** Android and iOS
 
-**Available Platforms:**    
+**Snakefile entry to compute these features:**
 
-- Android
-- iOS
-
-**Snakefile Entry:**
-
-..    - Download raw Calls dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-
-..    - Apply readable datetime to Calls dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-    
-- Extract Calls Features
-    
       | ``expand("data/processed/{pid}/call_{call_type}_{segment}.csv",``
       |                      ``pid=config["PIDS"],`` 
       |                      ``call_type=config["CALLS"]["TYPES"],``
@@ -164,36 +143,25 @@ See `Call Config Code`_
     
 **Rule Chain:**
 
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-    - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
-
-    - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
-
-- **Rule:** ``rules/features.snakefile/call_features`` - See the call_features_ rule.
-
-    - **Script:** ``src/features/call_features.R`` - See the call_features.R_ script.
-
+- Rule ``rules/preprocessing.snakefile/download_dataset``
+- Rule ``rules/preprocessing.snakefile/readable_datetime``
+- Rule ``rules/features.snakefile/call_features``
     
 .. _calls-parameters:
 
-**Call Rule Parameters:**
+**Call Rule Parameters (call_features):**
 
 ============    ===================
 Name	        Description
 ============    ===================
 call_type       The particular ``call_type`` that will be analyzed. The options for this parameter are ``incoming``, ``outgoing`` or ``missed``.
 day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features         The different measures that can be retrieved from the calls dataset. Note that the same features are available for both ``incoming`` and ``outgoing`` calls, while ``missed`` calls has its own set of features. See :ref:`Available Incoming and Outgoing Call Features <available-in-and-out-call-features>` Table and :ref:`Available Missed Call Features <available-missed-call-features>` Table below.
+features         Features to be computed. Note that the same features are available for both ``incoming`` and ``outgoing`` calls, while ``missed`` calls has its own set of features. See :ref:`Available Incoming and Outgoing Call Features <available-in-and-out-call-features>` Table and :ref:`Available Missed Call Features <available-missed-call-features>` Table below.
 ============    ===================
 
 .. _available-in-and-out-call-features:
 
 **Available Incoming and Outgoing Call Features**
-
-The following table shows a list of the available features for ``incoming`` and ``outgoing`` calls. 
 
 =========================   =========     =============
 Name                        Units         Description
@@ -216,8 +184,6 @@ countmostfrequentcontact    calls         The number of calls of a particular ``
 
 **Available Missed Call Features**
 
-The following table shows a list of the available features for ``missed`` calls. 
-
 =========================   =========     =============
 Name                        Units         Description
 =========================   =========     =============
@@ -230,12 +196,12 @@ countmostfrequentcontact    calls         The number of ``missed`` calls during 
 
 **Assumptions/Observations:** 
 
-    #. ``TYPES`` and ``FEATURES`` keys need to match. From example::
+``TYPES`` and ``FEATURES`` keys need to match. From example::
 
-        CALLS:
-            TYPES: [missed]
-            FEATURES: 
-                missed: [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
+    CALLS:
+        TYPES: [missed]
+        FEATURES: 
+            missed: [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
 
 In the above config setting code the ``TYPE`` ``missed`` matches the ``FEATURES`` key ``missed``.
 
