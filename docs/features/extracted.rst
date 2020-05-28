@@ -956,6 +956,84 @@ firstuseafter               seconds             Seconds until the first unlock e
 
 An ``unlock`` episode is considered as the time between an ``unlock`` event and a ``lock`` event. iOS recorded these episodes reliable (albeit some duplicated ``lock`` events within milliseconds from each other). However, in Android there are some events unrelated to the screen state because of multiple consecutive ``unlock``/``lock`` events, so we keep the closest pair. In the experiments these are less than 10% of the screen events collected. This happens because ``ACTION_SCREEN_OFF`` and ``ON`` are "sent when the device becomes non-interactive which may have nothing to do with the screen turning off". Additionally in Android it is possible to measure the time spent on the ``lock`` screen onto the ``unlock`` event and the total screen time (i.e. ``ON`` to ``OFF``) events but we are only keeping ``unlock`` episodes (``unlock`` to ``OFF``) to be consistent with iOS. 
 
+.. ------------------------------- Begin Fitbit Section ----------------------------------- ..
+
+.. _fitbit-sleep-sensor-doc:
+
+Fitbit: Sleep
+"""""""""""""""""""
+
+See `Fitbit: Sleep Config Code`_
+
+**Available Epochs:**      
+
+    - daily 
+
+**Available Platforms:**    
+
+    - Fitbit
+
+**Snakefile entry:**
+
+- Extract Sensor Features:
+
+    | ``expand("data/processed/{pid}/fitbit_sleep_{day_segment}.csv",``
+    |                      ``pid = config["PIDS"],``
+    |                      ``day_segment = config["SLEEP"]["DAY_SEGMENTS"]),``
+
+    
+**Rule Chain:**
+
+- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
+
+    - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
+
+- **Rule:** ``rules/preprocessing.snakefile/fitbit_with_datetime`` - See the fitbit_with_datetime_ rule.
+
+    - **Script:** ``src/data/fitbit_readable_datetime.py`` - See the fitbit_readable_datetime.py_ script.
+
+- **Rule:** ``rules/features.snakefile/fitbit_sleep_features`` - See the fitbit_sleep_features_ rule.
+
+    - **Script:** ``src/features/fitbit_sleep_features.py`` - See the fitbit_sleep_features.py_ script.
+
+    
+.. _fitbit-sleep-parameters:
+
+**Fitbit: Sleep Rule Parameters:**
+
+==================================    ===================
+Name	                              Description
+==================================    ===================
+day_segment                           The particular ``day_segment`` that will be analyzed. For this sensor only ``daily`` is used.
+sleep_types                           The different types of sleep that can be analyzed from the Fitbit: Sleep dataset. The available options are ``main``, ``nap``, ``all``.
+daily_features_from_summary_data      The different measures that can be retrieved from the dataset.
+                                      See :ref:`Available Fitbit: Sleep Features <fitbit-sleep-available-features>` Table below
+==================================    ===================
+
+.. _fitbit-sleep-available-features:
+
+**Available Fitbit: Sleep Features**
+
+The following table shows a list of the available features for the Fitbit: Sleep dataset. 
+
+========================   ===========    =============
+Name                       Units          Description
+========================   ===========    =============
+sumdurationafterwakeup     minutes        Total duration of staying in bed after waking up for ``sleep_type`` during ``day_segment``.
+sumdurationasleep          minutes        Total duration of sleep for ``sleep_type`` during ``day_segment``.
+sumdurationawake           minutes        Total duration of being awake but still in bed for ``sleep_type`` during ``day_segment``.
+sumdurationtofallasleep    minutes        Total duration to fall asleep for ``sleep_type`` during ``day_segment``.
+sumdurationinbed           minutes        Total duration of staying in bed for ``sleep_type`` during ``day_segment``.
+avgefficiency              scores         Average of sleep efficiency for ``sleep_type`` during ``day_segment``.
+countepisode               episodes       Number of sleep episodes for ``sleep_type`` during ``day_segment``.
+========================   ===========    =============
+
+**Assumptions/Observations:** 
+
+N/A
+
+
+
 .. _fitbit-heart-rate-sensor-doc:
 
 Fitbit: Heart Rate
@@ -1028,22 +1106,24 @@ The following table shows a list of the available features for the Fitbit: Heart
 ==================   ===========    =============
 Name                 Units          Description
 ==================   ===========    =============
-maxhr                beats/mins     The maximum heart rate.
-minhr                beats/mins     The minimum heart rate.
-avghr                beats/mins     The average heart rate.
-medianhr             beats/mins     The median heart rate.
-modehr               beats/mins     The mode heart rate.
-stdhr                beats/mins     The standard deviation of heart rate.
-diffmaxmodehr        beats/mins     Diff max mode heart rate: The maximum heart rate minus mode heart rate.
-diffminmodehr        beats/mins     Diff min mode heart rate: The mode heart rate minus minimum heart rate.
-entropyhr                           Entropy heart rate: The entropy of heart rate.
-lengthoutofrange     minutes        Length out of range: The duration of time the heart rate is in the ``out_of_range`` zone in minute.
-lengthfatburn        minutes        Length fat burn: The duration of time the heart rate is in the ``fat_burn`` zone in minute.
-lengthcardio         minutes        Length cardio: The duration of time the heart rate is in the ``cardio`` zone in minute.
-lengthpeak           minutes        Length peak: The duration of time the heart rate is in the ``peak`` zone in minute
+restingheartrate     beats/mins     The number of times your heart beats per minute when participant is still and well rested for ``daily`` epoch.
+calories             cals           Calories burned during ``heartrate_zone`` for ``daily`` epoch.
+maxhr                beats/mins     The maximum heart rate during ``day_segment`` epoch.
+minhr                beats/mins     The minimum heart rate during ``day_segment`` epoch.
+avghr                beats/mins     The average heart rate during ``day_segment`` epoch.
+medianhr             beats/mins     The median of heart rate during ``day_segment`` epoch.
+modehr               beats/mins     The mode of heart rate during ``day_segment`` epoch.
+stdhr                beats/mins     The standard deviation of heart rate during ``day_segment`` epoch.
+diffmaxmodehr        beats/mins     The difference between maximum heart rate and mode of heart rate during ``day_segment`` epoch.
+diffminmodehr        beats/mins     The difference between mode of heart rate and minimum heart rate during ``day_segment`` epoch.
+entropyhr            nats           Shannon’s entropy measurement based on heart rate during ``day_segment`` epoch.
+length               minutes        Number of minutes in each ``heartrate_zone`` during ``day_segment`` epoch.
 ==================   ===========    =============
 
-**Assumptions/Observations:** Heart rate zones contain 4 zones: ``out_of_range`` zone, ``fat_burn`` zone, ``cardio`` zone, and ``peak`` zone. Please refer to the `Fitbit documentation`_ for detailed information of how to define those zones.
+**Assumptions/Observations:** 
+
+Heart rate zones contain 4 zones: ``out_of_range`` zone, ``fat_burn`` zone, ``cardio`` zone, and ``peak`` zone. Please refer to the `Fitbit documentation`_ for detailed information of how to define those zones.
+Calories features might be inaccurate as they depend on users’ Fitbit profile (weight, height, etc.)
 
 .. _fitbit-steps-sensor-doc:
 
@@ -1103,7 +1183,7 @@ See `Fitbit: Steps Config Code`_
 Name	                   Description
 =======================    ===================
 day_segment                The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features                    The different measures that can be retrieved from the dataset. See :ref:`Available Fitbit: Steps Features <fitbit-steps-available-features>` Table below
+features                   The different measures that can be retrieved from the dataset. See :ref:`Available Fitbit: Steps Features <fitbit-steps-available-features>` Table below
 threshold_active_bout      The maximum number of steps per minute necessary for a bout to be ``sedentary``. That is, if the step count per minute is greater than this value the bout has a status of ``active``. 
 =======================    ===================
 
@@ -1116,24 +1196,26 @@ The following table shows a list of the available features for the Fitbit: Steps
 =========================   =========     =============
 Name                        Units         Description
 =========================   =========     =============
-sumallsteps                 steps         Sum all steps: The total step count.
-maxallsteps                 steps         Max all steps: The maximum step count
-minallsteps                 steps         Min all steps: The minimum step count
-avgallsteps                 steps         Avg all steps: The average step count
-stdallsteps                 steps         Std all steps: The standard deviation of step count
-countsedentarybout          bouts         Count sedentary bout: A count of sedentary bouts
-maxdurationsedentarybout    minutes       Max duration sedentary bout: The maximum duration of sedentary bouts
-mindurationsedentarybout    minutes       Min duration sedentary bout: The minimum duration of sedentary bouts
-avgdurationsedentarybout    minutes       Avg duration sedentary bout: The average duration of sedentary bouts
-stddurationsedentarybout    minutes       Std duration sedentary bout: The standard deviation of the duration of sedentary bouts
-countactivebout             bouts         Count active bout: A count of active bouts
-maxdurationactivebout       minutes       Max duration active bout: The maximum duration of active bouts
-mindurationactivebout       minutes       Min duration active bout: The minimum duration of active bouts
-avgdurationactivebout       minutes       Avg duration active bout: The average duration of active bouts
-stddurationactivebout       minutes       Std duration active bout: The standard deviation of the duration of active bouts
+sumallsteps                 steps         The total step count during ``day_segment`` epoch.
+maxallsteps                 steps         The maximum step count during ``day_segment`` epoch.
+minallsteps                 steps         The minimum step count during ``day_segment`` epoch.
+avgallsteps                 steps         The average step count during ``day_segment`` epoch.
+stdallsteps                 steps         The standard deviation of step count during ``day_segment`` epoch.
+countsedentarybout          bouts         Number of sedentary bouts during ``day_segment`` epoch.
+maxdurationsedentarybout    minutes       The maximum duration of sedentary bouts during ``day_segment`` epoch.
+mindurationsedentarybout    minutes       The minimum duration of sedentary bouts during ``day_segment`` epoch.
+avgdurationsedentarybout    minutes       The average duration of sedentary bouts during ``day_segment`` epoch.
+stddurationsedentarybout    minutes       The standard deviation of the duration of sedentary bouts during ``day_segment`` epoch.
+countactivebout             bouts         Number of active bouts during ``day_segment`` epoch.
+maxdurationactivebout       minutes       The maximum duration of active bouts during ``day_segment`` epoch.
+mindurationactivebout       minutes       The minimum duration of active bouts during ``day_segment`` epoch.
+avgdurationactivebout       minutes       The average duration of active bouts during ``day_segment`` epoch.
+stddurationactivebout       minutes       The standard deviation of the duration of active bouts during ``day_segment`` epoch.
 =========================   =========     =============
 
-**Assumptions/Observations:** If the step count per minute smaller than the ``THRESHOLD_ACTIVE_BOUT`` (default value is 10), it is defined as sedentary status. Otherwise, it is defined as active status. One active/sedentary bout is a period during with the user is under ``active``/``sedentary`` status.
+**Assumptions/Observations:** 
+
+If the step count per minute smaller than the ``THRESHOLD_ACTIVE_BOUT`` (default value is 10), it is defined as sedentary status. Otherwise, it is defined as active status. One active/sedentary bout is a period during with the user is under ``active``/``sedentary`` status.
 	
 
 .. -------------------------Links ------------------------------------ ..
@@ -1190,9 +1272,12 @@ stddurationactivebout       minutes       Std duration active bout: The standard
 .. _screen_deltas.R: https://github.com/carissalow/rapids/blob/master/src/features/screen_deltas.R
 .. _screen_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L97
 .. _screen_features.py: https://github.com/carissalow/rapids/blob/master/src/features/screen_features.py
-.. _`Fitbit: Heart Rate Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L113
 .. _fitbit_with_datetime: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L94
 .. _fitbit_readable_datetime.py: https://github.com/carissalow/rapids/blob/master/src/data/fitbit_readable_datetime.py
+.. _`Fitbit: Sleep Config Code`: https://github.com/carissalow/rapids/blob/e952e27350c7ae02703bd444e8f92979e37d9ba6/config.yaml#L129
+.. _fitbit_sleep_features: https://github.com/carissalow/rapids/blob/e952e27350c7ae02703bd444e8f92979e37d9ba6/rules/features.snakefile#L209
+.. _fitbit_sleep_features.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_sleep_features.py
+.. _`Fitbit: Heart Rate Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L113
 .. _fitbit_heartrate_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L151
 .. _fitbit_heartrate_features.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_heartrate_features.py
 .. _`Fitbit: Steps Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L117
