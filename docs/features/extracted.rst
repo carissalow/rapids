@@ -70,19 +70,11 @@ SMS
 
 See `SMS Config Code`_
 
-**Available Epochs:**      
+**Available Epochs:** daily, morning, afternoon, evening, night
 
-- daily 
-- morning
-- afternoon
-- evening
-- night
+**Available Platforms:** Android
 
-**Available Platforms:**    
-
-- Android
-
-**Snakefile Entry:**
+**Snakefile entry to compute these features:**
 
 ..    - Download raw SMS dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
 
@@ -97,18 +89,9 @@ See `SMS Config Code`_
 
 **Rule Chain:**
 
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-    - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
-    
-- **Rule:** ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
-
-    - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
-
-- **Rule:** ``rules/features.snakefile/sms_features`` - See the sms_features_ rule.
-
-    - **Script:** ``src/features/sms_features.R`` - See the sms_features.R_ script.
-
+- Rule ``rules/preprocessing.snakefile/download_dataset``
+- Rule ``rules/preprocessing.snakefile/readable_datetime``
+- Rule ``rules/features.snakefile/sms_features``
 
 .. _sms-parameters:
 
@@ -119,14 +102,12 @@ Name	        Description
 ============    ===================
 sms_type        The particular ``sms_type`` that will be analyzed. The options for this parameter are ``received`` or ``sent``.
 day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features        The different measures that can be retrieved from the dataset. These features are available for both ``sent`` and ``received`` SMS messages. See :ref:`Available SMS Features <sms-available-features>` Table below
+features        Features to be computed, see table below
 ============    ===================
 
 .. _sms-available-features:
 
 **Available SMS Featues**
-
-The following table shows a list of the available featues for both ``sent`` and ``received`` SMS. 
 
 =========================   =========     =============
 Name                        Units         Description
@@ -140,14 +121,12 @@ countmostfrequentcontact    SMS           The count of the number of ``SMS`` mes
 
 **Assumptions/Observations:** 
 
-    #. ``TYPES`` and ``FEATURES`` keys need to match. From example::
+#. ``TYPES`` and ``FEATURES`` keys need to match. For example, in the config setting below the ``TYPE`` ``sent`` matches the ``FEATURES`` key ``sent``::
 
         SMS:
             TYPES: [sent]
             FEATURES: 
                 sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
-
-In the above config setting code the ``TYPE`` ``sent`` matches the ``FEATURES`` key ``sent``.
 
 
 .. _call-sensor-doc:
