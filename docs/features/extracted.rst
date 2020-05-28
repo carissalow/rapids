@@ -12,7 +12,7 @@ Global Parameters
 
 .. _fitbit-table:
 
-- ``FITBIT_TABLE`` - The name of table in your database that contains Fitbit data. Its ``fitbit_data`` field should contain the data coming from the Fitbit API in JSON format. 
+- ``FITBIT_TABLE`` - The table in your database that contains your Fitbit data in a field named `fitbit_data` in JSON format. 
 
 .. _fitbit-sensors:
 
@@ -28,7 +28,7 @@ Global Parameters
 
 .. _timezone:
 
-- ``TIMEZONE`` - The time zone where data was collected. Use the timezone names from this `List of Timezones`_. Double check your chosen name is correct, for example US Eastern Time is named New America/New_York, not EST.
+- ``TIMEZONE`` - The time zone where data was collected. Use the timezone names from this `List of Timezones`_. Double check your chosen name is correct, for example US Eastern Time is called New America/New_York, not EST.
 
 .. _database_group:
 
@@ -45,7 +45,7 @@ Global Parameters
 - ``READABLE_DATETIME`` - Configuration to convert UNIX timestamps into readbale date time strings.
 
     - ``FIXED_TIMEZONE``. See ``TIMEZONE`` above. This assumes that all data of all participants was collected within one time zone.
-    - Support for multiple time zones for each participant coming soon.
+    - Support for multiple time zones for each participant coming soon based on the ``timezone`` table collected by Aware.
 
 .. _phone-valid-sensed-days:
 
@@ -57,7 +57,7 @@ Global Parameters
 
     Therefore, we define a valid hour as those that contain at least a certain number of valid bins. In turn, a valid bin are those that contain at least one row of data from any sensor logged within that period. We divide an hour into N bins of size ``BIN_SIZE`` (in minutes) and we mark an hour as valid if contains at least ``MIN_BINS_PER_HOUR`` of valid bins (out of the total possible number of bins that can be captured in an hour i.e. out of 60min/``BIN_SIZE`` bins). Days with valid sensed hours less than ``MIN_VALID_HOURS`` will be excluded form the output of this file. See PHONE_VALID_SENSED_DAYS_ in ``config.yaml``.
 
-    In RAPIDS, you will find that we use ``phone_sensed_bins`` (a list of all valid and invalid bins of all monitored days) to improve the estimation of features that are ratios over time periods like ``episodepersensedminutes`` of :ref:`Screen<screen-sensor-doc>` or for resampling data like fused location coordinates.
+    In RAPIDS, we use ``phone_sensed_bins`` (a list of all valid and invalid bins of all monitored days) to improve the estimation of features that are ratios over time periods like ``episodepersensedminutes`` of :ref:`Screen<screen-sensor-doc>` or for resampling data like fused location coordinates.
 
 
 .. _individual-sensor-settings:
