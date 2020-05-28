@@ -557,7 +557,7 @@ See `Location (Barnett’s) Config Code`_
 
 **Snakefile entry to compute these features:**
 
-    | ``expand("data/processed/{pid}/location_barnett_{segment}.csv", ``
+    | ``expand("data/processed/{pid}/location_barnett_{segment}.csv",``
     |                        ``pid=config["PIDS"],``
     |                        ``segment = config["BARNETT_LOCATION"]["DAY_SEGMENTS"]),``
     
@@ -632,80 +632,39 @@ Screen
 
 See `Screen Config Code`_
 
-**Available Epochs:**      
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
-    - daily 
-    - morning
-    - afternoon
-    - evening
-    - night
+**Available Platforms:** Android and iOS
 
-**Available Platforms:**    
-
-    - Android
-    - iOS
-
-**Snakefile entry:**
-
-..    - Download raw Screen dataset: ``expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-      - Apply readable dateime to Screen dataset: ``expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),``
-      - Extract the deltas from the Screen dataset: expand("data/processed/{pid}/screen_deltas.csv", pid=config["PIDS"]),
-    
-- Extract Screen Features:
+**Snakefile entry to compute these features:**
     
       | ``expand("data/processed/{pid}/screen_{day_segment}.csv",``
       |                      ``pid=config["PIDS"],`` 
       |                      ``day_segment = config["SCREEN"]["DAY_SEGMENTS"]),``
     
-**Rule Chain:**
+**Snakemake rule chain:**
 
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-
-    - **Script:** ``src/data/download_dataset.R`` - See the download_dataset.R_ script.
-
-- **Rule:** ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
-
-    - **Script:** ``src/data/readable_datetime.R`` - See the readable_datetime.R_ script.
-
-- **Rule:** ``rules/features.snakefile/screen_deltas`` - See the screen_deltas_ rule.
-
-    - **Script:** ``src/features/screen_deltas.R`` - See the screen_deltas.R_ script.
-
-- **Rule:** ``rules/features.snakefile/screen_features`` - See the screen_features_ rule.
-
-    - **Script:** ``src/features/screen_features.py`` - See the screen_features.py_ script.
+- Rule ``rules/preprocessing.snakefile/download_dataset``
+- Rule ``rules/preprocessing.snakefile/readable_datetime``
+- Rule ``rules/features.snakefile/screen_deltas``
+- Rule ``rules/features.snakefile/screen_features``
 
 .. _screen-parameters:
 
-**Screen Rule Parameters:**
+**Screen Rule Parameters (screen_features):**
 
 =========================    ===================
 Name	                     Description
 =========================    ===================
 day_segment                  The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
 reference_hour_first_use     The reference point from which ``firstuseafter`` is to be computed, default is midnight
-features_deltas              The different measures that can be retrieved from the episodes extracted from the Screen dataset. See :ref:`Available Screen Episodes Features <screen-episodes-available-features>` Table below
-episode_types                The action that defines an episode
+features_deltas              Features to be computed, see table below
+episode_types                Currently we only support unlock episodes (from when the phone is unlocked until the screen is off)
 =========================    ===================
-
-.. _screen-events-available-features:
-
-.. 
-    **Available Screen Events Features**
-    The following table shows a list of the available features for Screen Events. 
-        =================   ==============    =============
-        Name                Units             Description
-        =================   ==============    =============
-        counton             `ON` events       Count on: A count of screen `ON` events (only available for Android)
-        countunlock         Unlock events     Count unlock: A count of screen unlock events.
-        unlocksperminute    Unlock events     Unlock events per minute: The average of the number of unlock events that occur in a minute 
-        =================   ==============    =============
 
 .. _screen-episodes-available-features:
 
 **Available Screen Episodes Features**
-
-The following table shows a list of the available features for Screen Episodes. 
 
 =========================   =================   =============
 Name                        Units               Description
@@ -722,7 +681,7 @@ firstuseafter               seconds             Seconds until the first unlock e
 
 **Assumptions/Observations:** 
 
-An ``unlock`` episode is considered as the time between an ``unlock`` event and a ``lock`` event. iOS recorded these episodes reliable (albeit some duplicated ``lock`` events within milliseconds from each other). However, in Android there are some events unrelated to the screen state because of multiple consecutive ``unlock``/``lock`` events, so we keep the closest pair. In the experiments these are less than 10% of the screen events collected. This happens because ``ACTION_SCREEN_OFF`` and ``ON`` are "sent when the device becomes non-interactive which may have nothing to do with the screen turning off". Additionally in Android it is possible to measure the time spent on the ``lock`` screen onto the ``unlock`` event and the total screen time (i.e. ``ON`` to ``OFF``) events but we are only keeping ``unlock`` episodes (``unlock`` to ``OFF``) to be consistent with iOS. 
+An ``unlock`` episode is considered as the time between an ``unlock`` event and a ``lock`` event. iOS recorded these episodes reliably (albeit some duplicated ``lock`` events within milliseconds from each other). However, in Android there are some events unrelated to the screen state because of multiple consecutive ``unlock``/``lock`` events, so we keep the closest pair. In our experiments these cases are less than 10% of the screen events collected. This happens because ``ACTION_SCREEN_OFF`` and ``ON`` are "sent when the device becomes non-interactive which may have nothing to do with the screen turning off". Additionally, in Android it is possible to measure the time spent on the ``lock`` screen before an ``unlock`` event as well as the total screen time (i.e. ``ON`` to ``OFF``) but we are only keeping ``unlock`` episodes (``unlock`` to ``OFF``) to be consistent with iOS. 
 
 .. ------------------------------- Begin Fitbit Section ----------------------------------- ..
 
