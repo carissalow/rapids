@@ -110,7 +110,7 @@ count                       SMS           Number of SMS of type ``sms_type`` tha
 distinctcontacts            contacts      Number of distinct contacts that are associated with a particular ``sms_type`` during a particular ``day_segment``.
 timefirstsms                hours         Number of hours between 12:00am (midnight) and the first ``SMS`` of a particular ``sms_type``.
 timelastsms                 hours         Number of hours between 12:00am (midnight) and the last ``SMS`` of a particular ``sms_type``.
-countmostfrequentcontact    SMS           The count of the number of ``SMS`` messages of a particular ``sms_type`` for the most contacted contact for a particular ``day_segment``.
+countmostfrequentcontact    SMS           Number of ``SMS`` messages from the contact with the most messages of ``sms_type`` during a ``day_segment`` throughout the whole dataset of each participant.
 =========================   =========     =============
 
 **Assumptions/Observations:** 

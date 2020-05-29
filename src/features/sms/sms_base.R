@@ -31,6 +31,7 @@ base_sms_features <- function(sms, sms_type, day_segment, requested_features){
                 mutate(N=n()) %>% 
                 ungroup() %>%
                 filter(N == max(N)) %>% 
+                head(1) %>% # if there are multiple contacts with the same amount of messages pick the first one only
                 group_by(local_date) %>% 
                 summarise(!!paste("sms", sms_type, day_segment, feature_name, sep = "_") := n())  %>% 
                 replace(is.na(.), 0)

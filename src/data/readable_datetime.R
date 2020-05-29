@@ -3,7 +3,7 @@ source("renv/activate.R")
 library("tidyverse")
 library(readr)
 
-input <- read.csv(snakemake@input[[1]])
+input <- read.csv(snakemake@input[[1]]) %>% arrange(timestamp)
 sensor_output <- snakemake@output[[1]]
 timezone_periods <- snakemake@params[["timezone_periods"]]
 fixed_timezone <- snakemake@params[["fixed_timezone"]]
