@@ -44,8 +44,8 @@ base_sms_features <- function(sms, sms_type, day_segment, requested_features){
             feature <- switch(feature_name,
                     "count" = feature %>% summarise(!!paste("sms", sms_type, day_segment, feature_name, sep = "_") := n()),
                     "distinctcontacts" = feature %>% summarise(!!paste("sms", sms_type, day_segment, feature_name, sep = "_") := n_distinct(trace)),
-                    "timefirstsms" = feature %>% summarise(!!paste("sms", sms_type, day_segment, feature_name, sep = "_") := first(local_hour) + (first(local_minute)/60)),
-                    "timelastsms" = feature %>% summarise(!!paste("sms", sms_type, day_segment, feature_name, sep = "_") := last(local_hour) + (last(local_minute)/60)))
+                    "timefirstsms" = feature %>% summarise(!!paste("sms", sms_type, day_segment, feature_name, sep = "_") := first(local_hour) * 60 + first(local_minute)),
+                    "timelastsms" = feature %>% summarise(!!paste("sms", sms_type, day_segment, feature_name, sep = "_") := last(local_hour) * 60 + last(local_minute)))
 
             features <- merge(features, feature, by="local_date", all = TRUE)
         }
