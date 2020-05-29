@@ -1,7 +1,10 @@
 filter_by_day_segment <- function(data, day_segment) {
   if(day_segment %in% c("morning", "afternoon", "evening", "night"))
     data <- data %>% filter(local_day_segment == day_segment)
-  return(data)
+  else if(day_segment == "daily")
+    return(data)
+  else 
+    return(data %>% head(0))
 }
 
 base_sms_features <- function(sms, sms_type, day_segment, requested_features){
@@ -15,7 +18,7 @@ base_sms_features <- function(sms, sms_type, day_segment, requested_features){
     features_to_compute  <- intersect(base_features_names, requested_features)
 
     # Filter rows that belong to the sms type and day segment of interest
-    sms <- sms %>% filter(message_type == ifelse(sms_type == "received", "1", "2")) %>% 
+    sms <- sms %>% filter(message_type == ifelse(sms_type == "received", "1", ifelse(sms_type == "sent", 2, NA))) %>% 
         filter_by_day_segment(day_segment)
 
     # If there are not features or data to work with, return an empty df with appropiate columns names
@@ -33,7 +36,7 @@ base_sms_features <- function(sms, sms_type, day_segment, requested_features){
                 filter(N == max(N)) %>% 
                 head(1) %>% # if there are multiple contacts with the same amount of messages pick the first one only
                 group_by(local_date) %>% 
-                summarise(!!paste("sms", sms_type, day_segment, feature_name, sep = "_") := n())  %>% 
+                summarise(!!paste("sms", sms_type, day_segment, feature_name, sep = "_") := N)  %>% 
                 replace(is.na(.), 0)
 
             features <- merge(features, feature, by="local_date", all = TRUE)
