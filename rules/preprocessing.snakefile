@@ -94,7 +94,7 @@ rule application_genres:
 
 rule fitbit_with_datetime:
     input:
-        "data/raw/{pid}/fitbit_data_raw.csv"
+        expand("data/raw/{{pid}}/{fitbit_table}_raw.csv", fitbit_table=config["FITBIT_TABLE"])
     params:
         local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
         fitbit_sensor = "{fitbit_sensor}"
