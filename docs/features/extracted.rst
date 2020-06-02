@@ -739,9 +739,44 @@ countepisode               episodes       Number of sleep episodes for ``sleep_t
 
 **Assumptions/Observations:** 
 
-N/A
+The `fitbit_with_datetime` rule will extract Summary data (`fitbit_sleep_summary_with_datetime.csv`) Intraday data (`fitbit_sleep_intraday_with_datetime.csv`). There are two versions of Fitbit's sleep API(`version 1`_ and `version 1.2`_), and each provides raw sleep data with different formats. 
 
+The differences between both API versions are:
+    
+    - Sleep level. In `v1`, it is an integer with three possible values {1, 2, 3} while in `v2` it is a string. We convert integer levels of `v1` to strings: "asleep", "restless" or "awake" respectively.
+    - Count summaries. For Summary data,`v1` contains "count_awake", "duration_awake", "count_awakenings", "count_restless", and "duration_restless" fields in the summary of each sleep record while `version 1.2` does not.
+    - Types of sleep records. `v1.2` has two types of sleep records: "classic" and "stages". The "classic" type contains three sleep levels: "awake", "restless" and "asleep". The "stages" type contains four sleep levels {"wake", "deep", "light", "rem"}. Sleep records from `v1` will have the same sleep levels as `v1.2` classic types; therefore we set their type to "classic".
+    - Unified level of sleep. For intraday data, we unify sleep levels of each sleep record with a column named "unified_level". Based on `this Fitbit forum post`_ , we merge levels into two categories:
+        - For the "classic" type: unified_level is one of {0, 1} where 0 means awake and groups "awake" + "restless", while 1 means asleep and groups "asleep".
+        - For the "stages" type, unified_level is one of {0, 1} where 0 means awake and groups "wake" while 1 means asleep and groups "deep" + "light" + "rem".
+    - Short Data. In `v1.2`, records of type "stages" contain "shortData_" in addition to "data". We merge "data" part and "shortData" part to extract intraday data. 
+        - The "data" grouping displays the sleep stages and any wake periods > 3 minutes (180 seconds).
+        - The "shortData" grouping displays the short wake periods representing physiological awakenings that are <= 3 minutes (180 seconds).
+    - The following columns of Summary data are not computed by RAPIDS but taken directly from columns with a similar name provided by the API: `efficiency`, `minutes_after_wakeup`, `minutes_asleep`, `minutes_awake`, `minutes_to_fall_asleep`, `minutes_in_bed`, `is_main_sleep` and `type`
+    - The following columns of Intraday data are not computed by RAPIDS but taken directly from columns with a similar name provided by the API: `original_level`, `is_main_sleep` and `type`. We compute `unified_level` as explained above.
 
+Detailed sleep data is stored in Intraday data every 30 seconds (for "stages" type) or 60 seconds (for "classic" type) while a summary is stored in Summary data. For example:
+
+- Intraday data
+
+=========    ==============    =============    =============    ======    ===================    ==========    ===========    =========    =================    ==========    ==========    ============    =================
+device_id    original_level    unified_level    is_main_sleep    type      local_date_time        local_date    local_month    local_day    local_day_of_week    local_time    local_hour    local_minute    local_day_segment
+=========    ==============    =============    =============    ======    ===================    ==========    ===========    =========    =================    ==========    ==========    ============    =================
+did          wake              0                1                stages    2020-05-20 22:13:30    2020-05-20    5              20           2                    22:13:30      22            13              evening
+did          wake              0                1                stages    2020-05-20 22:14:00    2020-05-20    5              20           2                    22:14:00      22            14              evening
+did          light             1                1                stages    2020-05-20 22:14:30    2020-05-20    5              20           2                    22:14:30      22            14              evening
+did          light             1                1                stages    2020-05-20 22:15:00    2020-05-20    5              20           2                    22:15:00      22            15              evening
+did          light             1                1                stages    2020-05-20 22:15:30    2020-05-20    5              20           2                    22:15:30      22            15              evening
+=========    ==============    =============    =============    ======    ===================    ==========    ===========    =========    =================    ==========    ==========    ============    =================
+
+- Summary data
+
+=========    ==========    ====================    ==============    =============    ======================    ==============    =============    ======    =====================    ===================    ================    ==============    =======================    =====================
+device_id    efficiency    minutes_after_wakeup    minutes_asleep    minutes_awake    minutes_to_fall_asleep    minutes_in_bed    is_main_sleep    type      local_start_date_time    local_end_date_time    local_start_date    local_end_date    local_start_day_segment    local_end_day_segment
+=========    ==========    ====================    ==============    =============    ======================    ==============    =============    ======    =====================    ===================    ================    ==============    =======================    =====================
+did          90            0                       381               54               0                         435               1                stages    2020-05-20 22:12:00      2020-05-21 05:27:00    2020-05-20          2020-05-21        evening                    night
+did          88            0                       498               86               0                         584               1                stages    2020-05-22 22:03:00      2020-05-23 07:47:03    2020-05-22          2020-05-23        evening                    morning
+=========    ==========    ====================    ==============    =============    ======================    ==============    =============    ======    =====================    ===================    ================    ==============    =======================    =====================
 
 .. _fitbit-heart-rate-sensor-doc:
 
@@ -928,6 +963,10 @@ Active and sedentary bouts. If the step count per minute is smaller than ``THRES
 .. _`Fitbit: Sleep Config Code`: https://github.com/carissalow/rapids/blob/e952e27350c7ae02703bd444e8f92979e37d9ba6/config.yaml#L129
 .. _fitbit_sleep_features: https://github.com/carissalow/rapids/blob/e952e27350c7ae02703bd444e8f92979e37d9ba6/rules/features.snakefile#L209
 .. _fitbit_sleep_features.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_sleep_features.py
+.. _`version 1`: https://dev.fitbit.com/build/reference/web-api/sleep-v1/
+.. _`version 1.2`: https://dev.fitbit.com/build/reference/web-api/sleep/
+.. _`this Fitbit forum post`: https://community.fitbit.com/t5/Alta/What-does-Restless-mean-in-sleep-tracking/td-p/2989011
+.. _ shortData: https://dev.fitbit.com/build/reference/web-api/sleep/#interpreting-the-sleep-stage-and-short-data
 .. _`Fitbit: Heart Rate Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L113
 .. _fitbit_heartrate_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L151
 .. _fitbit_heartrate_features.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_heartrate_features.py
