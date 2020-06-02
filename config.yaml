@@ -48,8 +48,8 @@ CALLS:
   TYPES: [missed, incoming, outgoing]
   FEATURES:
     missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
-    incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
-    outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, hubermduration, varqnduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+    incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+    outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments
 
 APPLICATION_GENRES:
