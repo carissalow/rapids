@@ -175,8 +175,8 @@ maxduration                 seconds       The duration of the longest call of a 
 stdduration                 seconds       The standard deviation of the duration of all the calls of a particular ``call_type`` during a particular ``day_segment``.
 modeduration                seconds       The mode of the duration of all the calls of a particular ``call_type`` during a particular ``day_segment``.
 entropyduration             nats          The estimate of the Shannon entropy for the the duration of all the calls of a particular ``call_type`` during a particular ``day_segment``.
-timefirstcall               hours         The time in hours between 12:00am (midnight) and the first call of ``call_type``.
-timelastcall                hours         The time in hours between 12:00am (midnight) and the last call of ``call_type``.
+timefirstcall               minutes       The time in minutes between 12:00am (midnight) and the first call of ``call_type``.
+timelastcall                minutes       The time in minutes between 12:00am (midnight) and the last call of ``call_type``.
 countmostfrequentcontact    calls         The number of calls of a particular ``call_type`` during a particular ``day_segment`` of the most frequent contact throughout the monitored period.
 =========================   =========     =============
 
