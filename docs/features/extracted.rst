@@ -743,8 +743,8 @@ The `fitbit_with_datetime` rule will extract Summary data (`fitbit_sleep_summary
 
 The differences between both API versions are:
     
-    - Sleep level. In `v1`, it is an integer with three possible values {1, 2, 3} while in `v2` it is a string. We convert integer levels of `v1` to strings: "asleep", "restless" or "awake" respectively.
-    - Count summaries. For Summary data,`v1` contains "count_awake", "duration_awake", "count_awakenings", "count_restless", and "duration_restless" fields in the summary of each sleep record while `version 1.2` does not.
+    - Sleep level. In `v1`, it is an integer with three possible values {1, 2, 3} while in `v1.2` it is a string. We convert integer levels of `v1` to strings: "asleep", "restless" or "awake" respectively.
+    - Count summaries. For Summary data, `v1` contains "count_awake", "duration_awake", "count_awakenings", "count_restless", and "duration_restless" fields in the summary of each sleep record while `v1.2` does not.
     - Types of sleep records. `v1.2` has two types of sleep records: "classic" and "stages". The "classic" type contains three sleep levels: "awake", "restless" and "asleep". The "stages" type contains four sleep levels {"wake", "deep", "light", "rem"}. Sleep records from `v1` will have the same sleep levels as `v1.2` classic types; therefore we set their type to "classic".
     - Unified level of sleep. For intraday data, we unify sleep levels of each sleep record with a column named "unified_level". Based on `this Fitbit forum post`_ , we merge levels into two categories:
         - For the "classic" type: unified_level is one of {0, 1} where 0 means awake and groups "awake" + "restless", while 1 means asleep and groups "asleep".
