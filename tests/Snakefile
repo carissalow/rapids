@@ -14,6 +14,10 @@ rule all:
                             pid=config["PIDS"],
                             sms_type = config["SMS"]["TYPES"],
                             day_segment = config["SMS"]["DAY_SEGMENTS"]),
+        expand("data/processed/{pid}/call_{call_type}_{segment}.csv",
+                            pid=config["PIDS"], 
+                            call_type=config["CALLS"]["TYPES"],
+                            segment = config["CALLS"]["DAY_SEGMENTS"]),
 
 rule clean:
     shell:

@@ -1,5 +1,5 @@
 # Valid database table name
-SENSORS: [messages]
+SENSORS: [messages, calls]
 
 # Test Participant data to include in the unit testing
 # You must create a file for each participant
@@ -8,7 +8,7 @@ PIDS: [test01]
 
 # Global var with common day segments
 DAY_SEGMENTS: &day_segments
-    [daily]
+  [daily, morning, afternoon, evening, night]
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 SMS:
@@ -17,3 +17,12 @@ SMS:
     received: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
     sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments  
+
+# Communication call features config, TYPES and FEATURES keys need to match
+CALLS:
+  TYPES: [missed, incoming, outgoing]
+  FEATURES:
+    missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
+    incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+    outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+  DAY_SEGMENTS: *day_segments

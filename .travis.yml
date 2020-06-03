@@ -38,7 +38,9 @@ jobs:
         - brew install r
         - R --version
         - brew cask install miniconda
-        - eval "$(/usr/local/bin/conda shell.bash hook)"
+        - which conda
+        - eval "$(/opt/miniconda3/condabin/conda shell.bash hook)"
+
       env:
         - RENV_PATHS_ROOT="$HOME/renv/cache"
       cache:

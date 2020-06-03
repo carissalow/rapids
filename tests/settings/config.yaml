@@ -2,4 +2,4 @@ directory: ./
 configfile: ./tests/settings/testing_config.yaml
 snakefile: ./tests/Snakefile
 cores: 1
-forcerun: sms_features
+forcerun: [sms_features, call_features]
