@@ -38,7 +38,6 @@ jobs:
         - brew install r
         - R --version
         - brew cask install miniconda
-        - which conda
         - eval "$(/opt/miniconda3/condabin/conda shell.bash hook)"
 
       env:
@@ -60,7 +59,7 @@ install:
     
 script:
   - cp -r tests/data/raw/* data/raw
-  - snakemake --profile tests/settings -R sms_features
+  - snakemake --profile tests/settings
   - python -m unittest discover tests/scripts/ -v
 
 notifications:
