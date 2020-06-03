@@ -23,8 +23,10 @@ base_call_features <- function(calls, call_type, day_segment, requested_features
     features_to_compute  <- intersect(base_features_names, requested_features)
 
     # Filter rows that belong to the calls type and day segment of interest
-    calls <- calls %>% filter(call_type == ifelse(call_type == "incoming", "1", ifelse(call_type == "outgoing", "2", "3"))) %>% 
-        filter_by_day_segment(day_segment)
+    call_type_label = ifelse(call_type == "incoming", "1", ifelse(call_type == "outgoing", "2", ifelse(call_type == "missed", "3", NA)))
+    if(is.na(call_type_label))
+        stop(paste("Call type can online be incoming, outgoing or missed but instead you typed: ", call_type))
+    calls <- calls %>% filter(call_type == call_type_label) %>% filter_by_day_segment(day_segment)
 
     # If there are not features or data to work with, return an empty df with appropiate columns names
     if(length(features_to_compute) == 0)
