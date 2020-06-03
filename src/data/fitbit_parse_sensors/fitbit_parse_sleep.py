@@ -62,6 +62,19 @@ def mergeLongAndShortData(data_summary):
     
     return longData.values.tolist()
 
+def classicData1min(data_summary):
+    dataList = list()
+    for data in data_summary['data']:
+        origEntry = data
+        counter = 0
+        timeDuration = 60
+        numberOfSplits = origEntry['seconds']//timeDuration
+        for times in range(numberOfSplits):
+            newRow = {'dateTime':dateutil.parser.parse(origEntry['dateTime'])+timedelta(seconds=counter*timeDuration),'level':origEntry['level'],'seconds':timeDuration}
+            dataList.append(newRow)
+            counter = counter + 1
+    # print(dataList)
+    return dataList
 # Parse one record for sleep API version 1
 def parseOneRecordForV1(record, device_id, d_is_main_sleep, records_summary, records_intraday, HOUR2EPOCH):
 
@@ -137,9 +150,10 @@ def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, re
             is_before_midnight = True
             curr_date = start_date
             data_summary = record['levels']
-            for data in data_summary['data']:
+            dataSplitted = classicData1min(data_summary)  ##Calling the function to split the data in regular 60 seconds interval
+            for data in dataSplitted:
                 # For overnight episodes, use end_date once we are over midnight
-                d_time = dateutil.parser.parse(data["dateTime"]).time()
+                d_time = data["dateTime"].time()
                 if is_before_midnight and d_time.hour == 0:
                     curr_date = end_date
                 d_datetime = datetime.combine(curr_date, d_time)
