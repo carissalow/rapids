@@ -12,7 +12,7 @@ Mode <- function(v) {
   uniqv[which.max(tabulate(match(v, uniqv)))]
 }
 
-base_call_features <- function(call, call_type, day_segment, requested_features){
+base_call_features <- function(calls, call_type, day_segment, requested_features){
     # Output dataframe
     features = data.frame(local_date = character(), stringsAsFactors = FALSE)
 
@@ -25,7 +25,7 @@ base_call_features <- function(call, call_type, day_segment, requested_features)
     # Filter rows that belong to the calls type and day segment of interest
     calls <- calls %>% filter(call_type == ifelse(call_type == "incoming", "1", ifelse(call_type == "outgoing", "2", "3"))) %>% 
         filter_by_day_segment(day_segment)
-    print(calls)
+
     # If there are not features or data to work with, return an empty df with appropiate columns names
     if(length(features_to_compute) == 0)
         return(features)
@@ -33,7 +33,6 @@ base_call_features <- function(call, call_type, day_segment, requested_features)
         return(cbind(features, read.csv(text = paste(paste("call", call_type, day_segment, features_to_compute, sep = "_"), collapse = ","), stringsAsFactors = FALSE)))
 
     for(feature_name in features_to_compute){
-        print(feature_name)
         if(feature_name == "countmostfrequentcontact"){
             # Get the number of messages for the most frequent contact throughout the study
             feature <- calls %>% group_by(trace) %>% 
