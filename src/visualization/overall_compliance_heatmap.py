@@ -19,7 +19,7 @@ def getOneRow(data_per_participant, last_seven_dates, col_name, row):
 def getOverallComplianceHeatmap(sensors_with_data, valid_sensed_hours, last_seven_dates, bin_size, min_bins_per_hour, output_path):
     plot = ff.create_annotated_heatmap(z=sensors_with_data[last_seven_dates].values,
                                        x=[date.replace("-", "/") for date in last_seven_dates],
-                                       y=[pid + "<br>" + label for pid, label in zip(sensors_with_data["pid"].to_list(), sensors_with_data["label"].to_list())],
+                                       y=[pid + "." + label for pid, label in zip(sensors_with_data["pid"].to_list(), sensors_with_data["label"].to_list())],
                                        annotation_text=valid_sensed_hours[last_seven_dates].values,
                                        hovertemplate='Date: %{x}<br>Participant: %{y}<br>Number of sensors with data: %{z}<extra></extra>',
                                        colorscale="Viridis",
