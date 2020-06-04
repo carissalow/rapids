@@ -81,7 +81,7 @@ BLUETOOTH:
 
 ACTIVITY_RECOGNITION:
   DAY_SEGMENTS: *day_segments
-  FEATURES: ['count','mostcommonactivity','countuniqueactivities','activitychangecount','sumstationary','summobile','sumvehicle']
+  FEATURES: ["count","mostcommonactivity","countuniqueactivities","activitychangecount","sumstationary","summobile","sumvehicle"]
 
 BATTERY:
   DAY_SEGMENTS: *day_segments
