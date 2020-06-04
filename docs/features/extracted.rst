@@ -599,8 +599,8 @@ maxhomedist        meters        The maximum distance from home in meters.
 siglocsvisited     locations     The number of significant locations visited during the day. Significant locations are computed using k-means clustering over pauses found in the whole monitoring period. The number of clusters is found iterating k from 1 to 200 stopping until the centroids of two significant locations are within 400 meters of one another.
 avgflightlen       meters        Mean length of all flights.
 stdflightlen       meters        Standard deviation of the length of all flights.
-avgflightdur       meters        Mean duration of all flights.
-stdflightdur       meters        The standard deviation of the duration of all flights.
+avgflightdur       seconds       Mean duration of all flights.
+stdflightdur       seconds       The standard deviation of the duration of all flights.
 probpause                        The fraction of a day spent in a pause (as opposed to a flight)
 siglocentropy      nats          Shannon’s entropy measurement based on the proportion of time spent at each significant location visited during a day.
 circdnrtn           	         A continuous metric quantifying a person’s circadian routine that can take any value between 0 and 1, where 0 represents a daily routine completely different from any other sensed days and 1 a routine the same as every other sensed day.
