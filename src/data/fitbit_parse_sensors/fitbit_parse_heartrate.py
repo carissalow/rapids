@@ -93,7 +93,7 @@ def parseHeartrateIntradayData(records_intraday, dataset, device_id, curr_date, 
 
 def parseHeartrateData(heartrate_data, HOUR2EPOCH):
     if heartrate_data.empty:
-        return pd.DataFrame(columns=HR_COLUMNS)
+        return pd.DataFrame(columns=HR_SUMMARY_COLUMNS), pd.DataFrame(columns=HR_INTRADAY_COLUMNS)
     device_id = heartrate_data["device_id"].iloc[0]
     records_summary, records_intraday = [], []
 
