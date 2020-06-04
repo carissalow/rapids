@@ -11,7 +11,7 @@ STEPS_INTRADAY_COLUMNS = ("device_id",
 
 def parseStepsData(steps_data, HOUR2EPOCH):
     if steps_data.empty:
-        return pd.DataFrame(), pd.DataFrame(columns=STEPS_COLUMNS)
+        return pd.DataFrame(), pd.DataFrame(columns=STEPS_INTRADAY_COLUMNS)
     device_id = steps_data["device_id"].iloc[0]
     records_intraday = []
     # Parse JSON into individual records
