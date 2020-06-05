@@ -200,8 +200,9 @@ def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, re
 
 
 def parseSleepData(sleep_data, HOUR2EPOCH):
+    SLEEP_SUMMARY_COLUMNS = SLEEP_SUMMARY_COLUMNS_V1_2
     if sleep_data.empty:
-        return pd.DataFrame(columns=SLEEP_SUMMARY_COLUMNS_V1), pd.DataFrame(columns=SLEEP_INTRADAY_COLUMNS)
+        return pd.DataFrame(columns=SLEEP_SUMMARY_COLUMNS), pd.DataFrame(columns=SLEEP_INTRADAY_COLUMNS)
     device_id = sleep_data["device_id"].iloc[0]
     records_summary, records_intraday = [], []
     # Parse JSON into individual records
