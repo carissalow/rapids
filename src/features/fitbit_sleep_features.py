@@ -64,4 +64,4 @@ else:
 if day_segment == "daily":
     sleep_daily_features.to_csv(snakemake.output[0])
 else:
-    ValueError("Sleep summary features are only implemented for daily day segments")
+    pd.DataFrame().to_csv(snakemake.output[0])
