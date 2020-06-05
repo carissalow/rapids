@@ -749,7 +749,7 @@ The differences between both API versions are:
     - Unified level of sleep. For intraday data, we unify sleep levels of each sleep record with a column named "unified_level". Based on `this Fitbit forum post`_ , we merge levels into two categories:
         - For the "classic" type: unified_level is one of {0, 1} where 0 means awake and groups "awake" + "restless", while 1 means asleep and groups "asleep".
         - For the "stages" type, unified_level is one of {0, 1} where 0 means awake and groups "wake" while 1 means asleep and groups "deep" + "light" + "rem".
-    - Short Data. In `v1.2`, records of type "stages" contain "shortData_" in addition to "data". We merge "data" part and "shortData" part to extract intraday data. 
+    - Short Data. In `v1.2`, records of type "stages" contain "shortData" in addition to "data". We merge "data" part and "shortData" part to extract intraday data. 
         - The "data" grouping displays the sleep stages and any wake periods > 3 minutes (180 seconds).
         - The "shortData" grouping displays the short wake periods representing physiological awakenings that are <= 3 minutes (180 seconds).
     - The following columns of Summary data are not computed by RAPIDS but taken directly from columns with a similar name provided by the API: `efficiency`, `minutes_after_wakeup`, `minutes_asleep`, `minutes_awake`, `minutes_to_fall_asleep`, `minutes_in_bed`, `is_main_sleep` and `type`

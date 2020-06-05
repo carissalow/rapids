@@ -108,3 +108,4 @@ reports/
 .Rhistory
 sn_profile_*/
 settings.dcf
+tests/fakedata_generation/

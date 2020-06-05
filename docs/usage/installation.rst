@@ -48,27 +48,46 @@ macOS (tested on Catalina 10.15)
 #. See Usage section below. 
 
 
-Linux (tested on Ubuntu 16.04)
+Linux (tested on Ubuntu 18.04)
 ------------------------------
 
-#. Install dependencies (Homebrew - if not installed):
+#. Install dependencies :
 
-    - ``sudo apt-get install libmariadb-client-lgpl-dev libxml2-dev libssl-dev``
-    - Install brew_ for linux and add the following line to ~/.bashrc: ``export PATH=$HOME/.linuxbrew/bin:$PATH``
+    - ``sudo apt install libcurl4-openssl-dev``
+    - ``sudo apt install libssl-dev``
+    - ``sudo apt install libxml2-dev``
+
+    (Homebrew - if not installed)
+    
+    - Install brew_ for linux 
+    - add the following line to ~/.bashrc: ``export PATH=$HOME/.linuxbrew/bin:$PATH``
     - ``source ~/.bashrc``
 
 #. Install MySQL
 
-    - ``brew install mysql``
-    - ``brew services start mysql``
+    - ``sudo apt install-mysql``
+    - ``sudo apt install libmariadbclient-dev``
+    - (OPTIONAL) ``sudo apt install mysql-server``
 
-#. Install R, pandoc and rmarkdown:
 
-    - ``brew install r``
-    - ``brew install gcc@6`` (needed due to this bug_)
-    - ``HOMEBREW_CC=gcc-6 brew install pandoc``
+#. Install R
 
-#. Install miniconda using these instructions_
+    - ``sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9``
+    - ``sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'``
+    - ``sudo apt update``
+    - ``sudo apt install r-base``
+
+#. Install PANDOC
+
+    - ``sudo apt install pandoc``
+
+#. Install GIT
+
+    - ``sudo apt install git``
+
+#. Install miniconda using these instructions_ 
+
+#. Restart your current shell
 
 #. Clone our repo:
 
@@ -83,12 +102,13 @@ Linux (tested on Ubuntu 16.04)
 #. Install R packages and virtual environment:
 
     - ``snakemake renv_install``
-    - ``snakemake renv_init``
     - ``snakemake renv_restore``
         - This step could take several minutes to complete. Please be patient and let it run until completion. 
 
 #. See Usage section below.
 
+
+.. _usage-section:
 
 Usage
 ======
