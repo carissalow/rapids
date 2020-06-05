@@ -17,7 +17,7 @@ macOS (tested on Catalina 10.15)
     - ``brew install mysql``
     - ``brew services start mysql``
 
-#. Install R and pandoc. If you have other instances of R, we recommend uninstalling them.
+#. Install R 4.0 and pandoc. If you have other instances of R, we recommend uninstalling them.
 
     - ``brew install r``
     - ``brew install pandoc``
@@ -63,14 +63,14 @@ Linux (tested on Ubuntu 18.04)
     - ``sudo apt install mysql-server``
 
 
-#. Install R. If you have other instances of R, we recommend uninstalling them.
+#. Install R 4.0 . If you have other instances of R, we recommend uninstalling them.
 
     - ``sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9``
     - ``sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'``
     - ``sudo apt update``
     - ``sudo apt install r-base``
 
-#. Install PANDOC
+#. Install Pandoc
 
     - ``sudo apt install pandoc``
 
