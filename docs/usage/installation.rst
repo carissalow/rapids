@@ -17,7 +17,7 @@ macOS (tested on Catalina 10.15)
     - ``brew install mysql``
     - ``brew services start mysql``
 
-#. Install R and pandoc:
+#. Install R and pandoc. If you have other instances of R, we recommend uninstalling them.
 
     - ``brew install r``
     - ``brew install pandoc``
@@ -57,20 +57,13 @@ Linux (tested on Ubuntu 18.04)
     - ``sudo apt install libssl-dev``
     - ``sudo apt install libxml2-dev``
 
-    (Homebrew - if not installed)
-    
-    - Install brew_ for linux 
-    - add the following line to ~/.bashrc: ``export PATH=$HOME/.linuxbrew/bin:$PATH``
-    - ``source ~/.bashrc``
-
 #. Install MySQL
 
-    - ``sudo apt install-mysql``
     - ``sudo apt install libmariadbclient-dev``
-    - (OPTIONAL) ``sudo apt install mysql-server``
+    - ``sudo apt install mysql-server``
 
 
-#. Install R
+#. Install R. If you have other instances of R, we recommend uninstalling them.
 
     - ``sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9``
     - ``sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'``
