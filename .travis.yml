@@ -58,10 +58,8 @@ install:
   - snakemake renv_restore 
     
 script:
-  - cp -r tests/data/raw/* data/raw
-  - snakemake --profile tests/settings
-  - python -m unittest discover tests/scripts/ -v
-
+  - bash tests/scripts/run_tests.sh
+  
 notifications:
   email: false
   slack:

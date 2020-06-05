@@ -90,7 +90,10 @@ def generate_sensor_file_lists(configs):
     for sensor in sensors:
         if sensor == 'messages':
             sensor = 'sms'
-            sensor_cap = 'SMS'
+            sensor_cap = sensor.upper()
+        elif sensor == 'calls':
+            sensor_cap = sensor.upper()
+            sensor = 'call'
         else:
             sensor_cap = sensor.upper()
         if 'DAY_SEGMENTS' in configs[sensor_cap]:
