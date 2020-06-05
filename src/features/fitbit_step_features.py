@@ -32,9 +32,6 @@ else:
     #Sedentary Bout when you have less than 10 steps in a minute
     #Active Bout when you have greater or equal to 10 steps in a minute
     resampledData['active_sedentary'] = np.where(resampledData['steps']<int(threshold_active_bout),'sedentary','active')
-    
-    activeData = resampledData[resampledData['active_sedentary']=="active"]
-    sedentaryData = resampledData[resampledData['active_sedentary']=="sedentary"]
 
     #Time Calculations of sedentary/active bouts:
     resampledData['active_sedentary_groups'] = (resampledData.active_sedentary != resampledData.active_sedentary.shift()).cumsum().values
@@ -65,10 +62,10 @@ else:
         finalDataset["step_" + str(day_segment) + "_stdallsteps"] = resampledData['steps'].resample('D').std()
     
     if("countsedentarybout" in sedentary_bout):
-        finalDataset["step_" + str(day_segment) + "_countsedentarybout"] = sedentaryData['active_sedentary'].resample('D').count()
+        finalDataset["step_" + str(day_segment) + "_countsedentarybout"] = resampledData[resampledData["active_sedentary"] == "sedentary"]["active_sedentary_groups"].resample("D").nunique()
 
     if("countactivebout" in active_bout):
-        finalDataset["step_" + str(day_segment) + "_countactivebout"] = activeData['active_sedentary'].resample('D').count()
+        finalDataset["step_" + str(day_segment) + "_countactivebout"] = resampledData[resampledData["active_sedentary"] == "active"]["active_sedentary_groups"].resample("D").nunique()
 
     if("maxdurationsedentarybout" in sedentary_bout):
         finalDataset["step_" + str(day_segment) + "_maxdurationsedentarybout"] = statsMinutes[statsMinutes['active_sedentary']=='sedentary']['max']
