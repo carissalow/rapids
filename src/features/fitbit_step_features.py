@@ -1,106 +1,21 @@
 import pandas as pd
 import numpy as np
-import datetime as dt
-from features_utils import splitOvernightEpisodes, splitMultiSegmentEpisodes
+from fitbit_step.fitbit_step_base import base_fitbit_step_features
 
+step_data = pd.read_csv(snakemake.input["step_data"], parse_dates=["local_date_time"])
 day_segment = snakemake.params["day_segment"]
-all_steps = snakemake.params["features_all_steps"]
-sedentary_bout = snakemake.params["features_sedentary_bout"]
-active_bout = snakemake.params["features_active_bout"]
-threshold_active_bout = snakemake.params['threshold_active_bout']
+threshold_active_bout = snakemake.params["threshold_active_bout"]
 include_zero_step_rows = snakemake.params["include_zero_step_rows"]
+step_features = pd.DataFrame(columns=["local_date"])
 
-#Read csv into a pandas dataframe
-data = pd.read_csv(snakemake.input['steps_data'],parse_dates=['local_date_time'])
-columns = list("step_" + str(day_segment) + "_" + column for column in (all_steps + sedentary_bout + active_bout))
+requested_features = {}
+requested_features["features_all_steps"] = snakemake.params["features_all_steps"]
+requested_features["features_sedentary_bout"] = snakemake.params["features_sedentary_bout"]
+requested_features["features_active_bout"] = snakemake.params["features_active_bout"]
 
-if (day_segment != 'daily'):
-    data = data.loc[data['local_day_segment'] == str(day_segment)]
-    
-if data.empty:
-    finalDataset = pd.DataFrame(columns = columns)
-else:
-    finalDataset = pd.DataFrame()
+step_features = step_features.merge(base_fitbit_step_features(step_data, day_segment, requested_features, threshold_active_bout, include_zero_step_rows), on="local_date", how="outer")
 
-    #Preprocessing:
-    data.local_date_time = pd.to_datetime(data.local_date_time)
-    resampledData = data.set_index(data.local_date_time)
-    resampledData.index.names = ['datetime']
 
-    resampledData['time_diff_minutes'] = resampledData['local_date_time'].diff().fillna(pd.Timedelta(seconds=0)).dt.total_seconds().div(60).astype(int)
+assert np.sum([len(x) for x in requested_features.values()]) + 1 == step_features.shape[1], "The number of features in the output dataframe (=" + str(step_features.shape[1]) + ") does not match the expected value (=" + str(np.sum([len(x) for x in requested_features.values()])) + " + 1). Verify your fitbit step feature extraction functions"
 
-    #Sedentary Bout when you have less than 10 steps in a minute
-    #Active Bout when you have greater or equal to 10 steps in a minute
-    resampledData['active_sedentary'] = np.where(resampledData['steps']<int(threshold_active_bout),'sedentary','active')
-
-    #Time Calculations of sedentary/active bouts:
-    resampledData['active_sedentary_groups'] = (resampledData.active_sedentary != resampledData.active_sedentary.shift()).cumsum().values
-
-    #Get the total minutes for each episode
-    minutesGroupedBy = resampledData.groupby(['local_date','active_sedentary','active_sedentary_groups'])['time_diff_minutes'].sum()
-    
-    #Get Stats for all episodes in terms of minutes
-    statsMinutes = minutesGroupedBy.groupby(['local_date','active_sedentary']).agg([max,min,np.mean,np.std,np.sum])
-    mux = pd.MultiIndex.from_product([statsMinutes.index.levels[0], statsMinutes.index.levels[1]],names=['local_date','active_sedentary'])
-    statsMinutes = statsMinutes.reindex(mux, fill_value=None).reset_index()
-    statsMinutes.set_index('local_date',inplace = True)
-    
-    #Descriptive Statistics Features:
-    if("sumallsteps" in all_steps):
-        finalDataset["step_" + str(day_segment) + "_sumallsteps"] = resampledData['steps'].resample('D').sum()
-    
-    if("maxallsteps" in all_steps):
-        finalDataset["step_" + str(day_segment) + "_maxallsteps"] = resampledData['steps'].resample('D').max()
-
-    if("minallsteps" in all_steps):
-        finalDataset["step_" + str(day_segment) + "_minallsteps"] = resampledData['steps'].resample('D').min()
-    
-    if("avgallsteps" in all_steps):
-        finalDataset["step_" + str(day_segment) + "_avgallsteps"] = resampledData['steps'].resample('D').mean()
-    
-    if("stdallsteps" in all_steps):
-        finalDataset["step_" + str(day_segment) + "_stdallsteps"] = resampledData['steps'].resample('D').std()
-    
-    if("countsedentarybout" in sedentary_bout):
-        finalDataset["step_" + str(day_segment) + "_countsedentarybout"] = resampledData[resampledData["active_sedentary"] == "sedentary"]["active_sedentary_groups"].resample("D").nunique()
-
-    if("countactivebout" in active_bout):
-        finalDataset["step_" + str(day_segment) + "_countactivebout"] = resampledData[resampledData["active_sedentary"] == "active"]["active_sedentary_groups"].resample("D").nunique()
-
-    if("maxdurationsedentarybout" in sedentary_bout):
-        finalDataset["step_" + str(day_segment) + "_maxdurationsedentarybout"] = statsMinutes[statsMinutes['active_sedentary']=='sedentary']['max']
-    
-    if("mindurationsedentarybout" in sedentary_bout):
-        finalDataset["step_" + str(day_segment) + "_mindurationsedentarybout"] = statsMinutes[statsMinutes['active_sedentary']=='sedentary']['min']
-
-    if("avgdurationsedentarybout" in sedentary_bout):
-        finalDataset["step_" + str(day_segment) + "_avgdurationsedentarybout"] = statsMinutes[statsMinutes['active_sedentary']=='sedentary']['mean']
-
-    if("stddurationsedentarybout" in sedentary_bout):
-        finalDataset["step_" + str(day_segment) + "_stddurationsedentarybout"] = statsMinutes[statsMinutes['active_sedentary']=='sedentary']['std']
-    
-    if("sumdurationsedentarybout" in sedentary_bout):
-        finalDataset["step_" + str(day_segment) + "_sumdurationsedentarybout"] = statsMinutes[statsMinutes['active_sedentary']=='sedentary']['sum']
-
-    if("maxdurationactivebout" in active_bout):
-        finalDataset["step_" + str(day_segment) + "_maxdurationactivebout"] = statsMinutes[statsMinutes['active_sedentary']== 'active']['max']
-    
-    if("mindurationactivebout" in active_bout):
-        finalDataset["step_" + str(day_segment) + "_mindurationactivebout"] = statsMinutes[statsMinutes['active_sedentary']== 'active']['min']
-    
-    if("avgdurationactivebout" in active_bout):
-        finalDataset["step_" + str(day_segment) + "_avgdurationactivebout"] = statsMinutes[statsMinutes['active_sedentary']== 'active']['mean']
-    
-    if("stddurationactivebout" in active_bout):
-        finalDataset["step_" + str(day_segment) + "_stddurationactivebout"] = statsMinutes[statsMinutes['active_sedentary']== 'active']['std']
-    
-        
-    
-    #Exclude data when the total step count is ZERO during the whole epoch
-    if not include_zero_step_rows:
-        finalDataset["sumallsteps_aux"] = resampledData["steps"].resample("D").sum()
-        finalDataset = finalDataset.query("sumallsteps_aux != 0")
-        del finalDataset["sumallsteps_aux"]
-
-finalDataset.index.names = ['local_date']
-finalDataset.to_csv(snakemake.output[0])    
+step_features.to_csv(snakemake.output[0], index=False)

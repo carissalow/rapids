@@ -193,7 +193,7 @@ rule fitbit_heartrate_features:
 
 rule fitbit_step_features:
     input:
-        steps_data = "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv"
+        step_data = "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv"
     params:
         day_segment = "{day_segment}",
         features_all_steps = config["STEP"]["FEATURES"]["ALL_STEPS"],
