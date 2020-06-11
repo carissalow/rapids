@@ -43,7 +43,8 @@ macOS (tested on Catalina 10.15)
     - ``snakemake renv_install``
     - ``snakemake renv_init``
     - ``snakemake renv_restore``
-        - This step could take several minutes to complete, especially if you have less than 3Gb of RAM or packages need to be compiled from source. Please be patient and let it run until completion.  
+
+      - This step could take several minutes to complete, especially if you have less than 3Gb of RAM or packages need to be compiled from source. Please be patient and let it run until completion.  
 
 #. See Usage section below. 
 
@@ -67,8 +68,9 @@ Linux (tested on Ubuntu 18.04 & 20.04)
 
     - ``sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9``
     - Add R's repository:
-        - For 18.04 do: ``sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'``
-        - For 20.04 do: ``sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'``
+
+      - For 18.04 do: ``sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'``
+      - For 20.04 do: ``sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'``
     - ``sudo apt update``
     - ``sudo apt install r-base``
 
@@ -98,7 +100,8 @@ Linux (tested on Ubuntu 18.04 & 20.04)
 
     - ``snakemake renv_install``
     - ``snakemake renv_restore``
-        - This step could take several minutes to complete, especially if you have less than 3Gb of RAM or packages need to be compiled from source. Please be patient and let it run until completion. 
+
+      - This step could take several minutes to complete, especially if you have less than 3Gb of RAM or packages need to be compiled from source. Please be patient and let it run until completion. 
 
 #. See Usage section below.
 
@@ -131,18 +134,18 @@ Once RAPIDS is installed, follow these steps to start processing mobile data.
 
 #. Setup the participants' devices whose data you want to analyze, for this you have two options:
 
-    #. **Automatically**. You can automatically include all devices that are stored in the ``aware_device`` table. If you want to control what devices and dates are included, see the Manual configuration::
+   #. **Automatically**. You can automatically include all devices that are stored in the ``aware_device`` table. If you want to control what devices and dates are included, see the Manual configuration::
 
         snakemake -j1 download_participants
 
-    #. **Manually**. Create one file per participant in the ``rapids/data/external/`` directory. The file should NOT have an extension (i.e., no .txt). The name of the file will become the label for that participant in the pipeline.
+   #. **Manually**. Create one file per participant in the ``rapids/data/external/`` directory. The file should NOT have an extension (i.e., no .txt). The name of the file will become the label for that participant in the pipeline.
 
-        - The first line of the file should be the Aware ``device_id`` for that participant. If one participant has multiple device_ids (i.e. Aware had to be re-installed), add all device_ids separated by commas.
-        - The second line should list the device's operating system (``android`` or ``ios``)
-        - The third line is an optional human-friendly label that will appear in any plots for that participant.
-        - The fourth line is optional and contains a start and end date separated by a comma ``YYYYMMDD,YYYYMMDD`` (e.g., ``20201301,20202505``). If these dates are specified, only data within this range will be processed, otherwise, all data from the device(s) will be used.
+      - The first line of the file should be the Aware ``device_id`` for that participant. If one participant has multiple device_ids (i.e. Aware had to be re-installed), add all device_ids separated by commas.
+      - The second line should list the device's operating system (``android`` or ``ios``)
+      - The third line is an optional human-friendly label that will appear in any plots for that participant.
+      - The fourth line is optional and contains a start and end date separated by a comma ``YYYYMMDD,YYYYMMDD`` (e.g., ``20201301,20202505``). If these dates are specified, only data within this range will be processed, otherwise, all data from the device(s) will be used.
 
-    For example, let's say participant `p01` had two AWARE device_ids and they were running Android between February 1st 2020 and March 3rd 2020. Their participant file would be named ``p01`` and contain:
+      For example, let's say participant `p01` had two AWARE device_ids and they were running Android between February 1st 2020 and March 3rd 2020. Their participant file would be named ``p01`` and contain:
 
         .. code-block:: bash
 
@@ -153,7 +156,7 @@ Once RAPIDS is installed, follow these steps to start processing mobile data.
 
 #. Configure the sensors to process:
 
-    - See :ref:`Minimal Working Example<minimal-working-example>`. The variable ``SENSORS`` in the ``config.yaml`` file_ should match existent sensor tables in your Aware database (See :ref:`rapids-structure` for more information). Each sensor in this list will be processed in RAPIDS.
+   - See :ref:`Minimal Working Example<minimal-working-example>`. The variable ``SENSORS`` in the ``config.yaml`` file_ should match existent sensor tables in your Aware database (See :ref:`rapids-structure` for more information). Each sensor in this list will be processed in RAPIDS.
 
 
     .. note::
@@ -162,15 +165,15 @@ Once RAPIDS is installed, follow these steps to start processing mobile data.
 
 #. Execute RAPIDS
 
-    - Standard execution over a single core::
+   - Standard execution over a single core::
 
         snakemake -j1
     
-    - Standard execution over multiple cores::
+   - Standard execution over multiple cores::
 
         snakemake -j8
 
-    - Force a rule (useful if you modify your code and want to update its results)::
+   - Force a rule (useful if you modify your code and want to update its results)::
 
         snakemake -j1 -R RULE_NAME
 
