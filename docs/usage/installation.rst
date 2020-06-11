@@ -43,7 +43,7 @@ macOS (tested on Catalina 10.15)
     - ``snakemake renv_install``
     - ``snakemake renv_init``
     - ``snakemake renv_restore``
-        - This step could take several minutes to complete. Please be patient and let it run until completion. 
+        - This step could take several minutes to complete, especially if you have less than 3Gb of RAM or packages need to be compiled from source. Please be patient and let it run until completion.  
 
 #. See Usage section below. 
 
@@ -59,7 +59,7 @@ Linux (tested on Ubuntu 18.04 & 20.04)
 
 #. Install MySQL
 
-    - ``sudo apt install libmariadbclient-dev``
+    - ``sudo apt install libmysqlclient-dev``
     - ``sudo apt install mysql-server``
 
 
@@ -97,7 +97,7 @@ Linux (tested on Ubuntu 18.04 & 20.04)
 
     - ``snakemake renv_install``
     - ``snakemake renv_restore``
-        - This step could take several minutes to complete. Please be patient and let it run until completion. 
+        - This step could take several minutes to complete, especially if you have less than 3Gb of RAM or packages need to be compiled from source. Please be patient and let it run until completion. 
 
 #. See Usage section below.
 
