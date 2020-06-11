@@ -116,21 +116,21 @@ Once RAPIDS is installed, follow these steps to start processing mobile data.
 
 #. Configure the database connection:
 
-    - Create an empty file called `.env` in the root directory (``rapids/``)
-    - Add the following lines and replace your database-specific credentials (user, password, host, and database):
+   - Create an empty file called `.env` in the root directory (``rapids/``)
+   - Add the following lines and replace your database-specific credentials (user, password, host, and database):
 
-        .. code-block:: bash
+     .. code-block:: bash
         
-            [MY_GROUP]
-            user=MY_USER
-            password=MY_PASSWORD
-            host=MY_HOST
-            port=3306
-            database=MY_DATABASE
+         [MY_GROUP]
+         user=MY_USER
+         password=MY_PASSWORD
+         host=MY_HOST
+         port=3306
+         database=MY_DATABASE
 
-        .. note::
+     .. note::
 
-            ``MY_GROUP`` is a custom label for your credentials. It has to match ``DATABASE_GROUP`` in the ``config.yaml`` file_. It is not related to your database configuration.
+         ``MY_GROUP`` is a custom label for your credentials. It has to match ``DATABASE_GROUP`` in the ``config.yaml`` file_. It is not related to your database configuration.
 
 #. Setup the participants' devices whose data you want to analyze, for this you have two options:
 
