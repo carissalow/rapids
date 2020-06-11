@@ -9,6 +9,12 @@ def optional_ar_input(wildcards):
         return ["data/raw/{pid}/plugin_ios_activity_recognition_with_datetime_unified.csv",
                 "data/processed/{pid}/plugin_ios_activity_recognition_deltas.csv"]
 
+def optional_location_input(wildcards):
+    if config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
+        return rules.resample_fused_location.output
+    else:
+        return "data/raw/{pid}/locations_with_datetime.csv",
+
 rule sms_features:
     input: 
         "data/raw/{pid}/messages_with_datetime.csv"
@@ -68,13 +74,13 @@ rule ios_activity_recognition_deltas:
 
 rule location_barnett_features:
     input:
-        raw = "data/raw/{pid}/locations_raw.csv",
-        fused = rules.resample_fused_location.output
+        locations = optional_location_input
     params:
         features = config["BARNETT_LOCATION"]["FEATURES"],
         locations_to_use = config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"],
         accuracy_limit = config["BARNETT_LOCATION"]["ACCURACY_LIMIT"],
         timezone = config["BARNETT_LOCATION"]["TIMEZONE"],
+        minutes_data_used = config["BARNETT_LOCATION"]["MINUTES_DATA_USED"],
         day_segment = "{day_segment}"
     output:
         "data/processed/{pid}/location_barnett_{day_segment}.csv"

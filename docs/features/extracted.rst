@@ -576,9 +576,10 @@ See `Location (Barnett’s) Config Code`_
 =================    ===================
 Name	             Description
 =================    ===================
-location_to_use      The specifies what type of location data will be use in the analysis. Possible options are ``ALL``, ``ALL_EXCEPT_FUSED`` OR ``RESAMPLE_FUSED``
+location_to_use      *Read the Observations section below*. The specifies what type of location data will be use in the analysis. Possible options are ``ALL``, ``ALL_EXCEPT_FUSED`` OR ``RESAMPLE_FUSED``
 accuracy_limit       This is in meters. The sensor drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius specified.
-timezone             The timezone used to calculate location. 
+timezone             The timezone used to calculate location.
+minutes_data_used    This is NOT a feature. This is just a quality control check, and if set to TRUE, a new column is added to the output file with the number of minutes containing location data that were used to compute all features. The more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
 features             Features to be computed, see table below
 =================    ===================
 
@@ -609,7 +610,11 @@ wkenddayrtn                      Same as circdnrtn but computed separately for w
 
 **Assumptions/Observations:** 
 
-Types of location data to use. Aware Android and iOS clients can collect location coordinates through the phone's GPS or Google's fused location API. If your Aware client was ONLY configured to use GPS set ``location_to_use`` to ``ALL``, if your client was configured to use BOTH GPS and fused location set ``location_to_use`` to  ``ALL_EXCEPT_FUSED`` to ignore fused coordinates, if your client was configured to use fused location  set ``location_to_use`` to ``RESAMPLE_FUSED``. ``RESAMPLE_FUSED`` takes the original fused location coordinates and replicates each pair forward in time as long as the phone was sensing data as indicated by ``phone_sensed_bins`` (see :ref:`Phone valid sensed days <phone-valid-sensed-days>`), this is done because Google's API only logs a new location coordinate pair when it is sufficiently different from the previous one.
+*Types of location data to use*
+
+Aware Android and iOS clients can collect location coordinates through the phone's GPS or Google's fused location API. If your Aware client was ONLY configured to use GPS set ``location_to_use`` to ``ALL``, if your client was configured to use BOTH GPS and fused location you can use ``ALL`` or set ``location_to_use`` to  ``ALL_EXCEPT_FUSED`` to ignore fused coordinates, if your client was configured to use fused location only,  set ``location_to_use`` to ``RESAMPLE_FUSED``. ``RESAMPLE_FUSED`` takes the original fused location coordinates and replicates each pair forward in time as long as the phone was sensing data as indicated by ``phone_sensed_bins`` (see :ref:`Phone valid sensed days <phone-valid-sensed-days>`), this is done because Google's API only logs a new location coordinate pair when it is sufficiently different from the previous one. 
+
+There are two parameters associated with resampling fused location in the ``RESAMPLE_FUSED_LOCATION`` section of the ``config.yaml`` file. ``CONSECUTIVE_THRESHOLD`` (in minutes, default 30) controls the maximum gap between any two coordinate pairs to replicate the last known pair (for example, participant A's phone did not collect data between 10.30am and 10:50am and between 11:05am and 11:40am, the last known coordinate pair will be replicated during the first period but not the second, in other words, we assume that we cannot longer guarantee the participant stayed at the last known location if the phone did not sense data for more than 30 minutes). ``TIME_SINCE_VALID_LOCATION`` (in minutes, default 720 or 12 hours) the last known fused location won't be carried over longer that this threshold even if the phone was sensing data continuously (for example, participant A went home at 9pm and their phone was sensing data without gaps until 11am the next morning, the last known location will only be replicated until 9am). If you have suggestions to modify or improve this imputation, let us know.
 
 *Significant Locations Identified*
 

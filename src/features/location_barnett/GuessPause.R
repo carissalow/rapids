@@ -56,7 +56,7 @@ function(mat,mindur=300,r=75){
       outmat=mat[1:(flatmat[1,1]-1),]
     }
     for(i in 1:nrow(flatmat)){
-      #ProgressBar(nrow(flatmat),i)
+      ProgressBar(nrow(flatmat),i)
       outmat=rbind(outmat,Collapse2Pause(mat[flatmat[i,1]:flatmat[i,2],]))
       if(i<nrow(flatmat) && flatmat[i,2]<flatmat[i+1,1]-1){
         outmat=rbind(outmat,mat[(flatmat[i,2]+1):(flatmat[i+1,1]-1),])

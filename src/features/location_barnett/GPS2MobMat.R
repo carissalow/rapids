@@ -25,7 +25,7 @@ function(locations_df,itrvl=10,accuracylim=51,r=NULL,w=NULL,tint_m=NULL,tint_k=N
   numitrvl=1
   cat("Collapse data within",itrvl,"second intervals...\n")
   for(i in 2:nrow(mat)){
-    #ProgressBar(nrow(mat)-1,i-1)
+    ProgressBar(nrow(mat)-1,i-1)
     if(mat[i,1]/1000<tstart+itrvl){
       nextline[3]=nextline[3]+mat[i,2]
       nextline[4]=nextline[4]+mat[i,3]
@@ -62,7 +62,7 @@ function(locations_df,itrvl=10,accuracylim=51,r=NULL,w=NULL,tint_m=NULL,tint_k=N
   curind=1
   cat("Convert from X/Y to flights/pauses...\n")
   for(i in 1:nrow(avgmat)){
-    #ProgressBar(nrow(avgmat),i)
+    ProgressBar(nrow(avgmat),i)
     if(avgmat[i,1]==4){
       outmat=rbind(outmat,ExtractFlights(avgmat[curind:(i-1),c(5,6,2)],r,w),
                    c(avgmat[i,1],NA,NA,avgmat[i,2],NA,NA,avgmat[i,3]))
