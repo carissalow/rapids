@@ -66,8 +66,9 @@ Linux (tested on Ubuntu 18.04 & 20.04)
 #. Install R 4.0 . If you have other instances of R, we recommend uninstalling them.
 
     - ``sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9``
-    - (for 18.04 use command) ``sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'``
-    - (for 20.04 use command) ``sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'``
+    - Add R's repository:
+        - For 18.04 do: ``sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'``
+        - For 20.04 do: ``sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'``
     - ``sudo apt update``
     - ``sudo apt install r-base``
 
