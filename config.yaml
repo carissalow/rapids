@@ -115,8 +115,9 @@ APPLICATIONS_FOREGROUND:
 
 HEARTRATE:
   DAY_SEGMENTS: *day_segments
-  FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "lengthoutofrange", "lengthfatburn", "lengthcardio", "lengthpeak"]
-  DAILY_FEATURES_FROM_SUMMARY_DATA: ["restinghr"] # calories related features might be inaccurate: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
+  # Only daily features are extracted from summary data
+  SUMMARY_FEATURES: ["restinghr"] # calories related features might be inaccurate: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
+  INTRADAY_FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "lengthoutofrange", "lengthfatburn", "lengthcardio", "lengthpeak"]
 
 STEP:
   DAY_SEGMENTS: *day_segments

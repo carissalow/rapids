@@ -190,8 +190,8 @@ rule fitbit_heartrate_features:
         heartrate_intraday_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv"
     params:
         day_segment = "{day_segment}",
-        features = config["HEARTRATE"]["FEATURES"],
-        daily_features_from_summary_data = config["HEARTRATE"]["DAILY_FEATURES_FROM_SUMMARY_DATA"]
+        summary_features = config["HEARTRATE"]["SUMMARY_FEATURES"],
+        intraday_features = config["HEARTRATE"]["INTRADAY_FEATURES"]
     output:
         "data/processed/{pid}/fitbit_heartrate_{day_segment}.csv"
     script:
