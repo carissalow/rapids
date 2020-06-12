@@ -14,7 +14,8 @@ phone_sensed_bins  <- read_csv(snakemake@input[["phone_sensed_bins"]], col_types
 
 if(nrow(locations) > 0){
     sensed_minute_bins <- phone_sensed_bins %>% 
-        pivot_longer(-local_date, names_to = c("hour", "bin"), names_ptypes = list(hour = integer(), bin = integer()), names_sep = "_", values_to = "sensor_count") %>% 
+        pivot_longer(-local_date, names_to = c("hour", "bin"), names_sep = "_", values_to = "sensor_count") %>% 
+        mutate(hour = as.integer(hour), bin = as.integer(bin)) %>% 
         complete(nesting(local_date, hour), bin = seq(0, 59,1)) %>% 
         fill(sensor_count) %>% 
         mutate(timestamp = as.numeric(as.POSIXct(paste0(local_date, " ", hour,":", bin,":00"), format = "%Y-%m-%d %H:%M:%S", tz = timezone)) * 1000 ) %>%
