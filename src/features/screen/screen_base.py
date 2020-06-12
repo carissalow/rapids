@@ -9,7 +9,12 @@ def getEpisodeDurationFeatures(screen_data, day_segment, episode, features, phon
         duration_helper = pd.concat([duration_helper, screen_data_episode[["time_diff"]].groupby(["local_start_date"]).count().rename(columns = {"time_diff": "screen_" + day_segment + "_countepisode" + episode})], axis = 1)
     if "episodepersensedminutes" in features:
         for date, row in screen_data_episode[["time_diff"]].groupby(["local_start_date"]).count().iterrows():
-            sensed_minutes = phone_sensed_bins.loc[date, :].sum() * bin_size
+
+            try:
+                sensed_minutes = phone_sensed_bins.loc[date, :].sum() * bin_size
+            except:
+                raise ValueError("You need to include the screen sensor in the list for phone_sensed_bins.")
+                
             episode_per_sensedminutes = row["time_diff"] / (1 if sensed_minutes == 0 else sensed_minutes)
             duration_helper.loc[date, "screen_" + day_segment + "_episodepersensedminutes" + episode] = episode_per_sensedminutes
     if "sumduration" in features:
