@@ -131,7 +131,8 @@ STEP:
 SLEEP:
   DAY_SEGMENTS: *day_segments
   SLEEP_TYPES: ["main", "nap", "all"]
-  DAILY_FEATURES_FROM_SUMMARY_DATA: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
+  # Only daily features are extracted from summary data
+  SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
 
 WIFI:
   DAY_SEGMENTS: *day_segments

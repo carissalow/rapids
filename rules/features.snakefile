@@ -218,8 +218,8 @@ rule fitbit_sleep_features:
         sleep_intraday_data = "data/raw/{pid}/fitbit_sleep_intraday_with_datetime.csv"
     params:
         day_segment = "{day_segment}",
-        sleep_types = config["SLEEP"]["SLEEP_TYPES"],
-        daily_features_from_summary_data = config["SLEEP"]["DAILY_FEATURES_FROM_SUMMARY_DATA"]
+        summary_features = config["SLEEP"]["SUMMARY_FEATURES"],
+        sleep_types = config["SLEEP"]["SLEEP_TYPES"]
     output:
         "data/processed/{pid}/fitbit_sleep_{day_segment}.csv"
     script:
