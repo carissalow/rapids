@@ -12,7 +12,7 @@ def truncateTime(df, segment_column, new_day_segment, datetime_column, date_colu
 # calculate truncated time differences and truncated extra_cols if it is not empty
 def computeTruncatedDifferences(df, extra_cols):
     df["truncated_time_diff"] = df["local_end_date_time"] - df["local_start_date_time"]
-    df["truncated_time_diff"] = df["truncated_time_diff"].apply(lambda time: time.total_seconds()/3600)
+    df["truncated_time_diff"] = df["truncated_time_diff"].apply(lambda time: time.total_seconds()/60)
     if extra_cols:
         for extra_col in extra_cols:
             df[extra_col] = df[extra_col] * (df["truncated_time_diff"] / df["time_diff"])
