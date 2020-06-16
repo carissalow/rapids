@@ -35,7 +35,7 @@ get_ios_screen_episodes <- function(screen){
     group_by(episode_id) %>%
     summarise(episode = "unlock",
               screen_sequence = toString(screen_status),
-              time_diff = (last(timestamp) - first(timestamp)) / 1000,
+              time_diff = (last(timestamp) - first(timestamp)) / 1000 * 60,
               local_start_date_time = first(local_date_time),
               local_end_date_time = last(local_date_time),
               local_start_date = first(local_date),
