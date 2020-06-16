@@ -108,8 +108,8 @@ Name                        Units         Description
 =========================   =========     =============
 count                       SMS           Number of SMS of type ``sms_type`` that occurred during a particular ``day_segment``.
 distinctcontacts            contacts      Number of distinct contacts that are associated with a particular ``sms_type`` during a particular ``day_segment``.
-timefirstsms                minutes        Number of minutes between 12:00am (midnight) and the first ``SMS`` of a particular ``sms_type``.
-timelastsms                 minutes        Number of minutes between 12:00am (midnight) and the last ``SMS`` of a particular ``sms_type``.
+timefirstsms                minutes       Number of minutes between 12:00am (midnight) and the first ``SMS`` of a particular ``sms_type``.
+timelastsms                 minutes       Number of minutes between 12:00am (midnight) and the last ``SMS`` of a particular ``sms_type``.
 countmostfrequentcontact    SMS           Number of ``SMS`` messages from the contact with the most messages of ``sms_type`` during a ``day_segment`` throughout the whole dataset of each participant.
 =========================   =========     =============
 
@@ -156,7 +156,7 @@ Name	        Description
 ============    ===================
 call_type       The particular ``call_type`` that will be analyzed. The options for this parameter are ``incoming``, ``outgoing`` or ``missed``.
 day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features         Features to be computed. Note that the same features are available for both ``incoming`` and ``outgoing`` calls, while ``missed`` calls has its own set of features. See :ref:`Available Incoming and Outgoing Call Features <available-in-and-out-call-features>` Table and :ref:`Available Missed Call Features <available-missed-call-features>` Table below.
+features        Features to be computed. Note that the same features are available for both ``incoming`` and ``outgoing`` calls, while ``missed`` calls has its own set of features. See :ref:`Available Incoming and Outgoing Call Features <available-in-and-out-call-features>` Table and :ref:`Available Missed Call Features <available-missed-call-features>` Table below.
 ============    ===================
 
 .. _available-in-and-out-call-features:
@@ -189,8 +189,8 @@ Name                        Units         Description
 =========================   =========     =============
 count                       calls         Number of ``missed`` calls that occurred during a particular ``day_segment``.
 distinctcontacts            contacts      Number of distinct contacts that are associated with ``missed`` calls for a particular ``day_segment``
-timefirstcall               hours         The time in hours from 12:00am (Midnight) that the first ``missed`` call occurred.
-timelastcall                hours         The time in hours from 12:00am (Midnight) that the last ``missed`` call occurred.
+timefirstcall               minutes       The time in hours from 12:00am (Midnight) that the first ``missed`` call occurred.
+timelastcall                minutes       The time in hours from 12:00am (Midnight) that the last ``missed`` call occurred.
 countmostfrequentcontact    calls         The number of ``missed`` calls during a particular ``day_segment`` of the most frequent contact throughout the monitored period.
 =========================   =========     =============
 
@@ -362,7 +362,7 @@ features                Features to be computed, see table below
 Name                 Units       Description
 ==================   =========   =============
 count                apps        Number of times a single app or apps within a category were used (i.e. they were brought to the foreground either by tapping their icon or switching to it from another app).
-timeoffirstuse       contacts    The time in minutes between 12:00am (midnight) and the first use of a single app or apps within a category during a ``day_segment``.
+timeoffirstuse       minutes     The time in minutes between 12:00am (midnight) and the first use of a single app or apps within a category during a ``day_segment``.
 timeoflastuse        minutes     The time in minutes between 12:00am (midnight) and the last use of a single app or apps within a category during a ``day_segment``.
 frequencyentropy     nats        The entropy of the used apps within a category during a ``day_segment`` (each app is seen as a unique event, the more apps were used, the higher the entropy). This is especially relevant when computed over all apps. Entropy cannot be obtained for a single app.
 ==================   =========   =============
@@ -418,16 +418,16 @@ features        Features to be computed, see table below
 
 **Available Battery Features**
 
-=====================   ===============   =============
-Name                    Units             Description
-=====================   ===============   =============
-countdischarge          episodes          Number of discharging episodes.
-sumdurationdischarge    hours             The total duration of all discharging episodes.
-countcharge             episodes          Number of battery charging episodes.
-sumdurationcharge       hours             The total duration of all charging episodes.
-avgconsumptionrate      episodes/hours    The average of all episodes’ consumption rates. An episode’s consumption rate is defined as the ratio between its battery delta and duration
-maxconsumptionrate      episodes/hours    The highest of all episodes’ consumption rates. An episode’s consumption rate is defined as the ratio between its battery delta and duration
-=====================   ===============   =============
+=====================   =================   =============
+Name                    Units               Description
+=====================   =================   =============
+countdischarge          episodes            Number of discharging episodes.
+sumdurationdischarge    minutes             The total duration of all discharging episodes.
+countcharge             episodes            Number of battery charging episodes.
+sumdurationcharge       minutes             The total duration of all charging episodes.
+avgconsumptionrate      episodes/minutes    The average of all episodes’ consumption rates. An episode’s consumption rate is defined as the ratio between its battery delta and duration
+maxconsumptionrate      episodes/minutes    The highest of all episodes’ consumption rates. An episode’s consumption rate is defined as the ratio between its battery delta and duration
+=====================   =================   =============
 
 **Assumptions/Observations:** 
 
@@ -674,14 +674,14 @@ episode_types                Currently we only support unlock episodes (from whe
 =========================   =================   =============
 Name                        Units               Description
 =========================   =================   =============
-sumduration                 seconds             Total duration of all unlock episodes.
-maxduration                 seconds             Longest duration of any unlock episode.
-minduration                 seconds             Shortest duration of any unlock episode.
-avgduration                 seconds             Average duration of all unlock episodes.
-stdduration                 seconds             Standard deviation duration of all unlock episodes.
+sumduration                 minutes             Total duration of all unlock episodes.
+maxduration                 minutes             Longest duration of any unlock episode.
+minduration                 minutes             Shortest duration of any unlock episode.
+avgduration                 minutes             Average duration of all unlock episodes.
+stdduration                 minutes             Standard deviation duration of all unlock episodes.
 countepisode                episodes            Number of all unlock episodes
 episodepersensedminutes     episodes/minute     The ratio between the total number of episodes in an epoch divided by the total time (minutes) the phone was sensing data.
-firstuseafter               seconds             Seconds until the first unlock episode.
+firstuseafter               minutes             Seconds until the first unlock episode.
 =========================   =================   =============
 
 **Assumptions/Observations:** 
