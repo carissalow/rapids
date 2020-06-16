@@ -11,7 +11,7 @@ if(nrow(battery) > 0){
     filter(battery_status == 2 | battery_status == 3) %>%
     group_by(group_id) %>%
     summarize(battery_diff = first(battery_level) - last(battery_level),
-              time_diff = (last(timestamp) - first(timestamp)) / (1000 * 60 * 60),
+              time_diff = (last(timestamp) - first(timestamp)) / (1000 * 60),
               local_start_date_time = first(local_date_time),
               local_end_date_time = last(local_date_time),
               local_start_date = first(local_date),
@@ -19,7 +19,7 @@ if(nrow(battery) > 0){
               local_start_day_segment = first(local_day_segment),
               local_end_day_segment = last(local_day_segment)) %>%
     select(-group_id) %>%
-    filter(time_diff > 0.1) # Avoids including quick cycles
+    filter(time_diff > 6) # Avoids including quick cycles
 } else {
   consumption <- data.frame(battery_diff = numeric(), 
                             time_diff = numeric(),

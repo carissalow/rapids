@@ -64,7 +64,7 @@ get_android_screen_episodes <- function(screen){
     filter( (screen_status == 3 & lead(screen_status) == 0) | (screen_status == 0 & lag(screen_status) == 3) ) %>%
     summarise(episode = "unlock",
               screen_sequence = toString(screen_status),
-              time_diff = (last(timestamp) - first(timestamp)) / 1000,
+              time_diff = (last(timestamp) - first(timestamp)) / 1000 * 60,
               local_start_date_time = first(local_date_time),
               local_end_date_time = last(local_date_time),
               local_start_date = first(local_date),
