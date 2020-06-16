@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-import datetime as dt
-from features_utils import splitOvernightEpisodes, splitMultiSegmentEpisodes
 
 def base_fitbit_step_features(step_data, day_segment, requested_features, threshold_active_bout, include_zero_step_rows):
     requested_features_allsteps = requested_features["features_all_steps"]
