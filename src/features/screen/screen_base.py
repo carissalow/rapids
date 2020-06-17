@@ -2,6 +2,11 @@ import pandas as pd
 import itertools
 from features_utils import splitOvernightEpisodes, splitMultiSegmentEpisodes
 
+EPOCH2HOUR = {"night": ("0_", "1_", "2_", "3_", "4_", "5_"),
+              "morning": ("6_", "7_", "8_", "9_", "10_", "11_"),
+              "afternoon": ("12_", "13_", "14_", "15_", "16_", "17_"),
+              "evening": ("18_", "19_", "20_", "21_", "22_", "23_")}
+
 def getEpisodeDurationFeatures(screen_data, day_segment, episode, features, phone_sensed_bins, bin_size, reference_hour_first_use):
     screen_data_episode = screen_data[screen_data["episode"] == episode]
     duration_helper = pd.DataFrame()
@@ -11,7 +16,10 @@ def getEpisodeDurationFeatures(screen_data, day_segment, episode, features, phon
         for date, row in screen_data_episode[["time_diff"]].groupby(["local_start_date"]).count().iterrows():
 
             try:
-                sensed_minutes = phone_sensed_bins.loc[date, :].sum() * bin_size
+                if day_segment == "daily":
+                    sensed_minutes = phone_sensed_bins.loc[date, :].sum() * bin_size
+                else:
+                    sensed_minutes = phone_sensed_bins.loc[date, phone_sensed_bins.columns.str.startswith(EPOCH2HOUR[day_segment])].sum() * bin_size
             except:
                 raise ValueError("You need to include the screen sensor in the list for phone_sensed_bins.")
                 
