@@ -10,6 +10,8 @@ rule all:
     input:
         expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
         expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
+        expand("data/processed/{pid}/screen_deltas.csv", pid=config["PIDS"]),
+        expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]),
         expand("data/processed/{pid}/sms_{sms_type}_{day_segment}.csv",
                             pid=config["PIDS"],
                             sms_type = config["SMS"]["TYPES"],
@@ -18,6 +20,9 @@ rule all:
                             pid=config["PIDS"], 
                             call_type=config["CALLS"]["TYPES"],
                             segment = config["CALLS"]["DAY_SEGMENTS"]),
+        expand("data/processed/{pid}/screen_{day_segment}.csv",
+                            pid = config["PIDS"],
+                            day_segment = config["SCREEN"]["DAY_SEGMENTS"]),
 
 rule clean:
     shell:

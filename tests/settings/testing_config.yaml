@@ -1,5 +1,5 @@
 # Valid database table name
-SENSORS: [messages, calls]
+SENSORS: [messages, calls, screen]
 
 # Test Participant data to include in the unit testing
 # You must create a file for each participant
@@ -26,3 +26,9 @@ CALLS:
     incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
     outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments
+
+SCREEN:
+  DAY_SEGMENTS: *day_segments
+  REFERENCE_HOUR_FIRST_USE: 0
+  FEATURES_DELTAS: ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]
+  EPISODE_TYPES: ["unlock"]
