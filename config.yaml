@@ -1,5 +1,5 @@
 # Valid database table names
-SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, plugin_ios_activity_recognition, screen]
+SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, plugin_ios_activity_recognition, screen,plugin_studentlife_audio]
 
 FITBIT_TABLE: [fitbit_data]
 FITBIT_SENSORS: [heartrate, steps, sleep, calories]
@@ -137,6 +137,16 @@ SLEEP:
 WIFI:
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+
+CONVERSATION:
+  DAY_SEGMENTS: *day_segments
+  FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
+    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
+    "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
+    "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
+    "unknownexpectedfraction"]
+  RECORDINGMINUTES: 1
+  PAUSEDMINUTES : 3
 
 PARAMS_FOR_ANALYSIS:
   GROUNDTRUTH_TABLE: participant_info

@@ -688,6 +688,78 @@ firstuseafter               minutes             Seconds until the first unlock e
 
 An ``unlock`` episode is considered as the time between an ``unlock`` event and a ``lock`` event. iOS recorded these episodes reliably (albeit some duplicated ``lock`` events within milliseconds from each other). However, in Android there are some events unrelated to the screen state because of multiple consecutive ``unlock``/``lock`` events, so we keep the closest pair. In our experiments these cases are less than 10% of the screen events collected. This happens because ``ACTION_SCREEN_OFF`` and ``ON`` are "sent when the device becomes non-interactive which may have nothing to do with the screen turning off". Additionally, in Android it is possible to measure the time spent on the ``lock`` screen before an ``unlock`` event as well as the total screen time (i.e. ``ON`` to ``OFF``) but we are only keeping ``unlock`` episodes (``unlock`` to ``OFF``) to be consistent with iOS. 
 
+.. _conversation-sensor-doc:
+
+Conversation
+""""""""
+
+See `Conversation Config Code`_
+
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
+
+**Available Platforms:** Android and iOS
+
+**Snakefile entry to compute these features:**
+    
+     | ``expand("data/processed/{pid}/conversation_{day_segment}.csv",``
+     |                      ``pid = config["PIDS"],``
+     |                       ``day_segment = config["CONVERSATION"]["DAY_SEGMENTS"]),``
+    
+**Snakemake rule chain:**
+
+- Rule ``rules/preprocessing.snakefile/download_dataset``
+- Rule ``rules/preprocessing.snakefile/readable_datetime``
+- Rule ``rules/features.snakefile/conversation_features``
+
+.. _conversation-parameters:
+
+**Conversation Rule Parameters (conversation_features):**
+
+=========================    ===================
+Name	                     Description
+=========================    ===================
+day_segment                  The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
+recordingMinutes             The current default configuration is 1 min recording/3 min pause.
+features_deltas              Features to be computed, see table below
+pausedMinutes                The current default configuration is 1 min recording/3 min pause.
+=========================    ===================
+
+.. _conversation-available-features:
+
+**Available Conversation Features**
+
+=========================   =================   =============
+Name                        Units               Description
+=========================   =================   =============
+minutessilence              minutes             Total duration of all minutes silence.
+minutesnoise                minutes             Total duration of all minutes noise.
+minutesvoice                minutes             Total duration of all minutes voice.
+minutesunknown              minutes             Total duration of all minutes unknown.
+sumconversationduration     minutes             Total duration of all the conversation.
+maxconversationduration     minutes             Longest duration of all the conversation.
+minconversationduration     minutes             Shortest duration of all the conversation.
+avgconversationduration     minutes             Average duration of all the conversation.
+sdconversationduration      minutes             Standard Deviation duration of all the conversation.
+timefirstconversation       minutes             Starting time of first conversation of the Day/Epoch.
+timelastconversation        minutes             Starting time of last conversation of the Day/Epoch.
+sumenergy                   L2-norm             Total sum of all the energy.
+avgenergy                   L2-norm             Average of all the energy.
+sdenergy                    L2-norm             Standard Deviation of all the energy.
+minenergy                   L2-norm             Minimum of all the energy.
+maxenergy                   L2-norm             Maximum of all the energy.
+silencesensedfraction       minutes
+noisesensedfraction         minutes
+voicesensedfraction         minutes
+unknownsensedfraction       minutes
+silenceexpectedfraction     minutes
+noiseexpectedfraction       minutes
+voiceexpectedfraction       minutes
+unknownexpectedfraction     minutes
+=========================   =================   =============
+
+**Assumptions/Observations:** 
+
+
 .. ------------------------------- Begin Fitbit Section ----------------------------------- ..
 
 .. _fitbit-sleep-sensor-doc:

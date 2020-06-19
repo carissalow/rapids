@@ -9,6 +9,15 @@ def optional_ar_input(wildcards):
         return ["data/raw/{pid}/plugin_ios_activity_recognition_with_datetime_unified.csv",
                 "data/processed/{pid}/plugin_ios_activity_recognition_deltas.csv"]
 
+def optional_conversation_input(wildcards):
+    with open("data/external/"+wildcards.pid, encoding="ISO-8859-1") as external_file:
+        external_file_content = external_file.readlines()
+    platform = external_file_content[1].strip()
+    if platform == "android":
+        return ["data/raw/{pid}/plugin_studentlife_audio_android_with_datetime.csv"]
+    else:
+        return ["data/raw/{pid}/plugin_studentlife_audio_with_datetime.csv"]
+
 def optional_location_input(wildcards):
     if config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
         return rules.resample_fused_location.output
@@ -145,6 +154,19 @@ rule light_features:
         "data/processed/{pid}/light_{day_segment}.csv"
     script:
         "../src/features/light_features.py"
+
+rule conversation_features:
+    input:
+        optional_conversation_input
+    params:
+        day_segment = "{day_segment}",
+        features = config["CONVERSATION"]["FEATURES"],
+        recordingMinutes = config["CONVERSATION"]["RECORDINGMINUTES"],
+        pausedMinutes = config["CONVERSATION"]["PAUSEDMINUTES"],
+    output:
+        "data/processed/{pid}/conversation_{day_segment}.csv"
+    script:
+        "../src/features/conversation_features.py"
 
 rule accelerometer_features:
     input:
