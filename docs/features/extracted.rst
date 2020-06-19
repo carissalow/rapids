@@ -373,6 +373,8 @@ frequencyentropy     nats        The entropy of the used apps within a category 
 
 Features can be computed by app, by apps grouped under a single category (genre) and by multiple categories grouped together (meta categories). For example, we can get features for Facebook, for Social Network Apps (including Facebook and others) or for a meta category called Social formed by Social Network and Social Media Tools categories. 
 
+Apps installed by default like YouTube are considered systems apps on some phones. We do an exact match to exclude apps where "genre" == ``EXCLUDED_CATEGORIES`` or "package_name" == ``EXCLUDED_APPS``.
+
 We provide three ways of classifying and app within a category (genre): a) by automatically scraping its official category from the Google Play Store, b) by using the catalogue created by Stachl et al. which we provide in RAPIDS (``data/external/``), or c) by manually creating a personalized catalogue.
 
 The way you choose strategy a, b or c is by modifying ``APPLICATION_GENRES`` keys and values. Set ``CATALOGUE_SOURCE`` to ``FILE`` if you want to use a CSV file as catalogue (strategy b and c) or to ``GOOGLE`` if you want to scrape the genres from the Play Store (strategy a). By default ``CATALOGUE_FILE`` points to the catalogue created by  Stachl et al. (strategy b) and you can change this path to your own catalogue that follows the same format (strategy c). In addition, set ``SCRAPE_MISSING_GENRES`` to true if you are using a FILE catalogue and you want to scrape from the Play Store any missing genres and ``UPDATE_CATALOGUE_FILE`` to true if you want to save those scrapped genres back into the FILE.

@@ -104,12 +104,12 @@ ACCELEROMETER:
 
 APPLICATIONS_FOREGROUND:
   DAY_SEGMENTS: *day_segments
-  SINGLE_CATEGORIES: ["all", "video"]
+  SINGLE_CATEGORIES: ["all", "email"]
   MULTIPLE_CATEGORIES:
     social: ["socialnetworks", "socialmediatools"]
     entertainment: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
   SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
-  EXCLUDED_CATEGORIES: ["system_apps", "video"]
+  EXCLUDED_CATEGORIES: ["system_apps", "tvvideoapps"]
   EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
   FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
 

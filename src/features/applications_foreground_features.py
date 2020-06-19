@@ -27,7 +27,7 @@ if "system_apps" in excluded_categories:
     apps_data = apps_data[apps_data["is_system_app"] == 0]
 apps_data = apps_data[~apps_data["genre"].isin(excluded_categories)]
 # exclude apps in the excluded_apps list
-apps_data = apps_data[~apps_data["application_name"].isin(excluded_apps)]
+apps_data = apps_data[~apps_data["package_name"].isin(excluded_apps)]
 
 apps_features = apps_features.merge(base_applications_foreground_features(apps_data, day_segment, requested_features, params), on="local_date", how="outer")
 
