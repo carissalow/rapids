@@ -46,7 +46,8 @@ def base_accelerometer_features(acc_data, day_segment, requested_features):
         if not acc_data.empty:
             acc_features = pd.DataFrame()        
             # get magnitude related features: magnitude = sqrt(x^2+y^2+z^2)
-            acc_data["magnitude"] = (acc_data["double_values_0"] ** 2 + acc_data["double_values_1"] ** 2 + acc_data["double_values_2"] ** 2).apply(np.sqrt)
+            magnitude = acc_data.apply(lambda row: np.sqrt(row["double_values_0"] ** 2 + row["double_values_1"] ** 2 + row["double_values_2"] ** 2), axis=1)
+            acc_data = acc_data.assign(magnitude = magnitude.values)
             if "maxmagnitude" in features_to_compute:
                 acc_features["acc_" + day_segment + "_maxmagnitude"] = acc_data.groupby(["local_date"])["magnitude"].max()
             if "minmagnitude" in features_to_compute:
