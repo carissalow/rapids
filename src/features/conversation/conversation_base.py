@@ -78,11 +78,19 @@ def base_conversation_features(conversation_data, day_segment, requested_feature
                 conversation_features["conversation_" + day_segment + "_maxconversationduration"] = conversation_data.groupby(["local_date"])['conv_Dur'].max()
 
             if "timefirstconversation" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_timefirstconversation"] = conversation_data[conversation_data["double_convo_start"]> 0].groupby(["local_date"])['double_convo_start'].min()
+                timeFirstConversation = conversation_data[conversation_data["double_convo_start"]> 0].groupby(["local_date"])[['double_convo_start','local_hour','local_minute']].min()
+                if 'local_hour' in timeFirstConversation.columns:
+                    conversation_features["conversation_" + day_segment + "_timefirstconversation"] = timeFirstConversation["local_hour"]*60 + timeFirstConversation["local_minute"]
+                else:
+                    conversation_features["conversation_" + day_segment + "_timefirstconversation"] = 0
 
             if "timelastconversation" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_timelastconversation"] = conversation_data.groupby(["local_date"])['double_convo_start'].max()
-            
+                timeLastConversation = conversation_data[conversation_data["double_convo_start"] > 0].groupby(["local_date"])[['double_convo_start','local_hour','local_minute']].max()
+                if 'local_hour' in timeLastConversation:
+                    conversation_features["conversation_" + day_segment + "_timelastconversation"] = timeLastConversation["local_hour"]*60 + timeLastConversation["local_minute"]
+                else:
+                    conversation_features["conversation_" + day_segment + "_timelastconversation"] = 0
+
             if "sumenergy" in features_to_compute:
                 conversation_features["conversation_" + day_segment + "_sumenergy"] = conversation_data.groupby(["local_date"])['double_energy'].sum()
 
