@@ -36,10 +36,10 @@ def dropRowsWithCertainThreshold(data, threshold):
 def statsFeatures(acc_data, day_segment, features_to_compute, features_type, acc_features):
     if features_type == "magnitude":
         col_name = features_type
-    elif features_type == "exertionalactivityepisode" or features_type == "nonexertionalactivityepisode":
+    elif features_type == "durationexertionalactivityepisode" or features_type == "durationnonexertionalactivityepisode":
         col_name = "duration"
     else:
-        raise ValueError("features_type can only be one of ['magnitude', 'exertionalactivityepisode', 'nonexertionalactivityepisode'].")
+        raise ValueError("features_type can only be one of ['magnitude', 'durationexertionalactivityepisode', 'durationnonexertionalactivityepisode'].")
 
     if "sum" + features_type in features_to_compute:
         acc_features["acc_" + day_segment + "_sum" + features_type] = acc_data.groupby(["local_date"])[col_name].sum()
@@ -61,8 +61,8 @@ def statsFeatures(acc_data, day_segment, features_to_compute, features_type, acc
 def base_accelerometer_features(acc_data, day_segment, requested_features, valid_sensed_minutes):
     # name of the features this function can compute
     base_features_names_magnitude = ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
-    base_features_names_exertionalactivityepisode = ["sumexertionalactivityepisode", "maxexertionalactivityepisode", "minexertionalactivityepisode", "avgexertionalactivityepisode", "medianexertionalactivityepisode", "stdexertionalactivityepisode"]
-    base_features_names_nonexertionalactivityepisode = ["sumnonexertionalactivityepisode", "maxnonexertionalactivityepisode", "minnonexertionalactivityepisode", "avgnonexertionalactivityepisode", "mediannonexertionalactivityepisode", "stdnonexertionalactivityepisode"]
+    base_features_names_exertionalactivityepisode = ["sumdurationexertionalactivityepisode", "maxdurationexertionalactivityepisode", "mindurationexertionalactivityepisode", "avgdurationexertionalactivityepisode", "mediandurationexertionalactivityepisode", "stddurationexertionalactivityepisode"]
+    base_features_names_nonexertionalactivityepisode = ["sumdurationnonexertionalactivityepisode", "maxdurationnonexertionalactivityepisode", "mindurationnonexertionalactivityepisode", "avgdurationnonexertionalactivityepisode", "mediandurationnonexertionalactivityepisode", "stddurationnonexertionalactivityepisode"]
     # the subset of requested features this function can compute
     features_to_compute_magnitude = list(set(requested_features["magnitude"]) & set(base_features_names_magnitude))
     features_to_compute_exertionalactivityepisode = list(set(requested_features["exertional_activity_episode"]) & set(base_features_names_exertionalactivityepisode))
@@ -99,10 +99,10 @@ def base_accelerometer_features(acc_data, day_segment, requested_features, valid
                 
                 activity_episode = getActivityEpisodes(acc_minute)
                 exertionalactivity_episodes = activity_episode[activity_episode["isexertionalactivity"] == 1]
-                acc_features = statsFeatures(exertionalactivity_episodes, day_segment, features_to_compute_exertionalactivityepisode, "exertionalactivityepisode", acc_features)
+                acc_features = statsFeatures(exertionalactivity_episodes, day_segment, features_to_compute_exertionalactivityepisode, "durationexertionalactivityepisode", acc_features)
 
                 nonexertionalactivity_episodes = activity_episode[activity_episode["isexertionalactivity"] == 0]
-                acc_features = statsFeatures(nonexertionalactivity_episodes, day_segment, features_to_compute_nonexertionalactivityepisode, "nonexertionalactivityepisode", acc_features)
+                acc_features = statsFeatures(nonexertionalactivity_episodes, day_segment, features_to_compute_nonexertionalactivityepisode, "durationnonexertionalactivityepisode", acc_features)
 
                 acc_features[[colname for colname in acc_features.columns if "std" not in colname]] = acc_features[[colname for colname in acc_features.columns if "std" not in colname]].fillna(0)
             

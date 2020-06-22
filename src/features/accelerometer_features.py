@@ -8,8 +8,8 @@ day_segment = snakemake.params["day_segment"]
 
 requested_features = {}
 requested_features["magnitude"] = snakemake.params["magnitude"]
-requested_features["exertional_activity_episode"] = snakemake.params["exertional_activity_episode"]
-requested_features["nonexertional_activity_episode"] = snakemake.params["nonexertional_activity_episode"]
+requested_features["exertional_activity_episode"] = [feature + "exertionalactivityepisode" for feature in snakemake.params["exertional_activity_episode"]]
+requested_features["nonexertional_activity_episode"] = [feature + "nonexertionalactivityepisode" for feature in snakemake.params["nonexertional_activity_episode"]]
 
 valid_sensed_minutes = snakemake.params["valid_sensed_minutes"]
 
