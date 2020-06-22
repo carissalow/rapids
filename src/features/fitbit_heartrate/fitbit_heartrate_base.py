@@ -50,8 +50,8 @@ def extractHRFeaturesFromIntradayData(heartrate_intraday_data, features, day_seg
                 heartrate_intraday_features["heartrate_" + day_segment + "_entropyhr"] = heartrate_intraday_data[["local_date", "heartrate"]].groupby(["local_date"])["heartrate"].agg(entropy)
 
             # get number of minutes in each heart rate zone
-            for feature_name in list(set(["lengthoutofrange", "lengthfatburn", "lengthcardio", "lengthpeak"]) & set(features)):
-                heartrate_zone = heartrate_intraday_data[heartrate_intraday_data["heartrate_zone"] == feature_name[6:]]
+            for feature_name in list(set(["minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]) & set(features)):
+                heartrate_zone = heartrate_intraday_data[heartrate_intraday_data["heartrate_zone"] == feature_name[9:-4]]
                 heartrate_intraday_features["heartrate_" + day_segment + "_" + feature_name] = heartrate_zone.groupby(["local_date"])["device_id"].count() / num_rows_per_minute
                 heartrate_intraday_features.fillna(value={"heartrate_" + day_segment + "_" + feature_name: 0}, inplace=True)
         heartrate_intraday_features.reset_index(inplace=True)
@@ -61,7 +61,7 @@ def extractHRFeaturesFromIntradayData(heartrate_intraday_data, features, day_seg
 def base_fitbit_heartrate_features(heartrate_summary_data, heartrate_intraday_data, day_segment, requested_summary_features, requested_intraday_features):
     # name of the features this function can compute
     base_summary_features_names = ["restinghr", "caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"]
-    base_intraday_features_names = ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "lengthoutofrange", "lengthfatburn", "lengthcardio", "lengthpeak"]
+    base_intraday_features_names = ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
     # the subset of requested features this function can compute
     summary_features_to_compute = list(set(requested_summary_features) & set(base_summary_features_names))
     intraday_features_to_compute = list(set(requested_intraday_features) & set(base_intraday_features_names))
