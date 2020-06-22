@@ -293,21 +293,21 @@ features        Features to be computed, see table below
 
 **Available Accelerometer Features**
 
-====================================   ==============    =============
-Name                                   Units             Description
-====================================   ==============    =============
-maxmagnitude                           m/s\ :sup:`2`     The maximum magnitude of acceleration (:math:`\|acceleration\| = \sqrt{x^2 + y^2 + z^2}`).
-minmagnitude                           m/s\ :sup:`2`     The minimum magnitude of acceleration.
-avgmagnitude                           m/s\ :sup:`2`     The average magnitude of acceleration.
-medianmagnitude                        m/s\ :sup:`2`     The median magnitude of acceleration.
-stdmagnitude                           m/s\ :sup:`2`     The standard deviation of acceleration.
-ratioexertionalactivityepisodes                          The ratio of exertional activity time periods to total time periods.
-sumexertionalactivityepisodes          minutes           Total duration of all exertional activity episodes during ``day_segment``.
-longestexertionalactivityepisode       minutes           Duration of the longest exertional activity episode during ``day_segment``.
-longestnonexertionalactivityepisode    minutes           Duration of the longest non-exertional activity episode during ``day_segment``.
-countexertionalactivityepisodes        episodes          Number of the exertional activity episodes during ``day_segment``.
-countnonexertionalactivityepisodes     episodes          Number of the non-exertional activity episodes during ``day_segment``.
-====================================   ==============    =============
+======================    ==============    =============
+Name                      Units             Description
+======================    ==============    =============
+maxmagnitude              m/s\ :sup:`2`     The maximum magnitude of acceleration (:math:`\|acceleration\| = \sqrt{x^2 + y^2 + z^2}`).
+minmagnitude              m/s\ :sup:`2`     The minimum magnitude of acceleration.
+avgmagnitude              m/s\ :sup:`2`     The average magnitude of acceleration.
+medianmagnitude           m/s\ :sup:`2`     The median magnitude of acceleration.
+stdmagnitude              m/s\ :sup:`2`     The standard deviation of acceleration.
+sumduration               minutes           Total duration of all exertional or non-exertional activity episodes.
+maxduration               minutes           Longest duration of any exertional or non-exertional activity episode.
+minduration               minutes           Shortest duration of any exertional or non-exertional activity episode.
+avgduration               minutes           Average duration of any exertional or non-exertional activity episode.
+medianduration            minutes           Median duration of any exertional or non-exertional activity episode.
+stdduration               minutes           Standard deviation of the duration of all exertional or non-exertional activity episodes.
+======================    ==============    =============
 
 **Assumptions/Observations:**
 
