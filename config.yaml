@@ -100,7 +100,11 @@ LIGHT:
 
 ACCELEROMETER:
   DAY_SEGMENTS: *day_segments
-  FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude", "ratioexertionalactivityepisodes", "sumexertionalactivityepisodes", "longestexertionalactivityepisode", "longestnonexertionalactivityepisode", "countexertionalactivityepisodes", "countnonexertionalactivityepisodes"]
+  FEATURES:
+    MAGNITUDE: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
+    EXERTIONAL_ACTIVITY_EPISODE: ["sumexertionalactivityepisode", "maxexertionalactivityepisode", "minexertionalactivityepisode", "avgexertionalactivityepisode", "medianexertionalactivityepisode", "stdexertionalactivityepisode"]
+    NONEXERTIONAL_ACTIVITY_EPISODE: ["sumnonexertionalactivityepisode", "maxnonexertionalactivityepisode", "minnonexertionalactivityepisode", "avgnonexertionalactivityepisode", "mediannonexertionalactivityepisode", "stdnonexertionalactivityepisode"]
+    VALID_SENSED_MINUTES: True
 
 APPLICATIONS_FOREGROUND:
   DAY_SEGMENTS: *day_segments

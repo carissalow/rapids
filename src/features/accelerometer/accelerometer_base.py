@@ -1,27 +1,29 @@
 import pandas as pd
 import numpy as np
 
-def getActivityEpisodes(acc_minute, activity_type):
-    col_name = ["nonexertional_episodes", "exertional_episodes"][activity_type]
-    
+def getActivityEpisodes(acc_minute):    
     # rebuild local date time for resampling
     acc_minute["local_datetime"] = pd.to_datetime(acc_minute["local_date"].dt.strftime("%Y-%m-%d") + \
                                         " " + acc_minute["local_hour"].apply(str) + ":" + acc_minute["local_minute"].apply(str) + ":00")
-    # resample the data into 1 minute bins
-    resampled_acc_minute = pd.DataFrame(acc_minute.resample("1T", on="local_datetime")["isexertionalactivity"].sum())
 
-    if activity_type == 0:
-        resampled_acc_minute["isexertionalactivity"] = resampled_acc_minute["isexertionalactivity"] * (-1) + 1
+    # resample the data into 1 minute bins, set "isexertionalactivity" column to be NA if it is missing
+    resampled_acc_minute = pd.DataFrame(acc_minute.resample("1T", on="local_datetime")["isexertionalactivity"].sum(min_count=1))
 
-    # get the longest episode of exertional/non-exertional activity given as consecutive one minute periods
-    resampled_acc_minute['consecutive'] = resampled_acc_minute["isexertionalactivity"].groupby((resampled_acc_minute["isexertionalactivity"] != resampled_acc_minute["isexertionalactivity"].shift()).cumsum()).transform('size') * resampled_acc_minute["isexertionalactivity"]
-    longest_activity_episodes = resampled_acc_minute.groupby(pd.Grouper(freq='D'))[["consecutive"]].max().rename(columns = {"consecutive": col_name})
+    # group rows by consecutive values of "isexertionalactivity" column
+    group = pd.DataFrame(resampled_acc_minute["isexertionalactivity"] != resampled_acc_minute["isexertionalactivity"].shift()).cumsum().rename(columns={"isexertionalactivity": "group_idx"})
 
-    # get the count of exertional/non-exertional activity episodes
-    resampled_acc_minute_shift = resampled_acc_minute.loc[resampled_acc_minute["consecutive"].shift() != resampled_acc_minute["consecutive"]]
-    count_activity_episodes = resampled_acc_minute_shift.groupby(pd.Grouper(freq='D'))[["consecutive"]].apply(lambda x: np.count_nonzero(x)).to_frame(name = col_name)
+    # combine resampled_acc_minute and group column
+    resampled_acc_minute = pd.concat([resampled_acc_minute, group], axis=1)
 
-    return longest_activity_episodes, count_activity_episodes
+    # drop rows where "isexertionalactivity" column is missing and reset the index
+    resampled_acc_minute.dropna(subset=["isexertionalactivity"], inplace=True)
+    resampled_acc_minute.reset_index(inplace=True)
+    resampled_acc_minute.loc[:, "local_date"] = resampled_acc_minute["local_datetime"].dt.date
+
+    # duration column contains the number of minutes (rows) of exertional and nonexertional activity for each episode
+    activity_episode = resampled_acc_minute.groupby(["isexertionalactivity", "group_idx", "local_date"]).count().rename(columns={"local_datetime": "duration"}).reset_index()
+
+    return activity_episode
 
 def dropRowsWithCertainThreshold(data, threshold):
     data_grouped = data.groupby(["local_date", "local_hour", "local_minute"]).count()
@@ -31,12 +33,42 @@ def dropRowsWithCertainThreshold(data, threshold):
         data.drop(drop_dates, axis = 0, inplace = True)
     return data.reset_index()
 
+def statsFeatures(acc_data, day_segment, features_to_compute, features_type, acc_features):
+    if features_type == "magnitude":
+        col_name = features_type
+    elif features_type == "exertionalactivityepisode" or features_type == "nonexertionalactivityepisode":
+        col_name = "duration"
+    else:
+        raise ValueError("features_type can only be one of ['magnitude', 'exertionalactivityepisode', 'nonexertionalactivityepisode'].")
 
-def base_accelerometer_features(acc_data, day_segment, requested_features):
+    if "sum" + features_type in features_to_compute:
+        acc_features["acc_" + day_segment + "_sum" + features_type] = acc_data.groupby(["local_date"])[col_name].sum()
+    if "max" + features_type in features_to_compute:
+        acc_features["acc_" + day_segment + "_max" + features_type] = acc_data.groupby(["local_date"])[col_name].max()
+    if "min" + features_type in features_to_compute:
+        acc_features["acc_" + day_segment + "_min" + features_type] = acc_data.groupby(["local_date"])[col_name].min()
+    if "avg" + features_type in features_to_compute:
+        acc_features["acc_" + day_segment + "_avg" + features_type] = acc_data.groupby(["local_date"])[col_name].mean()
+    if "median" + features_type in features_to_compute:
+        acc_features["acc_" + day_segment + "_median" + features_type] = acc_data.groupby(["local_date"])[col_name].median()
+    if "std" + features_type in features_to_compute:
+        acc_features["acc_" + day_segment + "_std" + features_type] = acc_data.groupby(["local_date"])[col_name].std()
+
+    return acc_features
+
+
+
+def base_accelerometer_features(acc_data, day_segment, requested_features, valid_sensed_minutes):
     # name of the features this function can compute
-    base_features_names = ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude", "ratioexertionalactivityepisodes", "sumexertionalactivityepisodes", "longestexertionalactivityepisode", "longestnonexertionalactivityepisode", "countexertionalactivityepisodes", "countnonexertionalactivityepisodes"]
+    base_features_names_magnitude = ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
+    base_features_names_exertionalactivityepisode = ["sumexertionalactivityepisode", "maxexertionalactivityepisode", "minexertionalactivityepisode", "avgexertionalactivityepisode", "medianexertionalactivityepisode", "stdexertionalactivityepisode"]
+    base_features_names_nonexertionalactivityepisode = ["sumnonexertionalactivityepisode", "maxnonexertionalactivityepisode", "minnonexertionalactivityepisode", "avgnonexertionalactivityepisode", "mediannonexertionalactivityepisode", "stdnonexertionalactivityepisode"]
     # the subset of requested features this function can compute
-    features_to_compute = list(set(requested_features) & set(base_features_names))
+    features_to_compute_magnitude = list(set(requested_features["magnitude"]) & set(base_features_names_magnitude))
+    features_to_compute_exertionalactivityepisode = list(set(requested_features["exertional_activity_episode"]) & set(base_features_names_exertionalactivityepisode))
+    features_to_compute_nonexertionalactivityepisode = list(set(requested_features["nonexertional_activity_episode"]) & set(base_features_names_nonexertionalactivityepisode))
+
+    features_to_compute = features_to_compute_magnitude + features_to_compute_exertionalactivityepisode + features_to_compute_nonexertionalactivityepisode + (["validsensedminutes"] if valid_sensed_minutes else [])
 
     if acc_data.empty:
         acc_features = pd.DataFrame(columns=["local_date"] + ["acc_" + day_segment + "_" + x for x in features_to_compute])
@@ -48,16 +80,8 @@ def base_accelerometer_features(acc_data, day_segment, requested_features):
             # get magnitude related features: magnitude = sqrt(x^2+y^2+z^2)
             magnitude = acc_data.apply(lambda row: np.sqrt(row["double_values_0"] ** 2 + row["double_values_1"] ** 2 + row["double_values_2"] ** 2), axis=1)
             acc_data = acc_data.assign(magnitude = magnitude.values)
-            if "maxmagnitude" in features_to_compute:
-                acc_features["acc_" + day_segment + "_maxmagnitude"] = acc_data.groupby(["local_date"])["magnitude"].max()
-            if "minmagnitude" in features_to_compute:
-                acc_features["acc_" + day_segment + "_minmagnitude"] = acc_data.groupby(["local_date"])["magnitude"].min()
-            if "avgmagnitude" in features_to_compute:
-                acc_features["acc_" + day_segment + "_avgmagnitude"] = acc_data.groupby(["local_date"])["magnitude"].mean()
-            if "medianmagnitude" in features_to_compute:
-                acc_features["acc_" + day_segment + "_medianmagnitude"] = acc_data.groupby(["local_date"])["magnitude"].median()
-            if "stdmagnitude" in features_to_compute:
-                acc_features["acc_" + day_segment + "_stdmagnitude"] = acc_data.groupby(["local_date"])["magnitude"].std()
+            acc_features = statsFeatures(acc_data, day_segment, features_to_compute_magnitude, "magnitude", acc_features)
+
             
             # get extertional activity features
             # reference: https://jamanetwork.com/journals/jamasurgery/fullarticle/2753807
@@ -70,21 +94,17 @@ def base_accelerometer_features(acc_data, day_segment, requested_features):
                 acc_minute["isexertionalactivity"] = (acc_data.groupby(["local_date", "local_hour", "local_minute"])["double_values_0"].var() + acc_data.groupby(["local_date", "local_hour", "local_minute"])["double_values_1"].var() + acc_data.groupby(["local_date", "local_hour", "local_minute"])["double_values_2"].var()).apply(lambda x: 1 if x > 0.15 * (9.807 ** 2) else 0)
                 acc_minute.reset_index(inplace=True)
 
-                if "ratioexertionalactivityepisodes" in features_to_compute:
-                    acc_features["acc_" + day_segment + "_ratioexertionalactivityepisodes"] = acc_minute.groupby(["local_date"])["isexertionalactivity"].sum()/acc_minute.groupby(["local_date"])["isexertionalactivity"].count()
-                if "sumexertionalactivityepisodes" in features_to_compute:
-                    acc_features["acc_" + day_segment + "_sumexertionalactivityepisodes"] = acc_minute.groupby(["local_date"])["isexertionalactivity"].sum()
+                if valid_sensed_minutes:
+                    acc_features["acc_" + day_segment + "_validsensedminutes"] = acc_minute.groupby(["local_date"])["isexertionalactivity"].count()
                 
-                longest_exertionalactivity_episodes, count_exertionalactivity_episodes = getActivityEpisodes(acc_minute, 1)
-                longest_nonexertionalactivity_episodes, count_nonexertionalactivity_episodes = getActivityEpisodes(acc_minute, 0)
-                if "longestexertionalactivityepisode" in features_to_compute:
-                    acc_features["acc_" + day_segment + "_longestexertionalactivityepisode"] = longest_exertionalactivity_episodes["exertional_episodes"]
-                if "longestnonexertionalactivityepisode" in features_to_compute:
-                    acc_features["acc_" + day_segment + "_longestnonexertionalactivityepisode"] = longest_nonexertionalactivity_episodes["nonexertional_episodes"]
-                if "countexertionalactivityepisodes" in features_to_compute:
-                    acc_features["acc_" + day_segment + "_countexertionalactivityepisodes"] = count_exertionalactivity_episodes["exertional_episodes"]
-                if "countnonexertionalactivityepisodes" in features_to_compute:
-                    acc_features["acc_" + day_segment + "_countnonexertionalactivityepisodes"] = count_nonexertionalactivity_episodes["nonexertional_episodes"]
+                activity_episode = getActivityEpisodes(acc_minute)
+                exertionalactivity_episodes = activity_episode[activity_episode["isexertionalactivity"] == 1]
+                acc_features = statsFeatures(exertionalactivity_episodes, day_segment, features_to_compute_exertionalactivityepisode, "exertionalactivityepisode", acc_features)
+
+                nonexertionalactivity_episodes = activity_episode[activity_episode["isexertionalactivity"] == 0]
+                acc_features = statsFeatures(nonexertionalactivity_episodes, day_segment, features_to_compute_nonexertionalactivityepisode, "nonexertionalactivityepisode", acc_features)
+
+                acc_features[[colname for colname in acc_features.columns if "std" not in colname]] = acc_features[[colname for colname in acc_features.columns if "std" not in colname]].fillna(0)
             
             acc_features = acc_features.reset_index()
 

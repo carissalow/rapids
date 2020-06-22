@@ -173,7 +173,10 @@ rule accelerometer_features:
         "data/raw/{pid}/accelerometer_with_datetime.csv",
     params:
         day_segment = "{day_segment}",
-        features = config["ACCELEROMETER"]["FEATURES"],
+        magnitude = config["ACCELEROMETER"]["FEATURES"]["MAGNITUDE"],
+        exertional_activity_episode = config["ACCELEROMETER"]["FEATURES"]["EXERTIONAL_ACTIVITY_EPISODE"],
+        nonexertional_activity_episode = config["ACCELEROMETER"]["FEATURES"]["NONEXERTIONAL_ACTIVITY_EPISODE"],
+        valid_sensed_minutes = config["ACCELEROMETER"]["FEATURES"]["VALID_SENSED_MINUTES"],
     output:
         "data/processed/{pid}/accelerometer_{day_segment}.csv"
     script:
