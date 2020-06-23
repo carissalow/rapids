@@ -72,55 +72,54 @@ def generate_file_list(configs, sensor):
     return zip(act_file_list, exp_file_list)
 
 
-def generate_sensor_file_lists(configs):
-    # Go through the configs and select those sensors with DAY_SEGMENTS,
-    # optionally TYPES then create expected files Return dictionary with 
-    # list of file paths of expected and actual files for each sensor 
-    # listed in the config file. Added for Travis.
-    
+def generate_sensor_file_lists(config):
+    # Go through the configs and select those sensors with COMPUTE = True.
+    # Also get DAY_SEGMENTS, and optionally TYPES then create expected 
+    # files. Return dictionary with list of file paths of expected and 
+    # actual files for each sensor listed in the config file. Added for Travis.
+
     # Initialize string of file path for both expected and actual metric values
     act_str = "data/processed/{pid}/{sensor}_{sensor_type}{day_segment}.csv"
     exp_str = "tests/data/processed/{pid}/{sensor}_{sensor_type}{day_segment}.csv"
 
-    # Get all the SENSORS in the config.yaml files
-    sensors = configs['SENSORS']
+    # List of available sensors that can be tested by the testing suite
+    TESTABLE_SENSORS = ['MESSAGES', 'CALLS', 'SCREEN']
+
+    # Build list of sensors to be tested. 
+    sensors = []
+    for sensor in TESTABLE_SENSORS:
+        if config[sensor]["COMPUTE"] == True:
+            sensors.append(sensor)
+
     sensor_file_lists = {}
     
     # Loop though all sensors and create the actual and expected file paths
     for sensor in sensors:
-        if sensor == 'messages':
-            sensor = 'sms'
-            sensor_cap = sensor.upper()
-        elif sensor == 'calls':
-            sensor_cap = sensor.upper()
-            sensor = 'call'
-        else:
-            sensor_cap = sensor.upper()
-        if 'DAY_SEGMENTS' in configs[sensor_cap]:
+        if 'DAY_SEGMENTS' in config[sensor]:
             sensor_type = []
-            if 'TYPES' in configs[sensor_cap]:
-                for each in configs[sensor_cap]['TYPES']:
+            if 'TYPES' in config[sensor]:
+                for each in config[sensor]['TYPES']:
                     sensor_type.append(each+'_')
             
             if sensor_type:
-                act_file_list = expand(act_str, pid=configs["PIDS"], 
-                                                sensor = sensor, 
+                act_file_list = expand(act_str, pid=config["PIDS"], 
+                                                sensor = config[sensor]["DB_TABLE"], 
                                                 sensor_type = sensor_type, 
-                                                day_segment = configs[sensor_cap]["DAY_SEGMENTS"])
-                exp_file_list = expand(exp_str, pid=configs["PIDS"], 
-                                                sensor = sensor, 
+                                                day_segment = config[sensor]["DAY_SEGMENTS"])
+                exp_file_list = expand(exp_str, pid=config["PIDS"], 
+                                                sensor = config[sensor]["DB_TABLE"], 
                                                 sensor_type = sensor_type, 
-                                                day_segment = configs[sensor_cap]["DAY_SEGMENTS"])
+                                                day_segment = config[sensor]["DAY_SEGMENTS"])
             else:
-                act_file_list = expand(act_str, pid=configs["PIDS"], 
-                                                sensor = sensor, 
+                act_file_list = expand(act_str, pid=config["PIDS"], 
+                                                sensor = config[sensor]["DB_TABLE"], 
                                                 sensor_type = '', 
-                                                day_segment = configs[sensor_cap]["DAY_SEGMENTS"])
-                exp_file_list = expand(exp_str, pid=configs["PIDS"], 
-                                                sensor = sensor, 
+                                                day_segment = config[sensor]["DAY_SEGMENTS"])
+                exp_file_list = expand(exp_str, pid=config["PIDS"], 
+                                                sensor = config[sensor]["DB_TABLE"], 
                                                 sensor_type = '', 
-                                                day_segment = configs[sensor_cap]["DAY_SEGMENTS"])
+                                                day_segment = config[sensor]["DAY_SEGMENTS"])
 
-            sensor_file_lists[sensor_cap] = list(zip(act_file_list,exp_file_list))
+            sensor_file_lists[sensor] = list(zip(act_file_list,exp_file_list))
 
     return sensor_file_lists

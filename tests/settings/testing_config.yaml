@@ -1,18 +1,20 @@
-# Valid database table name
-SENSORS: [messages, calls, screen]
-#SENSORS: [calls]
+# Add as many sensor tables as you have, they all improve the computation of PHONE_SENSED_BINS. 
+# If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
+TABLES_FOR_SENSED_BINS: [messages, calls, screen]
 
-# Test Participant data to include in the unit testing
-# You must create a file for each participant
-# named pXXX containing their device_id
+# Participants to include in the analysis
+# You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
 PIDS: [test01, test02]
+
 
 # Global var with common day segments
 DAY_SEGMENTS: &day_segments
   [daily, morning, afternoon, evening, night]
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
-SMS:
+MESSAGES:
+  COMPUTE: True
+  DB_TABLE: messages
   TYPES : [received, sent]
   FEATURES: 
     received: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
@@ -21,6 +23,8 @@ SMS:
 
 # Communication call features config, TYPES and FEATURES keys need to match
 CALLS:
+  COMPUTE: True
+  DB_TABLE: calls
   TYPES: [missed, incoming, outgoing]
   FEATURES:
     missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
@@ -28,7 +32,10 @@ CALLS:
     outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments
 
+
 SCREEN:
+  COMPUTE: True
+  DB_TABLE: screen
   DAY_SEGMENTS: *day_segments
   REFERENCE_HOUR_FIRST_USE: 0
   FEATURES_DELTAS: ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]

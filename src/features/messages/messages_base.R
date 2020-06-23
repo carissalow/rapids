@@ -1,3 +1,5 @@
+library('tidyr')
+
 filter_by_day_segment <- function(data, day_segment) {
   if(day_segment %in% c("morning", "afternoon", "evening", "night"))
     data <- data %>% filter(local_day_segment == day_segment)
@@ -56,6 +58,6 @@ base_sms_features <- function(sms, sms_type, day_segment, requested_features){
             features <- merge(features, feature, by="local_date", all = TRUE)
         }
     }
-
+    features <- features %>% mutate_at(vars(contains("countmostfrequentcontact")), list( ~ replace_na(., 0)))
     return(features)
 }
