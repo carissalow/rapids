@@ -1,0 +1,2 @@
+"local_date","call_incoming_night_count","call_incoming_night_distinctcontacts","call_incoming_night_meanduration","call_incoming_night_sumduration","call_incoming_night_minduration","call_incoming_night_maxduration","call_incoming_night_stdduration","call_incoming_night_modeduration","call_incoming_night_entropyduration","call_incoming_night_timefirstcall","call_incoming_night_timelastcall","call_incoming_night_countmostfrequentcontact"
+"2020-06-01",2,2,885,1770,439,1331,630.7392488184,439,0.560434787927257,163,257,1

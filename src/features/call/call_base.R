@@ -1,3 +1,5 @@
+library('tidyr')
+
 filter_by_day_segment <- function(data, day_segment) {
   if(day_segment %in% c("morning", "afternoon", "evening", "night"))
     data <- data %>% filter(local_day_segment == day_segment)
@@ -37,15 +39,18 @@ base_call_features <- function(calls, call_type, day_segment, requested_features
     for(feature_name in features_to_compute){
         if(feature_name == "countmostfrequentcontact"){
             # Get the number of messages for the most frequent contact throughout the study
-            feature <- calls %>% group_by(trace) %>% 
+            mostfrequentcontact <- calls %>% 
+                group_by(trace) %>% 
                 mutate(N=n()) %>% 
                 ungroup() %>%
                 filter(N == max(N)) %>% 
                 head(1) %>% # if there are multiple contacts with the same amount of messages pick the first one only
+                pull(trace)
+            feature <- calls %>% 
+                filter(trace == mostfrequentcontact) %>% 
                 group_by(local_date) %>% 
-                summarise(!!paste("call", call_type, day_segment, feature_name, sep = "_") := N)  %>% 
+                summarise(!!paste("call", call_type, day_segment, feature_name, sep = "_") := n())  %>% 
                 replace(is.na(.), 0)
-
             features <- merge(features, feature, by="local_date", all = TRUE)
         } else {
             feature <- calls %>% 
@@ -67,6 +72,6 @@ base_call_features <- function(calls, call_type, day_segment, requested_features
             features <- merge(features, feature, by="local_date", all = TRUE)
         }
     }
-
+    features <- features %>% mutate_at(vars(contains("countmostfrequentcontact")), list( ~ replace_na(., 0)))
     return(features)
 }

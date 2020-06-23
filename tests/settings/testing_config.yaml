@@ -1,10 +1,11 @@
 # Valid database table name
 SENSORS: [messages, calls, screen]
+#SENSORS: [calls]
 
 # Test Participant data to include in the unit testing
 # You must create a file for each participant
 # named pXXX containing their device_id
-PIDS: [test01]
+PIDS: [test01, test02]
 
 # Global var with common day segments
 DAY_SEGMENTS: &day_segments
