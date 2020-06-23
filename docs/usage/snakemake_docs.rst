@@ -3,11 +3,25 @@
 RAPIDS Structure
 =================
 
+.. _the-config-file:
+
+The ``config.yaml`` File
+------------------------
+
+RAPIDS configuration settings are defined in ``config.yaml`` (See `config.yaml`_). This is the only file that you need to understand in order to compute the features that RAPIDS ships with. 
+
+It has global settings like ``TABLES_FOR_SENSED_BINS``, ``PIDS``, ``DAY_SEGMENTS``, among others (see :ref:`global-sensor-doc` for more information). As well as per sensor settings, for example, for the :ref:`sms-sensor-doc`::
+
+      | ``MESSAGES:``
+      |     ``COMPUTE: True``
+      |      ``DB_TABLE: messages``
+      |      ``...``
+
 .. _the-snakefile-file:
 
 The ``Snakefile`` File
 ----------------------
-The ``Snakefile`` file (see the actual `Snakefile`_) pulls the entire system together and can be thought of as the menu of RAPIDS allowing the user to define the sensor data that is desired. The first line in this file identifies the configuration file. Next are a list of included files that define the rules used to pull, clean, process, analyze and report on the data. Next is the ``all`` rule that list the sensor data (menu items) that would be processed by the pipeline. 
+The ``Snakefile`` file (see the actual `Snakefile`_) pulls the entire system together. The first line in this file identifies the configuration file. Next are a list of included directives that import the rules used to pull, clean, process, analyze and report data. Finally, the ``all`` rule lists the files that need to be computed (raw files, intermediate files, feature files, reports, etc). 
 
 .. _includes-section:
 
@@ -15,22 +29,20 @@ Includes
 """""""""
 There are 5 included files in the ``Snakefile`` file. 
 
-    - ``renv.snakefile`` - This file defines the rules to manager the R packages that are used by RAPIDS. (See `renv`_)
-    - ``preprocessing.snakefile`` - This file contains the rules that are used to preprocess the data such as downloading, cleaning and formatting. (See `preprocessing`_)
-    - ``features.snakefile`` - This file contains the rules that used for behavioral feature extraction. (See `features`_)
-    - ``models.snakefile`` - This file contains the rules that are used to build models from features that have been extreacted from the sensor data. (See `models`_)
-    - ``reports.snakefile`` - The file contains the rules that are used to produce the reports based on the models produced. (See `reports`_)
-    - ``mystudy.snakefile`` - The file contains the rules that you add that are specifically tailored to your project/study. (See `mystudy`_)
-
-..  - ``analysis.snakefile`` - The rules that define how the data is analyzed is outlined in this file. (see `analysis <https://github.com/carissalow/rapids/blob/master/rules/analysis.snakefile>`_)
+    - ``renv.snakefile`` - Rules to create, backup and restore the R renv virtual environment for RAPIDS. (See `renv`_)
+    - ``preprocessing.snakefile`` - Rules that are used to pre-preprocess the data such as downloading, cleaning and formatting. (See `preprocessing`_)
+    - ``features.snakefile`` - Rules that used for behavioral feature extraction. (See `features`_)
+    - ``models.snakefile`` - Rules that are used to build models from features that have been extreacted from the sensor data. (See `models`_)
+    - ``reports.snakefile`` - Rules that are used to produce reports and visualizations. (See `reports`_)
+    - ``mystudy.snakefile`` - Example file that contains rules specific to your project/study. (See `mystudy`_)
     
-Includes are relative to the directory of the Snakefile in which they occur. For example, if above Snakefile resides in the directory ``my/dir``, then Snakemake will search for the include file at ``my/dir/path/to/other/snakefile``, regardless of the working directory.
+Includes are relative to the root directory.
 
 .. _rule-all-section:
 
 ``Rule all:``
 """""""""""""
-In RAPIDS the ``all`` rule indirectly specifies the features/sensors that are desired by listing the output files of the pipeline using the ``expand`` directive. The ``expand`` function allows the combination of different variables. Consider the following::
+In RAPIDS the ``all`` rule lists the output files we expect the pipeline to compute using the ``expand`` directive. The ``expand`` function allows us to generate a list of file paths that have a common structure except for PIDS or other parameters. Consider the following::
 
     expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
 
@@ -38,59 +50,33 @@ If ``pids = ['p01','p02']`` and ``sensor = ['sms', 'calls']`` then the above dir
 
     ["data/raw/p01/sms_raw.csv", "data/raw/p01/calls_raw.csv", "data/raw/p02/sms_raw.csv", "data/raw/p02/calls_raw.csv"]
 
-Thus, this allows the user of RAPIDS to define all of the desired output files without having to manually list all for the participants of the research. The way Snakemake works is that it looks for the rule that produces the desired output files and then executes that rule. For more information on ``expand`` see `The Expand Function`_
+Thus, this allows us to define all the desired output files without having to manually list each path for every participant and every sensor. The way Snakemake works is that it looks for the rule that produces the desired output files and then executes that rule. For more information on ``expand`` see `The Expand Function`_
 
 
 .. _the-env-file:
 
 The ``.env`` File
 -------------------
-The database credentials for database server is placed in the .env file (Remember step 9 on :ref:`install-page` page). The format of the configurations are shown below::
+Your database credentials are stored in the ``.env`` file (See :ref:`install-page`)::
 
     [MY_GROUP_NAME]
     user=MyUSER
     password=MyPassword
-    host=MyIP
+    host=MyIP/DOMAIN
     port=3306
-
-
-.. _the-config-file:
-
-The ``config.yaml`` File
-------------------------
-
-The configurations for the pipeline are defined in the ``config.yaml`` (See `config.yaml`_). This contains global settings and variables that are used by the rules. Some of the global variables defined in the ``config.yaml`` file are briefly explained below:
-
-    - ``SENSORS`` - This is a global variable that contains a list of the sensor/feature tables in the database that will be analyzed.
-    - ``PIDS`` - This is the list of the participant IDs to include in the analysis. Create a file for each participant with a matching name ``pXXX`` containing the device_id in the ``data/external/`` directory. (Remember step 8 on the :ref:`install-page` page)
-    - ``DAY_SEGMENTS`` - A variable used to list all of the common day segments. 
-    - ``TIMEZONE`` - Time variable. Use timezone names from the `List of Timezone`_ and double check your code, for example EST is not US Eastern Time.
-    - ``DATABASE_GROUP`` - Label for the database credentials group. (See :ref:`Configure the database connection <db-configuration>`.)
-    - ``DOWNLOAD_DATASET`` - Variable used to store the name of the dataset that will be download for analysis. 
-
-There are a number of other settings that are specific to the sensor/feature that will be pulled and analyzed by the pipeline. An example of the configuration settings for the :ref:`sms-sensor-doc` data is shown below::
-
-    SMS:
-        TYPES : [received, sent]
-        FEATURES: 
-            received: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
-            sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
-        DAY_SEGMENTS: *day_segments  
-
-The ``TYPES`` setting defines the type of SMS data that will be analyzed. ``FEATURES`` defines the features of the data for each the type of SMS data being analyzed. Finally, ``DAY_SEGMENTS`` list the day segment (times of day) that the data is captured.
 
 .. _rules-syntax:
 
 The ``Rules`` Directory 
 ------------------------
 
-The ``rules`` directory contains the ``snakefiles`` that were included in the ``Snakefile`` file. A short description of these files are given in the :ref:`includes-section` section. 
+The ``rules`` directory contains the ``snakefiles`` that were included in the main ``Snakefile`` file. A short description of these files are given in the :ref:`includes-section` section. 
 
 
 Rules
 """"""
 
-A Snakemake workflow is defined by specifying rules in a ``Snakefile`` (See the features_ snakefile as an actual example). Rules decompose the workflow into small steps (e.g., the application of a single tool) by specifying how to create sets of output files from sets of input files. Snakemake automatically determines the dependencies between the rules by matching file names. Thus, a rule can consist of a name, input files, output files, and a command to generate the output from the input. The following is the basic structure of a Snakemake rule::
+A Snakemake workflow is defined by rules (See the features_ snakefile as an actual example). Rules decompose the workflow into small steps by specifying what output files should be created by running a script on a set of input files. Snakemake automatically determines the dependencies between the rules by matching file names. Thus, a rule can consist of a name, input files, output files, and a command to generate the output from the input. The following is the basic structure of a Snakemake rule::
 
     rule NAME:
         input: "path/to/inputfile", "path/to/other/inputfile"
@@ -113,17 +99,17 @@ A sample rule from the RAPIDS source code is shown below::
             "../src/features/sms_features.R"
 
 
-The ``rule`` directive specifies the name of the rule that is being defined. ``params`` defines the additional parameters that needs to be set for the rule. In the example immediately above, the parameters will be pasted to the script defined in the ``script`` directive of the rule. Instead of ``script`` a ``shell`` command call can also be called by replacing the ``script`` directive of the rule and replacing it with the lines similar to the folllowing::
+The ``rule`` directive specifies the name of the rule that is being defined. ``params`` defines additional parameters for the rule's script. In the example above, the parameters are passed to the ``sms_features.R`` script as an dictionary. Instead of ``script`` a ``shell`` command call can also be called by replacing the ``script`` directive of the rule and replacing it with::
 
         shell: "somecommand {input} {output}"
 
-Here input and output (and in general any list or tuple) automatically evaluate to a space-separated list of files (i.e. ``path/to/inputfile path/to/other/inputfile``).  It should be noted that rules can defined without input and output as seen in the ``renv.snakemake``. For more information see `Rules documentation`_ and for an actual example see the `renv`_ snakefile.
+It should be noted that rules can defined without input and output as seen in the ``renv.snakemake``. For more information see `Rules documentation`_ and for an actual example see the `renv`_ snakefile.
 
 .. _wildcards:
 
 Wildcards
 """"""""""
-There are times that it would be useful to generalize a rule to be applicable to a number of e.g. datasets. For this purpose, wildcards can be used. Consider the sample code from above again repeated below for quick reference.::
+There are times when the same rule should be applied to different participants and day segments. For this we use wildcards ``{my_wildcard}``. All wildcards are inferred from the files listed in the ``all` rule of the ``Snakefile`` file and therfore from the output of any rule::
 
     rule sms_features:
         input: 
@@ -147,10 +133,10 @@ The ``data`` Directory
 
 This directory contains the data files for the project. These directories are as follows:
 
-    - ``external`` - This directory stores the participant `pxxx` files that contains the device_id and the type of device as well as data from third party sources. (Remember step 8 on :ref:`install-page` page)
-    - ``raw`` - This directory contains the original, immutable data dump from the sensor database.
-    - ``interim`` - This directory would contain intermediate data that has been transformed but has not been completely analyzed.
-    - ``processed`` - This directory contains the final canonical data sets for modeling.
+    - ``external`` - This directory stores the participant `pxxx` files as well as data from third party sources (see :ref:`install-page` page).
+    - ``raw`` - This directory contains the original, immutable data dump from your database.
+    - ``interim`` - This directory contains intermediate data that has been transformed but do not represent features.
+    - ``processed`` - This directory contains all behavioral features.
 
 
 .. _the-src-directory:
@@ -158,12 +144,12 @@ This directory contains the data files for the project. These directories are as
 The ``src`` Directory
 ----------------------
 
-The ``src`` directory holds all of the scripts used by the pipeline for data manipulation. These scripts can be in any programming language including but not limited to Python_, R_ and Julia_. This directory is organized into the following directories:
+The ``src`` directory holds all the scripts used by the pipeline for data manipulation. These scripts can be in any programming language including but not limited to Python_, R_ and Julia_. This directory is organized into the following directories:
 
     - ``data`` - This directory contains scripts that are used to download and preprocess raw data that will be used in analysis. See `data directory`_
     - ``features`` - This directory contains scripts to extract behavioral features. See `features directory`_
-    - ``models`` - This directory contains the model scripts for building and training models. See `models directory`_
-    - ``visualization`` - This directory contains the scripts to create plots and reports that visualize the results of the models. See `visualization directory`_
+    - ``models`` - This directory contains the scripts for building and training models. See `models directory`_
+    - ``visualization`` - This directory contains the scripts to create plots and reports. See `visualization directory`_
 
 
 .. _the-report-directory:
@@ -171,7 +157,7 @@ The ``src`` directory holds all of the scripts used by the pipeline for data man
 The ``reports`` Directory
 --------------------------
 
-This contains the reports of the results of the analysis done by the pipeline. 
+This directory contains reports and visualizations. 
 
     .. _Python: https://www.python.org/
     .. _Julia: https://julialang.org/

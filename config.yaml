@@ -1,14 +1,10 @@
-# Valid database table names
-SENSORS: [applications_crashes, applications_foreground, applications_notifications, battery, bluetooth, calls, locations, messages, plugin_ambient_noise, plugin_device_usage, plugin_google_activity_recognition, plugin_ios_activity_recognition, screen,plugin_studentlife_audio]
-
-FITBIT_TABLE: [fitbit_data]
-FITBIT_SENSORS: [heartrate, steps, sleep, calories]
-FITBIT_DATA_TYPE: [summary, intraday]
+# Add as many sensor tables as you have, they all improve the computation of PHONE_SENSED_BINS. 
+# If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
+TABLES_FOR_SENSED_BINS: []
 
 # Participants to include in the analysis
-# You must create a file for each participant
-# named pXXX containing their device_id
-PIDS: [p01, p02]
+# You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
+PIDS: []
 
 # Global var with common day segments
 DAY_SEGMENTS: &day_segments
@@ -36,7 +32,9 @@ READABLE_DATETIME:
   FIXED_TIMEZONE: *timezone
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
-SMS:
+MESSAGES:
+  COMPUTE: False
+  DB_TABLE: messages
   TYPES : [received, sent]
   FEATURES: 
     received: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
@@ -45,6 +43,8 @@ SMS:
 
 # Communication call features config, TYPES and FEATURES keys need to match
 CALLS:
+  COMPUTE: False
+  DB_TABLE: calls
   TYPES: [missed, incoming, outgoing]
   FEATURES:
     missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
@@ -69,36 +69,52 @@ RESAMPLE_FUSED_LOCATION:
   TIMEZONE: *timezone
 
 BARNETT_LOCATION:
+  COMPUTE: False
+  DB_TABLE: locations
   DAY_SEGMENTS: [daily] # These features are only available on a daily basis
   FEATURES: ["hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","circdnrtn","wkenddayrtn"]
-  LOCATIONS_TO_USE: ALL # ALL, ALL_EXCEPT_FUSED OR RESAMPLE_FUSED
+  LOCATIONS_TO_USE: RESAMPLE_FUSED # ALL, ALL_EXCEPT_FUSED OR RESAMPLE_FUSED
   ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
   TIMEZONE: *timezone
   MINUTES_DATA_USED: False # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
 
 BLUETOOTH:
+  COMPUTE: False
+  DB_TABLE: bluetooth
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
 
 ACTIVITY_RECOGNITION:
+  COMPUTE: False
+  DB_TABLE: 
+    ANDROID: plugin_google_activity_recognition
+    IOS: plugin_ios_activity_recognition
   DAY_SEGMENTS: *day_segments
   FEATURES: ["count","mostcommonactivity","countuniqueactivities","activitychangecount","sumstationary","summobile","sumvehicle"]
 
 BATTERY:
+  COMPUTE: False
+  DB_TABLE: battery
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
 
 SCREEN:
+  COMPUTE: False
+  DB_TABLE: screen
   DAY_SEGMENTS: *day_segments
   REFERENCE_HOUR_FIRST_USE: 0
   FEATURES_DELTAS: ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]
   EPISODE_TYPES: ["unlock"]
 
 LIGHT:
+  COMPUTE: False
+  DB_TABLE: light
   DAY_SEGMENTS: *day_segments
   FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
 
 ACCELEROMETER:
+  COMPUTE: False
+  DB_TABLE: accelerometer
   DAY_SEGMENTS: *day_segments
   FEATURES:
     MAGNITUDE: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
@@ -107,6 +123,8 @@ ACCELEROMETER:
     VALID_SENSED_MINUTES: True
 
 APPLICATIONS_FOREGROUND:
+  COMPUTE: False
+  DB_TABLE: applications_foreground
   DAY_SEGMENTS: *day_segments
   SINGLE_CATEGORIES: ["all", "email"]
   MULTIPLE_CATEGORIES:
@@ -118,12 +136,15 @@ APPLICATIONS_FOREGROUND:
   FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
 
 HEARTRATE:
+  COMPUTE: False
+  DB_TABLE: fitbit_data
   DAY_SEGMENTS: *day_segments
-  # Only daily features are extracted from summary data
-  SUMMARY_FEATURES: ["restinghr"] # calories related features might be inaccurate: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
+  SUMMARY_FEATURES: ["restinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. heigh, weight) use with care: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
   INTRADAY_FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
 
 STEP:
+  COMPUTE: False
+  DB_TABLE: fitbit_data
   DAY_SEGMENTS: *day_segments
   FEATURES:
     ALL_STEPS: ["sumallsteps", "maxallsteps", "minallsteps", "avgallsteps", "stdallsteps"]
@@ -133,16 +154,23 @@ STEP:
   INCLUDE_ZERO_STEP_ROWS: True
 
 SLEEP:
+  COMPUTE: False
+  DB_TABLE: fitbit_data
   DAY_SEGMENTS: *day_segments
   SLEEP_TYPES: ["main", "nap", "all"]
-  # Only daily features are extracted from summary data
   SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
 
 WIFI:
+  COMPUTE: False
+  DB_TABLE: wifi
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
 
 CONVERSATION:
+  COMPUTE: False
+  DB_TABLE: 
+    ANDROID: plugin_studentlife_audio_android
+    IOS: plugin_studentlife_audio
   DAY_SEGMENTS: *day_segments
   FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
     "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
@@ -152,6 +180,8 @@ CONVERSATION:
   RECORDINGMINUTES: 1
   PAUSEDMINUTES : 3
 
+
+### Analysis ################################################################
 PARAMS_FOR_ANALYSIS:
   GROUNDTRUTH_TABLE: participant_info
   SOURCES: &sources ["phone_features", "fitbit_features", "phone_fitbit_features"]

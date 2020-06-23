@@ -45,8 +45,9 @@ elif sensor == "steps":
 elif sensor == "calories":
     summary_data, intraday_data = parseCaloriesData(data, HOUR2EPOCH)
 else:
-    raise ValueError("Please check the FITBIT_SENSORS list in config.yaml file.")
+    raise ValueError("We only support heartrate, sleep, step, or calories sensors on Fitbit devices.")
 
-# Summary data will be empty for steps and calories as it is not provided by Fitbit's API
-summary_data.to_csv(snakemake.output["summary_data"], index=False)
+# Summary data does not exist for steps and calories as it is not provided by Fitbit's API
+if sensor == "heartrate" or sensor == "sleep":
+    summary_data.to_csv(snakemake.output["summary_data"], index=False)
 intraday_data.to_csv(snakemake.output["intraday_data"], index=False)

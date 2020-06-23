@@ -2,13 +2,13 @@
 # swap base_sms_features(...) for your own function
 
 source("renv/activate.R")
-source("src/features/sms/sms_base.R")
+source("src/features/messages/messages_base.R")
 library(dplyr, warn.conflicts = FALSE)
 
 sms <-  read.csv(snakemake@input[[1]])
 day_segment <- snakemake@params[["day_segment"]]
 requested_features <-  snakemake@params[["features"]]
-sms_type <-  snakemake@params[["sms_type"]]
+sms_type <-  snakemake@params[["messages_type"]]
 features  <-  data.frame(local_date = character(), stringsAsFactors = FALSE)
 
 # Compute base SMS features

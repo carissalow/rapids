@@ -48,9 +48,12 @@ rule battery_consumption_rates_barchart:
     script:
         "../src/visualization/battery_consumption_rates_barchart.py"
 
+PHONE_SENSORS = []
+PHONE_SENSORS.extend([config["MESSAGES"]["DB_TABLE"], config["CALLS"]["DB_TABLE"], config["BARNETT_LOCATION"]["DB_TABLE"], config["BLUETOOTH"]["DB_TABLE"], config["BATTERY"]["DB_TABLE"], config["SCREEN"]["DB_TABLE"], config["LIGHT"]["DB_TABLE"], config["ACCELEROMETER"]["DB_TABLE"], config["APPLICATIONS_FOREGROUND"]["DB_TABLE"],config["WIFI"]["DB_TABLE"]])
+
 rule compliance_report:
     input:
-        sensor_heatmaps =  expand("reports/figures/{{pid}}/{sensor}_heatmap_rows.html", sensor=config["SENSORS"]),
+        sensor_heatmaps =  expand("reports/figures/{{pid}}/{sensor}_heatmap_rows.html", sensor=PHONE_SENSORS),
         compliance_heatmap =  rules.compliance_heatmap.output
     output:
         "reports/compliance/{pid}/compliance_report.html",

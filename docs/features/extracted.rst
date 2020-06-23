@@ -3,12 +3,23 @@
 RAPIDS Features
 ===============
 
+*How do I compute any of these features?* In your ``config.yaml``, go to the sensor section you are interested in and set the corresponding ``COMPUTE`` option to ``TRUE`` as well as ``DB_TABLE`` to the senor's table name in your database (the default table name is the one assigned by Aware), for example:
+
+      | ``MESSAGES:``
+      |     ``COMPUTE: True``
+      |      ``DB_TABLE: messages``
+      |      ``...``
+ 
+ If you want to extract phone_valid_sensed_days.csv, screen features or locaton features based on fused location data don't forget to configure ``TABLES_FOR_SENSED_BINS`` (see below).
+
+.. _global-sensor-doc:
+
 Global Parameters
 """""""""""""""""
 
 .. _sensor-list:
 
-- ``SENSORS`` - List of sensors to include in the pipeline that have to match existent tables in your AWARE_ database. See SENSORS_ variable in ``config`` file.  
+- ``TABLES_FOR_SENSED_BINS`` - Add as many sensor tables as you have in your database. All sensors included are used to compute ``phone_sensed_bins.csv`` (bins of time when the smartphone was sensing data). In turn, these bins are used to compute ``PHONE_VALID_SENSED_DAYS`` (see below), ``episodepersensedminutes`` feature of :ref:`Screen<screen-sensor-doc>` and to resample fused location data if you configure Barnett's location features to use ``RESAMPLE_FUSED``. See TABLES_FOR_SENSED_BINS_ variable in ``config`` file (therefore, when you are extracting screen or Barnett's location features, screen and locations tables are mandatory).  
 
 .. _fitbit-table:
 
@@ -53,33 +64,27 @@ Global Parameters
     
     Contains three attributes: ``BIN_SIZE``, ``MIN_VALID_HOURS``, ``MIN_BINS_PER_HOUR``. 
 
-    On any given day, Aware could have sensed data only for a few minutes or for 24 hours. Daily estimates of features should be considered more reliable the more hours Aware was running and logging data (for example, 10 calls logged on a day when only one hour of data was recorded is a less reliable measurement compared to 10 calls on a day when 23 hours of data were recorded. 
+    On any given day, Aware could have sensed data only for a few minutes or for 24 hours. Daily estimates of features should be considered more reliable the more hours Aware was running and logging data (for example, 10 calls logged on a day when only one hour of data was recorded is a less reliable feature compared to 10 calls on a day when 23 hours of data were recorded. 
 
-    Therefore, we define a valid hour as those that contain at least a certain number of valid bins. In turn, a valid bin are those that contain at least one row of data from any sensor logged within that period. We divide an hour into N bins of size ``BIN_SIZE`` (in minutes) and we mark an hour as valid if contains at least ``MIN_BINS_PER_HOUR`` of valid bins (out of the total possible number of bins that can be captured in an hour i.e. out of 60min/``BIN_SIZE`` bins). Days with valid sensed hours less than ``MIN_VALID_HOURS`` will be excluded form the output of this file. See PHONE_VALID_SENSED_DAYS_ in ``config.yaml``.
+    Therefore, we define a valid hour as those that contain a minimum number of valid bins. In turn, a valid bin are those that contain at least one row of data from any sensor logged within that period. We divide an hour into N bins of size ``BIN_SIZE`` (in minutes) and we mark an hour as valid if contains at least ``MIN_BINS_PER_HOUR`` (out of the total possible number of bins that can be captured in an hour based on their length i.e. 60min/``BIN_SIZE`` bins). Days with valid sensed hours less than ``MIN_VALID_HOURS`` will be excluded form the output of this file. See PHONE_VALID_SENSED_DAYS_ in ``config.yaml``.
 
-    In RAPIDS, we use ``phone_sensed_bins`` (a list of all valid and invalid bins of all monitored days) to improve the estimation of features that are ratios over time periods like ``episodepersensedminutes`` of :ref:`Screen<screen-sensor-doc>` or for resampling data like fused location coordinates.
+    Note that RAPIDS *DOES NOT* filter your feature files automatically, you need to do this manually based on ``"data/interim/{pid}/phone_valid_sensed_days.csv"``.
 
+    You can get access to every phone's sensed bins matrix (days x bins) in ``data/interim/{pid}/phone_sensed_bins.csv``. As mentioned above, RAPIDS uses this file to compute ``phone_valid_sensed_days.csv``, ``episodepersensedminutes`` feature of :ref:`Screen<screen-sensor-doc>` and to resample fused location data if you configure Barnett's location features to use ``RESAMPLE_FUSED``.
 
 .. _individual-sensor-settings:
 
 
 .. _sms-sensor-doc:
 
-SMS
+Messages (SMS)
 """""
 
-See `SMS Config Code`_
+See `Messages Config Code`_
 
 **Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
 **Available Platforms:** Android
-
-**Snakefile entry to compute these features:**
-
-      | ``expand("data/processed/{pid}/sms_{sms_type}_{day_segment}.csv".``
-      |                     ``pid=config["PIDS"],``
-      |                     ``sms_type = config["SMS"]["TYPES"],``
-      |                     ``day_segment = config["SMS"]["DAY_SEGMENTS"]),``
 
 **Rule Chain:**
 
@@ -134,13 +139,6 @@ See `Call Config Code`_
 
 **Available Platforms:** Android and iOS
 
-**Snakefile entry to compute these features:**
-
-      | ``expand("data/processed/{pid}/call_{call_type}_{segment}.csv",``
-      |                      ``pid=config["PIDS"],`` 
-      |                      ``call_type=config["CALLS"]["TYPES"],``
-      |                      ``segment = config["CALLS"]["DAY_SEGMENTS"]),``
-    
 **Rule Chain:**
 
 - Rule ``rules/preprocessing.snakefile/download_dataset``
@@ -217,12 +215,6 @@ See `Bluetooth Config Code`_
 
 **Available Platforms:** Android and iOS
 
-**Snakefile entry to compute these features:**
-    
-      | ``expand("data/processed/{pid}/bluetooth_{segment}.csv",``
-      |          ``pid=config["PIDS"],`` 
-      |          ``segment = config["BLUETOOTH"]["DAY_SEGMENTS"]),``
-    
 **Snakemake rule chain:**
 
 - Rule ``rules/preprocessing.snakefile/download_dataset``
@@ -254,6 +246,48 @@ countscansmostuniquedevice    scans         Number of scans of the most scanned 
 
 **Assumptions/Observations:** N/A 
 
+.. _wifi-sensor-doc:
+
+WiFi
+""""""""""
+
+See `WiFi Config Code`_
+
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
+
+**Available Platforms:** Android and iOS
+
+**Snakemake rule chain:**
+
+- Rule ``rules/preprocessing.snakefile/download_dataset``
+- Rule ``rules/preprocessing.snakefile/readable_datetime``
+- Rule ``rules/features.snakefile/wifi_features``
+    
+.. _wifi-parameters:
+
+**WiFi Rule Parameters (wifi_features):**
+
+============    ===================
+Name	        Description
+============    ===================
+day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
+features        Features to be computed, see table below
+============    ===================
+
+.. _wifi-available-features:
+
+**Available WiFi Features**
+
+===========================   =========     =============
+Name                          Units         Description
+===========================   =========     =============
+countscans                    devices       Number of scanned WiFi access points during a ``day_segment``, an access point can be detected multiple times over time and these appearances are counted separately
+uniquedevices                 devices       Number of unique access point during a ``day_segment`` as identified by their hardware address
+countscansmostuniquedevice    scans         Number of scans of the most scanned access point during a ``day_segment`` across the whole monitoring period
+===========================   =========     =============
+
+**Assumptions/Observations:** N/A 
+
 
 .. _accelerometer-sensor-doc:
 
@@ -265,12 +299,6 @@ See `Accelerometer Config Code`_
 **Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
 **Available Platforms:** Android and iOS
-
-**Snakefile entry to compute these features:**
-
-    | ``expand("data/processed/{pid}/accelerometer_{day_segment}.csv",``
-    |                      ``pid=config["PIDS"],`` 
-    |                      ``day_segment = config["ACCELEROMETER"]["DAY_SEGMENTS"]),``
 
 **Rule chain:**
 
@@ -324,12 +352,6 @@ See `Applications Foreground Config Code`_
 **Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
 **Available Platforms:** Android
-
-**Snakefile entry to compute these features:**
-
-    | ``expand("data/processed/{pid}/applications_foreground_{day_segment}.csv",``
-    |                      ``pid=config["PIDS"],`` 
-    |                      ``day_segment = config["APPLICATIONS_FOREGROUND"]["DAY_SEGMENTS"]),``
 
 **Snakemake rule chain:**
 
@@ -392,12 +414,6 @@ See `Battery Config Code`_
 
 **Available Platforms:** Android and iOS
 
-**Snakefile entry to compute these features:**
-
-    | ``expand("data/processed/{pid}/battery_{day_segment}.csv",``
-    |                      ``pid=config["PIDS"],`` 
-    |                      ``day_segment = config["BATTERY"]["DAY_SEGMENTS"]),``
-    
 **Snakemake rule chain:**
 
 - Rule ``rules/preprocessing.snakefile/download_dataset`` 
@@ -444,11 +460,6 @@ Activity Recognition
 
 **Available Platforms:** Android and iOS
 
-**Snakefile entry to compute these features:**
-
-    | ``expand("data/processed/{pid}/activity_recognition_{segment}.csv",pid=config["PIDS"],`` 
-    |                        ``segment = config["ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]),``
-    
 **Snakemake rule chain:**
 
 - Rule ``rules/preprocessing.snakefile/download_dataset`` 
@@ -502,12 +513,6 @@ See `Light Config Code`_
 
 **Available Platforms:** Android
 
-**Snakefile entry to compute these features:**
-
-    | ``expand("data/processed/{pid}/light_{day_segment}.csv",``
-    |                      ``pid=config["PIDS"],`` 
-    |                      ``day_segment = config["LIGHT"]["DAY_SEGMENTS"]),``
-    
 **Rule Chain:**
 
 - **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
@@ -557,12 +562,6 @@ See `Location (Barnett’s) Config Code`_
 
 **Available Platforms:** Android and iOS
 
-**Snakefile entry to compute these features:**
-
-    | ``expand("data/processed/{pid}/location_barnett_{segment}.csv",``
-    |                        ``pid=config["PIDS"],``
-    |                        ``segment = config["BARNETT_LOCATION"]["DAY_SEGMENTS"]),``
-    
 **Snakemake rule chain:**
 
 - Rule ``rules/preprocessing.snakefile/download_dataset``
@@ -643,12 +642,6 @@ See `Screen Config Code`_
 
 **Available Platforms:** Android and iOS
 
-**Snakefile entry to compute these features:**
-    
-      | ``expand("data/processed/{pid}/screen_{day_segment}.csv",``
-      |                      ``pid=config["PIDS"],`` 
-      |                      ``day_segment = config["SCREEN"]["DAY_SEGMENTS"]),``
-    
 **Snakemake rule chain:**
 
 - Rule ``rules/preprocessing.snakefile/download_dataset``
@@ -701,12 +694,6 @@ See `Conversation Config Code`_
 
 **Available Platforms:** Android and iOS
 
-**Snakefile entry to compute these features:**
-    
-     | ``expand("data/processed/{pid}/conversation_{day_segment}.csv",``
-     |                      ``pid = config["PIDS"],``
-     |                       ``day_segment = config["CONVERSATION"]["DAY_SEGMENTS"]),``
-    
 **Snakemake rule chain:**
 
 - Rule ``rules/preprocessing.snakefile/download_dataset``
@@ -721,9 +708,9 @@ See `Conversation Config Code`_
 Name	                     Description
 =========================    ===================
 day_segment                  The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-recordingMinutes             The current default configuration is 1 min recording/3 min pause.
-features_deltas              Features to be computed, see table below
-pausedMinutes                The current default configuration is 1 min recording/3 min pause.
+recordingMinutes             Minutes the plugin was recording audio (default 1 min)
+pausedMinutes                Minutes the plugin was NOT recording audio (default 3 min)
+features                     Features to be computed, see table below
 =========================    ===================
 
 .. _conversation-available-features:
@@ -733,30 +720,30 @@ pausedMinutes                The current default configuration is 1 min recordin
 =========================   =================   =============
 Name                        Units               Description
 =========================   =================   =============
-minutessilence              minutes             Total duration of all minutes silence.
-minutesnoise                minutes             Total duration of all minutes noise.
-minutesvoice                minutes             Total duration of all minutes voice.
-minutesunknown              minutes             Total duration of all minutes unknown.
-sumconversationduration     minutes             Total duration of all the conversation.
-maxconversationduration     minutes             Longest duration of all the conversation.
-minconversationduration     minutes             Shortest duration of all the conversation.
-avgconversationduration     minutes             Average duration of all the conversation.
-sdconversationduration      minutes             Standard Deviation duration of all the conversation.
-timefirstconversation       minutes             Starting time of first conversation of the Day/Epoch.
-timelastconversation        minutes             Starting time of last conversation of the Day/Epoch.
-sumenergy                   L2-norm             Total sum of all the energy.
-avgenergy                   L2-norm             Average of all the energy.
-sdenergy                    L2-norm             Standard Deviation of all the energy.
-minenergy                   L2-norm             Minimum of all the energy.
-maxenergy                   L2-norm             Maximum of all the energy.
-silencesensedfraction       minutes
-noisesensedfraction         minutes
-voicesensedfraction         minutes
-unknownsensedfraction       minutes
-silenceexpectedfraction     minutes
-noiseexpectedfraction       minutes
-voiceexpectedfraction       minutes
-unknownexpectedfraction     minutes
+minutessilence              minutes             Minutes labeled as silence
+minutesnoise                minutes             Minutes labeled as noise
+minutesvoice                minutes             Minutes labeled as voice
+minutesunknown              minutes             Minutes labeled as unknown
+sumconversationduration     minutes             Total duration of all conversations
+maxconversationduration     minutes             Longest duration of all conversations
+minconversationduration     minutes             Shortest duration of all conversations
+avgconversationduration     minutes             Average duration of all conversations
+sdconversationduration      minutes             Standard Deviation of the duration of all conversations
+timefirstconversation       minutes             Minutes since midnight when the first conversation for a day segment was detected
+timelastconversation        minutes             Minutes since midnight when the last conversation for a day segment was detected
+sumenergy                   L2-norm             Sum of all energy values
+avgenergy                   L2-norm             Average of all energy values
+sdenergy                    L2-norm             Standard Deviation of all energy values
+minenergy                   L2-norm             Minimum of all energy values
+maxenergy                   L2-norm             Maximum of all energy values
+silencesensedfraction                           Ratio between minutessilence and the sum of (minutessilence, minutesnoise, minutesvoice, minutesunknown)
+noisesensedfraction                             Ratio between minutesnoise and the sum of (minutessilence, minutesnoise, minutesvoice, minutesunknown)
+voicesensedfraction                             Ratio between minutesvoice and the sum of (minutessilence, minutesnoise, minutesvoice, minutesunknown)
+unknownsensedfraction                           Ratio between minutesunknown and the sum of (minutessilence, minutesnoise, minutesvoice, minutesunknown)
+silenceexpectedfraction                         Ration between minutessilence and the number of minutes that in theory should have been sensed based on the record and pause cycle of the plugin (1440 / recordingMinutes+pausedMinutes)
+noiseexpectedfraction                           Ration between minutesnoise and the number of minutes that in theory should have been sensed based on the record and pause cycle of the plugin (1440 / recordingMinutes+pausedMinutes)
+voiceexpectedfraction                           Ration between minutesvoice and the number of minutes that in theory should have been sensed based on the record and pause cycle of the plugin (1440 / recordingMinutes+pausedMinutes)
+unknownexpectedfraction                         Ration between minutesunknown and the number of minutes that in theory should have been sensed based on the record and pause cycle of the plugin (1440 / recordingMinutes+pausedMinutes)
 =========================   =================   =============
 
 **Assumptions/Observations:** 
@@ -774,13 +761,6 @@ See `Fitbit: Sleep Config Code`_
 **Available Epochs (day_segment) :** daily
 
 **Available Platforms:**: Fitbit
-
-**Snakefile entry to compute these features:**
-
-    | ``expand("data/processed/{pid}/fitbit_sleep_{day_segment}.csv",``
-    |                      ``pid = config["PIDS"],``
-    |                      ``day_segment = config["SLEEP"]["DAY_SEGMENTS"]),``
-
     
 **Snakemake rule chain:**
 
@@ -818,25 +798,25 @@ countepisode               episodes       Number of sleep episodes for ``sleep_t
 
 **Assumptions/Observations:** 
 
-The `fitbit_with_datetime` rule will extract Summary data (`fitbit_sleep_summary_with_datetime.csv`) Intraday data (`fitbit_sleep_intraday_with_datetime.csv`). There are two versions of Fitbit's sleep API(`version 1`_ and `version 1.2`_), and each provides raw sleep data with different formats. 
+Only features from summary data are available at the momement.
 
-The differences between both API versions are:
+The `fitbit_with_datetime` rule will extract Summary data (`fitbit_sleep_summary_with_datetime.csv`) and Intraday data (`fitbit_sleep_intraday_with_datetime.csv`). There are two versions of Fitbit's sleep API (`version 1`_ and `version 1.2`_), and each provides raw sleep data in a different format:
     
-    - Sleep level. In `v1`, it is an integer with three possible values {1, 2, 3} while in `v1.2` it is a string. We convert integer levels of `v1` to strings: "asleep", "restless" or "awake" respectively.
-    - Count summaries. For Summary data, `v1` contains "count_awake", "duration_awake", "count_awakenings", "count_restless", and "duration_restless" fields in the summary of each sleep record while `v1.2` does not.
-    - Types of sleep records. `v1.2` has two types of sleep records: "classic" and "stages". The "classic" type contains three sleep levels: "awake", "restless" and "asleep". The "stages" type contains four sleep levels {"wake", "deep", "light", "rem"}. Sleep records from `v1` will have the same sleep levels as `v1.2` classic types; therefore we set their type to "classic".
+    - Sleep level. In ``v1``, sleep level is an integer with three possible values (1, 2, 3) while in ``v1.2`` is a string. We convert integer levels to strings, "asleep", "restless" or "awake" respectively.
+    - Count summaries. For Summary data, ``v1`` contains "count_awake", "duration_awake", "count_awakenings", "count_restless", and "duration_restless" fields for every sleep record while ``v1.2`` does not.
+    - Types of sleep records. ``v1.2`` has two types of sleep records: "classic" and "stages". The "classic" type contains three sleep levels: "awake", "restless" and "asleep". The "stages" type contains four sleep levels: "wake", "deep", "light", and "rem". Sleep records from ``v1`` will have the same sleep levels as `v1.2` classic type; therefore we set their type to "classic".
     - Unified level of sleep. For intraday data, we unify sleep levels of each sleep record with a column named "unified_level". Based on `this Fitbit forum post`_ , we merge levels into two categories:
-        - For the "classic" type: unified_level is one of {0, 1} where 0 means awake and groups "awake" + "restless", while 1 means asleep and groups "asleep".
-        - For the "stages" type, unified_level is one of {0, 1} where 0 means awake and groups "wake" while 1 means asleep and groups "deep" + "light" + "rem".
-    - Short Data. In `v1.2`, records of type "stages" contain "shortData" in addition to "data". We merge "data" part and "shortData" part to extract intraday data. 
-        - The "data" grouping displays the sleep stages and any wake periods > 3 minutes (180 seconds).
-        - The "shortData" grouping displays the short wake periods representing physiological awakenings that are <= 3 minutes (180 seconds).
-    - The following columns of Summary data are not computed by RAPIDS but taken directly from columns with a similar name provided by the API: `efficiency`, `minutes_after_wakeup`, `minutes_asleep`, `minutes_awake`, `minutes_to_fall_asleep`, `minutes_in_bed`, `is_main_sleep` and `type`
-    - The following columns of Intraday data are not computed by RAPIDS but taken directly from columns with a similar name provided by the API: `original_level`, `is_main_sleep` and `type`. We compute `unified_level` as explained above.
+      - For the "classic" type unified_level is one of {0, 1} where 0 means awake and groups "awake" + "restless", while 1 means asleep and groups "asleep".
+      - For the "stages" type, unified_level is one of {0, 1} where 0 means awake and groups "wake" while 1 means asleep and groups "deep" + "light" + "rem".
+    - Short Data. In ``v1.2``, records of type "stages" contain "shortData" in addition to "data". We merge both to extract intraday data. 
+      - "data" contains sleep stages and any wake periods > 3 minutes (180 seconds).
+      - "shortData" contains short wake periods representing physiological awakenings that are <= 3 minutes (180 seconds).
+    - The following columns of Summary data are not computed by RAPIDS but taken directly from columns with a similar name provided by Fitbit's API: `efficiency`, `minutes_after_wakeup`, `minutes_asleep`, `minutes_awake`, `minutes_to_fall_asleep`, `minutes_in_bed`, `is_main_sleep` and `type`
+    - The following columns of Intraday data are not computed by RAPIDS but taken directly from columns with a similar name provided by Fitbit's API: `original_level`, `is_main_sleep` and `type`. We compute `unified_level` as explained above.
 
-Detailed sleep data is stored in Intraday data every 30 seconds (for "stages" type) or 60 seconds (for "classic" type) while a summary is stored in Summary data. For example:
+These are examples of intraday and summary data:
 
-- Intraday data
+- Intraday data (at 30-second intervals for "stages" type or 60-second intervals for "classic" type)
 
 =========    ==============    =============    =============    ======    ===================    ==========    ===========    =========    =================    ==========    ==========    ============    =================
 device_id    original_level    unified_level    is_main_sleep    type      local_date_time        local_date    local_month    local_day    local_day_of_week    local_time    local_hour    local_minute    local_day_segment
@@ -868,13 +848,6 @@ See `Fitbit: Heart Rate Config Code`_
 
 **Available Platforms:**: Fitbit
 
-**Snakefile entry to compute these features:**
-
-
-    | ``expand("data/processed/{pid}/fitbit_heartrate_{day_segment}.csv",``
-    |                      ``pid=config["PIDS"],`` 
-    |                      ``day_segment = config["HEARTRATE"]["DAY_SEGMENTS"]),``
-    
 **Snakemake rule chain:**
 
 - Rule ``rules/preprocessing.snakefile/download_dataset``
@@ -910,7 +883,7 @@ stdhr                beats/mins     The standard deviation of heart rate during 
 diffmaxmodehr        beats/mins     The difference between the maximum and mode heart rate during ``day_segment`` epoch.
 diffminmodehr        beats/mins     The difference between the mode and minimum heart rate during ``day_segment`` epoch.
 entropyhr            nats           Shannon’s entropy measurement based on heart rate during ``day_segment`` epoch.
-lengthZONE           minutes        Number of minutes the user's heartrate fell within each ``heartrate_zone`` during ``day_segment`` epoch.
+minutesonZONE        minutes        Number of minutes the user's heartrate fell within each ``heartrate_zone`` during ``day_segment`` epoch.
 ==================   ===========    =============
 
 **Assumptions/Observations:** 
@@ -930,12 +903,6 @@ See `Fitbit: Steps Config Code`_
 
 **Available Platforms:**: Fitbit
 
-**Snakefile entry to compute these features:**
-
-    | ``expand("data/processed/{pid}/fitbit_step_{day_segment}.csv",``
-    |                      ``pid=config["PIDS"],`` 
-    |                      ``day_segment = config["STEP"]["DAY_SEGMENTS"]),``
-    
 **Snakemake rule chain:**
 
 - Rule ``rules/preprocessing.snakefile/download_dataset``
@@ -985,7 +952,7 @@ Active and sedentary bouts. If the step count per minute is smaller than ``THRES
 
 .. -------------------------Links ------------------------------------ ..
 
-.. _SENSORS: https://github.com/carissalow/rapids/blob/f22d1834ee24ab3bcbf051bc3cc663903d822084/config.yaml#L2
+.. _TABLES_FOR_SENSED_BINS: https://github.com/carissalow/rapids/blob/f22d1834ee24ab3bcbf051bc3cc663903d822084/config.yaml#L2
 .. _`SMS Config Code`: https://github.com/carissalow/rapids/blob/f22d1834ee24ab3bcbf051bc3cc663903d822084/config.yaml#L38
 .. _AWARE: https://awareframework.com/what-is-aware/
 .. _`List of Timezones`: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones

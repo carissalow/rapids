@@ -2,55 +2,57 @@ def optional_ar_input(wildcards):
     with open("data/external/"+wildcards.pid, encoding="ISO-8859-1") as external_file:
         external_file_content = external_file.readlines()
     platform = external_file_content[1].strip()
-    if platform == "android":
-        return ["data/raw/{pid}/plugin_google_activity_recognition_with_datetime_unified.csv",
-                "data/processed/{pid}/plugin_google_activity_recognition_deltas.csv"]
+    if platform == "android": 
+        return ["data/raw/{pid}/" + config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "_with_datetime_unified.csv",
+                "data/processed/{pid}/" + config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "_deltas.csv"]
+    elif platform == "ios":
+        return ["data/raw/{pid}/"+config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]+"_with_datetime_unified.csv",
+                "data/processed/{pid}/"+config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]+"_deltas.csv"]
     else:
-        return ["data/raw/{pid}/plugin_ios_activity_recognition_with_datetime_unified.csv",
-                "data/processed/{pid}/plugin_ios_activity_recognition_deltas.csv"]
+        return []
 
 def optional_conversation_input(wildcards):
     with open("data/external/"+wildcards.pid, encoding="ISO-8859-1") as external_file:
         external_file_content = external_file.readlines()
     platform = external_file_content[1].strip()
     if platform == "android":
-        return ["data/raw/{pid}/plugin_studentlife_audio_android_with_datetime.csv"]
+        return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["ANDROID"] + "_with_datetime.csv"]
     else:
-        return ["data/raw/{pid}/plugin_studentlife_audio_with_datetime.csv"]
+        return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["ANDROID"] + "_with_datetime.csv"]
 
 def optional_location_input(wildcards):
     if config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
-        return rules.resample_fused_location.output
+        return expand("data/raw/{{pid}}/{sensor}_resampled.csv", sensor=config["BARNETT_LOCATION"]["DB_TABLE"])
     else:
-        return "data/raw/{pid}/locations_with_datetime.csv",
+        return expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BARNETT_LOCATION"]["DB_TABLE"])
 
-rule sms_features:
+rule messages_features:
     input: 
-        "data/raw/{pid}/messages_with_datetime.csv"
+        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["MESSAGES"]["DB_TABLE"])
     params:
-        sms_type = "{sms_type}",
+        messages_type = "{messages_type}",
         day_segment = "{day_segment}",
-        features = lambda wildcards: config["SMS"]["FEATURES"][wildcards.sms_type]
+        features = lambda wildcards: config["MESSAGES"]["FEATURES"][wildcards.messages_type]
     output:
-        "data/processed/{pid}/sms_{sms_type}_{day_segment}.csv"
+        "data/processed/{pid}/messages_{messages_type}_{day_segment}.csv"
     script:
-        "../src/features/sms_features.R"
+        "../src/features/messages_features.R"
 
 rule call_features:
     input: 
-        "data/raw/{pid}/calls_with_datetime_unified.csv"
+        expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["CALLS"]["DB_TABLE"])
     params:
         call_type = "{call_type}",
         day_segment = "{day_segment}",
         features = lambda wildcards: config["CALLS"]["FEATURES"][wildcards.call_type]
     output:
-        "data/processed/{pid}/call_{call_type}_{day_segment}.csv"
+        "data/processed/{pid}/calls_{call_type}_{day_segment}.csv"
     script:
         "../src/features/call_features.R"
 
 rule battery_deltas:
     input:
-        "data/raw/{pid}/battery_with_datetime_unified.csv"
+        expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["BATTERY"]["DB_TABLE"])
     output:
         "data/processed/{pid}/battery_deltas.csv"
     script:
@@ -58,7 +60,7 @@ rule battery_deltas:
 
 rule screen_deltas:
     input:
-        screen = "data/raw/{pid}/screen_with_datetime.csv",
+        screen = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["SCREEN"]["DB_TABLE"]),
         participant_info = "data/external/{pid}"
     output:
         "data/processed/{pid}/screen_deltas.csv"
@@ -67,17 +69,17 @@ rule screen_deltas:
 
 rule google_activity_recognition_deltas:
     input:
-        "data/raw/{pid}/plugin_google_activity_recognition_with_datetime_unified.csv"
+        expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"])
     output:
-        "data/processed/{pid}/plugin_google_activity_recognition_deltas.csv"
+        expand("data/processed/{{pid}}/{sensor}_deltas.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"])
     script:
         "../src/features/activity_recognition_deltas.R"
 
 rule ios_activity_recognition_deltas:
     input:
-        "data/raw/{pid}/plugin_ios_activity_recognition_with_datetime_unified.csv"
+        expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"])
     output:
-        "data/processed/{pid}/plugin_ios_activity_recognition_deltas.csv"
+        expand("data/processed/{{pid}}/{sensor}_deltas.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"])
     script:
         "../src/features/activity_recognition_deltas.R"
 
@@ -98,7 +100,7 @@ rule location_barnett_features:
 
 rule bluetooth_features:
     input: 
-        "data/raw/{pid}/bluetooth_with_datetime.csv"
+        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BLUETOOTH"]["DB_TABLE"])
     params:
         day_segment = "{day_segment}",
         features = config["BLUETOOTH"]["FEATURES"]
@@ -146,7 +148,7 @@ rule screen_features:
 
 rule light_features:
     input:
-        "data/raw/{pid}/light_with_datetime.csv",
+        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["LIGHT"]["DB_TABLE"]),
     params:
         day_segment = "{day_segment}",
         features = config["LIGHT"]["FEATURES"],
@@ -170,7 +172,7 @@ rule conversation_features:
 
 rule accelerometer_features:
     input:
-        "data/raw/{pid}/accelerometer_with_datetime.csv",
+        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["ACCELEROMETER"]["DB_TABLE"]),
     params:
         day_segment = "{day_segment}",
         magnitude = config["ACCELEROMETER"]["FEATURES"]["MAGNITUDE"],
@@ -184,7 +186,7 @@ rule accelerometer_features:
 
 rule applications_foreground_features:
     input:
-        "data/interim/{pid}/applications_foreground_with_datetime_with_genre.csv",
+        expand("data/interim/{{pid}}/{sensor}_with_datetime_with_genre.csv", sensor=config["APPLICATIONS_FOREGROUND"]["DB_TABLE"])
     params:
         day_segment = "{day_segment}",
         single_categories = config["APPLICATIONS_FOREGROUND"]["SINGLE_CATEGORIES"],
@@ -200,7 +202,7 @@ rule applications_foreground_features:
 
 rule wifi_features:
     input: 
-        "data/raw/{pid}/wifi_with_datetime.csv"
+        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"])
     params:
         day_segment = "{day_segment}",
         features = config["WIFI"]["FEATURES"]
@@ -224,7 +226,7 @@ rule fitbit_heartrate_features:
 
 rule fitbit_step_features:
     input:
-        step_data = "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv"
+        step_data = "data/raw/{pid}/fitbit_step_intraday_with_datetime.csv"
     params:
         day_segment = "{day_segment}",
         features_all_steps = config["STEP"]["FEATURES"]["ALL_STEPS"],

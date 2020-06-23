@@ -3,7 +3,7 @@
 Minimal Working Example 
 =======================
 
-The following is a quick guide for creating and running a simple pipeline to extract Call metrics for daily and night epochs of one participant monitored on the US East coast.
+This is a quick guide for creating and running a simple pipeline to extract call features for daily and night epochs of one participant monitored on the US East coast.
 
 #. Make sure your database connection credentials in ``.env`` are correct. See step 1 of :ref:`Usage Section <db-configuration>`.
 
@@ -11,33 +11,9 @@ The following is a quick guide for creating and running a simple pipeline to ext
 
 #. Make sure your Conda (python) environment is active. See step 6 of :ref:`install-page`.
 
-#. Replace the contents of the ``Snakefile`` with the following snippet
-    
-    ::
-
-        configfile: "config.yaml"
-        include: "rules/renv.snakefile"
-        include: "rules/preprocessing.snakefile"
-        include: "rules/features.snakefile"
-        include: "rules/reports.snakefile"
-
-        rule all:
-            input:
-                expand("data/processed/{pid}/call_{call_type}_{day_segment}.csv",
-                                pid=config["PIDS"], 
-                                call_type=config["CALLS"]["TYPES"],
-                                day_segment = config["CALLS"]["DAY_SEGMENTS"]),
-
-
 #. Modify the following settings in the ``config.yaml`` file with the values shown below (leave all other settings as they are)
 
     ::
-
-        SENSORS: [calls]
-
-        FITBIT_TABLE: []
-        FITBIT_SENSORS: []
-
         PIDS: [p01]
         
         DAY_SEGMENTS: &day_segments
@@ -47,7 +23,11 @@ The following is a quick guide for creating and running a simple pipeline to ext
             America/New_York
         
         DATABASE_GROUP: &database_group
-            MY_GROUP
+            MY_GROUP (change this if you added your DB credentials to .env with a different label)
+
+        CALLS:
+            COMPUTE: True
+            DB_TABLE: calls (only change DB_TABLE if your database calls table has a different name)
     
     For more information on the ``calls`` sensor see :ref:`call-sensor-doc`
 

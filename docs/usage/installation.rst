@@ -154,14 +154,9 @@ Once RAPIDS is installed, follow these steps to start processing mobile data.
             Participant01
             2020/02/01,2020/03/03
 
-#. Configure the sensors to process:
+#. Choose what features to extract:
 
-   - See :ref:`Minimal Working Example<minimal-working-example>`. The variable ``SENSORS`` in the ``config.yaml`` file_ should match existent sensor tables in your Aware database (See :ref:`rapids-structure` for more information). Each sensor in this list will be processed in RAPIDS.
-
-
-    .. note::
-
-        It is beneficial to list all collected sensors even if you don't plan to include them in a model later on in the pipeline. This is because we use all data available to estimate whether the phone was sensing data or not (i.e. to know if Aware crashed or the battery died). See :ref:`PHONE_VALID_SENSED_DAYS<phone-valid-sensed-days>` for more information.
+   - See :ref:`Minimal Working Example<minimal-working-example>`.
 
 #. Execute RAPIDS
 

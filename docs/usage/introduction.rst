@@ -13,6 +13,7 @@ Available features:
 - :ref:`applications-foreground-sensor-doc`
 - :ref:`battery-sensor-doc`
 - :ref:`bluetooth-sensor-doc`
+- :ref:`wifi-sensor-doc`
 - :ref:`call-sensor-doc`
 - :ref:`activity-recognition-sensor-doc`
 - :ref:`light-doc`
