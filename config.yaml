@@ -182,7 +182,7 @@ CONVERSATION:
     "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
     "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
     "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
-    "unknownexpectedfraction"]
+    "unknownexpectedfraction","countconversation"]
   RECORDINGMINUTES: 1
   PAUSEDMINUTES : 3
 
