@@ -919,6 +919,11 @@ Name	                   Description
 day_segment                The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
 features                   The features that can be computed. See :ref:`Available Fitbit: Steps Features <fitbit-steps-available-features>` Table below
 threshold_active_bout      Every minute with Fitbit step data wil be labelled as ``sedentary`` if its step count is below this threshold, otherwise, ``active``. 
+include_zero_step_rows     Whether or not to include day segments with a 0 step count
+exclude_sleep              Whether or not to exclude step rows that happen during sleep
+exclude_sleep_type         If ``exclude_sleep`` is True, then you can choose between ``FIXED`` or ``FITBIT_BASED``. ``FIXED`` will exclude all step rows that happen between a start and end time (see below). ``FITBIT_BASED`` will exclude step rows that happen during main sleep segments as measured by the Fitbit device (``config[SLEEP][DB_TABLE]`` should be a valid table in your database, it usually is the same table that contains your STEP data)
+exclude_sleep_fixed_start  Start time of the fixed sleep period to exclude. Only relevant if ``exclude_sleep`` is True and ``exclude_sleep_type`` is ``FIXED``
+exclude_sleep_fixed_end    Start time of the fixed sleep period to exclude. Only relevant if ``exclude_sleep`` is True and ``exclude_sleep_type`` is ``FIXED``
 =======================    ===================
 
 .. _fitbit-steps-available-features:

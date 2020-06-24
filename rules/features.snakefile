@@ -26,6 +26,12 @@ def optional_location_input(wildcards):
     else:
         return expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BARNETT_LOCATION"]["DB_TABLE"])
 
+def optional_steps_sleep_input(wildcards):
+    if config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"] == True and config["STEP"]["EXCLUDE_SLEEP"]["TYPE"] == "FITBIT_BASED":
+        return  "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv"
+    else:
+        return []
+
 rule messages_features:
     input: 
         expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["MESSAGES"]["DB_TABLE"])
@@ -226,14 +232,19 @@ rule fitbit_heartrate_features:
 
 rule fitbit_step_features:
     input:
-        step_data = "data/raw/{pid}/fitbit_step_intraday_with_datetime.csv"
+        step_data = "data/raw/{pid}/fitbit_step_intraday_with_datetime.csv",
+        sleep_data = optional_steps_sleep_input
     params:
         day_segment = "{day_segment}",
         features_all_steps = config["STEP"]["FEATURES"]["ALL_STEPS"],
         features_sedentary_bout = config["STEP"]["FEATURES"]["SEDENTARY_BOUT"],
         features_active_bout = config["STEP"]["FEATURES"]["ACTIVE_BOUT"],
         threshold_active_bout = config["STEP"]["THRESHOLD_ACTIVE_BOUT"],
-        include_zero_step_rows = config["STEP"]["INCLUDE_ZERO_STEP_ROWS"]
+        include_zero_step_rows = config["STEP"]["INCLUDE_ZERO_STEP_ROWS"],
+        exclude_sleep = config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"],
+        exclude_sleep_type = config["STEP"]["EXCLUDE_SLEEP"]["TYPE"],
+        exclude_sleep_fixed_start = config["STEP"]["EXCLUDE_SLEEP"]["FIXED"]["START"],
+        exclude_sleep_fixed_end = config["STEP"]["EXCLUDE_SLEEP"]["FIXED"]["END"],
     output:
         "data/processed/{pid}/fitbit_step_{day_segment}.csv"
     script:
