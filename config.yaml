@@ -183,6 +183,7 @@ CONVERSATION:
 
 ### Analysis ################################################################
 PARAMS_FOR_ANALYSIS:
+  COMPUTE: False
   GROUNDTRUTH_TABLE: participant_info
   SOURCES: &sources ["phone_features", "fitbit_features", "phone_fitbit_features"]
   DAY_SEGMENTS: *day_segments
@@ -206,9 +207,9 @@ PARAMS_FOR_ANALYSIS:
     DAYS_AFTER_DISCHARGE: 7
 
   # Cleaning Parameters
-  COLS_NAN_THRESHOLD: 0.5
+  COLS_NAN_THRESHOLD: [0.1, 0.3, 0.5]
   COLS_VAR_THRESHOLD: True
-  ROWS_NAN_THRESHOLD: 0.5
+  ROWS_NAN_THRESHOLD: [0.1, 0.3, 0.5]
   PARTICIPANT_DAYS_BEFORE_THRESHOLD: 7
   PARTICIPANT_DAYS_AFTER_THRESHOLD: 4
 
