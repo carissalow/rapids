@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from fitbit_step.fitbit_step_base import base_fitbit_step_features
 
-step_data = pd.read_csv(snakemake.input["step_data"], parse_dates=["local_date_time"])
+step_data = pd.read_csv(snakemake.input["step_data"], parse_dates=["local_date_time", "local_date"])
 day_segment = snakemake.params["day_segment"]
 threshold_active_bout = snakemake.params["threshold_active_bout"]
 include_zero_step_rows = snakemake.params["include_zero_step_rows"]
