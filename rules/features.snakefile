@@ -18,7 +18,7 @@ def optional_conversation_input(wildcards):
     if platform == "android":
         return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["ANDROID"] + "_with_datetime.csv"]
     else:
-        return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["ANDROID"] + "_with_datetime.csv"]
+        return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["IOS"] + "_with_datetime.csv"]
 
 def optional_location_input(wildcards):
     if config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
