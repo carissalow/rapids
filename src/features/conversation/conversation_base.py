@@ -6,7 +6,7 @@ def base_conversation_features(conversation_data, day_segment, requested_feature
     "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
     "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
     "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
-    "unknownexpectedfraction"]
+    "unknownexpectedfraction","countconversation"]
 
     # the subset of requested features this function can compute
     features_to_compute = list(set(requested_features) & set(base_features_names))
@@ -23,46 +23,51 @@ def base_conversation_features(conversation_data, day_segment, requested_feature
         else:
             conversation_features = pd.DataFrame()
 
+            conversation_data = conversation_data.drop_duplicates(subset = 'local_time', keep= first)
+
             if "minutessilence" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_minutessilence"] = conversation_data[conversation_data["inference"]==0].groupby(["local_date"])["inference"].count()
+                conversation_features["conversation_" + day_segment + "_minutessilence"] = conversation_data[conversation_data['inference']==0].groupby(["local_date"])['inference'].count()/60
             
             if "minutesnoise" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_minutesnoise"] = conversation_data[conversation_data["inference"]==1].groupby(["local_date"])["inference"].count()
+                conversation_features["conversation_" + day_segment + "_minutesnoise"] = conversation_data[conversation_data['inference']==1].groupby(["local_date"])['inference'].count()/60
 
             if "minutesvoice" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_minutesvoice"] = conversation_data[conversation_data["inference"]==2].groupby(["local_date"])["inference"].count()
+                conversation_features["conversation_" + day_segment + "_minutesvoice"] = conversation_data[conversation_data['inference']==2].groupby(["local_date"])['inference'].count()/60
 
             if "minutesunknown" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_minutesunknown"] = conversation_data[conversation_data["inference"]==3].groupby(["local_date"])["inference"].count()
+                conversation_features["conversation_" + day_segment + "_minutesunknown"] = conversation_data[conversation_data['inference']==3].groupby(["local_date"])['inference'].count()/60
 
-            conv_duration = conversation_data["double_convo_end"] - conversation_data["double_convo_start"]
+            if "countconversation" in features_to_compute:
+                conversation_features["conversation_" + day_segment + "_countconversation"] = conversation_data[conversation_data["double_convo_start"] > 0].groupby(["local_date"])['double_convo_start'].nunique()
+
+            conv_duration = (conversation_data['double_convo_end'] - conversation_data['double_convo_start'])/60
             conversation_data = conversation_data.assign(conv_duration = conv_duration.values)
-
-            conversation_data["total_duration"] = conversation_data[conversation_data["inference"]==0].groupby(["local_date"])["inference"].count() + conversation_data[conversation_data["inference"]==1].groupby(["local_date"])["inference"].count() + conversation_data[conversation_data["inference"]==2].groupby(["local_date"])["inference"].count() + conversation_data[conversation_data["inference"]==3].groupby(["local_date"])["inference"].count()
+            
+            conversation_data['totalDuration'] = conversation_data[(conversation_data['inference'] >= 0) & (conversation_data['inference'] < 4)].groupby(["local_date"])['inference'].count()/60 
             
             if "silencesensedfraction" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_silencesensedfraction"] = conversation_data[conversation_data["inference"]==0].groupby(["local_date"])["inference"].count()/ conversation_data["total_duration"]
+                conversation_features["conversation_" + day_segment + "_silencesensedfraction"] = (conversation_data[conversation_data['inference']==0].groupby(["local_date"])['inference'].count()/60)/ conversation_data['totalDuration']
 
             if "noisesensedfraction" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_noisesensedfraction"] = conversation_data[conversation_data["inference"]==1].groupby(["local_date"])["inference"].count()/ conversation_data["total_duration"]
+                conversation_features["conversation_" + day_segment + "_noisesensedfraction"] = (conversation_data[conversation_data['inference']==1].groupby(["local_date"])['inference'].count()/60)/ conversation_data['totalDuration']
 
             if "voicesensedfraction" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_voicesensedfraction"] = conversation_data[conversation_data["inference"]==2].groupby(["local_date"])["inference"].count()/ conversation_data["total_duration"]
+                conversation_features["conversation_" + day_segment + "_voicesensedfraction"] = (conversation_data[conversation_data['inference']==2].groupby(["local_date"])['inference'].count()/60)/ conversation_data['totalDuration']
 
             if "unknownsensedfraction" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_unknownsensedfraction"] = conversation_data[conversation_data["inference"]==3].groupby(["local_date"])["inference"].count()/ conversation_data["total_duration"]    
+                conversation_features["conversation_" + day_segment + "_unknownsensedfraction"] = (conversation_data[conversation_data['inference']==3].groupby(["local_date"])['inference'].count()/60)/ conversation_data['totalDuration']    
 
             if "silenceexpectedfraction" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_silenceexpectedfraction"] = conversation_data[conversation_data["inference"]==0].groupby(["local_date"])["inference"].count()/ expectedMinutes
+                conversation_features["conversation_" + day_segment + "_silenceexpectedfraction"] = (conversation_data[conversation_data['inference']==0].groupby(["local_date"])['inference'].count()/60)/ expectedMinutes
 
             if "noiseexpectedfraction" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_noiseexpectedfraction"] = conversation_data[conversation_data["inference"]==1].groupby(["local_date"])["inference"].count()/ expectedMinutes
+                conversation_features["conversation_" + day_segment + "_noiseexpectedfraction"] = (conversation_data[conversation_data['inference']==1].groupby(["local_date"])['inference'].count()/60)/ expectedMinutes
 
             if "voiceexpectedfraction" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_voiceexpectedfraction"] = conversation_data[conversation_data["inference"]==2].groupby(["local_date"])["inference"].count()/ expectedMinutes
+                conversation_features["conversation_" + day_segment + "_voiceexpectedfraction"] = (conversation_data[conversation_data['inference']==2].groupby(["local_date"])['inference'].count()/60)/ expectedMinutes
 
             if "unknownexpectedfraction" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_unknownexpectedfraction"] = conversation_data[conversation_data["inference"]==3].groupby(["local_date"])["inference"].count()/ expectedMinutes
+                conversation_features["conversation_" + day_segment + "_unknownexpectedfraction"] = (conversation_data[conversation_data['inference']==3].groupby(["local_date"])['inference'].count()/60)/ expectedMinutes
                 
             if "sumconversationduration" in features_to_compute:
                 conversation_features["conversation_" + day_segment + "_sumconversationduration"] = conversation_data.groupby(["local_date"])["conv_duration"].sum()
