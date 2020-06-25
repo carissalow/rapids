@@ -16,25 +16,25 @@ def dailyFeaturesFromSummaryData(sleep_daily_features, sleep_summary_data, summa
     features_sum = sleep_summary_data[["minutes_after_wakeup", "minutes_asleep", "minutes_awake", "minutes_to_fall_asleep", "minutes_in_bed", "local_end_date"]].groupby(["local_end_date"]).sum()
     features_sum.index.rename("local_date", inplace=True)
     if "sumdurationafterwakeup" in summary_features:
-        sleep_daily_features["sleep_daily_sumdurationafterwakeup" + sleep_type] = features_sum["minutes_after_wakeup"]
+        sleep_daily_features = sleep_daily_features.join(features_sum[["minutes_after_wakeup"]], how="outer").rename(columns={"minutes_after_wakeup": "sleep_daily_sumdurationafterwakeup" + sleep_type})
     if "sumdurationasleep" in summary_features:
-        sleep_daily_features["sleep_daily_sumdurationasleep" + sleep_type] = features_sum["minutes_asleep"]
+        sleep_daily_features = sleep_daily_features.join(features_sum[["minutes_asleep"]], how="outer").rename(columns={"minutes_asleep": "sleep_daily_sumdurationasleep" + sleep_type})
     if "sumdurationawake" in summary_features:
-        sleep_daily_features["sleep_daily_sumdurationawake" + sleep_type] = features_sum["minutes_awake"]
+        sleep_daily_features = sleep_daily_features.join(features_sum[["minutes_awake"]], how="outer").rename(columns={"minutes_awake": "sleep_daily_sumdurationawake" + sleep_type})
     if "sumdurationtofallasleep" in summary_features:
-        sleep_daily_features["sleep_daily_sumdurationtofallasleep" + sleep_type] = features_sum["minutes_to_fall_asleep"]
+        sleep_daily_features = sleep_daily_features.join(features_sum[["minutes_to_fall_asleep"]], how="outer").rename(columns={"minutes_to_fall_asleep": "sleep_daily_sumdurationtofallasleep" + sleep_type})
     if "sumdurationinbed" in summary_features:
-        sleep_daily_features["sleep_daily_sumdurationinbed" + sleep_type] = features_sum["minutes_in_bed"]
+        sleep_daily_features = sleep_daily_features.join(features_sum[["minutes_in_bed"]], how="outer").rename(columns={"minutes_in_bed": "sleep_daily_sumdurationinbed" + sleep_type})
 
     features_avg = sleep_summary_data[["efficiency", "local_end_date"]].groupby(["local_end_date"]).mean()
     features_avg.index.rename("local_date", inplace=True)
     if "avgefficiency" in summary_features:
-        sleep_daily_features["sleep_daily_avgefficiency" + sleep_type] = features_avg["efficiency"]
+        sleep_daily_features = sleep_daily_features.join(features_avg[["efficiency"]], how="outer").rename(columns={"efficiency": "sleep_daily_avgefficiency" + sleep_type})
     
     features_count = sleep_summary_data[["local_start_date_time", "local_end_date"]].groupby(["local_end_date"]).count()
     features_count.index.rename("local_date", inplace=True)
     if "countepisode" in summary_features:
-        sleep_daily_features["sleep_daily_countepisode" + sleep_type] = features_count["local_start_date_time"]
+        sleep_daily_features = sleep_daily_features.join(features_count[["local_start_date_time"]], how="outer").rename(columns={"local_start_date_time": "sleep_daily_countepisode" + sleep_type})
 
     return sleep_daily_features
 
@@ -57,7 +57,7 @@ def base_fitbit_sleep_features(sleep_summary_data, day_segment, requested_summar
             sleep_summary_features = pd.DataFrame(columns=["local_date"] + ["sleep_daily_" + x for x in features_fullnames_to_compute])
         else:
 
-            sleep_summary_features = pd.DataFrame(columns=["sleep_daily_" + x for x in features_fullnames_to_compute])
+            sleep_summary_features = pd.DataFrame()
 
             for sleep_type in sleep_type_to_compute:
                 sleep_summary_features = dailyFeaturesFromSummaryData(sleep_summary_features, sleep_summary_data, summary_features_to_compute, sleep_type)
