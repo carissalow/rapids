@@ -6,13 +6,15 @@ The following is a simple guide to testing RAPIDS. All files necessary for testi
 ::
 
     ├── tests
-    │   ├── data                        <- Replication of the project root data directory for testing.
-    │   │   ├── external                <- Contains Data from third party sources used for testing.
+    │   ├── data                        <- Replica of the project root data directory for testing.
+    │   │   ├── external                <- Contains the fake testing participant files. 
     │   │   ├── interim                 <- The expected intermediate data that has been transformed.
-    │   │   ├── processed               <- The expected final, canonical data sets for modeling.
-    │   │   └── raw                     <- The specially created raw input datasets that will be used for testing.
+    │   │   ├── processed               <- The expected final data, canonical data sets for modeling used to test/validate feature calculations.
+    │   │   └── raw                     <- The specially created raw input datasets (fake data) that will be used for testing.
     │   │   
     │   ├── scripts                     <- Scripts for testing. Add test scripts in this directory.
+    │   │   ├── run_tests.sh            <- The shell script to runs RAPIDS pipeline test data and test the results
+    │   │   ├── test_sensor_features.py <- The default test script for testing RAPIDS builting sensor features. 
     │   │   └── utils.py                <- Contains any helper functions and methods.
     │   │
     │   ├── settings                    <- The directory contains the config and settings files for testing snakemake.
@@ -22,31 +24,28 @@ The following is a simple guide to testing RAPIDS. All files necessary for testi
     │   └── Snakefile                   <- The Snakefile for testing only. It contains the rules that you would be testing.
     │
 
-To begin testing  RAPIDS place the input data ``csv`` files in ``tests/data/raw`` and ``data/raw``. The expected output files of RAPIDS after processing the input data should be placed in ``tests/data/processesd``. 
 
-The Snakemake rule(s) that are to be tested must be placed in the ``tests/Snakemake`` file. The current ``tests/Snakemake`` is a good example of how to define them. 
+Steps for Testing
+""""""""""""""""""
 
-After storing your test scripts in ``tests/scripts``, you can run all rules in the ``tests/Snakemake`` with:
+#. To begin testing  RAPIDS place the fake raw input data ``csv`` files in ``tests/data/raw/``. The fake participant files should be placed in ``tests/data/external/``. The expected output files of RAPIDS after processing the input data should be placed in ``tests/data/processesd/``. 
 
-::
+#. The Snakemake rule(s) that are to be tested must be placed in the ``tests/Snakemake`` file. The current ``tests/Snakemake`` is a good example of how to define them. (At the time of writing this documentation the snakefile contains rules messages (SMS), calls and screen)
 
-    snakemake --profile tests/settings
+#. Edit the ``tests/settings/config.yaml``. Add and/or remove the rules to be run for testing from the ``forcerun`` list.
 
-Or run a single rule with
+#. Edit the ``tests/settings/testing_config.yaml`` with the necessary configuration settings for running the rules to be tested. 
 
-:: 
+#. Add any additional testscripts in ``tests/scripts``.
 
-    snakemake --profile tests/settings -R sms_features
+#. Uncomment or comment off lines in the testing shell script ``tests/scripts/run_tests.sh``.
 
-The above example runs the ``sms_features`` rule that is defined in the ``tests/Snakemake`` file. Replace this with the name of the rule you want to test. The ``--profile`` flag is used to run Snakemake with the ``Snakfile`` and ``testing_config.yaml`` file stored in ``tests/settings``. 
-
-Once RAPIDS has processed the sample data, the next step is to test the output. Testing is implemented using Python's Unittest. To run all the tests scripts stored in the ``tests/scripts`` directory use the following command:
+#. Run the testing shell script.
 
 ::
 
-    python -m unittest discover tests/scripts/ -v
+    $ tests/scripts/run_tests.sh
 
-The ``discover`` flag finds and runs all the test scripts within the ``tests/scripts`` directory that start with ``test_``. The name of all test methods in these scripts should also start with ``test_``.
 
 The following is a snippet of the output you should see after running your test. 
 
@@ -60,5 +59,9 @@ The following is a snippet of the output you should see after running your test.
     ----------------------------------------------------------------------
 
 The results above show that the first test ``test_sensors_files_exist`` passed while ``test_sensors_features_calculations`` failed. In addition you should get the traceback of the failure (not shown here). For more information on how to implement test scripts and use unittest please see `Unittest Documentation`_
+
+Testing of the RAPIDS sensors and features is a work-in-progess. Please see :ref:`test-cases` for a list of sensors and features that have testing currently available. 
+
+Currently the repository is set up to test a number of senssors out of the box by simply running the ``tests/scripts/run_tests.sh`` command once the RAPIDS python environment is active. 
 
 .. _`Unittest Documentation`: https://docs.python.org/3.7/library/unittest.html#command-line-interface

@@ -3,12 +3,14 @@
 RAPIDS Features
 ===============
 
-*How do I compute any of these features?* In your ``config.yaml``, go to the sensor section you are interested in and set the corresponding ``COMPUTE`` option to ``TRUE`` as well as ``DB_TABLE`` to the senor's table name in your database (the default table name is the one assigned by Aware), for example:
+*How do I compute any of these features?* In your ``config.yaml``, go to the sensor section you are interested in and set the corresponding ``COMPUTE`` option to ``TRUE`` as well as ``DB_TABLE`` to the senor's table name in your database (the default table name is the one assigned by Aware), for example
+::
 
-      | ``MESSAGES:``
-      |     ``COMPUTE: True``
-      |      ``DB_TABLE: messages``
-      |      ``...``
+    MESSAGES:
+        COMPUTE: True
+        DB_TABLE: messages
+        ...
+ 
  
  If you want to extract phone_valid_sensed_days.csv, screen features or locaton features based on fused location data don't forget to configure ``TABLES_FOR_SENSED_BINS`` (see below).
 
@@ -20,14 +22,6 @@ Global Parameters
 .. _sensor-list:
 
 - ``TABLES_FOR_SENSED_BINS`` - Add as many sensor tables as you have in your database. All sensors included are used to compute ``phone_sensed_bins.csv`` (bins of time when the smartphone was sensing data). In turn, these bins are used to compute ``PHONE_VALID_SENSED_DAYS`` (see below), ``episodepersensedminutes`` feature of :ref:`Screen<screen-sensor-doc>` and to resample fused location data if you configure Barnett's location features to use ``RESAMPLE_FUSED``. See TABLES_FOR_SENSED_BINS_ variable in ``config`` file (therefore, when you are extracting screen or Barnett's location features, screen and locations tables are mandatory).  
-
-.. _fitbit-table:
-
-- ``FITBIT_TABLE`` - The table in your database that contains your Fitbit data in a field named `fitbit_data` in JSON format. 
-
-.. _fitbit-sensors:
-
-- ``FITBIT_SENSORS`` - The list of sensors to be parsed from the fitbit table: ``heartrate``, ``steps``, ``sleep``.
 
 .. _pid: 
 
@@ -75,10 +69,10 @@ Global Parameters
 .. _individual-sensor-settings:
 
 
-.. _sms-sensor-doc:
+.. _messages-sensor-doc:
 
 Messages (SMS)
-"""""
+"""""""""""""""
 
 See `Messages Config Code`_
 
@@ -90,39 +84,40 @@ See `Messages Config Code`_
 
 - Rule ``rules/preprocessing.snakefile/download_dataset``
 - Rule ``rules/preprocessing.snakefile/readable_datetime``
-- Rule ``rules/features.snakefile/sms_features``
+- Rule ``rules/features.snakefile/messages_features``
 
-.. _sms-parameters:
+.. _messages-parameters:
 
-**SMS Rule Parameters (sms_features):**
+**Messages Rule Parameters (messages_features):**
 
-============    ===================
-Name	        Description
-============    ===================
-sms_type        The particular ``sms_type`` that will be analyzed. The options for this parameter are ``received`` or ``sent``.
-day_segment     The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features        Features to be computed, see table below
-============    ===================
+==============    ===================
+Name	          Description
+==============    ===================
+messages_type     The particular ``messages_type`` that will be analyzed. The options for this parameter are ``received`` or ``sent``.
+day_segment       The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
+features          Features to be computed, see table below
+==============    ===================
 
-.. _sms-available-features:
+.. _messages-available-features:
 
-**Available SMS Featues**
+**Available Message Features**
 
 =========================   =========     =============
 Name                        Units         Description
 =========================   =========     =============
-count                       SMS           Number of SMS of type ``sms_type`` that occurred during a particular ``day_segment``.
-distinctcontacts            contacts      Number of distinct contacts that are associated with a particular ``sms_type`` during a particular ``day_segment``.
-timefirstsms                minutes       Number of minutes between 12:00am (midnight) and the first ``SMS`` of a particular ``sms_type``.
-timelastsms                 minutes       Number of minutes between 12:00am (midnight) and the last ``SMS`` of a particular ``sms_type``.
-countmostfrequentcontact    SMS           Number of ``SMS`` messages from the contact with the most messages of ``sms_type`` during a ``day_segment`` throughout the whole dataset of each participant.
+count                       messages      Number of messages of type ``messages_type`` that occurred during a particular ``day_segment``.
+distinctcontacts            contacts      Number of distinct contacts that are associated with a particular ``messages_type`` during a particular ``day_segment``.
+timefirstsms                minutes       Number of minutes between 12:00am (midnight) and the first ``message`` of a particular ``messages_type``.
+timelastsms                 minutes       Number of minutes between 12:00am (midnight) and the last ``message`` of a particular ``messages_type``.
+countmostfrequentcontact    messages      Number of messages from the contact with the most messages of ``messages_type`` during a ``day_segment`` throughout the whole dataset of each participant.
 =========================   =========     =============
 
 **Assumptions/Observations:** 
 
 ``TYPES`` and ``FEATURES`` keys in ``config.yaml`` need to match. For example, below the ``TYPE`` ``sent`` matches the ``FEATURES`` key ``sent``::
 
-        SMS:
+        MESSAGES:
+            ...
             TYPES: [sent]
             FEATURES: 
                 sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
@@ -197,6 +192,7 @@ countmostfrequentcontact    calls         The number of ``missed`` calls during 
 ``TYPES`` and ``FEATURES`` keys in ``config.yaml`` need to match. For example, below the ``TYPE`` ``missed`` matches the ``FEATURES`` key ``missed``::
 
     CALLS:
+        ...
         TYPES: [missed]
         FEATURES: 
             missed: [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
@@ -245,6 +241,7 @@ countscansmostuniquedevice    scans         Number of scans of the most scanned 
 ===========================   =========     =============
 
 **Assumptions/Observations:** N/A 
+
 
 .. _wifi-sensor-doc:
 
@@ -453,8 +450,11 @@ For Aware iOS client V1 we swap battery status 3 to 5 and 1 to 3, client V2 does
 
 .. _activity-recognition-sensor-doc:
 
+
 Activity Recognition
 """"""""""""""""""""""""""""
+
+See `Activity Recognition Config Code`_
 
 **Available Epochs:** daily, morning, afternoon, evening, night
 
@@ -515,9 +515,9 @@ See `Light Config Code`_
 
 **Rule Chain:**
 
-- **Rule:** ``rules/preprocessing.snakefile/download_dataset`` - See the download_dataset_ rule.
-- **Rule:** ``rules/preprocessing.snakefile/readable_datetime`` - See the readable_datetime_ rule.
-- **Rule:** ``rules/features.snakefile/light_features`` - See the light_features_ rule.
+- Rule: ``rules/preprocessing.snakefile/download_dataset``
+- Rule: ``rules/preprocessing.snakefile/readable_datetime``
+- Rule: ``rules/features.snakefile/light_features``
 
 .. _light-parameters:
 
@@ -686,7 +686,7 @@ An ``unlock`` episode is considered as the time between an ``unlock`` event and 
 .. _conversation-sensor-doc:
 
 Conversation
-""""""""
+""""""""""""""
 
 See `Conversation Config Code`_
 
@@ -802,21 +802,21 @@ Only features from summary data are available at the momement.
 
 The `fitbit_with_datetime` rule will extract Summary data (`fitbit_sleep_summary_with_datetime.csv`) and Intraday data (`fitbit_sleep_intraday_with_datetime.csv`). There are two versions of Fitbit's sleep API (`version 1`_ and `version 1.2`_), and each provides raw sleep data in a different format:
     
-    - Sleep level. In ``v1``, sleep level is an integer with three possible values (1, 2, 3) while in ``v1.2`` is a string. We convert integer levels to strings, "asleep", "restless" or "awake" respectively.
-    - Count summaries. For Summary data, ``v1`` contains "count_awake", "duration_awake", "count_awakenings", "count_restless", and "duration_restless" fields for every sleep record while ``v1.2`` does not.
-    - Types of sleep records. ``v1.2`` has two types of sleep records: "classic" and "stages". The "classic" type contains three sleep levels: "awake", "restless" and "asleep". The "stages" type contains four sleep levels: "wake", "deep", "light", and "rem". Sleep records from ``v1`` will have the same sleep levels as `v1.2` classic type; therefore we set their type to "classic".
-    - Unified level of sleep. For intraday data, we unify sleep levels of each sleep record with a column named "unified_level". Based on `this Fitbit forum post`_ , we merge levels into two categories:
-      - For the "classic" type unified_level is one of {0, 1} where 0 means awake and groups "awake" + "restless", while 1 means asleep and groups "asleep".
-      - For the "stages" type, unified_level is one of {0, 1} where 0 means awake and groups "wake" while 1 means asleep and groups "deep" + "light" + "rem".
-    - Short Data. In ``v1.2``, records of type "stages" contain "shortData" in addition to "data". We merge both to extract intraday data. 
-      - "data" contains sleep stages and any wake periods > 3 minutes (180 seconds).
-      - "shortData" contains short wake periods representing physiological awakenings that are <= 3 minutes (180 seconds).
-    - The following columns of Summary data are not computed by RAPIDS but taken directly from columns with a similar name provided by Fitbit's API: `efficiency`, `minutes_after_wakeup`, `minutes_asleep`, `minutes_awake`, `minutes_to_fall_asleep`, `minutes_in_bed`, `is_main_sleep` and `type`
-    - The following columns of Intraday data are not computed by RAPIDS but taken directly from columns with a similar name provided by Fitbit's API: `original_level`, `is_main_sleep` and `type`. We compute `unified_level` as explained above.
+    - Sleep level. In ``v1``, sleep level is an integer with three possible values (1, 2, 3) while in ``v1.2`` is a string. We convert integer levels to strings, ``asleep``,``restless`` or ``awake`` respectively.
+    - Count summaries. For Summary data, ``v1`` contains ``count_awake``, ``duration_awake``, ``count_awakenings``, ``count_restless``, and ``duration_restless`` fields for every sleep record while ``v1.2`` does not.
+    - Types of sleep records. ``v1.2`` has two types of sleep records: ``classic`` and ``stages``. The ``classic`` type contains three sleep levels: ``awake``, ``restless`` and ``asleep``. The ``stages`` type contains four sleep levels: ``wake``, ``deep``, ``light``, and ``rem``. Sleep records from ``v1`` will have the same sleep levels as `v1.2` classic type; therefore we set their type to ``classic``.
+    - Unified level of sleep. For intraday data, we unify sleep levels of each sleep record with a column named ``unified_level``. Based on `this Fitbit forum post`_ , we merge levels into two categories:
+      - For the ``classic`` type unified_level is one of {0, 1} where 0 means awake and groups ``awake`` + ``restless``, while 1 means asleep and groups ``asleep``.
+      - For the ``stages`` type, unified_level is one of {0, 1} where 0 means awake and groups ``wake`` while 1 means asleep and groups ``deep`` + ``light`` + ``rem``.
+    - Short Data. In ``v1.2``, records of type ``stages`` contain ``shortData`` in addition to ``data``. We merge both to extract intraday data. 
+      - ``data`` contains sleep stages and any wake periods > 3 minutes (180 seconds).
+      - ``shortData`` contains short wake periods representing physiological awakenings that are <= 3 minutes (180 seconds).
+    - The following columns of Summary data are not computed by RAPIDS but taken directly from columns with a similar name provided by Fitbit's API: ``efficiency``, ``minutes_after_wakeup``, ``minutes_asleep``, ``minutes_awake``, ``minutes_to_fall_asleep``, ``minutes_in_bed``, ``is_main_sleep`` and ``type``
+    - The following columns of Intraday data are not computed by RAPIDS but taken directly from columns with a similar name provided by Fitbit's API: ``original_level``, ``is_main_sleep`` and ``type``. We compute ``unified_level`` as explained above.
 
 These are examples of intraday and summary data:
 
-- Intraday data (at 30-second intervals for "stages" type or 60-second intervals for "classic" type)
+- Intraday data (at 30-second intervals for ``stages`` type or 60-second intervals for ``classic`` type)
 
 =========    ==============    =============    =============    ======    ===================    ==========    ===========    =========    =================    ==========    ==========    ============    =================
 device_id    original_level    unified_level    is_main_sleep    type      local_date_time        local_date    local_month    local_day    local_day_of_week    local_time    local_hour    local_minute    local_day_segment
@@ -836,6 +836,7 @@ device_id    efficiency    minutes_after_wakeup    minutes_asleep    minutes_awa
 did          90            0                       381               54               0                         435               1                stages    2020-05-20 22:12:00      2020-05-21 05:27:00    2020-05-20          2020-05-21        evening                    night
 did          88            0                       498               86               0                         584               1                stages    2020-05-22 22:03:00      2020-05-23 07:47:03    2020-05-22          2020-05-23        evening                    morning
 =========    ==========    ====================    ==============    =============    ======================    ==============    =============    ======    =====================    ===================    ================    ==============    =======================    =====================
+
 
 .. _fitbit-heart-rate-sensor-doc:
 
@@ -891,6 +892,7 @@ minutesonZONE        minutes        Number of minutes the user's heartrate fell 
 There are four heart rate zones: ``out_of_range``, ``fat_burn``, ``cardio``, and ``peak``. Please refer to `Fitbit documentation`_ for more information about the way they are computed.
 
 Calories' accuracy depends on the users’ Fitbit profile (weight, height, etc.).
+
 
 .. _fitbit-steps-sensor-doc:
 
@@ -957,75 +959,31 @@ Active and sedentary bouts. If the step count per minute is smaller than ``THRES
 
 .. -------------------------Links ------------------------------------ ..
 
-.. _TABLES_FOR_SENSED_BINS: https://github.com/carissalow/rapids/blob/f22d1834ee24ab3bcbf051bc3cc663903d822084/config.yaml#L2
-.. _`SMS Config Code`: https://github.com/carissalow/rapids/blob/f22d1834ee24ab3bcbf051bc3cc663903d822084/config.yaml#L38
+.. _TABLES_FOR_SENSED_BINS: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L3
+.. _`Messages Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L35
 .. _AWARE: https://awareframework.com/what-is-aware/
 .. _`List of Timezones`: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-.. _sms_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L1
-.. _sms_features.R: https://github.com/carissalow/rapids/blob/master/src/features/sms_featues.R
-.. _download_dataset: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L9
-.. _download_dataset.R: https://github.com/carissalow/rapids/blob/master/src/data/download_dataset.R
-.. _readable_datetime: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L21
-.. _readable_datetime.R: https://github.com/carissalow/rapids/blob/master/src/data/readable_datetime.R
-.. _DAY_SEGMENTS: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L13
-.. _PHONE_VALID_SENSED_DAYS: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L60
-.. _`Call Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L46
-.. _call_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L13
-.. _call_features.R: https://github.com/carissalow/rapids/blob/master/src/features/call_features.R
-.. _`Bluetooth Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L76
-.. _bluetooth_feature: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L63
-.. _bluetooth_features.R: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/bluetooth_features.R
-.. _`Accelerometer Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L98
-.. _accelerometer_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L124
-.. _accelerometer_features.py: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/features/accelerometer_featues.py
-.. _`Applications Foreground Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L102
-.. _`Application Genres Config`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L54
-.. _application_genres: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L81
-.. _application_genres.R: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/src/data/application_genres.R
-.. _applications_foreground_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L135
-.. _applications_foreground_features.py: https://github.com/carissalow/rapids/blob/master/src/features/accelerometer_features.py
-.. _`Battery Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L84
-.. _battery_deltas: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L25
-.. _battery_deltas.R: https://github.com/carissalow/rapids/blob/master/src/features/battery_deltas.R
-.. _battery_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L86
-.. _battery_features.py : https://github.com/carissalow/rapids/blob/master/src/features/battery_features.py
-.. _`Google Activity Recognition Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L80
-.. _google_activity_recognition_deltas: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L41
-.. _google_activity_recognition_deltas.R: https://github.com/carissalow/rapids/blob/master/src/features/google_activity_recognition_deltas.R
-.. _activity_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L74
-.. _google_activity_recognition.py: https://github.com/carissalow/rapids/blob/master/src/features/google_activity_recognition.py
-.. _`Light Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L94
-.. _light_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L113
-.. _light_features.py: https://github.com/carissalow/rapids/blob/master/src/features/light_features.py
-.. _`Location (Barnett’s) Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L70
-.. _phone_sensed_bins: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L46
-.. _phone_sensed_bins.R: https://github.com/carissalow/rapids/blob/master/src/data/phone_sensed_bins.R
-.. _resample_fused_location: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L67
-.. _resample_fused_location.R: https://github.com/carissalow/rapids/blob/master/src/data/resample_fused_location.R
-.. _location_barnett_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L49
-.. _location_barnett_features.R: https://github.com/carissalow/rapids/blob/master/src/features/location_barnett_features.R
-.. _`Screen Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L88
-.. _screen_deltas: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L33
-.. _screen_deltas.R: https://github.com/carissalow/rapids/blob/master/src/features/screen_deltas.R
-.. _screen_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L97
-.. _screen_features.py: https://github.com/carissalow/rapids/blob/master/src/features/screen_features.py
-.. _fitbit_with_datetime: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/preprocessing.snakefile#L94
-.. _fitbit_readable_datetime.py: https://github.com/carissalow/rapids/blob/master/src/data/fitbit_readable_datetime.py
-.. _`Fitbit: Sleep Config Code`: https://github.com/carissalow/rapids/blob/e952e27350c7ae02703bd444e8f92979e37d9ba6/config.yaml#L129
-.. _fitbit_sleep_features: https://github.com/carissalow/rapids/blob/e952e27350c7ae02703bd444e8f92979e37d9ba6/rules/features.snakefile#L209
-.. _fitbit_sleep_features.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_sleep_features.py
+.. _DAY_SEGMENTS: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L10
+.. _PHONE_VALID_SENSED_DAYS: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L61
+.. _`Call Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L45
+.. _`WiFi Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L169
+.. _`Bluetooth Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L81
+.. _`Accelerometer Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L115
+.. _`Applications Foreground Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L125
+.. _`Battery Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L95
+.. _`Activity Recognition Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L87
+.. _`Light Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L109
+.. _`Location (Barnett’s) Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L71
+.. _`Screen Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L101
+.. _`Fitbit: Sleep Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L162
 .. _`version 1`: https://dev.fitbit.com/build/reference/web-api/sleep-v1/
 .. _`version 1.2`: https://dev.fitbit.com/build/reference/web-api/sleep/
+.. _`Conversation Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L191
 .. _`this Fitbit forum post`: https://community.fitbit.com/t5/Alta/What-does-Restless-mean-in-sleep-tracking/td-p/2989011
-.. _ shortData: https://dev.fitbit.com/build/reference/web-api/sleep/#interpreting-the-sleep-stage-and-short-data
-.. _`Fitbit: Heart Rate Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L113
-.. _fitbit_heartrate_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L151
-.. _fitbit_heartrate_features.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_heartrate_features.py
-.. _`Fitbit: Steps Config Code`: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L117
-.. _fitbit_step_features: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/rules/features.snakefile#L162
-.. _fitbit_step_features.py: https://github.com/carissalow/rapids/blob/master/src/features/fitbit_step_features.py
+.. _shortData: https://dev.fitbit.com/build/reference/web-api/sleep/#interpreting-the-sleep-stage-and-short-data
+.. _`Fitbit: Heart Rate Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L138
+.. _`Fitbit: Steps Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L145
 .. _`Fitbit documentation`: https://help.fitbit.com/articles/en_US/Help_article/1565
-.. _`Custom Catalogue File`: https://github.com/carissalow/rapids/blob/master/data/external/stachl_application_genre_catalogue.csv
 .. _top1global: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L108
 .. _`Beiwe Summary Statistics`: http://wiki.beiwe.org/wiki/Summary_Statistics
 .. _`Pause-Flight Model`: https://academic.oup.com/biostatistics/advance-article/doi/10.1093/biostatistics/kxy059/5145908
