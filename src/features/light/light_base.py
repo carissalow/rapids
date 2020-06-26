@@ -6,9 +6,8 @@ def base_light_features(light_data, day_segment, requested_features):
     # the subset of requested features this function can compute
     features_to_compute = list(set(requested_features) & set(base_features_names))
 
-    if light_data.empty:
-        light_features = pd.DataFrame(columns=["local_date"] + ["light_" + day_segment + "_" + x for x in features_to_compute])
-    else:
+    light_features = pd.DataFrame(columns=["local_date"] + ["light_" + day_segment + "_" + x for x in features_to_compute])
+    if not light_data.empty:
         if day_segment != "daily":
             light_data =light_data[light_data["local_day_segment"] == day_segment]
         

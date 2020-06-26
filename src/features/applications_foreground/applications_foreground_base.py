@@ -28,9 +28,8 @@ def base_applications_foreground_features(apps_data, day_segment, requested_feat
     # deep copy the apps_data for the top1global computation
     apps_data_global = apps_data.copy()
 
-    if apps_data.empty:
-        apps_features = pd.DataFrame(columns=["local_date"] + ["apps_" + day_segment + "_" + x for x in ["".join(feature) for feature in itertools.product(requested_features, single_categories + multiple_categories + apps)]])
-    else:
+    apps_features = pd.DataFrame(columns=["local_date"] + ["apps_" + day_segment + "_" + x for x in ["".join(feature) for feature in itertools.product(requested_features, single_categories + multiple_categories + apps)]])
+    if not apps_data.empty::
         if day_segment != "daily":
             apps_data =apps_data[apps_data["local_day_segment"] == day_segment]
         

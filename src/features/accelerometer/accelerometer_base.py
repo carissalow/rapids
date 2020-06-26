@@ -70,14 +70,12 @@ def base_accelerometer_features(acc_data, day_segment, requested_features, valid
 
     features_to_compute = features_to_compute_magnitude + features_to_compute_exertionalactivityepisode + features_to_compute_nonexertionalactivityepisode + (["validsensedminutes"] if valid_sensed_minutes else [])
 
-    if acc_data.empty:
-        acc_features = pd.DataFrame(columns=["local_date"] + ["acc_" + day_segment + "_" + x for x in features_to_compute])
-    else:
+    acc_features = pd.DataFrame(columns=["local_date"] + ["acc_" + day_segment + "_" + x for x in features_to_compute])
+    if not acc_data.empty:
         if day_segment != "daily":
             acc_data = acc_data[acc_data["local_day_segment"] == day_segment]
-        if acc_data.empty:
-            acc_features = pd.DataFrame(columns=["local_date"] + ["acc_" + day_segment + "_" + x for x in features_to_compute])
-        else:
+
+        if not acc_data.empty:
             acc_features = pd.DataFrame()        
             # get magnitude related features: magnitude = sqrt(x^2+y^2+z^2)
             magnitude = acc_data.apply(lambda row: np.sqrt(row["double_values_0"] ** 2 + row["double_values_1"] ** 2 + row["double_values_2"] ** 2), axis=1)

@@ -11,16 +11,12 @@ def base_conversation_features(conversation_data, day_segment, requested_feature
     # the subset of requested features this function can compute
     features_to_compute = list(set(requested_features) & set(base_features_names))
 
-
-    if conversation_data.empty:
-        conversation_features = pd.DataFrame(columns=["local_date"] + ["conversation_" + day_segment + "_" + x for x in features_to_compute])
-    else:
+    conversation_features = pd.DataFrame(columns=["local_date"] + ["conversation_" + day_segment + "_" + x for x in features_to_compute])
+    if not conversation_data.empty:
         if day_segment != "daily":
             conversation_data = conversation_data[conversation_data["local_day_segment"] == day_segment]
 
-        if conversation_data.empty:
-            conversation_features = pd.DataFrame(columns=["local_date"] + ["conversation_" + day_segment + "_" + x for x in features_to_compute])
-        else:
+        if not conversation_data.empty:
             conversation_features = pd.DataFrame()
 
             conversation_data = conversation_data.drop_duplicates(subset = 'local_time', keep= first)
