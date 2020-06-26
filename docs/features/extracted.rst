@@ -107,8 +107,8 @@ Name                        Units         Description
 =========================   =========     =============
 count                       messages      Number of messages of type ``messages_type`` that occurred during a particular ``day_segment``.
 distinctcontacts            contacts      Number of distinct contacts that are associated with a particular ``messages_type`` during a particular ``day_segment``.
-timefirstsms                minutes       Number of minutes between 12:00am (midnight) and the first ``message`` of a particular ``messages_type``.
-timelastsms                 minutes       Number of minutes between 12:00am (midnight) and the last ``message`` of a particular ``messages_type``.
+timefirstmessages           minutes       Number of minutes between 12:00am (midnight) and the first ``message`` of a particular ``messages_type``.
+timelastmessages            minutes       Number of minutes between 12:00am (midnight) and the last ``message`` of a particular ``messages_type``.
 countmostfrequentcontact    messages      Number of messages from the contact with the most messages of ``messages_type`` during a ``day_segment`` throughout the whole dataset of each participant.
 =========================   =========     =============
 
@@ -120,7 +120,7 @@ countmostfrequentcontact    messages      Number of messages from the contact wi
             ...
             TYPES: [sent]
             FEATURES: 
-                sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
+                sent: [count, distinctcontacts, timefirstmessages, timelastmessages, countmostfrequentcontact]
 
 
 .. _call-sensor-doc:
@@ -747,7 +747,7 @@ unknownexpectedfraction                         Ration between minutesunknown an
 =========================   =================   =============
 
 **Assumptions/Observations:** 
-
+N/A
 
 .. ------------------------------- Begin Fitbit Section ----------------------------------- ..
 

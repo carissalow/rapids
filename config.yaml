@@ -37,8 +37,8 @@ MESSAGES:
   DB_TABLE: messages
   TYPES : [received, sent]
   FEATURES: 
-    received: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
-    sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
+    received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+    sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments  
 
 # Communication call features config, TYPES and FEATURES keys need to match

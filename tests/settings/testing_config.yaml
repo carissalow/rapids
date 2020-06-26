@@ -2,6 +2,7 @@
 # If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
 TABLES_FOR_SENSED_BINS: [messages, calls, screen]
 
+
 # Participants to include in the analysis
 # You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
 PIDS: [test01, test02]
@@ -17,8 +18,8 @@ MESSAGES:
   DB_TABLE: messages
   TYPES : [received, sent]
   FEATURES: 
-    received: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
-    sent: [count, distinctcontacts, timefirstsms, timelastsms, countmostfrequentcontact]
+    received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+    sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
   DAY_SEGMENTS: *day_segments  
 
 # Communication call features config, TYPES and FEATURES keys need to match
