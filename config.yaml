@@ -154,10 +154,10 @@ STEP:
       END: "07:00"
   FEATURES:
     ALL_STEPS: ["sumallsteps", "maxallsteps", "minallsteps", "avgallsteps", "stdallsteps"]
-    SEDENTARY_BOUT: ["countsedentarybout", "maxdurationsedentarybout", "mindurationsedentarybout", "avgdurationsedentarybout", "stddurationsedentarybout", "sumdurationsedentarybout"]
-    ACTIVE_BOUT: ["countactivebout", "maxdurationactivebout", "mindurationactivebout", "avgdurationactivebout", "stddurationactivebout"]
+    SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+    ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
   THRESHOLD_ACTIVE_BOUT: 10 # steps
-  INCLUDE_ZERO_STEP_ROWS: True
+  INCLUDE_ZERO_STEP_ROWS: False
 
 SLEEP:
   COMPUTE: False

@@ -42,8 +42,8 @@ exclude_sleep_fixed_end = snakemake.params["exclude_sleep_fixed_end"]
 step_features = pd.DataFrame(columns=["local_date"])
 requested_features = {}
 requested_features["features_all_steps"] = snakemake.params["features_all_steps"]
-requested_features["features_sedentary_bout"] = snakemake.params["features_sedentary_bout"]
-requested_features["features_active_bout"] = snakemake.params["features_active_bout"]
+requested_features["features_sedentary_bout"] = [feature + "sedentarybout" for feature in snakemake.params["features_sedentary_bout"]]
+requested_features["features_active_bout"] = [feature + "activebout" for feature in snakemake.params["features_active_bout"]]
 
 if exclude_sleep == True:
     if exclude_sleep_type == "FIXED":
