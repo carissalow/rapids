@@ -802,7 +802,7 @@ Only features from summary data are available at the momement.
 
 The `fitbit_with_datetime` rule will extract Summary data (`fitbit_sleep_summary_with_datetime.csv`) and Intraday data (`fitbit_sleep_intraday_with_datetime.csv`). There are two versions of Fitbit's sleep API (`version 1`_ and `version 1.2`_), and each provides raw sleep data in a different format:
     
-    - Sleep level. In ``v1``, sleep level is an integer with three possible values (1, 2, 3) while in ``v1.2`` is a string. We convert integer levels to strings, ``asleep``,``restless`` or ``awake`` respectively.
+    - Sleep level. In ``v1``, sleep level is an integer with three possible values (1, 2, 3) while in ``v1.2`` is a string. We convert integer levels to strings, ``asleep``, ``restless`` or ``awake`` respectively.
     - Count summaries. For Summary data, ``v1`` contains ``count_awake``, ``duration_awake``, ``count_awakenings``, ``count_restless``, and ``duration_restless`` fields for every sleep record while ``v1.2`` does not.
     - Types of sleep records. ``v1.2`` has two types of sleep records: ``classic`` and ``stages``. The ``classic`` type contains three sleep levels: ``awake``, ``restless`` and ``asleep``. The ``stages`` type contains four sleep levels: ``wake``, ``deep``, ``light``, and ``rem``. Sleep records from ``v1`` will have the same sleep levels as `v1.2` classic type; therefore we set their type to ``classic``.
     - Unified level of sleep. For intraday data, we unify sleep levels of each sleep record with a column named ``unified_level``. Based on `this Fitbit forum post`_ , we merge levels into two categories:
@@ -915,46 +915,50 @@ See `Fitbit: Steps Config Code`_
 
 **Fitbit: Steps Rule Parameters (fitbit_step_features):**
 
-=======================    ===================
-Name	                   Description
-=======================    ===================
-day_segment                The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-features                   The features that can be computed. See :ref:`Available Fitbit: Steps Features <fitbit-steps-available-features>` Table below
-threshold_active_bout      Every minute with Fitbit step data wil be labelled as ``sedentary`` if its step count is below this threshold, otherwise, ``active``. 
-include_zero_step_rows     Whether or not to include day segments with a 0 step count
-exclude_sleep              Whether or not to exclude step rows that happen during sleep
-exclude_sleep_type         If ``exclude_sleep`` is True, then you can choose between ``FIXED`` or ``FITBIT_BASED``. ``FIXED`` will exclude all step rows that happen between a start and end time (see below). ``FITBIT_BASED`` will exclude step rows that happen during main sleep segments as measured by the Fitbit device (``config[SLEEP][DB_TABLE]`` should be a valid table in your database, it usually is the same table that contains your STEP data)
-exclude_sleep_fixed_start  Start time of the fixed sleep period to exclude. Only relevant if ``exclude_sleep`` is True and ``exclude_sleep_type`` is ``FIXED``
-exclude_sleep_fixed_end    Start time of the fixed sleep period to exclude. Only relevant if ``exclude_sleep`` is True and ``exclude_sleep_type`` is ``FIXED``
-=======================    ===================
+==========================    ===================
+Name	                      Description
+==========================    ===================
+day_segment                   The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
+features                      The features that can be computed. See :ref:`Available Fitbit: Steps Features <fitbit-steps-available-features>` Table below
+threshold_active_bout         Every minute with Fitbit step data wil be labelled as ``sedentary`` if its step count is below this threshold, otherwise, ``active``. 
+include_zero_step_rows        Whether or not to include day segments with a 0 step count
+exclude_sleep                 Whether or not to exclude step rows that happen during sleep
+exclude_sleep_type            If ``exclude_sleep`` is True, then you can choose between ``FIXED`` or ``FITBIT_BASED``. ``FIXED`` will exclude all step rows that happen between a start and end time (see below). ``FITBIT_BASED`` will exclude step rows that happen during main sleep segments as measured by the Fitbit device (``config[SLEEP][DB_TABLE]`` should be a valid table in your database, it usually is the same table that contains your STEP data)
+exclude_sleep_fixed_start     Start time of the fixed sleep period to exclude. Only relevant if ``exclude_sleep`` is True and ``exclude_sleep_type`` is ``FIXED``
+exclude_sleep_fixed_end       Start time of the fixed sleep period to exclude. Only relevant if ``exclude_sleep`` is True and ``exclude_sleep_type`` is ``FIXED``
+==========================    ===================
 
 .. _fitbit-steps-available-features:
 
 **Available Fitbit: Steps Features**
 
-=========================   =========     =============
-Name                        Units         Description
-=========================   =========     =============
-sumallsteps                 steps         The total step count during ``day_segment`` epoch.
-maxallsteps                 steps         The maximum step count during ``day_segment`` epoch.
-minallsteps                 steps         The minimum step count during ``day_segment`` epoch.
-avgallsteps                 steps         The average step count during ``day_segment`` epoch.
-stdallsteps                 steps         The standard deviation of step count during ``day_segment`` epoch.
-countsedentarybout          bouts         Number of sedentary bouts during ``day_segment`` epoch.
-maxdurationsedentarybout    minutes       The maximum duration of any sedentary bout during ``day_segment`` epoch.
-mindurationsedentarybout    minutes       The minimum duration of any sedentary bout during ``day_segment`` epoch.
-avgdurationsedentarybout    minutes       The average duration of sedentary bouts during ``day_segment`` epoch.
-stddurationsedentarybout    minutes       The standard deviation of the duration of sedentary bouts during ``day_segment`` epoch.
-countactivebout             bouts         Number of active bouts during ``day_segment`` epoch.
-maxdurationactivebout       minutes       The maximum duration of any active bout during ``day_segment`` epoch.
-mindurationactivebout       minutes       The minimum duration of any active bout during ``day_segment`` epoch.
-avgdurationactivebout       minutes       The average duration of active bouts during ``day_segment`` epoch.
-stddurationactivebout       minutes       The standard deviation of the duration of active bouts during ``day_segment`` epoch.
-=========================   =========     =============
+==========================   =========     =============
+Name                         Units         Description
+==========================   =========     =============
+sumallsteps                  steps         The total step count during ``day_segment`` epoch.
+maxallsteps                  steps         The maximum step count during ``day_segment`` epoch.
+minallsteps                  steps         The minimum step count during ``day_segment`` epoch.
+avgallsteps                  steps         The average step count during ``day_segment`` epoch.
+stdallsteps                  steps         The standard deviation of step count during ``day_segment`` epoch.
+countepisodesedentarybout    bouts         Number of sedentary bouts during ``day_segment`` epoch.
+sumdurationsedentarybout     minutes       Total duration of all sedentary bouts during ``day_segment`` epoch.
+maxdurationsedentarybout     minutes       The maximum duration of any sedentary bout during ``day_segment`` epoch.
+mindurationsedentarybout     minutes       The minimum duration of any sedentary bout during ``day_segment`` epoch.
+avgdurationsedentarybout     minutes       The average duration of sedentary bouts during ``day_segment`` epoch.
+stddurationsedentarybout     minutes       The standard deviation of the duration of sedentary bouts during ``day_segment`` epoch.
+countepisodeactivebout       bouts         Number of active bouts during ``day_segment`` epoch.
+sumdurationactivebout        minutes       Total duration of all active bouts during ``day_segment`` epoch.
+maxdurationactivebout        minutes       The maximum duration of any active bout during ``day_segment`` epoch.
+mindurationactivebout        minutes       The minimum duration of any active bout during ``day_segment`` epoch.
+avgdurationactivebout        minutes       The average duration of active bouts during ``day_segment`` epoch.
+stddurationactivebout        minutes       The standard deviation of the duration of active bouts during ``day_segment`` epoch.
+==========================   =========     =============
 
 **Assumptions/Observations:** 
 
 Active and sedentary bouts. If the step count per minute is smaller than ``THRESHOLD_ACTIVE_BOUT`` (default value is 10), that minute is labelled as sedentary, otherwise, is labelled as active. Active and sedentary bouts are periods of consecutive minutes labelled as ``active`` or ``sedentary``.
+
+``validsensedminutes`` feature is not available for Step sensor as we cannot determine the valid minutes based on the raw Fitbit step data.
 	
 
 .. -------------------------Links ------------------------------------ ..
@@ -982,7 +986,7 @@ Active and sedentary bouts. If the step count per minute is smaller than ``THRES
 .. _`this Fitbit forum post`: https://community.fitbit.com/t5/Alta/What-does-Restless-mean-in-sleep-tracking/td-p/2989011
 .. _shortData: https://dev.fitbit.com/build/reference/web-api/sleep/#interpreting-the-sleep-stage-and-short-data
 .. _`Fitbit: Heart Rate Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L138
-.. _`Fitbit: Steps Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L145
+.. _`Fitbit: Steps Config Code`: https://github.com/carissalow/rapids/blob/29b04b0601b62379fbdb76de685f3328b8dde2a2/config.yaml#L145
 .. _`Fitbit documentation`: https://help.fitbit.com/articles/en_US/Help_article/1565
 .. _top1global: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L108
 .. _`Beiwe Summary Statistics`: http://wiki.beiwe.org/wiki/Summary_Statistics
