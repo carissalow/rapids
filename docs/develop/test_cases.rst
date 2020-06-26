@@ -3,7 +3,7 @@
 Test Cases
 -----------
 
-Along with the continued development and the addition of new sensors and features to the RAPIDS pipeline, tests for the currently available sensors and features are being implemented. Since this is a Work In Progress this page will be updated with the list of sensors and features for which testing is available. For each of the sensors listed a description of the data used for testing (test cases) are outline. Currently for all intent and testing purposes the ``tests/data/raw/test01/`` contains all the test data files for testing android data formats and ``tests/data/raw/test02/`` contains all the test data files for testing iOS data formats. It follows that the expected (verified output) are contained in the ``tests/data/processed/test01/`` and ``tests/data/processed/test02/`` for Android and iOS respectively.
+Along with the continued development and the addition of new sensors and features to the RAPIDS pipeline, tests for the currently available sensors and features are being implemented. Since this is a Work In Progress this page will be updated with the list of sensors and features for which testing is available. For each of the sensors listed a description of the data used for testing (test cases) are outline. Currently for all intent and testing purposes the ``tests/data/raw/test01/`` contains all the test data files for testing android data formats and ``tests/data/raw/test02/`` contains all the test data files for testing iOS data formats. It follows that the expected (verified output) are contained in the ``tests/data/processed/test01/`` and ``tests/data/processed/test02/`` for Android and iOS respectively. ``tests/data/raw/test03/`` and ``tests/data/raw/test04/`` contain data files for testing empty raw data files for android and iOS respectively. 
 
 List of Sensor with Tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -17,7 +17,8 @@ Messages (SMS)
     - The data for the first day contains records 5 records for every ``epoch``.
     - The second day's data contains 6 records for each of only 2 ``epoch`` (currently ``morning`` and ``evening``)
     - The raw message data contains records for both ``message_types`` (i.e. ``recieved`` and ``sent``) in both days in all epochs. The number records with each ``message_types`` per epoch is randomly distributed There is at least one records with each ``message_types`` per epoch.
-    - There is one raw message data file each for testing both iOS and Android data. 
+    - There is one raw message data file each, as described above, for testing both iOS and Android data. 
+    - There is also an additional for both android and iOS that contains no raw input data for testing empty data files
 
 Calls
 """""""
@@ -28,7 +29,8 @@ Calls
     - The data for the first day contains 6 records for every ``epoch``. 
     - The second day's data contains 6 records for each of only 2 ``epoch`` (currently ``morning`` and ``evening``)
     - The call data contains records for all ``call_types`` (i.e. ``incoming``, ``outgoing`` and ``missed``) in both days in all epochs. The number records with each of the ``call_types`` per epoch is randomly distributed. There is at least one records with each ``call_types`` per epoch.
-    - There is one call data file each for testing both iOS and Android data. 
+    - There is one call data file each, as described above, for testing both iOS and Android data. 
+    - There is also an additional for both android and iOS that contains no raw input data for testing empty data files
 
 Screen
 """"""""
@@ -40,3 +42,5 @@ Screen
     - The screen delta data contains 1 record to represent an ``unlock`` episode that falls across the boundary of 2 epochs. Namely the ``unlock`` episode starts in one epoch and ends in the next, thus there is a record for ``unlock`` episodes that fall across ``night`` to ``morning``, ``morning`` to ``afternoon`` and finally ``afternoon`` to ``night``
     - The testing is done for ``unlock`` episode_type.
     - There is one screen data file each for testing both iOS and Android data formats.
+    - There is also an additional for both android and iOS that contains no raw input data for testing empty data files
+

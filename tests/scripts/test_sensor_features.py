@@ -33,7 +33,10 @@ class TestSensorFeatures(unittest.TestCase):
             for act_result, exp_result in calc_files[each]:
                 df_act = pd.read_csv(act_result)
                 df_exp = pd.read_csv(exp_result)
-                pd.testing.assert_frame_equal(df_exp, df_act, obj=df_exp)
+                if df_act.empty:
+                    self.assertTrue(df_exp.empty)
+                else:
+                    pd.testing.assert_frame_equal(df_exp, df_act, obj=df_exp)
 
 
 if __name__ == '__main__':

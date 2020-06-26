@@ -2,10 +2,9 @@
 # If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
 TABLES_FOR_SENSED_BINS: [messages, calls, screen]
 
-
 # Participants to include in the analysis
 # You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
-PIDS: [test01, test02]
+PIDS: [test01, test02, test03, test04]
 
 
 # Global var with common day segments
