@@ -120,7 +120,7 @@ ACCELEROMETER:
     MAGNITUDE: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
     EXERTIONAL_ACTIVITY_EPISODE: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
     NONEXERTIONAL_ACTIVITY_EPISODE: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
-    VALID_SENSED_MINUTES: True
+    VALID_SENSED_MINUTES: False
 
 APPLICATIONS_FOREGROUND:
   COMPUTE: False
