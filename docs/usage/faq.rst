@@ -135,6 +135,19 @@ Install the ``xml`` library using the following command
 
 ``sudo apt install libxml2-dev``
 
+10. SSL connection error when running RAPIDS
+""""""""""""""""""""""""""""""""""""""""""""""
+
+You are getting the following error message when running RAPIDS:
+
+``Error: Failed to connect: SSL connection error: error:1425F102:SSL routines:ssl_choose_client_version:unsupported protocol``.
+
+This is a bug in Ubuntu 20.04 when trying to connect to an old MySQL server with MySQL client 8.0. You should get the same error message if you try to connect from the command line. There you can add the option ``--ssl-mode=DISABLED`` but we can't do this from the R connector.
+
+If you can't update your server, the quickest solution would be to import your database to another server or to a local environment. Alternatively, you could replace ``mysql-client`` and ``libmysqlclient-dev`` with ``mariadb-client`` and ``libmariadbclient-dev`` and reinstall renv. More info about this issue here https://bugs.launchpad.net/ubuntu/+source/mysql-8.0/+bug/1872541
+
+
+
 .. ------------------------ Links --------------------------- ..
 
 .. _bug: https://github.com/Homebrew/linuxbrew-core/issues/17812
