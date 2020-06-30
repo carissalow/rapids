@@ -676,7 +676,7 @@ avgduration                 minutes             Average duration of all unlock e
 stdduration                 minutes             Standard deviation duration of all unlock episodes.
 countepisode                episodes            Number of all unlock episodes
 episodepersensedminutes     episodes/minute     The ratio between the total number of episodes in an epoch divided by the total time (minutes) the phone was sensing data.
-firstuseafter               minutes             Seconds until the first unlock episode.
+firstuseafter               minutes             Minutes until the first unlock episode.
 =========================   =================   =============
 
 **Assumptions/Observations:** 
