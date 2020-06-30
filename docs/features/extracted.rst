@@ -189,6 +189,8 @@ countmostfrequentcontact    calls         The number of ``missed`` calls during 
 
 **Assumptions/Observations:** 
 
+Traces for iOS calls are unique even for the same contact calling a participant more than once which renders ``countmostfrequentcontact`` meaningless and ``distinctcontacts`` equal to the total number of traces.
+
 ``TYPES`` and ``FEATURES`` keys in ``config.yaml`` need to match. For example, below the ``TYPE`` ``missed`` matches the ``FEATURES`` key ``missed``::
 
     CALLS:
