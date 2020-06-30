@@ -6,7 +6,6 @@ library(stringr)
 
 screen <- read.csv(snakemake@input[["screen"]])
 participant_info <- snakemake@input[["participant_info"]]
-platform <- readLines(participant_info, n=2)[[2]]
 
 # Screen States
 # Android: https://github.com/denzilferreira/aware-client/blob/78ccc22f0f822f8421bef9b1a73d36e71b8aa85b/aware-core/src/main/java/com/aware/Screen.java
@@ -25,42 +24,23 @@ swap_screen_status <- function(data, status1, status2, time_buffer){
                   screen_status = ifelse(screen_status == 800L, status1, screen_status))
 }
 
-get_ios_screen_episodes <- function(screen){
-  episodes <- screen %>%
-    # only keep consecutive pairs of 3,2 events
-    filter( (screen_status == 3 & lead(screen_status) == 2) | (screen_status == 2 & lag(screen_status) == 3) ) %>%
-    # in iOS and after our filtering, screen episodes should end with a LOCK event (2)
-    mutate(episode_id = ifelse(screen_status == 2, 1:n(), NA_integer_)) %>%
-    fill(episode_id, .direction = "updown") %>%
-    group_by(episode_id) %>%
-    summarise(episode = "unlock",
-              screen_sequence = toString(screen_status),
-              time_diff = (last(timestamp) - first(timestamp)) / (1000 * 60),
-              local_start_date_time = first(local_date_time),
-              local_end_date_time = last(local_date_time),
-              local_start_date = first(local_date),
-              local_end_date = last(local_date),
-              local_start_day_segment = first(local_day_segment),
-              local_end_day_segment = last(local_day_segment))
-}
-
-get_android_screen_episodes <- function(screen){  
-  # Aware logs LOCK events after turning the screen ON or OFF but we filter them out to simplify this analysis. 
+get_screen_episodes <- function(screen){  
+  # Aware Android logs LOCK events after turning the screen ON or OFF but we filter them out to simplify this analysis. 
   # The code below only process UNLOCK to OFF episodes, but it's possible to modify it for ON to OFF (see line 61) or ON to UNLOCK episodes.
 
   episodes <- screen %>% 
-    # filter out LOCK events (2) that come within 50 milliseconds of an ON (1) or OFF (0) event
+    # Relevant for Android. Remove LOCK events (2) that come within 50 milliseconds of an ON (1) or OFF (0) event
     filter(!(screen_status == 2 & lag(screen_status) == 1 & timestamp - lag(timestamp) < 50)) %>% 
     filter(!(screen_status == 2 & lag(screen_status) == 0 & timestamp - lag(timestamp) < 50)) %>% 
-    # in Android and after our filtering, screen episodes should end with a OFF event (0)
+    # After our filtering, screen episodes should end with a OFF event (0)
     mutate(episode_id = ifelse(screen_status == 0, 1:n(), NA_integer_)) %>% 
     fill(episode_id, .direction = "updown") %>% 
     group_by(episode_id)  %>% 
-    # Rarely, UNLOCK events (3) get logged just before ON events (1). If this happens within 800ms, swap them
+    # Relevant for Android. Rarely, UNLOCK events (3) get logged just before ON events (1). If this happens within 800ms, swap them
     swap_screen_status(3L, 1L, 800) %>% 
-    # to be consistent with iOS we filter out events (and thus sequences) starting with an ON (1) event
+    # Relevant for Android. To be consistent with iOS we remove events (and thus sequences) starting with an ON (1) event
     filter(screen_status != 1) %>%
-    # only keep consecutive 3,0 pairs (UNLOCK, OFF)
+    # Only keep consecutive 3,0 pairs (UNLOCK, OFF)
     filter( (screen_status == 3 & lead(screen_status) == 0) | (screen_status == 0 & lag(screen_status) == 3) ) %>%
     summarise(episode = "unlock",
               screen_sequence = toString(screen_status),
@@ -88,12 +68,8 @@ if(nrow(screen) < 2){
                                 local_end_date = character(),
                                 local_start_day_segment = character(),
                                 local_end_day_segment = character())
-} else if(platform == "ios"){
-  episodes <- get_ios_screen_episodes(screen)
-} else if(platform == "android"){
-  episodes <- get_android_screen_episodes(screen)
 } else {
-  print(paste0("The platform (second line) in ", participant_info, " should be android or ios"))
+  episodes <- get_screen_episodes(screen)
 }
 
 write.csv(episodes, snakemake@output[[1]], row.names = FALSE)

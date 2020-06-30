@@ -1,7 +1,12 @@
 def optional_ar_input(wildcards):
     with open("data/external/"+wildcards.pid, encoding="ISO-8859-1") as external_file:
         external_file_content = external_file.readlines()
-    platform = external_file_content[1].strip()
+    platforms = external_file_content[1].strip().split(",")
+    if platforms[0] == "multiple" or (len(platforms) > 1 and "android" in platforms and "ios" in platforms):
+        platform = "android"
+    else:
+        platform = platforms[0]
+
     if platform == "android": 
         return ["data/raw/{pid}/" + config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "_with_datetime_unified.csv",
                 "data/processed/{pid}/" + config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "_deltas.csv"]
@@ -9,16 +14,23 @@ def optional_ar_input(wildcards):
         return ["data/raw/{pid}/"+config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]+"_with_datetime_unified.csv",
                 "data/processed/{pid}/"+config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]+"_deltas.csv"]
     else:
-        return []
+        raise ValueError("Platform (line 2) in a participant file should be 'android', 'ios', or 'multiple'. You typed '" + platforms + "'")
 
 def optional_conversation_input(wildcards):
     with open("data/external/"+wildcards.pid, encoding="ISO-8859-1") as external_file:
         external_file_content = external_file.readlines()
-    platform = external_file_content[1].strip()
+    platforms = external_file_content[1].strip().split(",")
+    if platforms[0] == "multiple" or (len(platforms) > 1 and "android" in platforms and "ios" in platforms):
+        platform = "android"
+    else:
+        platform = platforms[0]
+
     if platform == "android":
         return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["ANDROID"] + "_with_datetime.csv"]
-    else:
+    elif platform == "ios":
         return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["IOS"] + "_with_datetime.csv"]
+    else:
+        raise ValueError("Platform (line 2) in a participant file should be 'android' or 'ios', or 'multiple'. You typed '" + platforms + "'")
 
 def optional_location_input(wildcards):
     if config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
@@ -66,8 +78,7 @@ rule battery_deltas:
 
 rule screen_deltas:
     input:
-        screen = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["SCREEN"]["DB_TABLE"]),
-        participant_info = "data/external/{pid}"
+        screen = expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["SCREEN"]["DB_TABLE"])
     output:
         "data/processed/{pid}/screen_deltas.csv"
     script:

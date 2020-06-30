@@ -140,8 +140,8 @@ Once RAPIDS is installed, follow these steps to start processing mobile data.
 
    #. **Manually**. Create one file per participant in the ``rapids/data/external/`` directory. The file should NOT have an extension (i.e., no .txt). The name of the file will become the label for that participant in the pipeline.
 
-      - The first line of the file should be the Aware ``device_id`` for that participant. If one participant has multiple device_ids (i.e. Aware had to be re-installed), add all device_ids separated by commas.
-      - The second line should list the device's operating system (``android`` or ``ios``)
+      - The first line of the file should be the Aware ``device_id`` for that participant. If one participant has multiple device_ids (i.e. Aware had to be re-installed), add all device_ids separated by commas. 
+      - The second line should list the device's operating system (``android`` or ``ios``). If a participant used more than one device (i.e., the participant changed phones and/or platforms mid-study) you can a) list each platform matching the order of the first line (``android,ios``), b) use ``android`` or ``ios`` if all phones belong to the same platform, or c) if you have an ``aware_device`` table in your database, set this line to ``multiple`` and RAPIDS will infer the multiple platforms automatically.
       - The third line is an optional human-friendly label that will appear in any plots for that participant.
       - The fourth line is optional and contains a start and end date separated by a comma ``YYYYMMDD,YYYYMMDD`` (e.g., ``20201301,20202505``). If these dates are specified, only data within this range will be processed, otherwise, all data from the device(s) will be used.
 

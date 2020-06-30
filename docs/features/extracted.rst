@@ -648,6 +648,7 @@ See `Screen Config Code`_
 
 - Rule ``rules/preprocessing.snakefile/download_dataset``
 - Rule ``rules/preprocessing.snakefile/readable_datetime``
+- Rule ``rules/preprocessing.snakefile/unify_ios_android``
 - Rule ``rules/features.snakefile/screen_deltas``
 - Rule ``rules/features.snakefile/screen_features``
 
@@ -683,7 +684,11 @@ firstuseafter               minutes             Minutes until the first unlock e
 
 **Assumptions/Observations:** 
 
-An ``unlock`` episode is considered as the time between an ``unlock`` event and a ``lock`` event. iOS recorded these episodes reliably (albeit some duplicated ``lock`` events within milliseconds from each other). However, in Android there are some events unrelated to the screen state because of multiple consecutive ``unlock``/``lock`` events, so we keep the closest pair. In our experiments these cases are less than 10% of the screen events collected. This happens because ``ACTION_SCREEN_OFF`` and ``ON`` are "sent when the device becomes non-interactive which may have nothing to do with the screen turning off". Additionally, in Android it is possible to measure the time spent on the ``lock`` screen before an ``unlock`` event as well as the total screen time (i.e. ``ON`` to ``OFF``) but we are only keeping ``unlock`` episodes (``unlock`` to ``OFF``) to be consistent with iOS. 
+In Android, ``lock`` events can happen right after an ``off`` event, after a few seconds of an ``off`` event, or never happen depending on the phone's settings, therefore, an ``unlock`` episode is defined as the time between an ``unlock`` and a ``off`` event. In iOS, ``on`` and ``off`` events do not exist, so an ``unlock`` episode is defined as the time between an ``unlock`` and a ``lock`` event.
+
+Events in iOS are recorded reliably albeit some duplicated ``lock`` events within milliseconds from each other, so we only keep consecutive unlock/lock pairs. In Android you cand find multiple consecutive ``unlock`` or ``lock`` events, so we only keep consecutive unlock/off pairs. In our experiments these cases are less than 10% of the screen events collected and this happens because ``ACTION_SCREEN_OFF`` and ``ACTION_SCREEN_ON`` are "sent when the device becomes non-interactive which may have nothing to do with the screen turning off". In addition to unlock/off episodes, in Android it is possible to measure the time spent on the lock screen before an ``unlock`` event as well as the total screen time (i.e. ``ON`` to ``OFF``) but these are not implemented at the moment. 
+
+To unify the screen processing and use the same code in RAPIDS, we replace LOCKED episodes with OFF episodes (2 with 0) in iOS. However, as mentioned above this is still computing ``unlock`` to ``lock`` episodes.
 
 .. _conversation-sensor-doc:
 
