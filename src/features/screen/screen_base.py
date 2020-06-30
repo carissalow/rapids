@@ -36,7 +36,7 @@ def getEpisodeDurationFeatures(screen_data, day_segment, episode, features, phon
     if "stdduration" in features:
         duration_helper = pd.concat([duration_helper, screen_data_episode[["time_diff"]].groupby(["local_start_date"]).std().rename(columns = {"time_diff":"screen_" + day_segment + "_stdduration" + episode})], axis = 1)
     if "firstuseafter" + "{0:0=2d}".format(reference_hour_first_use) in features:
-        duration_helper = pd.concat([duration_helper, pd.DataFrame(screen_data_episode.groupby(["local_start_date"]).first()[["local_start_date_time"]].local_start_date_time.apply(lambda x: (x.to_pydatetime().hour - reference_hour_first_use) * 3600 + x.to_pydatetime().minute * 60 + x.to_pydatetime().second)).rename(columns = {"local_start_date_time":"screen_" + day_segment + "_firstuseafter" + "{0:0=2d}".format(reference_hour_first_use) + episode})], axis = 1)
+        duration_helper = pd.concat([duration_helper, pd.DataFrame(screen_data_episode.groupby(["local_start_date"]).first()[["local_start_date_time"]].local_start_date_time.apply(lambda x: (x.to_pydatetime().hour - reference_hour_first_use) * 60 + x.to_pydatetime().minute + (x.to_pydatetime().second / 60))).rename(columns = {"local_start_date_time":"screen_" + day_segment + "_firstuseafter" + "{0:0=2d}".format(reference_hour_first_use) + episode})], axis = 1)
     return duration_helper
 
 
