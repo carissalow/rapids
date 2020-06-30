@@ -24,13 +24,13 @@ Frequently Asked Questions
 
 **Solution:**
 
-Please make sure the ``MY_GROUP`` in ``config.yaml`` and ``.env`` match.
+Please make sure the ``DATABASE_GROUP`` in ``config.yaml`` matches your DB credentials group in ``.env``.
 
 
 
 2. Cannot start mysql in linux via ``brew services start mysql``
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-use the following command instead:
+Use the following command instead:
 
 ``mysql.server start``
 
@@ -50,7 +50,7 @@ This is expected behavior. The advantage of using ``snakemake`` under the hood i
     Execution halted
 
 **Solution:**
-Please make sure the sensors listed in SENSORS in ``config.yaml`` match your database tables.
+Please make sure the sensors listed in ``TABLES_FOR_SENSED_BINS`` and each sensor section you activated in ``config.yaml`` match your database tables.
 
 
 
@@ -107,7 +107,7 @@ Please make sure the sensors listed in SENSORS in ``config.yaml`` match your dat
     -----------------------------------------------------------------------
     ERROR: configuration failed for package 'RMySQL'
 
-sudo apt install libmariadbclient-dev
+Run ``sudo apt install libmariadbclient-dev``
 
 
 
@@ -116,7 +116,7 @@ sudo apt install libmariadbclient-dev
 
 The  ``libcurl`` needs to installed using the following command
 
-``sudo apt install libcurl4-openssl-dev``
+Run ``sudo apt install libcurl4-openssl-dev``
 
 
 
@@ -125,7 +125,7 @@ The  ``libcurl`` needs to installed using the following command
 
 Install the ``openssl`` library using the following command
 
-``sudo apt install libssl-dev``
+Run ``sudo apt install libssl-dev``
 
 
 9. Configuration failed because ``libxml-2.0`` was not found
@@ -133,7 +133,7 @@ Install the ``openssl`` library using the following command
 
 Install the ``xml`` library using the following command 
 
-``sudo apt install libxml2-dev``
+Run ``sudo apt install libxml2-dev``
 
 10. SSL connection error when running RAPIDS
 """"""""""""""""""""""""""""""""""""""""""""""
