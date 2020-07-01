@@ -19,7 +19,7 @@ Available features:
 - :ref:`light-doc`
 - :ref:`location-sensor-doc`
 - :ref:`screen-sensor-doc`
-- :ref:`sms-sensor-doc` 
+- :ref:`messages-sensor-doc` 
 - :ref:`fitbit-sleep-sensor-doc`
 - :ref:`fitbit-heart-rate-sensor-doc`
 - :ref:`fitbit-steps-sensor-doc`
