@@ -44,3 +44,14 @@ Screen
     - There is one screen data file each for testing both iOS and Android data formats.
     - There is also an additional for both android and iOS that contains no raw input data for testing empty data files
 
+Battery
+"""""""""
+
+    Due to the difference in the format of the raw battery data for iOS and Android as well as versions of iOS (see the **Assumptions/Observations** section of :ref:`Battery<battery-sensor-doc>`) the following is the expected results the ``battery_deltas.csv``. This would give a better idea of the use cases being tested since the ``battery_deltas.csv`` would make both the iOS and Android data comparable. These files are used to calculate the features for the battery sensor. 
+
+    - The battery delta data file contains data for 1 day. 
+    - The battery delta data contains 1 record each for a ``charging`` and ``discharging`` episode that falls within an ``epoch`` for every ``epoch``. Thus for the ``daily`` epoch there would be multiple ``charging`` and ``discharging`` episodes
+    - Since either a ``charging`` episode or a ``discharging`` episode and not both can occur across epochs, in order to test epsiodes that occur across epochs alternating episodes of ``charging`` and ``discharging`` episodes that fall across ``night`` to ``morning``, ``morning`` to ``afternoon`` and finally ``afternoon`` to ``night`` are present in the battery delta data. This starts with a ``discharging`` episode that begins in ``night`` and end in ``morning``.
+    - There is one battery data file each, for testing both iOS and Android data formats.
+    - There is also an additional for both android and iOS that contains no raw input data for testing empty data files
+
