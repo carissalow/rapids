@@ -619,15 +619,14 @@ Aware Android and iOS clients can collect location coordinates through the phone
 
 There are two parameters associated with resampling fused location in the ``RESAMPLE_FUSED_LOCATION`` section of the ``config.yaml`` file. ``CONSECUTIVE_THRESHOLD`` (in minutes, default 30) controls the maximum gap between any two coordinate pairs to replicate the last known pair (for example, participant A's phone did not collect data between 10.30am and 10:50am and between 11:05am and 11:40am, the last known coordinate pair will be replicated during the first period but not the second, in other words, we assume that we cannot longer guarantee the participant stayed at the last known location if the phone did not sense data for more than 30 minutes). ``TIME_SINCE_VALID_LOCATION`` (in minutes, default 720 or 12 hours) the last known fused location won't be carried over longer that this threshold even if the phone was sensing data continuously (for example, participant A went home at 9pm and their phone was sensing data without gaps until 11am the next morning, the last known location will only be replicated until 9am). If you have suggestions to modify or improve this imputation, let us know.
 
-*Significant Locations Identified*
+*Barnett's et al features*
+These features are based on a Pause-Flight model. A pause is defined as a mobiity trace (location pings) within a certain duration and distance (by default 300 seconds and 60 meters). A flight is any mobility trace between two pauses. Data is resampled and imputed before the features are computed. See this paper for more information: https://doi.org/10.1093/biostatistics/kxy059. 
 
-(i.e. The clustering method used)
-Significant locations are determined using K-means clustering on locations that a patient visit over the course of the period of data collection. By setting K=K+1 and repeat clustering until two significant locations are within 100 meters of one another, the results from the previous step (K-1) can   be used as the total number of significant locations. Taken from `Beiwe Summary Statistics`_. 
+In RAPIDS we only expose two parameters for these features (timezone and accuracy). If you wish to change others you can do so in ``src/features/location_barnett/MobilityFeatures.R``
 
-*Definition of Stationarity*
+*Significant Locations*
+Significant locations are determined using K-means clustering on pauses longer than 10 minutes. The number of clusters (K) is increased until no two clusters are within 400 meters from each other. After this, pauses within a certain range of a cluster (200 meters by default) will count as a visit to that significant location. This description was adapted from the Supplementary Materials of https://doi.org/10.1093/biostatistics/kxy059.
 
-(i.e., The length of time and distance a person has to be around the same place to be labelled as a pause)
-This is based on a Pause-Flight model, The parameters used are a minimum pause duration of 300sec and a minimum pause distance of 60m. See the `Pause-Flight Model`_.
 
 *The Circadian Calculation*
 
