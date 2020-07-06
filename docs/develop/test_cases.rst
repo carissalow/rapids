@@ -18,7 +18,7 @@ Messages (SMS)
     - The second day's data contains 6 records for each of only 2 ``epoch`` (currently ``morning`` and ``evening``)
     - The raw message data contains records for both ``message_types`` (i.e. ``recieved`` and ``sent``) in both days in all epochs. The number records with each ``message_types`` per epoch is randomly distributed There is at least one records with each ``message_types`` per epoch.
     - There is one raw message data file each, as described above, for testing both iOS and Android data. 
-    - There is also an additional for both android and iOS that contains no raw input data for testing empty data files
+    - There is also an additional empty data file for both android and iOS for testing empty data files
 
 Calls
 """""""
@@ -30,7 +30,7 @@ Calls
     - The second day's data contains 6 records for each of only 2 ``epoch`` (currently ``morning`` and ``evening``)
     - The call data contains records for all ``call_types`` (i.e. ``incoming``, ``outgoing`` and ``missed``) in both days in all epochs. The number records with each of the ``call_types`` per epoch is randomly distributed. There is at least one records with each ``call_types`` per epoch.
     - There is one call data file each, as described above, for testing both iOS and Android data. 
-    - There is also an additional for both android and iOS that contains no raw input data for testing empty data files
+    - There is also an additional empty data file for both android and iOS for testing empty data files
 
 Screen
 """"""""
@@ -42,7 +42,7 @@ Screen
     - The screen delta data contains 1 record to represent an ``unlock`` episode that falls across the boundary of 2 epochs. Namely the ``unlock`` episode starts in one epoch and ends in the next, thus there is a record for ``unlock`` episodes that fall across ``night`` to ``morning``, ``morning`` to ``afternoon`` and finally ``afternoon`` to ``night``
     - The testing is done for ``unlock`` episode_type.
     - There is one screen data file each for testing both iOS and Android data formats.
-    - There is also an additional for both android and iOS that contains no raw input data for testing empty data files
+    - There is also an additional empty data file for both android and iOS for testing empty data files
 
 Battery
 """""""""
@@ -53,5 +53,13 @@ Battery
     - The battery delta data contains 1 record each for a ``charging`` and ``discharging`` episode that falls within an ``epoch`` for every ``epoch``. Thus for the ``daily`` epoch there would be multiple ``charging`` and ``discharging`` episodes
     - Since either a ``charging`` episode or a ``discharging`` episode and not both can occur across epochs, in order to test epsiodes that occur across epochs alternating episodes of ``charging`` and ``discharging`` episodes that fall across ``night`` to ``morning``, ``morning`` to ``afternoon`` and finally ``afternoon`` to ``night`` are present in the battery delta data. This starts with a ``discharging`` episode that begins in ``night`` and end in ``morning``.
     - There is one battery data file each, for testing both iOS and Android data formats.
-    - There is also an additional for both android and iOS that contains no raw input data for testing empty data files
+    - There is also an additional empty data file for both android and iOS for testing empty data files
 
+Bluetooth
+""""""""""
+
+    - The raw bluetooth data file contains data for 1 day. 
+    - The raw bluetooth data contains at least 2 records for each ``epoch``.
+    - An option of 5 bluetooth devices are randomly distributed throughout the data records.
+    - There is one raw bluetooth data file each, for testing both iOS and Android data formats.
+    - There is also an additional empty data file for both android and iOS for testing empty data files

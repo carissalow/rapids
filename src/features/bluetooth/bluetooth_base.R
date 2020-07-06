@@ -9,21 +9,26 @@ filter_by_day_segment <- function(data, day_segment) {
 }
 
 compute_bluetooth_feature <- function(data, feature, day_segment){
+  data <- data %>% filter_by_day_segment(day_segment)
   if(feature %in% c("countscans", "uniquedevices")){
-    data <- data %>% filter_by_day_segment(day_segment)
     data <- switch(feature,
               "countscans" = data %>% summarise(!!paste("bluetooth", day_segment, feature, sep = "_") := n()),
               "uniquedevices" = data %>% summarise(!!paste("bluetooth", day_segment, feature, sep = "_") := n_distinct(bt_address)))
     return(data)
    } else if(feature == "countscansmostuniquedevice"){
      # Get the most scanned device
-    data <- data %>% group_by(bt_address) %>% 
+    mostuniquedevice <- data %>% 
+      group_by(bt_address) %>% 
       mutate(N=n()) %>% 
       ungroup() %>%
-      filter(N == max(N))
+      filter(N == max(N)) %>% 
+      head(1) %>% # if there are multiple device with the same amount of scans pick the first one only
+      pull(bt_address)
     return(data %>% 
-             filter_by_day_segment(day_segment) %>%
-             summarise(!!paste("bluetooth", day_segment, feature, sep = "_") := n()))
+             filter(bt_address == mostuniquedevice) %>%
+             group_by(local_date) %>% 
+             summarise(!!paste("bluetooth", day_segment, feature, sep = "_") := n()) %>%
+             replace(is.na(.), 0))
   }
 }
 

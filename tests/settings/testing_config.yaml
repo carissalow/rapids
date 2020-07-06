@@ -1,6 +1,6 @@
 # Add as many sensor tables as you have, they all improve the computation of PHONE_SENSED_BINS. 
 # If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
-TABLES_FOR_SENSED_BINS: [messages, calls, screen, battery]
+TABLES_FOR_SENSED_BINS: [messages, calls, screen, battery, bluetooth]
 
 # Participants to include in the analysis
 # You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
@@ -46,3 +46,9 @@ BATTERY:
   DB_TABLE: battery
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
+
+BLUETOOTH:
+  COMPUTE: True
+  DB_TABLE: bluetooth
+  DAY_SEGMENTS: *day_segments
+  FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
