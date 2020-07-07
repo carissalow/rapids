@@ -59,7 +59,16 @@ Bluetooth
 """"""""""
 
     - The raw bluetooth data file contains data for 1 day. 
-    - The raw bluetooth data contains at least 2 records for each ``epoch``.
+    - The raw bluetooth data contains at least 2 records for each ``epoch``. Each ``epoch`` has a record with a ``timestamp`` for the beginning boundary for that ``epoch`` and a record with a ``timestamp`` for the ending boundary for that ``epoch``. (e.g. For the ``morning`` epoch there is a record with a ``timestamp`` for ``6:00AM`` and another record with a ``timestamp`` for ``11:59:59AM``. These are to test edge cases) 
     - An option of 5 bluetooth devices are randomly distributed throughout the data records.
     - There is one raw bluetooth data file each, for testing both iOS and Android data formats.
-    - There is also an additional empty data file for both android and iOS for testing empty data files
+    - There is also an additional empty data file for both android and iOS for testing empty data files.
+
+WIFI
+"""""
+
+    - The raw WIFI data file contains data for 1 day. 
+    - The raw WIFI data contains at least 2 records for each ``epoch``. Each ``epoch`` has a record with a ``timestamp`` for the beginning boundary for that ``epoch`` and a record with a ``timestamp`` for the ending boundary for that ``epoch``. (e.g. For the ``morning`` epoch there is a record with a ``timestamp`` for ``6:00AM`` and another record with a ``timestamp`` for ``11:59:59AM``. These are to test edge cases) 
+    - An option of 5 access point devices is randomly distributed throughout the data records.
+    - There is one raw WIFI data file each, for testing both iOS and Android data formats.
+    - There is also an additional empty data file for both android and iOS for testing empty data files.
