@@ -13,6 +13,17 @@ files_to_compute = []
 if len(config["PIDS"]) == 0:
     raise ValueError("Add participants IDs to PIDS in config.yaml. Remember to create their participant files in data/external")
 
+if config["PHONE_VALID_SENSED_BINS"]["COMPUTE"]:
+    if len(config["PHONE_VALID_SENSED_BINS"]["TABLES"]) == 0:
+            raise ValueError("If you want to compute PHONE_VALID_SENSED_BINS, you need to add at least one table to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml")
+    files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
+
+if config["PHONE_VALID_SENSED_DAYS"]["COMPUTE"]:
+    if len(config["PHONE_VALID_SENSED_BINS"]["TABLES"]) == 0:
+            raise ValueError("If you want to compute PHONE_VALID_SENSED_DAYS, you need to add at least one table to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml")
+    files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
+    files_to_compute.extend(expand("data/interim/{pid}/phone_valid_sensed_days.csv", pid=config["PIDS"]))
+
 if config["MESSAGES"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["MESSAGES"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["MESSAGES"]["DB_TABLE"]))
@@ -26,8 +37,11 @@ if config["CALLS"]["COMPUTE"]:
 
 if config["BARNETT_LOCATION"]["COMPUTE"]:
     # TODO add files_to_compute.extend(optional_location_input(None))
-    if config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED" and config["BARNETT_LOCATION"]["DB_TABLE"] not in config["TABLES_FOR_SENSED_BINS"]:
-        raise ValueError("Error: Add your locations table (and as many sensor tables as you have) to TABLES_FOR_SENSED_BINS in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")
+    if config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
+        if config["BARNETT_LOCATION"]["DB_TABLE"] in config[""]["TABLES"]:
+            files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
+        else:
+            raise ValueError("Error: Add your locations table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")            
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["BARNETT_LOCATION"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["BARNETT_LOCATION"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/processed/{pid}/location_barnett_{segment}.csv", pid=config["PIDS"], segment = config["BARNETT_LOCATION"]["DAY_SEGMENTS"]))
@@ -49,8 +63,10 @@ if config["BATTERY"]["COMPUTE"]:
     files_to_compute.extend(expand("data/processed/{pid}/battery_{day_segment}.csv", pid = config["PIDS"], day_segment = config["BATTERY"]["DAY_SEGMENTS"]))
 
 if config["SCREEN"]["COMPUTE"]:
-    if config["SCREEN"]["DB_TABLE"] not in config["TABLES_FOR_SENSED_BINS"]:
-        raise ValueError("Error: Add your screen table (and as many sensor tables as you have) to TABLES_FOR_SENSED_BINS in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data)")
+    if config["SCREEN"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["TABLES"]:
+        files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
+    else:
+        raise ValueError("Error: Add your screen table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data)")
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SCREEN"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SCREEN"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["SCREEN"]["DB_TABLE"]))

@@ -1,7 +1,3 @@
-# Add as many sensor tables as you have, they all improve the computation of PHONE_SENSED_BINS. 
-# If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
-TABLES_FOR_SENSED_BINS: []
-
 # Participants to include in the analysis
 # You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
 PIDS: [test01]
@@ -31,6 +27,18 @@ DOWNLOAD_DATASET:
 READABLE_DATETIME:
   FIXED_TIMEZONE: *timezone
 
+PHONE_VALID_SENSED_BINS:
+  COMPUTE: False # This flag is automatically ignored (set to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features
+  BIN_SIZE: 5 # (in minutes)
+  # Add as many sensor tables as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
+  # If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
+  TABLES: []
+
+PHONE_VALID_SENSED_DAYS:
+  COMPUTE: False
+  MIN_VALID_HOURS_PER_DAY: 16 # (out of 24) MIN_HOURS_PER_DAY
+  MIN_VALID_BINS_PER_HOUR: 6 # (out of 60min/BIN_SIZE bins)
+
 # Communication SMS features config, TYPES and FEATURES keys need to match
 MESSAGES:
   COMPUTE: False
@@ -57,11 +65,6 @@ APPLICATION_GENRES:
   CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
   UPDATE_CATALOGUE_FILE: false # if CATALOGUE_SOURCE is equal to FILE, whether or not to update CATALOGUE_FILE, if CATALOGUE_SOURCE is equal to GOOGLE all scraped genres will be saved to CATALOGUE_FILE
   SCRAPE_MISSING_GENRES: false # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
-
-PHONE_VALID_SENSED_DAYS:
-  BIN_SIZE: 5 # (in minutes)
-  MIN_VALID_HOURS: 20 # (out of 24)
-  MIN_BINS_PER_HOUR: 8 # (out of 60min/BIN_SIZE bins)
 
 RESAMPLE_FUSED_LOCATION:
   CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold

@@ -5,7 +5,7 @@ rule heatmap_rows:
     params:
         table = "{sensor}",
         pid = "{pid}",
-        bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"]
+        bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"]
     output:
         "reports/figures/{pid}/{sensor}_heatmap_rows.html"
     script:
@@ -17,7 +17,7 @@ rule compliance_heatmap:
         pid_file = "data/external/{pid}"
     params:
         pid = "{pid}",
-        bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"]
+        bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"]
     output:
         "reports/figures/{pid}/compliance_heatmap.html"
     script:
@@ -30,8 +30,8 @@ rule overall_compliance_heatmap:
         pid_files = expand("data/external/{pid}", pid=config["PIDS"])
     params:
         local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
-        bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"],
-        min_bins_per_hour = config["PHONE_VALID_SENSED_DAYS"]["MIN_BINS_PER_HOUR"]
+        bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"],
+        min_bins_per_hour = config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]
     output:
         "reports/figures/overall_compliance_heatmap.html"
     script:

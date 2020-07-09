@@ -157,7 +157,7 @@ rule screen_features:
         reference_hour_first_use = config["SCREEN"]["REFERENCE_HOUR_FIRST_USE"],
         features_deltas = config["SCREEN"]["FEATURES_DELTAS"],
         episode_types = config["SCREEN"]["EPISODE_TYPES"],
-        bin_size = config["PHONE_VALID_SENSED_DAYS"]["BIN_SIZE"]
+        bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"]
     output:
         "data/processed/{pid}/screen_{day_segment}.csv"
     script:

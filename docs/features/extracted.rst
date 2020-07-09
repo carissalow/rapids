@@ -10,9 +10,8 @@ RAPIDS Features
         COMPUTE: True
         DB_TABLE: messages
         ...
- 
- 
- If you want to extract phone_valid_sensed_days.csv, screen features or locaton features based on fused location data don't forget to configure ``TABLES_FOR_SENSED_BINS`` (see below).
+
+If you want to extract phone_valid_sensed_days.csv, screen features or locaton features based on fused location data don't forget to configure ``[PHONE_VALID_SENSED_BINS][TABLES]`` (see below).
 
 .. _global-sensor-doc:
 
@@ -21,11 +20,9 @@ Global Parameters
 
 .. _sensor-list:
 
-- ``TABLES_FOR_SENSED_BINS`` - Add as many sensor tables as you have in your database. All sensors included are used to compute ``phone_sensed_bins.csv`` (bins of time when the smartphone was sensing data). In turn, these bins are used to compute ``PHONE_VALID_SENSED_DAYS`` (see below), ``episodepersensedminutes`` feature of :ref:`Screen<screen-sensor-doc>` and to resample fused location data if you configure Barnett's location features to use ``RESAMPLE_FUSED``. See TABLES_FOR_SENSED_BINS_ variable in ``config`` file (therefore, when you are extracting screen or Barnett's location features, screen and locations tables are mandatory).  
-
 .. _pid: 
 
-- ``PID`` - The list of participant ids to be included in the analysis. These should match the names of the files created in the ``data/external`` directory  (:ref:`see more details<db-configuration>`).
+- ``PIDS`` - The list of participant ids to be included in the analysis. These should match the names of the files created in the ``data/external`` directory  (:ref:`see more details<db-configuration>`).
 
 .. _day-segments: 
 
@@ -52,19 +49,24 @@ Global Parameters
     - ``FIXED_TIMEZONE``. See ``TIMEZONE`` above. This assumes that all data of all participants was collected within one time zone.
     - Support for multiple time zones for each participant coming soon based on the ``timezone`` table collected by Aware.
 
+- ``PHONE_VALID_SENSED_BINS``
+     Contains three attributes: ``COMPUTE``, ``BIN_SIZE`` and ``TABLES``. See the PHONE_VALID_SENSED_BINS_ section in the ``config.yaml`` file
+
+     Set the ``COMPUTE`` flag to True if you want to get this file (``data/interim/{pid}/phone_sensed_bins``). Phone valid sensed bins is a matrix of days x bins where we divide every hour of every day into N bins of size ``BIN_SIZE`` (in minutes). Each bin contains the number of rows that were recorded in that interval by all the sensors listed in ``TABLES``. Add as many sensor tables to ``TABLES`` as you have in your database because valid sensed bins are used to compute ``PHONE_VALID_SENSED_DAYS``  :ref:`PHONE_VALID_SENSED_BINS<phone-valid-sensed-days>`, ``episodepersensedminutes`` feature of :ref:`Screen<screen-sensor-doc>` and to resample fused location data if you configure Barnett's location features to use ``RESAMPLE_FUSED``. 
+
+      The ``COMPUTE`` flag is automatically ignored (set internally to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features.  
+
 .. _phone-valid-sensed-days:
 
 - ``PHONE_VALID_SENSED_DAYS``.
     
-    Contains three attributes: ``BIN_SIZE``, ``MIN_VALID_HOURS``, ``MIN_BINS_PER_HOUR``. 
+    Contains three attributes: ``COMPUTE``, ``MIN_VALID_HOURS_PER_DAY``, ``MIN_VALID_BINS_PER_HOUR``. See the PHONE_VALID_SENSED_DAYS_ section in ``config.yaml``.
 
-    On any given day, Aware could have sensed data only for a few minutes or for 24 hours. Daily estimates of features should be considered more reliable the more hours Aware was running and logging data (for example, 10 calls logged on a day when only one hour of data was recorded is a less reliable feature compared to 10 calls on a day when 23 hours of data were recorded. 
+    On any given day, Aware could have sensed data only for a few minutes or for 24 hours. Daily estimates of features should be considered more reliable the more hours Aware was running and logging data, for example, 10 calls logged on a day when only one hour of data was recorded is a less reliable feature compared to 10 calls on a day when 23 hours of data were recorded. 
 
-    Therefore, we define a valid hour as those that contain a minimum number of valid bins. In turn, a valid bin are those that contain at least one row of data from any sensor logged within that period. We divide an hour into N bins of size ``BIN_SIZE`` (in minutes) and we mark an hour as valid if contains at least ``MIN_BINS_PER_HOUR`` (out of the total possible number of bins that can be captured in an hour based on their length i.e. 60min/``BIN_SIZE`` bins). Days with valid sensed hours less than ``MIN_VALID_HOURS`` will be excluded form the output of this file. See PHONE_VALID_SENSED_DAYS_ in ``config.yaml``.
+    Therefore, we define a valid hour as those that contain a minimum number of valid bins. A valid bin are those that contain at least one row of data from any sensor logged within that period (See ``PHONE_VALID_SENSED_BINS`` above). We mark an hour as valid if contains at least ``MIN_VALID_BINS_PER_HOUR`` (out of the total possible number of bins that can be captured in an hour based on their length i.e. 60min/``BIN_SIZE`` bins). In turn, we mark a day as valid if it has at least ``MIN_VALID_HOURS_PER_DAY``. 
 
-    Note that RAPIDS *DOES NOT* filter your feature files automatically, you need to do this manually based on ``"data/interim/{pid}/phone_valid_sensed_days.csv"``.
-
-    You can get access to every phone's sensed bins matrix (days x bins) in ``data/interim/{pid}/phone_sensed_bins.csv``. As mentioned above, RAPIDS uses this file to compute ``phone_valid_sensed_days.csv``, ``episodepersensedminutes`` feature of :ref:`Screen<screen-sensor-doc>` and to resample fused location data if you configure Barnett's location features to use ``RESAMPLE_FUSED``.
+    Note that RAPIDS *DOES NOT* filter your feature files automatically, you need to do this manually based on ``"data/interim/{pid}/phone_valid_sensed_days.csv"``. 
 
 .. _individual-sensor-settings:
 
@@ -969,31 +971,31 @@ Active and sedentary bouts. If the step count per minute is smaller than ``THRES
 
 .. -------------------------Links ------------------------------------ ..
 
-.. _TABLES_FOR_SENSED_BINS: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L3
-.. _`Messages Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L35
+.. _PHONE_VALID_SENSED_BINS: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L30
+.. _`Messages Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L43
 .. _AWARE: https://awareframework.com/what-is-aware/
 .. _`List of Timezones`: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-.. _DAY_SEGMENTS: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L10
-.. _PHONE_VALID_SENSED_DAYS: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L61
-.. _`Call Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L45
-.. _`WiFi Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L169
-.. _`Bluetooth Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L81
-.. _`Accelerometer Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L115
-.. _`Applications Foreground Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L125
-.. _`Battery Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L95
-.. _`Activity Recognition Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L87
-.. _`Light Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L109
-.. _`Location (Barnett’s) Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L71
-.. _`Screen Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L101
-.. _`Fitbit: Sleep Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L162
+.. _DAY_SEGMENTS: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L6
+.. _PHONE_VALID_SENSED_DAYS: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L37
+.. _`Call Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L53
+.. _`WiFi Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L172
+.. _`Bluetooth Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L84
+.. _`Accelerometer Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L118
+.. _`Applications Foreground Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L128
+.. _`Battery Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L98
+.. _`Activity Recognition Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L90
+.. _`Light Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L112
+.. _`Location (Barnett’s) Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L74
+.. _`Screen Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L104
+.. _`Fitbit: Sleep Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L165
 .. _`version 1`: https://dev.fitbit.com/build/reference/web-api/sleep-v1/
 .. _`version 1.2`: https://dev.fitbit.com/build/reference/web-api/sleep/
 .. _`Conversation Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L191
 .. _`this Fitbit forum post`: https://community.fitbit.com/t5/Alta/What-does-Restless-mean-in-sleep-tracking/td-p/2989011
 .. _shortData: https://dev.fitbit.com/build/reference/web-api/sleep/#interpreting-the-sleep-stage-and-short-data
-.. _`Fitbit: Heart Rate Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L138
-.. _`Fitbit: Steps Config Code`: https://github.com/carissalow/rapids/blob/29b04b0601b62379fbdb76de685f3328b8dde2a2/config.yaml#L145
+.. _`Fitbit: Heart Rate Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L141
+.. _`Fitbit: Steps Config Code`: https://github.com/carissalow/rapids/blob/29b04b0601b62379fbdb76de685f3328b8dde2a2/config.yaml#L148
 .. _`Fitbit documentation`: https://help.fitbit.com/articles/en_US/Help_article/1565
-.. _top1global: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L108
+.. _top1global: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L136
 .. _`Beiwe Summary Statistics`: http://wiki.beiwe.org/wiki/Summary_Statistics
 .. _`Pause-Flight Model`: https://academic.oup.com/biostatistics/advance-article/doi/10.1093/biostatistics/kxy059/5145908

@@ -23,8 +23,8 @@ if config["CALLS"]["COMPUTE"]:
     files_to_compute.extend(expand("data/processed/{pid}/calls_{call_type}_{segment}.csv", pid=config["PIDS"], call_type=config["CALLS"]["TYPES"], segment = config["CALLS"]["DAY_SEGMENTS"]))
 
 if config["SCREEN"]["COMPUTE"]:
-    if config["SCREEN"]["DB_TABLE"] not in config["TABLES_FOR_SENSED_BINS"]:
-        raise ValueError("Error: Add your screen table (and as many sensor tables as you have) to TABLES_FOR_SENSED_BINS in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data)")
+    if config["SCREEN"]["DB_TABLE"] not in config["PHONE_VALID_SENSED_BINS"]["TABLES"]:
+        raise ValueError("Error: Add your screen table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data)")
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SCREEN"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SCREEN"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/processed/{pid}/screen_deltas.csv", pid=config["PIDS"]))

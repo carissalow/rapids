@@ -50,7 +50,7 @@ This is expected behavior. The advantage of using ``snakemake`` under the hood i
     Execution halted
 
 **Solution:**
-Please make sure the sensors listed in ``TABLES_FOR_SENSED_BINS`` and each sensor section you activated in ``config.yaml`` match your database tables.
+Please make sure the sensors listed in ``[PHONE_VALID_SENSED_BINS][TABLES]`` and each sensor section you activated in ``config.yaml`` match your database tables.
 
 
 

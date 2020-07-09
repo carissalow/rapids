@@ -10,7 +10,7 @@ The ``config.yaml`` File
 
 RAPIDS configuration settings are defined in ``config.yaml`` (See `config.yaml`_). This is the only file that you need to understand in order to compute the features that RAPIDS ships with. 
 
-It has global settings like ``TABLES_FOR_SENSED_BINS``, ``PIDS``, ``DAY_SEGMENTS``, among others (see :ref:`global-sensor-doc` for more information). As well as per sensor settings, for example, for the :ref:`messages-sensor-doc`::
+It has global settings like ``PIDS``, ``DAY_SEGMENTS``, among others (see :ref:`global-sensor-doc` for more information). As well as per sensor settings, for example, for the :ref:`messages-sensor-doc`::
 
       | ``MESSAGES:``
       |     ``COMPUTE: True``
