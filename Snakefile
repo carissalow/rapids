@@ -33,7 +33,7 @@ if config["CALLS"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["CALLS"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["CALLS"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["CALLS"]["DB_TABLE"]))
-    files_to_compute.extend(expand("data/processed/{pid}/calls_{call_type}_{segment}.csv", pid=config["PIDS"], call_type=config["CALLS"]["TYPES"], segment = config["CALLS"]["DAY_SEGMENTS"]))
+    files_to_compute.extend(expand("data/processed/{pid}/calls_{call_type}_{day_segment}.csv", pid=config["PIDS"], call_type=config["CALLS"]["TYPES"], day_segment = config["CALLS"]["DAY_SEGMENTS"]))
 
 if config["BARNETT_LOCATION"]["COMPUTE"]:
     # TODO add files_to_compute.extend(optional_location_input(None))
@@ -44,16 +44,16 @@ if config["BARNETT_LOCATION"]["COMPUTE"]:
             raise ValueError("Error: Add your locations table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")            
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["BARNETT_LOCATION"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["BARNETT_LOCATION"]["DB_TABLE"]))
-    files_to_compute.extend(expand("data/processed/{pid}/location_barnett_{segment}.csv", pid=config["PIDS"], segment = config["BARNETT_LOCATION"]["DAY_SEGMENTS"]))
+    files_to_compute.extend(expand("data/processed/{pid}/location_barnett_{day_segment}.csv", pid=config["PIDS"], day_segment = config["BARNETT_LOCATION"]["DAY_SEGMENTS"]))
 
 if config["BLUETOOTH"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["BLUETOOTH"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["BLUETOOTH"]["DB_TABLE"]))
-    files_to_compute.extend(expand("data/processed/{pid}/bluetooth_{segment}.csv", pid=config["PIDS"], segment = config["BLUETOOTH"]["DAY_SEGMENTS"]))
+    files_to_compute.extend(expand("data/processed/{pid}/bluetooth_{day_segment}.csv", pid=config["PIDS"], day_segment = config["BLUETOOTH"]["DAY_SEGMENTS"]))
 
 if config["ACTIVITY_RECOGNITION"]["COMPUTE"]:
     # TODO add files_to_compute.extend(optional_ar_input(None)), the Android or iOS table gets processed depending on each participant
-    files_to_compute.extend(expand("data/processed/{pid}/activity_recognition_{segment}.csv",pid=config["PIDS"], segment = config["ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]))
+    files_to_compute.extend(expand("data/processed/{pid}/activity_recognition_{day_segment}.csv",pid=config["PIDS"], day_segment = config["ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]))
 
 if config["BATTERY"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["BATTERY"]["DB_TABLE"]))
@@ -113,7 +113,7 @@ if config["SLEEP"]["COMPUTE"]:
 
 if config["CONVERSATION"]["COMPUTE"]:
     # TODO add files_to_compute.extend(optional_conversation_input(None)), the Android or iOS table gets processed depending on each participant
-    files_to_compute.extend(expand("data/processed/{pid}/conversation_{segment}.csv",pid=config["PIDS"], segment = config["CONVERSATION"]["DAY_SEGMENTS"]))
+    files_to_compute.extend(expand("data/processed/{pid}/conversation_{day_segment}.csv",pid=config["PIDS"], day_segment = config["CONVERSATION"]["DAY_SEGMENTS"]))
 
 if config["PARAMS_FOR_ANALYSIS"]["COMPUTE"]:
     rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"]
