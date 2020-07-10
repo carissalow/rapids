@@ -35,6 +35,7 @@ jobs:
       before_install:
         - brew install mysql
         - brew services start mysql
+        - brew install gcc@9
         - brew install https://github.com/Homebrew/homebrew-core/raw/218998d/Formula/r.rb
         - R --version
         - brew cask install miniconda
