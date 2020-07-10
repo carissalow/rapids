@@ -61,6 +61,8 @@ Nikunj Goel, BS
 
 Nik is a graduate student at the University of Pittsburgh pursuing Master of Science in Information Science. He earned his Bachelor of Technology degree in Information Technology from India. He is a Data Enthusiasts and passionate about finding the meaning out of raw data. In a long term, his goal is to create a breakthrough in Data Science and Deep Learning.
 
+`Nikunj Goel Linkedin Profile`_
+
 .. _`Julio Vega Personal Website`: https://juliovega.info/
 .. _`Meng Li Linkedin Profile`: https://www.linkedin.com/in/meng-li-57238414a
 .. _`Meng Li Github Profile`: https://github.com/Meng6
