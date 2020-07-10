@@ -55,9 +55,15 @@ Nicolas Leo, BS
 Nicolas is a rising senior studying computer science at the University of Pittsburgh. His academic interests include databases, machine learning, and application development. After completing his undergraduate degree, he plans to attend graduate school for a MS in Computer Science with a focus on Intelligent Systems. 
 
 
+Nikunj Goel, BS
+""""""""""""""""
+**intern**
+
+Nik is a graduate student at the University of Pittsburgh pursuing Master of Science in Information Science. He earned his Bachelor of Technology degree in Information Technology from India. He is a Data Enthusiasts and passionate about finding the meaning out of raw data. In a long term, his goal is to create a breakthrough in Data Science and Deep Learning.
 
 .. _`Julio Vega Personal Website`: https://juliovega.info/
 .. _`Meng Li Linkedin Profile`: https://www.linkedin.com/in/meng-li-57238414a
 .. _`Meng Li Github Profile`: https://github.com/Meng6
 .. _`Kwesi Aguillera Linkedin Profile`: https://www.linkedin.com/in/kwesi-aguillera-29529823
 .. _`Echhit Joshi Linkedin Profile`: https://www.linkedin.com/in/echhitjoshi/
+.. _`Nikunj Goel Linkedin Profile`: https://www.linkedin.com/in/nikunjgoel95/
