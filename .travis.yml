@@ -35,7 +35,7 @@ jobs:
       before_install:
         - brew link --overwrite gcc@9
         - ls /usr/local/opt/gcc/lib/gcc
-        - brew install https://github.com/Homebrew/homebrew-core/raw/d381cc8/Formula/r.rb
+        - brew install https://github.com/Homebrew/homebrew-core/raw/218998d/Formula/r.rb
         - R --version
         - brew install mysql
         - brew services start mysql
@@ -52,7 +52,7 @@ jobs:
           - $TRAVIS_BUILD_DIR/renv/library
 
 install:
-  - conda init
+  - conda init bash
   - conda update -q --all --yes conda
   - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
   - conda activate test-environment
