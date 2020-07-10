@@ -2,13 +2,12 @@
 # You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
 PIDS: [test01, test02, test03, test04]
 
-
 # Global var with common day segments
 DAY_SEGMENTS: &day_segments
   [daily, morning, afternoon, evening, night]
 
 PHONE_VALID_SENSED_BINS:
-  TABLES: [messages, calls, screen, battery, bluetooth, wifi]
+  TABLES: [messages, calls, screen, battery, bluetooth, wifi, light]
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 MESSAGES:
@@ -56,3 +55,9 @@ WIFI:
   DB_TABLE: wifi
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+
+LIGHT:
+  COMPUTE: True
+  DB_TABLE: light
+  DAY_SEGMENTS: *day_segments
+  FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]

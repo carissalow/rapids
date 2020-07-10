@@ -72,3 +72,10 @@ WIFI
     - An option of 5 access point devices is randomly distributed throughout the data records.
     - There is one raw WIFI data file each, for testing both iOS and Android data formats.
     - There is also an additional empty data file for both android and iOS for testing empty data files.
+
+Light
+"""""""
+
+    - The raw light data file contains data for 1 day. 
+    - The raw light data contains 3 or 4 rows of data for each ``epoch`` except ``night``. The single row of data for ``night`` is for testing features for single values inputs. (Example testing the standard deviation of one input value)
+    - Since light is only available for Android there is only one file that constains data for Android. All other files (i.e. for iPhone) are empty data files.

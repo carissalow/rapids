@@ -2,4 +2,4 @@ directory: ./
 configfile: ./tests/settings/testing_config.yaml
 snakefile: ./tests/Snakefile
 cores: 1
-forcerun: [messages_features, call_features, screen_features, battery_features, bluetooth_features, wifi_features]
+forcerun: [messages_features, call_features, screen_features, battery_features, bluetooth_features, wifi_features, light_features]

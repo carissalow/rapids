@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 def base_light_features(light_data, day_segment, requested_features):
     # name of the features this function can compute
@@ -26,7 +27,7 @@ def base_light_features(light_data, day_segment, requested_features):
             if "medianlux" in features_to_compute:
                 light_features["light_" + day_segment + "_medianlux"] = light_data.groupby(["local_date"])["double_light_lux"].median()
             if "stdlux" in features_to_compute:
-                light_features["light_" + day_segment + "_stdlux"] = light_data.groupby(["local_date"])["double_light_lux"].std()
+                light_features["light_" + day_segment + "_stdlux"] = light_data.groupby(["local_date"])["double_light_lux"].std().fillna('NA')
             
             light_features = light_features.reset_index()
 
