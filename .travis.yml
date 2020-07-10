@@ -33,8 +33,9 @@ jobs:
       osx_image: xcode11.3  # Python 3.7 running on macOS 10.14.4
       language: generic       # 'language: python' is an error on Travis CI macOS
       before_install:
-        - brew install gcc@9
-        - brew install https://github.com/Homebrew/homebrew-core/raw/218998d/Formula/r.rb
+        - brew link --overwrite gcc@9
+        - ls /usr/local/opt/gcc/lib/gcc
+        - brew install https://github.com/Homebrew/homebrew-core/raw/d381cc8/Formula/r.rb
         - R --version
         - brew install mysql
         - brew services start mysql
@@ -43,6 +44,7 @@ jobs:
 
       env:
         - RENV_PATHS_ROOT="$HOME/renv/cache"
+        - HOMEBREW_NO_AUTO_UPDATE=1
       cache:
         directories:
           - /usr/local/lib/R
