@@ -35,7 +35,7 @@ jobs:
       before_install:
         - brew install mysql
         - brew services start mysql
-        - brew install r
+        - brew install https://github.com/Homebrew/homebrew-core/raw/218998d/Formula/r.rb
         - R --version
         - brew cask install miniconda
         - eval "$(/opt/miniconda3/condabin/conda shell.bash hook)"
