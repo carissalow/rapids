@@ -33,18 +33,17 @@ jobs:
       osx_image: xcode11.3  # Python 3.7 running on macOS 10.14.4
       language: generic       # 'language: python' is an error on Travis CI macOS
       before_install:
-        - brew link --overwrite gcc@9
+        - HOMEBREW_NO_AUTO_UPDATE=1 brew link --overwrite gcc@9
         - ls /usr/local/opt/gcc/lib/gcc
-        - brew install https://github.com/Homebrew/homebrew-core/raw/218998d/Formula/r.rb
+        - HOMEBREW_NO_AUTO_UPDATE=1 brew install https://github.com/Homebrew/homebrew-core/raw/218998d/Formula/r.rb
         - R --version
-        - brew install mysql
-        - brew services start mysql
-        - brew cask install miniconda
+        - HOMEBREW_NO_AUTO_UPDATE=1 brew install mysql
+        - HOMEBREW_NO_AUTO_UPDATE=1 brew services start mysql
+        - HOMEBREW_NO_AUTO_UPDATE=1 brew cask install miniconda
         - eval "$(/opt/miniconda3/condabin/conda shell.bash hook)"
 
       env:
         - RENV_PATHS_ROOT="$HOME/renv/cache"
-        - HOMEBREW_NO_AUTO_UPDATE=1
       cache:
         directories:
           - /usr/local/lib/R
@@ -52,6 +51,7 @@ jobs:
           - $TRAVIS_BUILD_DIR/renv/library
 
 install:
+  - eval "$(conda shell.bash hook)" # properly initialise non-interactive shell
   - conda init bash
   - conda update -q --all --yes conda
   - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
