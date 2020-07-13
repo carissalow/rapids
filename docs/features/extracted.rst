@@ -971,29 +971,29 @@ Active and sedentary bouts. If the step count per minute is smaller than ``THRES
 
 .. -------------------------Links ------------------------------------ ..
 
-.. _PHONE_VALID_SENSED_BINS: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L30
-.. _`Messages Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L43
+.. _PHONE_VALID_SENSED_BINS: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L30
+.. _`Messages Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L43
 .. _AWARE: https://awareframework.com/what-is-aware/
 .. _`List of Timezones`: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-.. _DAY_SEGMENTS: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L6
-.. _PHONE_VALID_SENSED_DAYS: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L37
-.. _`Call Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L53
-.. _`WiFi Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L172
-.. _`Bluetooth Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L84
-.. _`Accelerometer Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L118
-.. _`Applications Foreground Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L128
-.. _`Battery Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L98
-.. _`Activity Recognition Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L90
-.. _`Light Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L112
-.. _`Location (Barnett’s) Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L74
-.. _`Screen Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L104
-.. _`Fitbit: Sleep Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L165
+.. _DAY_SEGMENTS: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L6
+.. _PHONE_VALID_SENSED_DAYS: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L37
+.. _`Call Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L53
+.. _`WiFi Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L172
+.. _`Bluetooth Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L84
+.. _`Accelerometer Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L118
+.. _`Applications Foreground Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L128
+.. _`Battery Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L98
+.. _`Activity Recognition Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L90
+.. _`Light Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L112
+.. _`Location (Barnett’s) Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L74
+.. _`Screen Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L104
+.. _`Fitbit: Sleep Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L165
 .. _`version 1`: https://dev.fitbit.com/build/reference/web-api/sleep-v1/
 .. _`version 1.2`: https://dev.fitbit.com/build/reference/web-api/sleep/
-.. _`Conversation Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L191
+.. _`Conversation Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L191
 .. _`this Fitbit forum post`: https://community.fitbit.com/t5/Alta/What-does-Restless-mean-in-sleep-tracking/td-p/2989011
 .. _shortData: https://dev.fitbit.com/build/reference/web-api/sleep/#interpreting-the-sleep-stage-and-short-data
-.. _`Fitbit: Heart Rate Config Code`: https://github.com/carissalow/rapids/blob/0c53fd275e628819cf79cf5b87006ce1ad9e597c/config.yaml#L141
+.. _`Fitbit: Heart Rate Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L141
 .. _`Fitbit: Steps Config Code`: https://github.com/carissalow/rapids/blob/29b04b0601b62379fbdb76de685f3328b8dde2a2/config.yaml#L148
 .. _`Fitbit documentation`: https://help.fitbit.com/articles/en_US/Help_article/1565
 .. _top1global: https://github.com/carissalow/rapids/blob/765bb462636d5029a05f54d4c558487e3786b90b/config.yaml#L136
