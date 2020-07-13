@@ -52,9 +52,9 @@ Global Parameters
 - ``PHONE_VALID_SENSED_BINS``
      Contains three attributes: ``COMPUTE``, ``BIN_SIZE`` and ``TABLES``. See the PHONE_VALID_SENSED_BINS_ section in the ``config.yaml`` file
 
-     Set the ``COMPUTE`` flag to True if you want to get this file (``data/interim/{pid}/phone_sensed_bins``). Phone valid sensed bins is a matrix of days x bins where we divide every hour of every day into N bins of size ``BIN_SIZE`` (in minutes). Each bin contains the number of rows that were recorded in that interval by all the sensors listed in ``TABLES``. Add as many sensor tables to ``TABLES`` as you have in your database because valid sensed bins are used to compute ``PHONE_VALID_SENSED_DAYS``  :ref:`PHONE_VALID_SENSED_BINS<phone-valid-sensed-days>`, ``episodepersensedminutes`` feature of :ref:`Screen<screen-sensor-doc>` and to resample fused location data if you configure Barnett's location features to use ``RESAMPLE_FUSED``. 
+     Set the ``COMPUTE`` flag to True if you want to get this file (``data/interim/{pid}/phone_sensed_bins``). Phone valid sensed bins is a matrix of days x bins where we divide every hour of every day into N bins of size ``BIN_SIZE`` (in minutes). Each bin contains the number of rows that were recorded in that interval by all the sensors listed in ``TABLES``. Add as many sensor tables to ``TABLES`` as you have in your database because valid sensed bins are used to compute ``PHONE_VALID_SENSED_DAYS``, the ``episodepersensedminutes`` feature of :ref:`Screen<screen-sensor-doc>` and to resample fused location data if you configure Barnett's location features to use ``RESAMPLE_FUSED``.
 
-      The ``COMPUTE`` flag is automatically ignored (set internally to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features.  
+     The ``COMPUTE`` flag is automatically ignored (set internally to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features.  
 
 .. _phone-valid-sensed-days:
 
@@ -66,7 +66,7 @@ Global Parameters
 
     Therefore, we define a valid hour as those that contain a minimum number of valid bins. A valid bin are those that contain at least one row of data from any sensor logged within that period (See ``PHONE_VALID_SENSED_BINS`` above). We mark an hour as valid if contains at least ``MIN_VALID_BINS_PER_HOUR`` (out of the total possible number of bins that can be captured in an hour based on their length i.e. 60min/``BIN_SIZE`` bins). In turn, we mark a day as valid if it has at least ``MIN_VALID_HOURS_PER_DAY``. 
 
-    Note that RAPIDS *DOES NOT* filter your feature files automatically, you need to do this manually based on ``"data/interim/{pid}/phone_valid_sensed_days.csv"``. 
+    Note that at the moment RAPIDS *DOES NOT* filter your feature files automatically, you need to do this after your features have been extracted using ``"data/interim/{pid}/phone_valid_sensed_days.csv"``. 
 
 .. _individual-sensor-settings:
 
