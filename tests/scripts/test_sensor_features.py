@@ -36,6 +36,10 @@ class TestSensorFeatures(unittest.TestCase):
                 if df_act.empty:
                     self.assertTrue(df_exp.empty)
                 else:
+                    # The order in which the columns varies from time to time so
+                    # the columns are sorted before doing the comparision 
+                    df_exp = df_exp.reindex(sorted(df_exp.columns), axis=1)
+                    df_act = df_act.reindex(sorted(df_act.columns), axis=1)
                     pd.testing.assert_frame_equal(df_exp, df_act, obj=df_exp)
 
 

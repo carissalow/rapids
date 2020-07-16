@@ -79,3 +79,14 @@ Light
     - The raw light data file contains data for 1 day. 
     - The raw light data contains 3 or 4 rows of data for each ``epoch`` except ``night``. The single row of data for ``night`` is for testing features for single values inputs. (Example testing the standard deviation of one input value)
     - Since light is only available for Android there is only one file that constains data for Android. All other files (i.e. for iPhone) are empty data files.
+
+Application Foreground 
+"""""""""""""""""""""""
+
+    - The raw application foreground data file contains data for 1 day. 
+    - The raw application foreground data contains 7 - 9 rows of data for each ``epoch``. The records for each ``epoch`` contains apps that are randomly selected from a list of apps that are from the ``MULTIPLE_CATEGORIES`` and ``SINGLE_CATEGORIES`` (See `test_config.yaml`_). There are also records in each epoch that have apps randomly selected from a list of apps that are from the ``EXCLUDED_CATEGORIES`` and ``EXCLUDED_APPS``. This is to test that these apps are actually being excluded from the calculations of features. There are also records to test ``SINGLE_APPS`` calculations. 
+    - Since application foreground is only available for Android there is only one file that constains data for Android. All other files (i.e. for iPhone) are empty data files.
+
+
+
+ .. _`test_config.yaml`: TBD

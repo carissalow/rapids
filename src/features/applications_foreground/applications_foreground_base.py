@@ -4,15 +4,25 @@ from scipy.stats import entropy
 
 
 def compute_features(filtered_data, apps_type, requested_features, apps_features, day_segment):        
+    # There is the rare occasion that filtered_data is empty (found in testing)
     if "timeoffirstuse" in requested_features:
         time_first_event = filtered_data.sort_values(by="timestamp", ascending=True).drop_duplicates(subset="local_date", keep="first").set_index("local_date")
-        apps_features["apps_" + day_segment + "_timeoffirstuse" + apps_type] = time_first_event["local_hour"] * 60 + time_first_event["local_minute"]
+        if time_first_event.empty:
+            apps_features["apps_" + day_segment + "_timeoffirstuse" + apps_type] = 'NA'
+        else:
+            apps_features["apps_" + day_segment + "_timeoffirstuse" + apps_type] = time_first_event["local_hour"] * 60 + time_first_event["local_minute"]
     if "timeoflastuse" in requested_features:
         time_last_event = filtered_data.sort_values(by="timestamp", ascending=False).drop_duplicates(subset="local_date", keep="first").set_index("local_date")
-        apps_features["apps_" + day_segment + "_timeoflastuse" + apps_type] = time_last_event["local_hour"] * 60 + time_last_event["local_minute"]
+        if time_last_event.empty:
+            apps_features["apps_" + day_segment + "_timeoflastuse" + apps_type] = 'NA'
+        else:
+            apps_features["apps_" + day_segment + "_timeoflastuse" + apps_type] = time_last_event["local_hour"] * 60 + time_last_event["local_minute"]
     if "frequencyentropy" in requested_features:
         apps_with_count = filtered_data.groupby(["local_date","application_name"]).count().sort_values(by="timestamp", ascending=False).reset_index()
-        apps_features["apps_" + day_segment + "_frequencyentropy" + apps_type] = apps_with_count.groupby("local_date")["timestamp"].agg(entropy)
+        if (len(apps_with_count.index) < 2 ):
+            apps_features["apps_" + day_segment + "_frequencyentropy" + apps_type] = 'NA'
+        else:    
+            apps_features["apps_" + day_segment + "_frequencyentropy" + apps_type] = apps_with_count.groupby("local_date")["timestamp"].agg(entropy)
     if "count" in requested_features:
         apps_features["apps_" + day_segment + "_count" + apps_type] = filtered_data.groupby(["local_date"]).count()["timestamp"]
         apps_features.fillna(value={"apps_" + day_segment + "_count" + apps_type: 0}, inplace=True)
@@ -36,6 +46,7 @@ def base_applications_foreground_features(apps_data, day_segment, requested_feat
         if not apps_data.empty:
             apps_features = pd.DataFrame()
             # single category
+            single_categories.sort()
             for sc in single_categories:
                 if sc == "all":
                     apps_features = compute_features(apps_data, "all", requested_features, apps_features, day_segment)

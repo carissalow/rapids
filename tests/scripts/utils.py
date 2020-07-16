@@ -83,7 +83,7 @@ def generate_sensor_file_lists(config):
     exp_str = "tests/data/processed/{pid}/{sensor}_{sensor_type}{day_segment}.csv"
 
     # List of available sensors that can be tested by the testing suite
-    TESTABLE_SENSORS = ['MESSAGES', 'CALLS', 'SCREEN']
+    TESTABLE_SENSORS = ['MESSAGES', 'CALLS', 'SCREEN', 'BATTERY', 'BLUETOOTH', 'WIFI', 'LIGHT', 'APPLICATIONS_FOREGROUND']
 
     # Build list of sensors to be tested. 
     sensors = []

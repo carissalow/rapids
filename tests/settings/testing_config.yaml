@@ -7,11 +7,11 @@ DAY_SEGMENTS: &day_segments
   [daily, morning, afternoon, evening, night]
 
 PHONE_VALID_SENSED_BINS:
-  TABLES: [messages, calls, screen, battery, bluetooth, wifi, light]
+  TABLES: [messages, calls, screen, battery, bluetooth, wifi, light, applications_foreground]
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 MESSAGES:
-  COMPUTE: True
+  COMPUTE: False
   DB_TABLE: messages
   TYPES : [received, sent]
   FEATURES: 
@@ -21,7 +21,7 @@ MESSAGES:
 
 # Communication call features config, TYPES and FEATURES keys need to match
 CALLS:
-  COMPUTE: True
+  COMPUTE: False
   DB_TABLE: calls
   TYPES: [missed, incoming, outgoing]
   FEATURES:
@@ -31,7 +31,7 @@ CALLS:
   DAY_SEGMENTS: *day_segments
 
 SCREEN:
-  COMPUTE: True
+  COMPUTE: False
   DB_TABLE: screen
   DAY_SEGMENTS: *day_segments
   REFERENCE_HOUR_FIRST_USE: 0
@@ -39,25 +39,38 @@ SCREEN:
   EPISODE_TYPES: ["unlock"]
 
 BATTERY:
-  COMPUTE: True
+  COMPUTE: False
   DB_TABLE: battery
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
 
 BLUETOOTH:
-  COMPUTE: True
+  COMPUTE: False
   DB_TABLE: bluetooth
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
 
 WIFI:
-  COMPUTE: True
+  COMPUTE: False
   DB_TABLE: wifi
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
 
 LIGHT:
-  COMPUTE: True
+  COMPUTE: False
   DB_TABLE: light
   DAY_SEGMENTS: *day_segments
   FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
+
+APPLICATIONS_FOREGROUND:
+  COMPUTE: True
+  DB_TABLE: applications_foreground
+  DAY_SEGMENTS: *day_segments
+  SINGLE_CATEGORIES: ["all", "email"]
+  MULTIPLE_CATEGORIES:
+    social: ["socialnetworks", "socialmediatools"]
+    entertainment: ["entertainment", "gamingstrategy"]
+  SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube"] # There's no entropy for single apps
+  EXCLUDED_CATEGORIES: ["systemapp", "tvvideoapps"]
+  EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
+  FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
