@@ -41,7 +41,12 @@ if(nrow(locations) > 0){
             local_date_time = format(utc_date_time, tz = timezone, usetz = F)) %>% 
         separate(local_date_time, c("local_date","local_time"), "\\s", remove = FALSE) %>% 
         separate(local_time, c("local_hour", "local_minute"), ":", remove = FALSE, extra = "drop") %>%
-        mutate(local_hour = as.numeric(local_hour), local_minute = as.numeric(local_minute)) %>%
+        mutate(local_hour = as.numeric(local_hour),
+                        local_minute = as.numeric(local_minute),
+                        local_day_segment = case_when(local_hour %in% 0:5 ~ "night",
+                                                local_hour %in% 6:11 ~ "morning",
+                                                local_hour %in% 12:17 ~ "afternoon",
+                                                local_hour %in% 18:23 ~ "evening")) %>%
         # Delete resampled rows that exist in the same minute as other original (fused) rows
         group_by(local_date, local_hour, local_minute) %>%
         mutate(n = n()) %>%

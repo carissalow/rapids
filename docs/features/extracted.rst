@@ -52,7 +52,7 @@ Global Parameters
 - ``PHONE_VALID_SENSED_BINS``
      Contains three attributes: ``COMPUTE``, ``BIN_SIZE`` and ``TABLES``. See the PHONE_VALID_SENSED_BINS_ section in the ``config.yaml`` file
 
-     Set the ``COMPUTE`` flag to True if you want to get this file (``data/interim/{pid}/phone_sensed_bins``). Phone valid sensed bins is a matrix of days x bins where we divide every hour of every day into N bins of size ``BIN_SIZE`` (in minutes). Each bin contains the number of rows that were recorded in that interval by all the sensors listed in ``TABLES``. Add as many sensor tables to ``TABLES`` as you have in your database because valid sensed bins are used to compute ``PHONE_VALID_SENSED_DAYS``, the ``episodepersensedminutes`` feature of :ref:`Screen<screen-sensor-doc>` and to resample fused location data if you configure Barnett's location features to use ``RESAMPLE_FUSED``.
+     Set the ``COMPUTE`` flag to True if you want to get this file (``data/interim/{pid}/phone_sensed_bins``). Phone valid sensed bins is a matrix of days x bins where we divide every hour of every day into N bins of size ``BIN_SIZE`` (in minutes). Each bin contains the number of rows that were recorded in that interval by all the sensors listed in ``TABLES``. Add as many sensor tables to ``TABLES`` as you have in your database because valid sensed bins are used to compute ``PHONE_VALID_SENSED_DAYS``, the ``episodepersensedminutes`` feature of :ref:`Screen<screen-sensor-doc>` and to resample fused location data if you configure Barnett's/Doryab's location features to use ``RESAMPLE_FUSED``.
 
      The ``COMPUTE`` flag is automatically ignored (set internally to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features.  
 
@@ -631,6 +631,86 @@ In RAPIDS we only expose two parameters for these features (timezone and accurac
 
 Significant locations are determined using K-means clustering on pauses longer than 10 minutes. The number of clusters (K) is increased until no two clusters are within 400 meters from each other. After this, pauses within a certain range of a cluster (200 meters by default) will count as a visit to that significant location. This description was adapted from the Supplementary Materials of https://doi.org/10.1093/biostatistics/kxy059.
 
+
+*The Circadian Calculation*
+
+For a detailed description of how this is calculated, see Canzian, L., & Musolesi, M. (2015, September). Trajectories of depression: unobtrusive monitoring of depressive states by means of smartphone mobility traces analysis. In Proceedings of the 2015 ACM international joint conference on pervasive and ubiquitous computing (pp. 1293-1304). Their procedure was followed using 30-min increments as a bin size. Taken from `Beiwe Summary Statistics`_.
+
+
+Location (Doryab) Features
+""""""""""""""""""""""""""""""
+Doryab location features are based on the research paper https://arxiv.org/pdf/1812.10394.pdf
+
+See `Location (Doryab) Config Code`_
+
+**Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
+
+**Available Platforms:** Android and iOS
+
+**Snakemake rule chain:**
+
+- Rule ``rules/preprocessing.snakefile/download_dataset``
+- Rule ``rules/preprocessing.snakefile/readable_datetime``
+- Rule ``rules/preprocessing.snakefile/phone_sensed_bins``
+- Rule ``rules/preprocessing.snakefile/resample_fused_location`` (only relevant if setting ``location_to_use`` to ````RESAMPLE_FUSED``.
+- Rule ``rules/features.snakefile/location_doryab_features``
+    
+.. _location-parameters:
+
+**Location Rule Parameters (location_doryab_features):**
+
+=================    ===================
+Name	             Description
+=================    ===================
+day_segment          The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
+location_to_use      *Read the Observations section below*. The specifies what type of location data will be use in the analysis. Possible options are ``ALL``, ``ALL_EXCEPT_FUSED`` OR ``RESAMPLE_FUSED``.
+features             Features to be computed, see table below.
+threshold_static     It is the threshold value in km/hr which labels a row as Static or Moving.
+dbscan_minsamples    The number of samples (or total weight) in a neighborhood for a point to be considered as a core point. This includes the point itself.
+dbscan_eps           The maximum distance between two samples for one to be considered as in the neighborhood of the other. This is not a maximum bound on the distances of points within a cluster. This is the most important DBSCAN parameter to choose appropriately for your data set and distance function.
+=================    ===================
+
+.. _location-available-features:
+
+**Available Location Features**
+
+================            =========       =============
+Name                        Units           Description
+================            =========       =============
+locationvariance                            The sum of the variance of the latitude and longitude features.
+loglocationvariance                         Log of the sum of the variance of the latitude and longitude features.
+totaldistance               meters          Total distance travelled in an day_segment is calculated using haversine formula.
+averagespeed                km/hr           Average speed of a person in an day_segment considering only the instances labeled as Moving.
+varspeed                    km/hr           Variance speeed of a person in an day_segment considering only the instances labeled as Moving.
+circadianmovement           	            A continuous metric quantifying a person’s circadian routine.
+numberofsignificantplaces                   Number of significant places visited. It is calculated using the DBSCAN clustering algorithm which takes in EPS and MIN_SAMPLES as a paramter to identify clusters. Each cluster is a significant place.
+numberlocationtransitions                   Number of movements from one cluster to another in a day_segment.
+radiusgyration                              The Radius of Gyration (rog) is a measure in meters of the area covered by a person over a day. A centroid is calculated for all the places (pauses) visited during a day and a weighted distance between all the places and that centroid is computed. The weights are proportional to the time spent in each place.
+timeattop1location          minutes         Time spent at the most significant location.
+timeattop2location          minutes         Time spent at the 2nd most significant location.
+timeattop3location          minutes         Time spent at the 3rd most significant location.
+movingtostaticratio                         Ratio of time spent in Moving versus Static
+outlierstimepercent                         Time spent at all the irrelevant clusters in an day_segment.
+maxlengthstayatclusters     minutes         Maximum time spent in a cluster (significant location).
+minlengthstayatclusters     minutes         Minimum time spent in a cluster (significant location).
+meanlengthstayatclusters    minutes         Average time spent in a cluster (significant location).
+stdlengthstayatclusters     minutes         Standard deviation of time spent in a cluster(significant location).
+locationentropy
+normalizedlocationentropy
+================            =========       =============
+
+**Assumptions/Observations:** 
+
+*Types of location data to use*
+
+Aware Android and iOS clients can collect location coordinates through the phone's GPS or Google's fused location API. If your Aware client was ONLY configured to use GPS set ``location_to_use`` to ``ALL``, if your client was configured to use BOTH GPS and fused location you can use ``ALL`` or set ``location_to_use`` to  ``ALL_EXCEPT_FUSED`` to ignore fused coordinates, if your client was configured to use fused location only,  set ``location_to_use`` to ``RESAMPLE_FUSED``. ``RESAMPLE_FUSED`` takes the original fused location coordinates and replicates each pair forward in time as long as the phone was sensing data as indicated by ``phone_sensed_bins`` (see :ref:`Phone valid sensed days <phone-valid-sensed-days>`), this is done because Google's API only logs a new location coordinate pair when it is sufficiently different from the previous one. 
+
+There are two parameters associated with resampling fused location in the ``RESAMPLE_FUSED_LOCATION`` section of the ``config.yaml`` file. ``CONSECUTIVE_THRESHOLD`` (in minutes, default 30) controls the maximum gap between any two coordinate pairs to replicate the last known pair (for example, participant A's phone did not collect data between 10.30am and 10:50am and between 11:05am and 11:40am, the last known coordinate pair will be replicated during the first period but not the second, in other words, we assume that we cannot longer guarantee the participant stayed at the last known location if the phone did not sense data for more than 30 minutes). ``TIME_SINCE_VALID_LOCATION`` (in minutes, default 720 or 12 hours) the last known fused location won't be carried over longer that this threshold even if the phone was sensing data continuously (for example, participant A went home at 9pm and their phone was sensing data without gaps until 11am the next morning, the last known location will only be replicated until 9am). If you have suggestions to modify or improve this imputation, let us know.
+
+*Significant Locations Identified*
+
+(i.e. The clustering method used)
+Significant locations are determined using DBSCAN clustering on locations that a patient visit over the course of the period of data collection.
 
 *The Circadian Calculation*
 

@@ -31,7 +31,7 @@ PHONE_VALID_SENSED_BINS:
   COMPUTE: False # This flag is automatically ignored (set to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features
   BIN_SIZE: 5 # (in minutes)
   # Add as many sensor tables as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
-  # If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
+  # If you are extracting screen or Barnett's/Doryab's location features, screen and locations tables are mandatory.
   TABLES: []
 
 PHONE_VALID_SENSED_DAYS:
@@ -80,6 +80,16 @@ BARNETT_LOCATION:
   ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
   TIMEZONE: *timezone
   MINUTES_DATA_USED: False # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
+
+DORYAB_LOCATION:
+  COMPUTE: True
+  DB_TABLE: locations
+  DAY_SEGMENTS: *day_segments
+  FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
+  LOCATIONS_TO_USE: RESAMPLE_FUSED # ALL, ALL_EXCEPT_FUSED OR RESAMPLE_FUSED  
+  DBSCAN_EPS: 10 # meters
+  DBSCAN_MINSAMPLES: 5
+  THRESHOLD_STATIC : 1 # km/h
 
 BLUETOOTH:
   COMPUTE: False

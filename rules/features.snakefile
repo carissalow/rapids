@@ -38,6 +38,12 @@ def optional_location_input(wildcards):
     else:
         return expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BARNETT_LOCATION"]["DB_TABLE"])
 
+def optional_location_doryab_input(wildcards):
+    if config["DORYAB_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
+        return expand("data/raw/{{pid}}/{sensor}_resampled.csv", sensor=config["DORYAB_LOCATION"]["DB_TABLE"])
+    else:
+        return expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["DORYAB_LOCATION"]["DB_TABLE"])
+
 def optional_steps_sleep_input(wildcards):
     if config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"] == True and config["STEP"]["EXCLUDE_SLEEP"]["TYPE"] == "FITBIT_BASED":
         return  "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv"
@@ -114,6 +120,20 @@ rule location_barnett_features:
         "data/processed/{pid}/location_barnett_{day_segment}.csv"
     script:
         "../src/features/location_barnett_features.R"
+
+rule location_doryab_features:
+    input:
+        locations = optional_location_doryab_input
+    params:
+        features = config["DORYAB_LOCATION"]["FEATURES"],
+        day_segment = "{day_segment}",
+        dbscan_eps = config["DORYAB_LOCATION"]["DBSCAN_EPS"],
+        dbscan_minsamples = config["DORYAB_LOCATION"]["DBSCAN_MINSAMPLES"],
+        threshold_static = config["DORYAB_LOCATION"]["THRESHOLD_STATIC"]
+    output:
+        "data/processed/{pid}/location_doryab_{day_segment}.csv"
+    script:
+        "../src/features/location_doryab_features.py"
 
 rule bluetooth_features:
     input: 
