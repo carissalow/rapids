@@ -25,6 +25,9 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
 
             location_data = location_data[(location_data['double_latitude']!=0.0) & (location_data['double_longitude']!=0.0)]
 
+            # exclude dates when "double_latitude" and "double_longitude" values are constant
+            location_data = dropDatesOneLocation(location_data)
+
             if "locationvariance" in features_to_compute:
                 location_features["location_" + day_segment + "_locationvariance"] = location_data.groupby(['local_date'])['double_latitude'].var() + location_data.groupby(['local_date'])['double_longitude'].var()
             
@@ -56,7 +59,7 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
                     location_features.loc[localDate,"location_" + day_segment + "_circadianmovement"] = circadian_movement(location_data[location_data['local_date']==localDate])
 
             newLocationData = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
-            
+
             if "numberofsignificantplaces" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_numberofsignificantplaces"] = number_of_significant_places(newLocationData[newLocationData['local_date']==localDate])
@@ -124,6 +127,14 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
             location_features = location_features.reset_index()
 
     return location_features
+
+def dropDatesSameLocationAllDay(data):
+    data_grouped = data.groupby(["local_date"])["double_latitude", "double_longitude"].var()
+    drop_dates = data_grouped[(data_grouped["double_latitude"] == 0) & (data_grouped["double_longitude"] == 0)].index
+    data.set_index(["local_date"], inplace = True)
+    if not drop_dates.empty:
+        data.drop(drop_dates, axis = 0, inplace = True)
+    return data.reset_index()
 
 def distance_to_degrees(d):
     #Just an approximation, but speeds up clustering by a huge amount and doesnt introduce much error
@@ -245,8 +256,8 @@ def cluster_and_label(df,**kwargs):
 
     #And remap the labels:
     merged.index = stationary.index
-    stationary["location_label"] = merged["location_label"].map(label_map)
-
+    stationary = stationary.assign(location_label = merged["location_label"].map(label_map).values)
+    stationary.loc[:, "location_label"] = merged["location_label"].map(label_map)
     return stationary
 
 def rank_count_map(clusters):
@@ -282,7 +293,7 @@ def remove_moving(df, v):
 
     #
     distance = lat_lon_temp.apply( haversine, axis = 1) / 1000
-    time = (pd.to_datetime(df.reset_index().local_date_time.shift(-1),format="%Y-%m-%d %H:%M:%S") - pd.to_datetime(df.reset_index().local_date_time.shift(),format="%Y-%m-%d %H:%M:%S")).fillna(-1) / np.timedelta64(1,'s') / (60.*60)
+    time = ((pd.to_datetime(df.reset_index().local_date_time.shift(-1),format="%Y-%m-%d %H:%M:%S") - pd.to_datetime(df.reset_index().local_date_time.shift(),format="%Y-%m-%d %H:%M:%S")) / np.timedelta64(1,'s')).fillna(-1) / (60.*60)
     time.index = distance.index.copy()
     
     return df[(distance / time) < v]
