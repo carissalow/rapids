@@ -26,7 +26,7 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
             location_data = location_data[(location_data['double_latitude']!=0.0) & (location_data['double_longitude']!=0.0)]
 
             # exclude dates when "double_latitude" and "double_longitude" values are constant
-            location_data = dropDatesOneLocation(location_data)
+            location_data = dropDatesSameLocationAllDay(location_data)
 
             if "locationvariance" in features_to_compute:
                 location_features["location_" + day_segment + "_locationvariance"] = location_data.groupby(['local_date'])['double_latitude'].var() + location_data.groupby(['local_date'])['double_longitude'].var()
