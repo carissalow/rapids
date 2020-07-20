@@ -82,11 +82,11 @@ BARNETT_LOCATION:
   MINUTES_DATA_USED: False # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
 
 DORYAB_LOCATION:
-  COMPUTE: True
+  COMPUTE: False
   DB_TABLE: locations
   DAY_SEGMENTS: *day_segments
   FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
-  LOCATIONS_TO_USE: RESAMPLE_FUSED # ALL, ALL_EXCEPT_FUSED OR RESAMPLE_FUSED  
+  LOCATIONS_TO_USE: ALL # ALL, ALL_EXCEPT_FUSED OR RESAMPLE_FUSED  
   DBSCAN_EPS: 10 # meters
   DBSCAN_MINSAMPLES: 5
   THRESHOLD_STATIC : 1 # km/h
