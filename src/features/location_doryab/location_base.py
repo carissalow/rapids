@@ -130,7 +130,7 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
 
 def dropDatesSameLocationAllDay(data):
     data_grouped = data.groupby(["local_date"])["double_latitude", "double_longitude"].var()
-    drop_dates = data_grouped[(data_grouped["double_latitude"] == 0) & (data_grouped["double_longitude"] == 0)].index
+    drop_dates = data_grouped[((data_grouped["double_latitude"] == 0) & (data_grouped["double_longitude"] == 0)) | (data_grouped["double_latitude"].isnull()) | (data_grouped["double_longitude"].isnull())].index
     data.set_index(["local_date"], inplace = True)
     if not drop_dates.empty:
         data.drop(drop_dates, axis = 0, inplace = True)
@@ -157,6 +157,8 @@ def get_all_travel_distances_meters_speed(locationData,threshold):
     lat_lon_temp['timeInSeconds'] = lat_lon_temp['time_diff'].apply(lambda x: x.total_seconds())
 
     lat_lon_temp = lat_lon_temp[lat_lon_temp['timeInSeconds'] <= 300] 
+    # if lat_lon_temp.empty:
+    #     return pd.Series([0]), pd.DataFrame({"speed": [0], "speedTag": ["Static"]})
     lat_lon_temp['distances'] = lat_lon_temp.apply(haversine, axis=1)  # meters
     lat_lon_temp['speed']  = (lat_lon_temp['distances'] / lat_lon_temp['timeInSeconds'] )
     lat_lon_temp['speed'] = lat_lon_temp['speed'].replace(np.inf, np.nan) * 3.6
