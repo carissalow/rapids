@@ -32,7 +32,7 @@ PHONE_VALID_SENSED_BINS:
   BIN_SIZE: 5 # (in minutes)
   # Add as many sensor tables as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
   # If you are extracting screen or Barnett's/Doryab's location features, screen and locations tables are mandatory.
-  TABLES: []
+  TABLES: [messages]
 
 PHONE_VALID_SENSED_DAYS:
   COMPUTE: False
