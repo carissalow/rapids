@@ -44,9 +44,9 @@ unify_ios_calls <- function(ios_calls){
             ios_calls <- ios_calls %>% summarise(call_type_sequence = paste(call_type, collapse = ","), # collapse all events before a 4
                         # sanity check, timestamp_diff should be equal or close to duration sum
                         # timestamp_diff = trunc((last(timestamp) - first(timestamp)) / 1000) 
-                        # use duration = last(call_duration) if Android measures calls' duration from pick up to hang up
-                        # use call_duration = sum(call_duration) if Android measures calls' duration from dialing/ringing to hang up
-                        call_duration = sum(call_duration), 
+                        # use call_duration = last(call_duration) if you want duration from pick up to hang up
+                        # use call_duration = sum(call_duration) if you want duration from dialing/ringing to hang up
+                        call_duration = last(call_duration), 
                         timestamp = first(timestamp),
                         utc_date_time = first(utc_date_time),
                         local_date_time = first(local_date_time),
@@ -67,8 +67,8 @@ unify_ios_calls <- function(ios_calls){
             TRUE ~ -1), # other, call sequences without a disconnect (4) event are discarded
             # assign a duration of 0 to incoming and outgoing missed calls
             call_duration = ifelse(call_type == 3 | call_type == 4, 0, call_duration), 
-            # get rid of the temp missed call type, set to 3 to match Android
-            call_type = ifelse(call_type == 4, 3, call_type) 
+            # get rid of the temp missed call type, set to 2 to match Android. See https://github.com/carissalow/rapids/issues/79
+            call_type = ifelse(call_type == 4, 2, call_type) 
         ) %>% 
         # discard sequences without an event 4 (disconnect)
         filter(call_type > 0) %>%
