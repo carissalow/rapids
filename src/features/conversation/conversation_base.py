@@ -36,7 +36,7 @@ def base_conversation_features(conversation_data, day_segment, requested_feature
             if "countconversation" in features_to_compute:
                 conversation_features["conversation_" + day_segment + "_countconversation"] = conversation_data[conversation_data["double_convo_start"] > 0].groupby(["local_date"])['double_convo_start'].nunique()
 
-            conv_duration = (conversation_data['double_convo_end'] - conversation_data['double_convo_start'])/60
+            conv_duration = (conversation_data['double_convo_end']/1000 - conversation_data['double_convo_start']/1000)/60
             conversation_data = conversation_data.assign(conv_duration = conv_duration.values)
             
             conversation_data['totalDuration'] = conversation_data[(conversation_data['inference'] >= 0) & (conversation_data['inference'] < 4)].groupby(["local_date"])['inference'].count()/60 
