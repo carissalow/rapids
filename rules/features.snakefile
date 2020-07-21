@@ -129,7 +129,8 @@ rule location_doryab_features:
         day_segment = "{day_segment}",
         dbscan_eps = config["DORYAB_LOCATION"]["DBSCAN_EPS"],
         dbscan_minsamples = config["DORYAB_LOCATION"]["DBSCAN_MINSAMPLES"],
-        threshold_static = config["DORYAB_LOCATION"]["THRESHOLD_STATIC"]
+        threshold_static = config["DORYAB_LOCATION"]["THRESHOLD_STATIC"],
+        maximum_gap_allowed = config["DORYAB_LOCATION"]["MAXIMUM_GAP_ALLOWED"]
     output:
         "data/processed/{pid}/location_doryab_{day_segment}.csv"
     script:

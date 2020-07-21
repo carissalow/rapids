@@ -4,7 +4,7 @@ from astropy.timeseries import LombScargle
 from sklearn.cluster import DBSCAN
 from math import radians, cos, sin, asin, sqrt
 
-def base_location_features(location_data, day_segment, requested_features, dbscan_eps, dbscan_minsamples, threshold_static):
+def base_location_features(location_data, day_segment, requested_features, dbscan_eps, dbscan_minsamples, threshold_static, maximum_gap_allowed):
     # name of the features this function can compute
     base_features_names = ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
 
@@ -34,7 +34,7 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
             
             preComputedDistanceandSpeed = pd.DataFrame()
             for localDate in location_data['local_date'].unique():
-                distance, speeddf = get_all_travel_distances_meters_speed(location_data[location_data['local_date']==localDate],threshold_static)
+                distance, speeddf = get_all_travel_distances_meters_speed(location_data[location_data['local_date']==localDate],threshold_static,maximum_gap_allowed)
                 preComputedDistanceandSpeed.loc[localDate,"distance"] = distance.sum()
                 preComputedDistanceandSpeed.loc[localDate,"avgspeed"] = speeddf[speeddf['speedTag'] == 'Moving']['speed'].mean()
                 preComputedDistanceandSpeed.loc[localDate,"varspeed"] = speeddf[speeddf['speedTag'] == 'Moving']['speed'].var()
@@ -133,7 +133,7 @@ def distance_to_degrees(d):
     d = d / 60
     return d
 
-def get_all_travel_distances_meters_speed(locationData,threshold):
+def get_all_travel_distances_meters_speed(locationData,threshold,maximum_gap_allowed):
     
     lat_lon_temp = pd.DataFrame()
 
@@ -146,7 +146,7 @@ def get_all_travel_distances_meters_speed(locationData,threshold):
     lat_lon_temp['time_diff'] = lat_lon_temp['time_after'] - lat_lon_temp['time_before']
     lat_lon_temp['timeInSeconds'] = lat_lon_temp['time_diff'].apply(lambda x: x.total_seconds())
 
-    lat_lon_temp = lat_lon_temp[lat_lon_temp['timeInSeconds'] <= 300]
+    lat_lon_temp = lat_lon_temp[lat_lon_temp['timeInSeconds'] <= maximum_gap_allowed]
 
     if lat_lon_temp.empty:
         return pd.Series(), pd.DataFrame({"speed": [], "speedTag": []})
