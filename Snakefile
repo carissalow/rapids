@@ -40,6 +40,7 @@ if config["BARNETT_LOCATION"]["COMPUTE"]:
     if config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
         if config["BARNETT_LOCATION"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["TABLES"]:
             files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_resampled.csv", pid=config["PIDS"], sensor=config["BARNETT_LOCATION"]["DB_TABLE"]))
         else:
             raise ValueError("Error: Add your locations table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")            
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["BARNETT_LOCATION"]["DB_TABLE"]))
@@ -119,6 +120,7 @@ if config["DORYAB_LOCATION"]["COMPUTE"]:
     if config["DORYAB_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
         if config["DORYAB_LOCATION"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["TABLES"]:
             files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_resampled.csv", pid=config["PIDS"], sensor=config["DORYAB_LOCATION"]["DB_TABLE"]))
         else:
             raise ValueError("Error: Add your locations table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")      
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["DORYAB_LOCATION"]["DB_TABLE"]))

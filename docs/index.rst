@@ -32,6 +32,7 @@ Contents:
 
    develop/documentation
    develop/features
+   develop/environments
    develop/contributors
    develop/testing
    develop/test_cases
