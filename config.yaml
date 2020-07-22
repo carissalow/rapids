@@ -29,15 +29,15 @@ READABLE_DATETIME:
 
 PHONE_VALID_SENSED_BINS:
   COMPUTE: False # This flag is automatically ignored (set to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features
-  BIN_SIZE: 5 # (in minutes)
+  BIN_SIZE: &bin_size 5 # (in minutes)
   # Add as many sensor tables as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
   # If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
   TABLES: []
 
 PHONE_VALID_SENSED_DAYS:
   COMPUTE: False
-  MIN_VALID_HOURS_PER_DAY: [16, 18, 20] # (out of 24) MIN_HOURS_PER_DAY
-  MIN_VALID_BINS_PER_HOUR: 6 # (out of 60min/BIN_SIZE bins)
+  MIN_VALID_HOURS_PER_DAY: &min_valid_hours_per_day [16] # (out of 24) MIN_HOURS_PER_DAY
+  MIN_VALID_BINS_PER_HOUR: &min_valid_bins_per_hour 6 # (out of 60min/BIN_SIZE bins)
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 MESSAGES:
@@ -200,14 +200,43 @@ CONVERSATION:
   RECORDINGMINUTES: 1
   PAUSEDMINUTES : 3
 
+### Visualizations ################################################################
+HEATMAP_FEATURES_CORRELATIONS:
+  PLOT: False
+  MIN_ROWS_RATIO: 0.5
+  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
+  FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
+  CORR_THRESHOLD: 0.1
 
-### Analysis ################################################################
+HISTOGRAM_VALID_SENSED_HOURS:
+  PLOT: False
+  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+
+HEATMAP_DAYS_BY_SENSORS:
+  PLOT: False
+  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  EXPECTED_NUM_OF_DAYS: -1
+  PHONE_SENSORS_TABLES: ["accelerometer", "applications_foreground", "battery", "calls", "light", "locations", "messages", "screen", "plugin_google_activity_recognition", "plugin_studentlife_audio_android"]
+
+HEATMAP_SENSED_BINS:
+  PLOT: False
+  BIN_SIZE: *bin_size
+
+OVERALL_COMPLIANCE_HEATMAP:
+  PLOT: False
+  BIN_SIZE: *bin_size
+  EXPECTED_NUM_OF_DAYS: 7
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+
+### Example Analysis ################################################################
 PARAMS_FOR_ANALYSIS:
   COMPUTE: False
   GROUNDTRUTH_TABLE: participant_info
   SOURCES: &sources ["phone_features", "fitbit_features", "phone_fitbit_features"]
   DAY_SEGMENTS: *day_segments
-  PHONE_FEATURES: [accelerometer, applications_foreground, battery, call_incoming, call_missed, call_outgoing, activity_recognition, light, location_barnett, screen, sms_received, sms_sent]
+  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
   FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
   PHONE_FITBIT_FEATURES: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
   DEMOGRAPHIC_FEATURES: [age, gender, inpatientdays]

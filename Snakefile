@@ -127,6 +127,25 @@ if config["DORYAB_LOCATION"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["DORYAB_LOCATION"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/processed/{pid}/location_doryab_{segment}.csv", pid=config["PIDS"], segment = config["DORYAB_LOCATION"]["DAY_SEGMENTS"]))
 
+# visualization for data exploration
+if config["HEATMAP_FEATURES_CORRELATIONS"]["PLOT"]:
+    files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}h/heatmap_features_correlations.html", min_valid_hours_per_day=config["HEATMAP_FEATURES_CORRELATIONS"]["MIN_VALID_HOURS_PER_DAY"]))
+    
+if config["HISTOGRAM_VALID_SENSED_HOURS"]["PLOT"]:
+    files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}h/histogram_valid_sensed_hours.html", min_valid_hours_per_day=config["HISTOGRAM_VALID_SENSED_HOURS"]["MIN_VALID_HOURS_PER_DAY"]))
+
+if config["HEATMAP_DAYS_BY_SENSORS"]["PLOT"]:
+    files_to_compute.extend(expand("reports/interim/{min_valid_hours_per_day}h/{pid}/heatmap_days_by_sensors.html", pid=config["PIDS"], min_valid_hours_per_day=config["HEATMAP_DAYS_BY_SENSORS"]["MIN_VALID_HOURS_PER_DAY"]))
+    files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}h/heatmap_days_by_sensors_all_participants.html", min_valid_hours_per_day=config["HEATMAP_DAYS_BY_SENSORS"]["MIN_VALID_HOURS_PER_DAY"]))
+
+if config["HEATMAP_SENSED_BINS"]["PLOT"]:
+    files_to_compute.extend(expand("reports/interim/heatmap_sensed_bins/{pid}/heatmap_sensed_bins.html", pid=config["PIDS"]))
+    files_to_compute.extend(["reports/data_exploration/heatmap_sensed_bins_all_participants.html"])
+
+if config["OVERALL_COMPLIANCE_HEATMAP"]["PLOT"]:
+    files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}h/overall_compliance_heatmap.html", min_valid_hours_per_day=config["OVERALL_COMPLIANCE_HEATMAP"]["MIN_VALID_HOURS_PER_DAY"]))
+
+# analysis example
 if config["PARAMS_FOR_ANALYSIS"]["COMPUTE"]:
     rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"]
     cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"]

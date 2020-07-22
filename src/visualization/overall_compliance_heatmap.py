@@ -16,7 +16,7 @@ def getOneRow(data_per_participant, last_seven_dates, col_name, row):
             row.append(0)
     return row
 
-def getOverallComplianceHeatmap(sensors_with_data, valid_sensed_hours, last_seven_dates, bin_size, min_bins_per_hour, output_path):
+def getOverallComplianceHeatmap(sensors_with_data, valid_sensed_hours, last_seven_dates, bin_size, min_bins_per_hour, expected_num_of_days, output_path):
     plot = ff.create_annotated_heatmap(z=sensors_with_data[last_seven_dates].values,
                                        x=[date.replace("-", "/") for date in last_seven_dates],
                                        y=[pid + "." + label for pid, label in zip(sensors_with_data["pid"].to_list(), sensors_with_data["label"].to_list())],
@@ -25,7 +25,7 @@ def getOverallComplianceHeatmap(sensors_with_data, valid_sensed_hours, last_seve
                                        colorscale="Viridis",
                                        colorbar={"tick0": 0,"dtick": 1},
                                        showscale=True)
-    plot.update_layout(title="Overall compliance heatmap for last seven days.<br>Bin's color shows how many sensors logged at least one row of data for that day.<br>Bin's text shows the valid hours of that day.(A valid hour has at least one row of any sensor in "+ str(min_bins_per_hour) +" out of " + str(int(60 / bin_size)) + " bins of " + str(bin_size) + " minutes)")
+    plot.update_layout(title="Overall compliance heatmap for last " + str(expected_num_of_days) + " days.<br>Bin's color shows how many sensors logged at least one row of data for that day.<br>Bin's text shows the valid hours of that day.(A valid hour has at least one row of any sensor in "+ str(min_bins_per_hour) +" out of " + str(int(60 / bin_size)) + " bins of " + str(bin_size) + " minutes)")
     plot["layout"]["xaxis"].update(side="bottom")
     pio.write_html(plot, file=output_path, auto_open=False, include_plotlyjs="cdn")
 
@@ -36,11 +36,12 @@ pid_files = snakemake.input["pid_files"]
 local_timezone = snakemake.params["local_timezone"]
 bin_size = snakemake.params["bin_size"]
 min_bins_per_hour = snakemake.params["min_bins_per_hour"]
+expected_num_of_days = int(snakemake.params["expected_num_of_days"])
 
 
 cur_date = datetime.datetime.now().astimezone(tz.gettz(local_timezone)).date()
 last_seven_dates = []
-for date_offset in range(6,-1,-1):
+for date_offset in range(expected_num_of_days-1, -1, -1):
     last_seven_dates.append((cur_date - datetime.timedelta(days=date_offset)).strftime("%Y-%m-%d"))
 
 
@@ -64,4 +65,4 @@ if sensors_with_data.empty:
     empty_html.write("There is no sensor data for all participants")
     empty_html.close()
 else:
-    getOverallComplianceHeatmap(sensors_with_data, valid_sensed_hours, last_seven_dates, bin_size, min_bins_per_hour, snakemake.output[0])
+    getOverallComplianceHeatmap(sensors_with_data, valid_sensed_hours, last_seven_dates, bin_size, min_bins_per_hour, expected_num_of_days, snakemake.output[0])

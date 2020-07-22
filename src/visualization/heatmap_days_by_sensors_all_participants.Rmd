@@ -1,0 +1,34 @@
+---
+title: "Heatmap Rows Report"
+author:
+    - "MoSHI Pipeline"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params:
+   rmd: "heatmap_days_by_sensors_all_participants.Rmd"
+output:
+  html_document:
+  highlight: tango
+  number_sections: no
+  theme: default
+  toc: yes
+  toc_depth: 3
+  toc_float:
+    collapsed: no
+    smooth_scroll: yes
+---
+
+```{r include=FALSE}
+source("renv/activate.R")
+```
+
+## All phone sensors
+
+```{r, echo=FALSE}
+heatmaps  <- snakemake@input[["heatmap_rows"]]
+heatmaps.html <- vector(mode="list", length(heatmaps))
+
+for(pid in 1:length(heatmaps)){
+    heatmaps.html[[pid]] <- htmltools::includeHTML(heatmaps[pid])
+}
+htmltools::tagList(heatmaps.html)
+```
