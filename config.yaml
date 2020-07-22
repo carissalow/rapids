@@ -32,11 +32,11 @@ PHONE_VALID_SENSED_BINS:
   BIN_SIZE: 5 # (in minutes)
   # Add as many sensor tables as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
   # If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
-  TABLES: [locations]
+  TABLES: []
 
 PHONE_VALID_SENSED_DAYS:
   COMPUTE: False
-  MIN_VALID_HOURS_PER_DAY: 16 # (out of 24) MIN_HOURS_PER_DAY
+  MIN_VALID_HOURS_PER_DAY: [16, 18, 20] # (out of 24) MIN_HOURS_PER_DAY
   MIN_VALID_BINS_PER_HOUR: 6 # (out of 60min/BIN_SIZE bins)
 
 # Communication SMS features config, TYPES and FEATURES keys need to match

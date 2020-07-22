@@ -3,7 +3,7 @@ library("dplyr")
 library("tidyr")
 
 phone_sensed_bins <- read.csv(snakemake@input[["phone_sensed_bins"]])
-min_valid_hours_per_day <- snakemake@params[["min_valid_hours_per_day"]]
+min_valid_hours_per_day <- as.integer(snakemake@params[["min_valid_hours_per_day"]])
 min_valid_bins_per_hour <- snakemake@params[["min_valid_bins_per_hour"]]
 output_file <- snakemake@output[[1]]
 

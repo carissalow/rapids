@@ -22,7 +22,7 @@ if config["PHONE_VALID_SENSED_DAYS"]["COMPUTE"]:
     if len(config["PHONE_VALID_SENSED_BINS"]["TABLES"]) == 0:
             raise ValueError("If you want to compute PHONE_VALID_SENSED_DAYS, you need to add at least one table to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml")
     files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
-    files_to_compute.extend(expand("data/interim/{pid}/phone_valid_sensed_days.csv", pid=config["PIDS"]))
+    files_to_compute.extend(expand("data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}h.csv", pid=config["PIDS"], min_valid_hours_per_day=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_HOURS_PER_DAY"]))
 
 if config["MESSAGES"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["MESSAGES"]["DB_TABLE"]))

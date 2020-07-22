@@ -22,7 +22,7 @@ rule download_dataset:
         "../src/data/download_dataset.R"
 
 PHONE_SENSORS = []
-PHONE_SENSORS.extend([config["MESSAGES"]["DB_TABLE"], config["CALLS"]["DB_TABLE"], config["BARNETT_LOCATION"]["DB_TABLE"], config["BLUETOOTH"]["DB_TABLE"], config["BATTERY"]["DB_TABLE"], config["SCREEN"]["DB_TABLE"], config["LIGHT"]["DB_TABLE"], config["ACCELEROMETER"]["DB_TABLE"], config["APPLICATIONS_FOREGROUND"]["DB_TABLE"],config["WIFI"]["DB_TABLE"], config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]])
+PHONE_SENSORS.extend([config["MESSAGES"]["DB_TABLE"], config["CALLS"]["DB_TABLE"], config["BARNETT_LOCATION"]["DB_TABLE"], config["DORYAB_LOCATION"]["DB_TABLE"], config["BLUETOOTH"]["DB_TABLE"], config["BATTERY"]["DB_TABLE"], config["SCREEN"]["DB_TABLE"], config["LIGHT"]["DB_TABLE"], config["ACCELEROMETER"]["DB_TABLE"], config["APPLICATIONS_FOREGROUND"]["DB_TABLE"],config["WIFI"]["DB_TABLE"], config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]])
 
 rule readable_datetime:
     input:
@@ -51,10 +51,10 @@ rule phone_valid_sensed_days:
     input:
         phone_sensed_bins =  "data/interim/{pid}/phone_sensed_bins.csv"
     params:
-        min_valid_hours_per_day = config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_HOURS_PER_DAY"],
+        min_valid_hours_per_day = "{min_valid_hours_per_day}",
         min_valid_bins_per_hour = config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]
     output:
-        "data/interim/{pid}/phone_valid_sensed_days.csv"
+        "data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}h.csv"
     script:
         "../src/data/phone_valid_sensed_days.R"
 
