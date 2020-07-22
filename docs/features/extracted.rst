@@ -64,9 +64,9 @@ Global Parameters
 
     On any given day, Aware could have sensed data only for a few minutes or for 24 hours. Daily estimates of features should be considered more reliable the more hours Aware was running and logging data, for example, 10 calls logged on a day when only one hour of data was recorded is a less reliable feature compared to 10 calls on a day when 23 hours of data were recorded. 
 
-    Therefore, we define a valid hour as those that contain a minimum number of valid bins. A valid bin are those that contain at least one row of data from any sensor logged within that period (See ``PHONE_VALID_SENSED_BINS`` above). We mark an hour as valid if contains at least ``MIN_VALID_BINS_PER_HOUR`` (out of the total possible number of bins that can be captured in an hour based on their length i.e. 60min/``BIN_SIZE`` bins). In turn, we mark a day as valid if it has at least ``MIN_VALID_HOURS_PER_DAY``. 
+    Therefore, we define a valid hour as those that contain a minimum number of valid bins. A valid bin are those that contain at least one row of data from any sensor logged within that period (See ``PHONE_VALID_SENSED_BINS`` above). We mark an hour as valid if contains at least ``MIN_VALID_BINS_PER_HOUR`` (out of the total possible number of bins that can be captured in an hour based on their length i.e. 60min/``BIN_SIZE`` bins). In turn, we mark a day as valid if it has at least ``MIN_VALID_HOURS_PER_DAY``. ``MIN_VALID_HOURS_PER_DAY`` could be a list. For different thresholds, we can get different valid sensed days: ``"data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}h.csv"``.
 
-    Note that at the moment RAPIDS *DOES NOT* filter your feature files automatically, you need to do this after your features have been extracted using ``"data/interim/{pid}/phone_valid_sensed_days.csv"``. 
+    Note that at the moment RAPIDS *DOES NOT* filter your feature files automatically, you need to do this after your features have been extracted using ``"data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}h.csv"``. 
 
 .. _individual-sensor-settings:
 
