@@ -1,3 +1,3 @@
 "local_date","call_incoming_morning_count","call_incoming_morning_distinctcontacts","call_incoming_morning_meanduration","call_incoming_morning_sumduration","call_incoming_morning_minduration","call_incoming_morning_maxduration","call_incoming_morning_stdduration","call_incoming_morning_modeduration","call_incoming_morning_entropyduration","call_incoming_morning_timefirstcall","call_incoming_morning_timelastcall","call_incoming_morning_countmostfrequentcontact"
-"2020-06-01",2,2,983,1966,667,1299,446.891485709898,667,0.640802774623272,519,600,1
-"2020-06-02",2,2,983,1966,667,1299,446.891485709898,667,0.640802774623272,519,600,0
+"2020-06-01",2,2,968,1936,657,1279,439.820417898033,657,0.640867990789142,519,600,1
+"2020-06-02",2,2,975,1950,660,1290,445.477272147525,660,0.640266157864261,519,600,0

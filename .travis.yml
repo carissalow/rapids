@@ -55,9 +55,9 @@ install:
   - conda update -q --all --yes conda
   - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
   - conda activate test-environment
-  - snakemake renv_install
+  - snakemake -j1 renv_install
   - R -e 'renv::settings$use.cache(FALSE)'
-  - snakemake renv_restore 
+  - snakemake -j1 renv_restore 
     
 script:
   - bash tests/scripts/run_tests.sh

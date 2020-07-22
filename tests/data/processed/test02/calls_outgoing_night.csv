@@ -1,2 +1,2 @@
 "local_date","call_outgoing_night_count","call_outgoing_night_distinctcontacts","call_outgoing_night_meanduration","call_outgoing_night_sumduration","call_outgoing_night_minduration","call_outgoing_night_maxduration","call_outgoing_night_stdduration","call_outgoing_night_modeduration","call_outgoing_night_entropyduration","call_outgoing_night_timefirstcall","call_outgoing_night_timelastcall","call_outgoing_night_countmostfrequentcontact"
-"2020-06-01",1,1,970,970,970,970,NA,970,0,172,172,1
+"2020-06-01",3,3,320,960,0,960,554.256258422041,0,0,57,257,1
