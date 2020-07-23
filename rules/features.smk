@@ -88,12 +88,12 @@ rule location_doryab_features:
 
 rule bluetooth_features:
     input: 
-        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BLUETOOTH"]["DB_TABLE"])
+        expand("data/raw/{{pid}}/{sensor}_with_datetime_{{hash}}.csv", sensor=config["BLUETOOTH"]["DB_TABLE"]),
+        day_segments = expand("data/interim/{{pid}}/{sensor}_day_segments_{{hash}}.csv", sensor=config["BLUETOOTH"]["DB_TABLE"])
     params:
-        day_segment = "{day_segment}",
         features = config["BLUETOOTH"]["FEATURES"]
     output:
-        "data/processed/{pid}/bluetooth_{day_segment}.csv"
+        "data/processed/{pid}/bluetooth_{hash}.csv"
     script:
         "../src/features/bluetooth_features.R"
 

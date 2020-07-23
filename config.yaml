@@ -1,10 +1,23 @@
 # Participants to include in the analysis
 # You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
-PIDS: [test01]
+PIDS: [t01]
 
 # Global var with common day segments
 DAY_SEGMENTS: &day_segments
   [daily, morning, afternoon, evening, night]
+
+DAY_SEGMENTS2: &day_segments2
+  # Day segments can be computed based on three strategies
+  # Frequency based: Set SEGMENTS to a number representing the length of a segment in minutes: 15. Every day will be divided in n segments of SEGMENTS minutes starting at midnight.
+  # Interval based:  Set SEGMENTS to a string containing a JSON array with an element for each segment containing a label, and start and end time in 24 hour format.
+  #                   For example: '{"daily": {"00:00", "23:59"}, "morning": {"06:00", "11:59"}}'. Note the string is single quoted and each value double quoted.
+  # Event based:     Set SEGMENTS to a string with a path to a csv file with two columns, a unix timestamp column in milliseconds called "timestamp" and a string column called "label".
+  #                   Every row represents a meaningful event around which features will be extracted, each label should be unique. See EVENT_TIME_SHIFT and EVENT_SEGMENT_DURATION
+  # If you want daily features, create a segment with label "daily". DO NOT use "daily" to label any other segment
+  # ------------------------------------------------------------------------------
+  SEGMENTS: '[["daily", "00:00", "23:59"], ["morning", "06:00", "11:59"], ["evening", "18:00", "23:59"]]'
+  EVENT_TIME_SHIFT: 0 # Postive or negative number of minutes. A day segment will start EVENT_TIME_SHIFT minutes before or after each meaningful event. Only used if SEGMENTS is a valid event file (see above).
+  EVENT_SEGMENT_DURATION: 60 # Lengh of every day_segment around each meaningful event. Only used if SEGMENTS is a valid event file (see above).
 
 # Global timezone
 # Use codes from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
@@ -97,7 +110,7 @@ DORYAB_LOCATION:
 BLUETOOTH:
   COMPUTE: False
   DB_TABLE: bluetooth
-  DAY_SEGMENTS: *day_segments
+  DAY_SEGMENTS: *day_segments2
   FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
 
 ACTIVITY_RECOGNITION:

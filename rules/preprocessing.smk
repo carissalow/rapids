@@ -38,6 +38,18 @@ rule download_dataset:
     script:
         "../src/data/download_dataset.R"
 
+rule compute_day_segments:
+    input: 
+        optional_day_segments_input,
+    params:
+        segments = lambda wildcards: find_day_segments_argument(wildcards, "SEGMENTS"),
+        event_time_shift = lambda wildcards: find_day_segments_argument(wildcards, "EVENT_TIME_SHIFT"),
+        event_segment_duration = lambda wildcards: find_day_segments_argument(wildcards, "EVENT_SEGMENT_DURATION"),
+    output:
+        "data/interim/{pid}/{sensor}_day_segments_{hash}.csv"
+    script:
+        "../src/data/compute_day_segments.py"
+
 PHONE_SENSORS = []
 PHONE_SENSORS.extend([config["MESSAGES"]["DB_TABLE"], config["CALLS"]["DB_TABLE"], config["BARNETT_LOCATION"]["DB_TABLE"], config["DORYAB_LOCATION"]["DB_TABLE"], config["BLUETOOTH"]["DB_TABLE"], config["BATTERY"]["DB_TABLE"], config["SCREEN"]["DB_TABLE"], config["LIGHT"]["DB_TABLE"], config["ACCELEROMETER"]["DB_TABLE"], config["APPLICATIONS_FOREGROUND"]["DB_TABLE"], config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]])
 PHONE_SENSORS.extend(config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"])
@@ -50,14 +62,15 @@ if len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) > 0:
 
 rule readable_datetime:
     input:
-        sensor_input = rules.download_dataset.output
+        sensor_input = "data/raw/{pid}/{sensor}_raw.csv",
+        day_segments = "data/interim/{pid}/{sensor}_day_segments_{hash}.csv"
     params:
         timezones = None,
         fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"]
     wildcard_constraints:
         sensor = '.*(' + '|'.join([re.escape(x) for x in PHONE_SENSORS]) + ').*' # only process smartphone sensors, not fitbit
     output:
-        "data/raw/{pid}/{sensor}_with_datetime.csv"
+        "data/raw/{pid}/{sensor}_with_datetime_{hash}.csv"
     script:
         "../src/data/readable_datetime.R"
 
