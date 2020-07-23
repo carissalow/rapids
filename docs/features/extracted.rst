@@ -659,16 +659,17 @@ See `Location (Doryab) Config Code`_
 
 **Location Rule Parameters (location_doryab_features):**
 
-=================    ===================
-Name	             Description
-=================    ===================
-day_segment          The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-location_to_use      *Read the Observations section below*. The specifies what type of location data will be use in the analysis. Possible options are ``ALL``, ``ALL_EXCEPT_FUSED`` OR ``RESAMPLE_FUSED``.
-features             Features to be computed, see table below.
-threshold_static     It is the threshold value in km/hr which labels a row as Static or Moving.
-dbscan_minsamples    The number of samples (or total weight) in a neighborhood for a point to be considered as a core point. This includes the point itself.
-dbscan_eps           The maximum distance between two samples for one to be considered as in the neighborhood of the other. This is not a maximum bound on the distances of points within a cluster. This is the most important DBSCAN parameter to choose appropriately for your data set and distance function.
-=================    ===================
+===================    ===================
+Name	               Description
+===================    ===================
+day_segment            The particular ``day_segment`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
+location_to_use        *Read the Observations section below*. The specifies what type of location data will be use in the analysis. Possible options are ``ALL``, ``ALL_EXCEPT_FUSED`` OR ``RESAMPLE_FUSED``.
+features               Features to be computed, see table below.
+threshold_static       It is the threshold value in km/hr which labels a row as Static or Moving.
+dbscan_minsamples      The number of samples (or total weight) in a neighborhood for a point to be considered as a core point. This includes the point itself.
+dbscan_eps             The maximum distance between two samples for one to be considered as in the neighborhood of the other. This is not a maximum bound on the distances of points within a cluster. This is the most important DBSCAN parameter to choose appropriately for your data set and distance function.
+maximum_gap_allowed    The maximum gap (in seconds) allowed between any two consecutive rows for them to be considered part of the same displacement. If this threshold is too high, it can throw speed and distance calculations off for periods when the the phone was not sensing.
+===================    ===================
 
 .. _location-available-features:
 
