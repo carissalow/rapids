@@ -111,29 +111,11 @@ def optional_heatmap_days_by_sensors_input(wildcards):
         tables_platform = [table for table in config["HEATMAP_DAYS_BY_SENSORS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"]]] # for ios, discard any android tables that may exist
 
     return expand("data/raw/{{pid}}/{table}_with_datetime.csv", table = tables_platform)
-def optional_day_segments_input(wildcards):
-    return []
 
-def find_day_segments_argument(wildcards, argument):
+def find_day_segments_input_file(wildcards):
     for key, values in config.items():
-        if "DAY_SEGMENTS" in config[key] and "DB_TABLE" in config[key] and config[key]["DB_TABLE"] == wildcards.sensor:
-            return config[key]["DAY_SEGMENTS"][argument]
-            
-def hash_day_segments(config_section):
-    # TODO hash the content of the interval file instead of SEGMENTS when SEGMENTS is a path
-    return hashlib.sha1(config_section["SEGMENTS"].encode('utf-8')).hexdigest()
-
-def is_valid_day_segment_configuration(sensor, config_section):
-    if not (isinstance(config_section, collections.OrderedDict) or isinstance(config_section, dict)):
-        raise ValueError("The DAY_SEGMENTS parameter in the {} config section should be a dictionary with three parameters: SEGMENTS (str), EVENT_TIME_SHIFT (int), and EVENT_SEGMENT_DURATION (int)".format(sensor))
-    for attribute in ["SEGMENTS", "EVENT_TIME_SHIFT", "EVENT_SEGMENT_DURATION"]:
-        if not attribute in config_section:
-            raise ValueError("The config[{}][DAY_SEGMENTS] section should have an attribute named {}".format(sensor, attribute))
-    
-    if not isinstance(config_section["SEGMENTS"], str):
-        raise ValueError("The config[{}][DAY_SEGMENTS][SEGMENTS] variable should be a string".format(sensor))
-    if not isinstance(config_section["EVENT_TIME_SHIFT"], int):
-        raise ValueError("The config[{}][DAY_SEGMENTS][EVENT_TIME_SHIFT] variable should be an integer".format(sensor))
-    if not isinstance(config_section["EVENT_SEGMENT_DURATION"], int):
-        raise ValueError("The config[{}][DAY_SEGMENTS][EVENT_SEGMENT_DURATION] variable should be an integer".format(sensor))
-    return True
+        if  "DB_TABLE" in config[key] and config[key]["DB_TABLE"] == wildcards.sensor:
+            if "DAY_SEGMENTS" in config[key]:
+                return config[key]["DAY_SEGMENTS"]
+            else:
+                raise ValueError("{} should have a DAY_SEGMENTS parameter containing the path to its day segments file".format(wildcards.sensor))

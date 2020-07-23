@@ -88,12 +88,12 @@ rule location_doryab_features:
 
 rule bluetooth_features:
     input: 
-        expand("data/raw/{{pid}}/{sensor}_with_datetime_{{hash}}.csv", sensor=config["BLUETOOTH"]["DB_TABLE"]),
-        day_segments = expand("data/interim/{{pid}}/{sensor}_day_segments_{{hash}}.csv", sensor=config["BLUETOOTH"]["DB_TABLE"])
+        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BLUETOOTH"]["DB_TABLE"]),
+        day_segments = expand("data/interim/{sensor}_day_segments.csv", sensor=config["BLUETOOTH"]["DB_TABLE"])
     params:
         features = config["BLUETOOTH"]["FEATURES"]
     output:
-        "data/processed/{pid}/bluetooth_{hash}.csv"
+        "data/processed/{pid}/bluetooth_features.csv"
     script:
         "../src/features/bluetooth_features.R"
 
@@ -192,12 +192,12 @@ rule applications_foreground_features:
 
 rule wifi_features:
     input: 
-        unpack(optional_wifi_input)
+        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]),
+        day_segments = expand("data/interim/{sensor}_day_segments.csv", sensor=config["WIFI"]["DB_TABLE"])
     params:
-        day_segment = "{day_segment}",
         features = config["WIFI"]["FEATURES"]
     output:
-        "data/processed/{pid}/wifi_{day_segment}.csv"
+        "data/processed/{pid}/wifi_features.csv"
     script:
         "../src/features/wifi_features.R"
 

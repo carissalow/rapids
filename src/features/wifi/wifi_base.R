@@ -1,7 +1,7 @@
 library(dplyr)
 
 filter_by_day_segment <- function(data, day_segment) {
-  if(day_segment %in% c("morning", "afternoon", "evening", "night"))
+  if(day_segment != "daily")
     data <- data %>% filter(local_day_segment == day_segment)
 
   return(data %>% group_by(local_date))

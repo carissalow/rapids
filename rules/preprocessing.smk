@@ -40,13 +40,9 @@ rule download_dataset:
 
 rule compute_day_segments:
     input: 
-        optional_day_segments_input,
-    params:
-        segments = lambda wildcards: find_day_segments_argument(wildcards, "SEGMENTS"),
-        event_time_shift = lambda wildcards: find_day_segments_argument(wildcards, "EVENT_TIME_SHIFT"),
-        event_segment_duration = lambda wildcards: find_day_segments_argument(wildcards, "EVENT_SEGMENT_DURATION"),
+        find_day_segments_input_file
     output:
-        "data/interim/{pid}/{sensor}_day_segments_{hash}.csv"
+        segments_file = "data/interim/{sensor}_day_segments.csv",
     script:
         "../src/data/compute_day_segments.py"
 
@@ -63,14 +59,14 @@ if len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) > 0:
 rule readable_datetime:
     input:
         sensor_input = "data/raw/{pid}/{sensor}_raw.csv",
-        day_segments = "data/interim/{pid}/{sensor}_day_segments_{hash}.csv"
+        day_segments = "data/interim/{sensor}_day_segments.csv"
     params:
         timezones = None,
         fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"]
     wildcard_constraints:
         sensor = '.*(' + '|'.join([re.escape(x) for x in PHONE_SENSORS]) + ').*' # only process smartphone sensors, not fitbit
     output:
-        "data/raw/{pid}/{sensor}_with_datetime_{hash}.csv"
+        "data/raw/{pid}/{sensor}_with_datetime.csv"
     script:
         "../src/data/readable_datetime.R"
 

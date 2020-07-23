@@ -1,0 +1,8 @@
+PIDS: [t01]
+DOWNLOAD_DATASET:
+  GROUP: RAPIDS
+BLUETOOTH:
+  COMPUTE: True
+  DAY_SEGMENTS: "data/external/daysegments_bluetooth.csv"
+WIFI:
+  COMPUTE: True

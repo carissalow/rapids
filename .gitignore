@@ -107,5 +107,6 @@ reports/
 .RData
 .Rhistory
 sn_profile_*/
+!sn_profile_rapids
 settings.dcf
 tests/fakedata_generation/
