@@ -61,7 +61,11 @@ install:
     
 script:
   - bash tests/scripts/run_tests.sh
-  
+
+branches:
+  only:
+  - master
+
 notifications:
   email: false
   slack:
