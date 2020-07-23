@@ -637,11 +637,11 @@ Significant locations are determined using K-means clustering on pauses longer t
 For a detailed description of how this is calculated, see Canzian, L., & Musolesi, M. (2015, September). Trajectories of depression: unobtrusive monitoring of depressive states by means of smartphone mobility traces analysis. In Proceedings of the 2015 ACM international joint conference on pervasive and ubiquitous computing (pp. 1293-1304). Their procedure was followed using 30-min increments as a bin size. Taken from `Beiwe Summary Statistics`_.
 
 
-Location (Doryab) Features
+Location (Doryab's) Features
 """"""""""""""""""""""""""""""
 Doryab location features are based on the research paper https://arxiv.org/pdf/1812.10394.pdf
 
-See `Location (Doryab) Config Code`_
+See `Location (Doryab's) Config Code`_
 
 **Available Epochs (day_segment) :** daily, morning, afternoon, evening, night
 
@@ -1069,6 +1069,7 @@ Active and sedentary bouts. If the step count per minute is smaller than ``THRES
 .. _`Activity Recognition Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L90
 .. _`Light Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L112
 .. _`Location (Barnett’s) Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L74
+.. _`Location (Doryab's) Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L74
 .. _`Screen Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L104
 .. _`Fitbit: Sleep Config Code`: https://github.com/carissalow/rapids/blob/4bdc30ffa4e13987b398a2354746d1a1977bef27/config.yaml#L165
 .. _`version 1`: https://dev.fitbit.com/build/reference/web-api/sleep-v1/
