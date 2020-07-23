@@ -179,6 +179,8 @@ rule screen_features:
         reference_hour_first_use = config["SCREEN"]["REFERENCE_HOUR_FIRST_USE"],
         features_deltas = config["SCREEN"]["FEATURES_DELTAS"],
         episode_types = config["SCREEN"]["EPISODE_TYPES"],
+        ignore_episodes_shorter_than = config["SCREEN"]["IGNORE_EPISODES_SHORTER_THAN"],
+        ignore_episodes_longer_than = config["SCREEN"]["IGNORE_EPISODES_LONGER_THAN"],
         bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"]
     output:
         "data/processed/{pid}/screen_{day_segment}.csv"

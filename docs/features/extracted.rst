@@ -740,14 +740,16 @@ See `Screen Config Code`_
 
 **Screen Rule Parameters (screen_features):**
 
-=========================    ===================
-Name	                     Description
-=========================    ===================
-day_segment                  The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
-reference_hour_first_use     The reference point from which ``firstuseafter`` is to be computed, default is midnight
-features_deltas              Features to be computed, see table below
-episode_types                Currently we only support unlock episodes (from when the phone is unlocked until the screen is off)
-=========================    ===================
+============================    ===================
+Name	                        Description
+============================    ===================
+day_segment                     The particular ``day_segments`` that will be analyzed. The available options are ``daily``, ``morning``, ``afternoon``, ``evening``, ``night``
+reference_hour_first_use        The reference point from which ``firstuseafter`` is to be computed, default is midnight
+ignore_episodes_shorter_than    Ignore episodes that are shorter than this threshold (minutes). Set to 0 to disable this filter.
+ignore_episodes_longer_than     Ignore episodes that are longer than this threshold (minutes). Set to 0 to disable this filter.
+features_deltas                 Features to be computed, see table below
+episode_types                   Currently we only support unlock episodes (from when the phone is unlocked until the screen is off)
+============================    ===================
 
 .. _screen-episodes-available-features:
 

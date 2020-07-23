@@ -91,7 +91,7 @@ DORYAB_LOCATION:
   DBSCAN_MINSAMPLES: 5
   THRESHOLD_STATIC : 1 # km/h
   MAXIMUM_GAP_ALLOWED: 300
-  MINUTES_DATA_USED: True
+  MINUTES_DATA_USED: False
 
 BLUETOOTH:
   COMPUTE: False
@@ -118,6 +118,8 @@ SCREEN:
   DB_TABLE: screen
   DAY_SEGMENTS: *day_segments
   REFERENCE_HOUR_FIRST_USE: 0
+  IGNORE_EPISODES_SHORTER_THAN: 0 # in minutes, set to 0 to disable
+  IGNORE_EPISODES_LONGER_THAN: 0 # in minutes, set to 0 to disable
   FEATURES_DELTAS: ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]
   EPISODE_TYPES: ["unlock"]
 

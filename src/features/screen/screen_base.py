@@ -44,8 +44,10 @@ def base_screen_features(screen_data, phone_sensed_bins, day_segment, params):
 
     reference_hour_first_use = params["reference_hour_first_use"]
     bin_size = params["bin_size"]
-    requested_features_deltas = params["requested_features_deltas"]
-    requested_episode_types = params["requested_episode_types"]
+    requested_features_deltas = params["features_deltas"]
+    requested_episode_types = params["episode_types"]
+    ignore_episodes_shorter_than = params["ignore_episodes_shorter_than"]
+    ignore_episodes_longer_than = params["ignore_episodes_longer_than"]
 
     # name of the features this function can compute
     base_features_deltas = ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]
@@ -64,6 +66,11 @@ def base_screen_features(screen_data, phone_sensed_bins, day_segment, params):
         if (not screen_data.empty) and (day_segment != "daily"):
             screen_data = splitMultiSegmentEpisodes(screen_data, day_segment, [])
         screen_data.set_index(["local_start_date"],inplace=True)
+
+        if ignore_episodes_shorter_than > 0:
+            screen_data = screen_data.query('@ignore_episodes_shorter_than <= time_diff')
+        if ignore_episodes_longer_than > 0:
+            screen_data = screen_data.query('time_diff <= @ignore_episodes_longer_than')
 
         if not screen_data.empty:
             screen_features = pd.DataFrame()
