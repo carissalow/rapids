@@ -4,7 +4,8 @@ rule heatmap_features_correlations:
         phone_valid_sensed_days = expand("data/interim/{pid}/phone_valid_sensed_days_{{min_valid_hours_per_day}}h.csv", pid=config["PIDS"])
     params:
         min_rows_ratio = config["HEATMAP_FEATURES_CORRELATIONS"]["MIN_ROWS_RATIO"],
-        corr_threshold = config["HEATMAP_FEATURES_CORRELATIONS"]["CORR_THRESHOLD"] #0.75
+        corr_threshold = config["HEATMAP_FEATURES_CORRELATIONS"]["CORR_THRESHOLD"],
+        corr_method = config["HEATMAP_FEATURES_CORRELATIONS"]["CORR_METHOD"]
     output:
         "reports/data_exploration/{min_valid_hours_per_day}h/heatmap_features_correlations.html"
     script:

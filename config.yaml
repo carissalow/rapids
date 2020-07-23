@@ -208,6 +208,7 @@ HEATMAP_FEATURES_CORRELATIONS:
   PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
   FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
   CORR_THRESHOLD: 0.1
+  CORR_METHOD: "pearson" # choose from {"pearson", "kendall", "spearman"}
 
 HISTOGRAM_VALID_SENSED_HOURS:
   PLOT: False

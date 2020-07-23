@@ -50,7 +50,7 @@ features = features.loc[features.index.intersection(selected_participants_and_da
 
 # get correlation matrix
 features = features.astype(float)
-corr_matrix = features.corr(min_periods=min_rows_ratio * features.shape[0])
+corr_matrix = features.corr(method=snakemake.params["corr_method"], min_periods=min_rows_ratio * features.shape[0])
 
 # replace correlation coefficients less than corr_threshold with NA
 corr_matrix[(corr_matrix > -corr_threshold) & (corr_matrix < corr_threshold)] = np.nan
