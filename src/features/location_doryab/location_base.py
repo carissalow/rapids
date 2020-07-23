@@ -6,8 +6,7 @@ from math import radians, cos, sin, asin, sqrt
 
 def base_location_features(location_data, day_segment, requested_features, dbscan_eps, dbscan_minsamples, threshold_static, maximum_gap_allowed):
     # name of the features this function can compute
-    base_features_names = ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
-
+    base_features_names = ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy","minutesdataused"]    
     # the subset of requested features this function can compute
     features_to_compute = list(set(requested_features) & set(base_features_names))
 
@@ -23,6 +22,12 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
         else:
             location_features = pd.DataFrame()
 
+            if "minutesdataused" in features_to_compute:
+                for localDate in location_data["local_date"].unique():
+                    location_features.loc[localDate,"location_" + day_segment + "_minutesdataused"] = getMinutesData(location_data[location_data["local_date"]==localDate])
+
+            location_features.index.name = 'local_date'
+            
             location_data = location_data[(location_data['double_latitude']!=0.0) & (location_data['double_longitude']!=0.0)]
 
             if "locationvariance" in features_to_compute:
@@ -120,11 +125,15 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
             if "normalizedlocationentropy" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_normalizedlocationentropy"] = location_entropy_normalized(newLocationData[newLocationData['local_date']==localDate])
-
+            
             location_features = location_features.reset_index()
 
     return location_features
 
+
+def getMinutesData(locationData):
+
+    return locationData[['local_hour','local_minute']].drop_duplicates(inplace = False).shape[0]
 
 def distance_to_degrees(d):
     #Just an approximation, but speeds up clustering by a huge amount and doesnt introduce much error
