@@ -50,6 +50,16 @@ def optional_steps_sleep_input(wildcards):
     else:
         return []
 
+def optional_wifi_input(wildcards):
+    if len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) > 0 and len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) == 0:
+        return {"visible_access_points": expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"])}
+    elif len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) == 0 and len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) > 0:
+        return {"connected_access_points": expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"])}
+    elif len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) > 0 and len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) > 0:
+        return {"visible_access_points": expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]), "connected_access_points": expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"])}
+    else:
+        raise ValueError("If you are computing WIFI features you need to provide either VISIBLE_ACCESS_POINTS, CONNECTED_ACCESS_POINTS or both")
+
 rule messages_features:
     input: 
         expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["MESSAGES"]["DB_TABLE"])
@@ -243,7 +253,7 @@ rule applications_foreground_features:
 
 rule wifi_features:
     input: 
-        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"])
+        unpack(optional_wifi_input)
     params:
         day_segment = "{day_segment}",
         features = config["WIFI"]["FEATURES"]
