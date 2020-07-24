@@ -22,7 +22,10 @@ if config["PHONE_VALID_SENSED_DAYS"]["COMPUTE"]:
     if len(config["PHONE_VALID_SENSED_BINS"]["TABLES"]) == 0:
             raise ValueError("If you want to compute PHONE_VALID_SENSED_DAYS, you need to add at least one table to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml")
     files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
-    files_to_compute.extend(expand("data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}h.csv", pid=config["PIDS"], min_valid_hours_per_day=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_HOURS_PER_DAY"]))
+    files_to_compute.extend(expand("data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins.csv",
+                                pid=config["PIDS"],
+                                min_valid_hours_per_day=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_HOURS_PER_DAY"],
+                                min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
 
 if config["MESSAGES"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["MESSAGES"]["DB_TABLE"]))
@@ -143,7 +146,7 @@ if config["HEATMAP_SENSED_BINS"]["PLOT"]:
     files_to_compute.extend(["reports/data_exploration/heatmap_sensed_bins_all_participants.html"])
 
 if config["OVERALL_COMPLIANCE_HEATMAP"]["PLOT"]:
-    files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}h/overall_compliance_heatmap.html", min_valid_hours_per_day=config["OVERALL_COMPLIANCE_HEATMAP"]["MIN_VALID_HOURS_PER_DAY"]))
+    files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/overall_compliance_heatmap.html", min_valid_hours_per_day=config["OVERALL_COMPLIANCE_HEATMAP"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
 
 # analysis example
 if config["PARAMS_FOR_ANALYSIS"]["COMPUTE"]:

@@ -37,7 +37,7 @@ PHONE_VALID_SENSED_BINS:
 PHONE_VALID_SENSED_DAYS:
   COMPUTE: False
   MIN_VALID_HOURS_PER_DAY: &min_valid_hours_per_day [16] # (out of 24) MIN_HOURS_PER_DAY
-  MIN_VALID_BINS_PER_HOUR: &min_valid_bins_per_hour 6 # (out of 60min/BIN_SIZE bins)
+  MIN_VALID_BINS_PER_HOUR: &min_valid_bins_per_hour [6] # (out of 60min/BIN_SIZE bins)
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 MESSAGES:
@@ -229,8 +229,9 @@ HEATMAP_SENSED_BINS:
 
 OVERALL_COMPLIANCE_HEATMAP:
   PLOT: False
+  ONLY_SHOW_VALID_DAYS: False
+  EXPECTED_NUM_OF_DAYS: -1
   BIN_SIZE: *bin_size
-  EXPECTED_NUM_OF_DAYS: 7
   MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
   MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
 

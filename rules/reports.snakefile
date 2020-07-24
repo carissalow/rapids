@@ -62,15 +62,16 @@ rule heatmap_sensed_bins_all_participants:
 rule overall_compliance_heatmap:
     input:
         phone_sensed_bins =  expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]),
-        phone_valid_sensed_days = expand("data/interim/{pid}/phone_valid_sensed_days_{{min_valid_hours_per_day}}h.csv", pid=config["PIDS"]),
+        phone_valid_sensed_days = expand("data/interim/{pid}/phone_valid_sensed_days_{{min_valid_hours_per_day}}hours_{{min_valid_bins_per_hour}}bins.csv", pid=config["PIDS"]),
         pid_files = expand("data/external/{pid}", pid=config["PIDS"])
     params:
+        only_show_valid_days = config["OVERALL_COMPLIANCE_HEATMAP"]["ONLY_SHOW_VALID_DAYS"],
         local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
         expected_num_of_days = config["OVERALL_COMPLIANCE_HEATMAP"]["EXPECTED_NUM_OF_DAYS"],
         bin_size = config["OVERALL_COMPLIANCE_HEATMAP"]["BIN_SIZE"],
-        min_bins_per_hour = config["OVERALL_COMPLIANCE_HEATMAP"]["MIN_VALID_BINS_PER_HOUR"]
+        min_bins_per_hour = "{min_valid_bins_per_hour}"
     output:
-        "reports/data_exploration/{min_valid_hours_per_day}h/overall_compliance_heatmap.html"
+        "reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/overall_compliance_heatmap.html"
     script:
         "../src/visualization/overall_compliance_heatmap.py"
 

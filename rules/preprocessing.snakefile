@@ -52,9 +52,9 @@ rule phone_valid_sensed_days:
         phone_sensed_bins =  "data/interim/{pid}/phone_sensed_bins.csv"
     params:
         min_valid_hours_per_day = "{min_valid_hours_per_day}",
-        min_valid_bins_per_hour = config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]
+        min_valid_bins_per_hour = "{min_valid_bins_per_hour}"
     output:
-        "data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}h.csv"
+        "data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins.csv"
     script:
         "../src/data/phone_valid_sensed_days.R"
 
