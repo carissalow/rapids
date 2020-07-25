@@ -676,30 +676,30 @@ minutes_data_used      This is NOT a feature. This is just a quality control che
 
 **Available Location Features**
 
-============================   =========         =============
-Name                           Units             Description
-============================   =========         =============
-locationvariance               :math:`meters^2`  The sum of the variances of the latitude and longitude columns.
-loglocationvariance                              Log of the sum of the variances of the latitude and longitude columns.
-totaldistance                  meters            Total distance travelled in a ``day_segment`` using the haversine formula.
-averagespeed                   km/hr             Average speed in a ``day_segment` considering only the instances labeled as Moving.
-varspeed                       km/hr             Speed variance in a ``day_segment`` considering only the instances labeled as Moving.
-circadianmovement                                "It encodes the extent to which a person’s location patterns follow a 24-hour circadian cycle." (Doryab et. al. 2019)
-numberofsignificantplaces      places            Number of significant locations visited. It is calculated using the DBSCAN clustering algorithm which takes in EPS and MIN_SAMPLES as paramters to identify clusters. Each cluster is a significant place.
-numberlocationtransitions      transitions       Number of movements between any two clusters in a ``day_segment``.
-radiusgyration                 meters            Quantifies the area covered by a participant
-timeattop1location             minutes           Time spent at the most significant location.
-timeattop2location             minutes           Time spent at the 2nd most significant location.
-timeattop3location             minutes           Time spent at the 3rd most significant location.
-movingtostaticratio                              Ratio between the number of rows labeled Moving versus Static
-outlierstimepercent                              Ratio between the number of rows that belong to non-significant clusters divided by the total number of rows in a ``day_segment``.
-maxlengthstayatclusters        minutes           Maximum time spent in a cluster (significant location).
-minlengthstayatclusters        minutes           Minimum time spent in a cluster (significant location).
-meanlengthstayatclusters       minutes           Average time spent in a cluster (significant location).
-stdlengthstayatclusters        minutes           Standard deviation of time spent in a cluster (significant location).
-locationentropy                nats              Shannon Entropy computed over the row count of each cluster (significant location), it will be higher the more rows belong to a cluster (i.e. the more time a participant spent at a significant location).
-normalizedlocationentropy      nats              Shannon Entropy computed over the row count of each cluster (significant location) divided by the number of clusters, it will be higher the more rows belong to a cluster (i.e. the more time a participant spent at a significant location).
-============================   =========         =============
+============================   ================         =============
+Name                           Units                    Description
+============================   ================         =============
+locationvariance               :math:`meters^2`         The sum of the variances of the latitude and longitude columns.
+loglocationvariance                                     Log of the sum of the variances of the latitude and longitude columns.
+totaldistance                  meters                   Total distance travelled in a ``day_segment`` using the haversine formula.
+averagespeed                   km/hr                    Average speed in a ``day_segment` considering only the instances labeled as Moving.
+varspeed                       km/hr                    Speed variance in a ``day_segment`` considering only the instances labeled as Moving.
+circadianmovement                                       "It encodes the extent to which a person’s location patterns follow a 24-hour circadian cycle." (Doryab et. al. 2019)
+numberofsignificantplaces      places                   Number of significant locations visited. It is calculated using the DBSCAN clustering algorithm which takes in EPS and MIN_SAMPLES as paramters to identify clusters. Each cluster is a significant place.
+numberlocationtransitions      transitions              Number of movements between any two clusters in a ``day_segment``.
+radiusgyration                 meters                   Quantifies the area covered by a participant
+timeattop1location             minutes                  Time spent at the most significant location.
+timeattop2location             minutes                  Time spent at the 2nd most significant location.
+timeattop3location             minutes                  Time spent at the 3rd most significant location.
+movingtostaticratio                                     Ratio between the number of rows labeled Moving versus Static
+outlierstimepercent                                     Ratio between the number of rows that belong to non-significant clusters divided by the total number of rows in a ``day_segment``.
+maxlengthstayatclusters        minutes                  Maximum time spent in a cluster (significant location).
+minlengthstayatclusters        minutes                  Minimum time spent in a cluster (significant location).
+meanlengthstayatclusters       minutes                  Average time spent in a cluster (significant location).
+stdlengthstayatclusters        minutes                  Standard deviation of time spent in a cluster (significant location).
+locationentropy                nats                     Shannon Entropy computed over the row count of each cluster (significant location), it will be higher the more rows belong to a cluster (i.e. the more time a participant spent at a significant location).
+normalizedlocationentropy      nats                     Shannon Entropy computed over the row count of each cluster (significant location) divided by the number of clusters, it will be higher the more rows belong to a cluster (i.e. the more time a participant spent at a significant location).
+============================   ================         =============
 
 **Assumptions/Observations:** 
 
