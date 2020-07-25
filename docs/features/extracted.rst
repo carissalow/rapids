@@ -639,7 +639,7 @@ For a detailed description of how this is calculated, see Canzian, L., & Musoles
 
 Location (Doryab's) Features
 """"""""""""""""""""""""""""""
-Doryab location features are based on the research paper https://arxiv.org/pdf/1812.10394.pdf
+Doryab's location features are based on this paper: Doryab, A., Chikarsel, P., Liu, X., & Dey, A. K. (2019). Extraction of Behavioral Features from Smartphone and Wearable Data. ArXiv:1812.10394 [Cs, Stat]. http://arxiv.org/abs/1812.10394
 
 See `Location (Doryab's) Config Code`_
 
@@ -669,36 +669,37 @@ threshold_static       It is the threshold value in km/hr which labels a row as 
 dbscan_minsamples      The number of samples (or total weight) in a neighborhood for a point to be considered as a core point. This includes the point itself.
 dbscan_eps             The maximum distance between two samples for one to be considered as in the neighborhood of the other. This is not a maximum bound on the distances of points within a cluster. This is the most important DBSCAN parameter to choose appropriately for your data set and distance function.
 maximum_gap_allowed    The maximum gap (in seconds) allowed between any two consecutive rows for them to be considered part of the same displacement. If this threshold is too high, it can throw speed and distance calculations off for periods when the the phone was not sensing.
+minutes_data_used      This is NOT a feature. This is just a quality control check, and if set to TRUE, a new column is added to the output file with the number of minutes containing location data that were used to compute all features. The more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
 ===================    ===================
 
 .. _location-available-features:
 
 **Available Location Features**
 
-================            =========       =============
-Name                        Units           Description
-================            =========       =============
-locationvariance                            The sum of the variance of the latitude and longitude features.
-loglocationvariance                         Log of the sum of the variance of the latitude and longitude features.
-totaldistance               meters          Total distance travelled in an day_segment is calculated using haversine formula.
-averagespeed                km/hr           Average speed of a person in an day_segment considering only the instances labeled as Moving.
-varspeed                    km/hr           Variance speeed of a person in an day_segment considering only the instances labeled as Moving.
-circadianmovement           	            A continuous metric quantifying a person’s circadian routine.
-numberofsignificantplaces                   Number of significant places visited. It is calculated using the DBSCAN clustering algorithm which takes in EPS and MIN_SAMPLES as a paramter to identify clusters. Each cluster is a significant place.
-numberlocationtransitions                   Number of movements from one cluster to another in a day_segment.
-radiusgyration                              The Radius of Gyration (rog) is a measure in meters of the area covered by a person over a day. A centroid is calculated for all the places (pauses) visited during a day and a weighted distance between all the places and that centroid is computed. The weights are proportional to the time spent in each place.
-timeattop1location          minutes         Time spent at the most significant location.
-timeattop2location          minutes         Time spent at the 2nd most significant location.
-timeattop3location          minutes         Time spent at the 3rd most significant location.
-movingtostaticratio                         Ratio of time spent in Moving versus Static
-outlierstimepercent                         Time spent at all the irrelevant clusters in an day_segment.
-maxlengthstayatclusters     minutes         Maximum time spent in a cluster (significant location).
-minlengthstayatclusters     minutes         Minimum time spent in a cluster (significant location).
-meanlengthstayatclusters    minutes         Average time spent in a cluster (significant location).
-stdlengthstayatclusters     minutes         Standard deviation of time spent in a cluster(significant location).
-locationentropy
-normalizedlocationentropy
-================            =========       =============
+============================   =========         =============
+Name                           Units             Description
+============================   =========         =============
+locationvariance               :math:`meters^2`  The sum of the variances of the latitude and longitude columns.
+loglocationvariance                              Log of the sum of the variances of the latitude and longitude columns.
+totaldistance                  meters            Total distance travelled in a ``day_segment`` using the haversine formula.
+averagespeed                   km/hr             Average speed in a ``day_segment` considering only the instances labeled as Moving.
+varspeed                       km/hr             Speed variance in a ``day_segment`` considering only the instances labeled as Moving.
+circadianmovement                                "It encodes the extent to which a person’s location patterns follow a 24-hour circadian cycle." (Doryab et. al. 2019)
+numberofsignificantplaces      places            Number of significant locations visited. It is calculated using the DBSCAN clustering algorithm which takes in EPS and MIN_SAMPLES as paramters to identify clusters. Each cluster is a significant place.
+numberlocationtransitions      transitions       Number of movements between any two clusters in a ``day_segment``.
+radiusgyration                 meters            Quantifies the area covered by a participant
+timeattop1location             minutes           Time spent at the most significant location.
+timeattop2location             minutes           Time spent at the 2nd most significant location.
+timeattop3location             minutes           Time spent at the 3rd most significant location.
+movingtostaticratio                              Ratio between the number of rows labeled Moving versus Static
+outlierstimepercent                              Ratio between the number of rows that belong to non-significant clusters divided by the total number of rows in a ``day_segment``.
+maxlengthstayatclusters        minutes           Maximum time spent in a cluster (significant location).
+minlengthstayatclusters        minutes           Minimum time spent in a cluster (significant location).
+meanlengthstayatclusters       minutes           Average time spent in a cluster (significant location).
+stdlengthstayatclusters        minutes           Standard deviation of time spent in a cluster (significant location).
+locationentropy                nats              Shannon Entropy computed over the row count of each cluster (significant location), it will be higher the more rows belong to a cluster (i.e. the more time a participant spent at a significant location).
+normalizedlocationentropy      nats              Shannon Entropy computed over the row count of each cluster (significant location) divided by the number of clusters, it will be higher the more rows belong to a cluster (i.e. the more time a participant spent at a significant location).
+============================   =========         =============
 
 **Assumptions/Observations:** 
 
@@ -710,12 +711,11 @@ There are two parameters associated with resampling fused location in the ``RESA
 
 *Significant Locations Identified*
 
-(i.e. The clustering method used)
 Significant locations are determined using DBSCAN clustering on locations that a patient visit over the course of the period of data collection.
 
-*The Circadian Calculation*
+*Circadian Movement Calculation*
 
-For a detailed description of how this is calculated, see Canzian, L., & Musolesi, M. (2015, September). Trajectories of depression: unobtrusive monitoring of depressive states by means of smartphone mobility traces analysis. In Proceedings of the 2015 ACM international joint conference on pervasive and ubiquitous computing (pp. 1293-1304). Their procedure was followed using 30-min increments as a bin size. Taken from `Beiwe Summary Statistics`_.
+"Circadian movement (Saeb et al. 2015) is calculated using the Lomb-Scargle method" (Doryab et. al. 2019)
 
 .. _screen-sensor-doc:
 
