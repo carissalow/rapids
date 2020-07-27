@@ -6,15 +6,25 @@ def appendDaysInRange(days_to_analyse, start_date, end_date, day_type):
     num_of_days = (end_date - start_date).days
     if np.isnan(num_of_days):
         return days_to_analyse
+
     for day in range(num_of_days + 1):
-        days_to_analyse = days_to_analyse.append({"local_date": start_date + timedelta(days = day), "day_type": day_type}, ignore_index=True)
+
+        if day_type == -1:
+            day_idx = (num_of_days - day + 1) * day_type
+        elif day_type == 1:
+            day_idx = day + 1
+        else:
+            day_idx = 0
+
+        days_to_analyse = days_to_analyse.append({"local_date": start_date + timedelta(days = day), "day_idx": day_idx}, ignore_index=True)
+    
     return days_to_analyse
 
 days_before_surgery = int(snakemake.params["days_before_surgery"])
 days_in_hospital = str(snakemake.params["days_in_hospital"])
 days_after_discharge = int(snakemake.params["days_after_discharge"])
 participant_info = pd.read_csv(snakemake.input["participant_info"], parse_dates=["surgery_date", "discharge_date"])
-days_to_analyse = pd.DataFrame(columns = ["local_date", "day_type"])
+days_to_analyse = pd.DataFrame(columns = ["local_date", "day_idx"])
 
 try:
     surgery_date, discharge_date = participant_info["surgery_date"].iloc[0].date(), participant_info["discharge_date"].iloc[0].date()

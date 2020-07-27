@@ -19,7 +19,7 @@ def optional_input_days_to_include(wildcards):
 def optional_input_valid_sensed_days(wildcards):
     if config["PARAMS_FOR_ANALYSIS"]["DROP_VALID_SENSED_DAYS"]["ENABLED"]:
         # This input automatically trigers the rule phone_valid_sensed_days in preprocessing.snakefile
-        return ["data/interim/{pid}/phone_valid_sensed_days.csv"]
+        return ["data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins.csv"]
     else:
         return []
 
@@ -31,15 +31,15 @@ rule merge_features_for_individual_model:
     params:
         source = "{source}"
     output:
-        "data/processed/{pid}/data_for_individual_model/{source}_{day_segment}_original.csv"
+        "data/processed/{pid}/data_for_individual_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{source}_{day_segment}_original.csv"
     script:
         "../src/models/merge_features_for_individual_model.R"
 
 rule merge_features_for_population_model:
     input:
-        feature_files = expand("data/processed/{pid}/data_for_individual_model/{{source}}_{{day_segment}}_original.csv", pid=config["PIDS"])
+        feature_files = expand("data/processed/{pid}/data_for_individual_model/{{min_valid_hours_per_day}}hours_{{min_valid_bins_per_hour}}bins/{{source}}_{{day_segment}}_original.csv", pid=config["PIDS"])
     output:
-        "data/processed/data_for_population_model/{source}_{day_segment}_original.csv"
+        "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{source}_{day_segment}_original.csv"
     script:
         "../src/models/merge_features_for_population_model.R"
 
@@ -63,13 +63,14 @@ rule clean_features_for_individual_model:
     input:
         rules.merge_features_for_individual_model.output
     params:
+        features_exclude_day_idx = config["PARAMS_FOR_ANALYSIS"]["FEATURES_EXCLUDE_DAY_IDX"],
         cols_nan_threshold = "{cols_nan_threshold}",
         cols_var_threshold = "{cols_var_threshold}",
         days_before_threshold = "{days_before_threshold}",
         days_after_threshold = "{days_after_threshold}",
         rows_nan_threshold = "{rows_nan_threshold}",
     output:
-        "data/processed/{pid}/data_for_individual_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv"
+        "data/processed/{pid}/data_for_individual_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv"
     script:
         "../src/models/clean_features_for_model.R"
 
@@ -77,21 +78,22 @@ rule clean_features_for_population_model:
     input:
         rules.merge_features_for_population_model.output
     params:
+        features_exclude_day_idx = config["PARAMS_FOR_ANALYSIS"]["FEATURES_EXCLUDE_DAY_IDX"],
         cols_nan_threshold = "{cols_nan_threshold}",
         cols_var_threshold = "{cols_var_threshold}",
         days_before_threshold = "{days_before_threshold}",
         days_after_threshold = "{days_after_threshold}",
         rows_nan_threshold = "{rows_nan_threshold}",
     output:
-        "data/processed/data_for_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv"
+        "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv"
     script:
         "../src/models/clean_features_for_model.R"
 
 rule nan_cells_ratio_of_cleaned_features:
     input:
-        cleaned_features = "data/processed/data_for_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv"
+        cleaned_features = "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv"
     output:
-        "data/processed/data_for_population_model/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_nancellsratio.csv"
+        "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_nancellsratio.csv"
     script:
         "../src/models/nan_cells_ratio_of_cleaned_features.py"
  

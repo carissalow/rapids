@@ -23,7 +23,9 @@ features_for_individual_model <- feature_files %>%
   reduce(full_join, by="local_date")
 
 if(!is.null(phone_valid_sensed_days) && source %in% c("phone_features", "phone_fitbit_features")){
-    features_for_individual_model <- merge(features_for_individual_model, read.csv(phone_valid_sensed_days), by="local_date") %>% select(-valid_hours)
+    valid_days <- read.csv(phone_valid_sensed_days)
+    valid_days <- valid_days[valid_days$is_valid_sensed_day == TRUE, ]
+    features_for_individual_model <- merge(features_for_individual_model, valid_days, by="local_date") %>% select(-valid_sensed_hours, -is_valid_sensed_day)
 }
 
 if(!is.null(days_to_include)){
