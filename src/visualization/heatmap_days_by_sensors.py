@@ -34,12 +34,20 @@ row_count_sensors = row_count_sensors.join(phone_valid_sensed_days[["valid_sense
 
 # set date_idx based on the first date
 reference_date = row_count_sensors.index.min()
+last_date = row_count_sensors.index.max()
 row_count_sensors["date_idx"] = (row_count_sensors.index - reference_date).days
 row_count_sensors["local_date"] = row_count_sensors.index
 row_count_sensors.set_index(["local_date", "date_idx"], inplace=True)
 
+
+expected_num_of_days = int(snakemake.params["expected_num_of_days"])
+if expected_num_of_days < -1:
+    raise ValueError("EXPECTED_NUM_OF_DAYS of HEATMAP_DAYS_BY_SENSORS section in config.yaml must be larger or equal to -1.")
+# if expected_num_of_days = -1, return all dates
+expected_num_of_days = (last_date - reference_date).days if expected_num_of_days == -1 else expected_num_of_days
+
 # add empty rows to make sure different participants have the same date_idx range
-date_idx_range = [idx for idx in range(int(snakemake.params["expected_num_of_days"]))]
+date_idx_range = [idx for idx in range(expected_num_of_days)]
 date_range = [reference_date + timedelta(days=idx) for idx in date_idx_range]
 all_dates = pd.DataFrame({"local_date": date_range, "date_idx": date_idx_range})
 all_dates.set_index(["local_date", "date_idx"], inplace=True)
