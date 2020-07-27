@@ -1,5 +1,6 @@
 # Participants to include in the analysis
 # You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
+# PIDS: [test01, test02, test03, test04]
 PIDS: [test01, test02, test03, test04]
 
 # Global var with common day segments
@@ -35,6 +36,8 @@ SCREEN:
   DB_TABLE: screen
   DAY_SEGMENTS: *day_segments
   REFERENCE_HOUR_FIRST_USE: 0
+  IGNORE_EPISODES_SHORTER_THAN: 0 # in minutes, set to 0 to disable
+  IGNORE_EPISODES_LONGER_THAN: 0 # in minutes, set to 0 to disable
   FEATURES_DELTAS: ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]
   EPISODE_TYPES: ["unlock"]
 
@@ -52,7 +55,9 @@ BLUETOOTH:
 
 WIFI:
   COMPUTE: True
-  DB_TABLE: wifi
+  DB_TABLE: 
+    VISIBLE_ACCESS_POINTS: "wifi" # if you only have a CONNECTED_ACCESS_POINTS table, set this value to ""
+    CONNECTED_ACCESS_POINTS: "sensor_wifi" # if you only have a VISIBLE_ACCESS_POINTS table, set this value to ""
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
 
