@@ -210,6 +210,7 @@ HEATMAP_FEATURES_CORRELATIONS:
   PLOT: False
   MIN_ROWS_RATIO: 0.5
   MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
   PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
   FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
   CORR_THRESHOLD: 0.1
@@ -218,10 +219,12 @@ HEATMAP_FEATURES_CORRELATIONS:
 HISTOGRAM_VALID_SENSED_HOURS:
   PLOT: False
   MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
 
 HEATMAP_DAYS_BY_SENSORS:
   PLOT: False
   MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
   EXPECTED_NUM_OF_DAYS: -1
   PHONE_SENSORS_TABLES: ["accelerometer", "applications_foreground", "battery", "calls", "light", "locations", "messages", "screen", "plugin_google_activity_recognition", "plugin_studentlife_audio_android"]
 
@@ -234,8 +237,8 @@ OVERALL_COMPLIANCE_HEATMAP:
   ONLY_SHOW_VALID_DAYS: False
   EXPECTED_NUM_OF_DAYS: -1
   BIN_SIZE: *bin_size
-  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
   MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
 
 ### Example Analysis ################################################################
 PARAMS_FOR_ANALYSIS:
