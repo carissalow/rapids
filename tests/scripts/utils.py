@@ -100,23 +100,23 @@ def generate_sensor_file_lists(config):
             if 'TYPES' in config[sensor]:
                 for each in config[sensor]['TYPES']:
                     sensor_type.append(each+'_')
-            
+            lower_sensor = sensor.lower()
             if sensor_type:
                 act_file_list = expand(act_str, pid=config["PIDS"], 
-                                                sensor = config[sensor]["DB_TABLE"], 
+                                                sensor = lower_sensor, 
                                                 sensor_type = sensor_type, 
                                                 day_segment = config[sensor]["DAY_SEGMENTS"])
                 exp_file_list = expand(exp_str, pid=config["PIDS"], 
-                                                sensor = config[sensor]["DB_TABLE"], 
+                                                sensor = lower_sensor, 
                                                 sensor_type = sensor_type, 
                                                 day_segment = config[sensor]["DAY_SEGMENTS"])
             else:
                 act_file_list = expand(act_str, pid=config["PIDS"], 
-                                                sensor = config[sensor]["DB_TABLE"], 
+                                                sensor = lower_sensor, 
                                                 sensor_type = '', 
                                                 day_segment = config[sensor]["DAY_SEGMENTS"])
                 exp_file_list = expand(exp_str, pid=config["PIDS"], 
-                                                sensor = config[sensor]["DB_TABLE"], 
+                                                sensor = lower_sensor, 
                                                 sensor_type = '', 
                                                 day_segment = config[sensor]["DAY_SEGMENTS"])
 

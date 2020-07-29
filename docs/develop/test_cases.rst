@@ -7,7 +7,7 @@ Along with the continued development and the addition of new sensors and feature
 
 List of Sensor with Tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-The following is a list of the sesors that testing is currently available. 
+The following is a list of the sensors that testing is currently available. 
 
 
 Messages (SMS)
@@ -50,43 +50,45 @@ Battery
     Due to the difference in the format of the raw battery data for iOS and Android as well as versions of iOS (see the **Assumptions/Observations** section of :ref:`Battery<battery-sensor-doc>`) the following is the expected results the ``battery_deltas.csv``. This would give a better idea of the use cases being tested since the ``battery_deltas.csv`` would make both the iOS and Android data comparable. These files are used to calculate the features for the battery sensor. 
 
     - The battery delta data file contains data for 1 day. 
-    - The battery delta data contains 1 record each for a ``charging`` and ``discharging`` episode that falls within an ``epoch`` for every ``epoch``. Thus for the ``daily`` epoch there would be multiple ``charging`` and ``discharging`` episodes
-    - Since either a ``charging`` episode or a ``discharging`` episode and not both can occur across epochs, in order to test epsiodes that occur across epochs alternating episodes of ``charging`` and ``discharging`` episodes that fall across ``night`` to ``morning``, ``morning`` to ``afternoon`` and finally ``afternoon`` to ``night`` are present in the battery delta data. This starts with a ``discharging`` episode that begins in ``night`` and end in ``morning``.
+    - The battery delta data contains 1 record each for a ``charging`` and ``discharging`` episode that falls within an ``epoch`` for every ``epoch``. Thus, for the ``daily`` epoch there would be multiple ``charging`` and ``discharging`` episodes
+    - Since either a ``charging`` episode or a ``discharging`` episode and not both can occur across epochs, in order to test episodes that occur across epochs alternating episodes of ``charging`` and ``discharging`` episodes that fall across ``night`` to ``morning``, ``morning`` to ``afternoon`` and finally ``afternoon`` to ``night`` are present in the battery delta data. This starts with a ``discharging`` episode that begins in ``night`` and end in ``morning``.
     - There is one battery data file each, for testing both iOS and Android data formats.
     - There is also an additional empty data file for both android and iOS for testing empty data files
 
 Bluetooth
 """"""""""
 
-    - The raw bluetooth data file contains data for 1 day. 
-    - The raw bluetooth data contains at least 2 records for each ``epoch``. Each ``epoch`` has a record with a ``timestamp`` for the beginning boundary for that ``epoch`` and a record with a ``timestamp`` for the ending boundary for that ``epoch``. (e.g. For the ``morning`` epoch there is a record with a ``timestamp`` for ``6:00AM`` and another record with a ``timestamp`` for ``11:59:59AM``. These are to test edge cases) 
-    - An option of 5 bluetooth devices are randomly distributed throughout the data records.
-    - There is one raw bluetooth data file each, for testing both iOS and Android data formats.
+    - The raw Bluetooth data file contains data for 1 day. 
+    - The raw Bluetooth data contains at least 2 records for each ``epoch``. Each ``epoch`` has a record with a ``timestamp`` for the beginning boundary for that ``epoch`` and a record with a ``timestamp`` for the ending boundary for that ``epoch``. (e.g. For the ``morning`` epoch there is a record with a ``timestamp`` for ``6:00AM`` and another record with a ``timestamp`` for ``11:59:59AM``. These are to test edge cases) 
+    - An option of 5 Bluetooth devices are randomly distributed throughout the data records.
+    - There is one raw Bluetooth data file each, for testing both iOS and Android data formats.
     - There is also an additional empty data file for both android and iOS for testing empty data files.
 
 WIFI
 """""
 
-    - The raw WIFI data file contains data for 1 day. 
-    - The raw WIFI data contains at least 2 records for each ``epoch``. Each ``epoch`` has a record with a ``timestamp`` for the beginning boundary for that ``epoch`` and a record with a ``timestamp`` for the ending boundary for that ``epoch``. (e.g. For the ``morning`` epoch there is a record with a ``timestamp`` for ``6:00AM`` and another record with a ``timestamp`` for ``11:59:59AM``. These are to test edge cases) 
-    - An option of 5 access point devices is randomly distributed throughout the data records.
-    - There is one raw WIFI data file each, for testing both iOS and Android data formats.
-    - There is also an additional empty data file for both android and iOS for testing empty data files.
+    - There are 2 data files (``wifi_raw.csv`` and ``sensor_wifi_raw.csv``) for each fake participant for each phone platform. (see the **Assumptions/Observations** section of :ref:`WIFI<wifi-sensor-doc>`)
+    - The raw WIFI data files contain data for 1 day. 
+    - The ``sensor_wifi_raw.csv`` data contains at least 2 records for each ``epoch``. Each ``epoch`` has a record with a ``timestamp`` for the beginning boundary for that ``epoch`` and a record with a ``timestamp`` for the ending boundary for that ``epoch``. (e.g. For the ``morning`` epoch there is a record with a ``timestamp`` for ``6:00AM`` and another record with a ``timestamp`` for ``11:59:59AM``. These are to test edge cases) 
+    - The ``wifi_raw.csv`` data contains 3 records with random timestamps for each ``epoch`` to represent visible broadcasting WIFI network. This file is empty for the iOS phone testing data.
+    - An option of 10 access point devices is randomly distributed throughout the data records. 5 each for ``sensor_wifi_raw.csv`` and ``wifi_raw.csv``.
+    - There data files for testing both iOS and Android data formats.
+    - There are also additional empty data files for both android and iOS for testing empty data files.
 
 Light
 """""""
 
     - The raw light data file contains data for 1 day. 
     - The raw light data contains 3 or 4 rows of data for each ``epoch`` except ``night``. The single row of data for ``night`` is for testing features for single values inputs. (Example testing the standard deviation of one input value)
-    - Since light is only available for Android there is only one file that constains data for Android. All other files (i.e. for iPhone) are empty data files.
+    - Since light is only available for Android there is only one file that contains data for Android. All other files (i.e. for iPhone) are empty data files.
 
 Application Foreground 
 """""""""""""""""""""""
 
     - The raw application foreground data file contains data for 1 day. 
-    - The raw application foreground data contains 7 - 9 rows of data for each ``epoch``. The records for each ``epoch`` contains apps that are randomly selected from a list of apps that are from the ``MULTIPLE_CATEGORIES`` and ``SINGLE_CATEGORIES`` (See `test_config.yaml`_). There are also records in each epoch that have apps randomly selected from a list of apps that are from the ``EXCLUDED_CATEGORIES`` and ``EXCLUDED_APPS``. This is to test that these apps are actually being excluded from the calculations of features. There are also records to test ``SINGLE_APPS`` calculations. 
-    - Since application foreground is only available for Android there is only one file that constains data for Android. All other files (i.e. for iPhone) are empty data files.
+    - The raw application foreground data contains 7 - 9 rows of data for each ``epoch``. The records for each ``epoch`` contains apps that are randomly selected from a list of apps that are from the ``MULTIPLE_CATEGORIES`` and ``SINGLE_CATEGORIES`` (See `testing_config.yaml`_). There are also records in each epoch that have apps randomly selected from a list of apps that are from the ``EXCLUDED_CATEGORIES`` and ``EXCLUDED_APPS``. This is to test that these apps are actually being excluded from the calculations of features. There are also records to test ``SINGLE_APPS`` calculations. 
+    - Since application foreground is only available for Android there is only one file that contains data for Android. All other files (i.e. for iPhone) are empty data files.
 
 
 
- .. _`test_config.yaml`: TBD
+ .. _`testing_config.yaml`: https://github.com/carissalow/rapids/blob/c498b8d2dfd7cc29d1e4d53e978d30cff6cdf3f2/tests/settings/testing_config.yaml#L70

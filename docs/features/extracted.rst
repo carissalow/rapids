@@ -287,7 +287,8 @@ uniquedevices                 devices       Number of unique access point during
 countscansmostuniquedevice    scans         Number of scans of the most scanned access point during a ``day_segment`` across the whole monitoring period
 ===========================   =========     =============
 
-**Assumptions/Observations:** N/A 
+**Assumptions/Observations:** 
+Both phone platforms record the wifi networks a phone is connected to in ``sensor_wifi`` and those networks that are being broadcasted around a phone in ``wifi``. However, iOS cannot record any broadcasting network due to API restrictions, therefore iOS wifi data only exists in ``sensor_wifi``.
 
 
 .. _accelerometer-sensor-doc:
@@ -655,7 +656,7 @@ See `Location (Doryab's) Config Code`_
 - Rule ``rules/preprocessing.snakefile/resample_fused_location`` (only relevant if setting ``location_to_use`` to ````RESAMPLE_FUSED``.
 - Rule ``rules/features.snakefile/location_doryab_features``
     
-.. _location-parameters:
+.. _location-doryab-parameters:
 
 **Location Rule Parameters (location_doryab_features):**
 
@@ -672,7 +673,7 @@ maximum_gap_allowed    The maximum gap (in seconds) allowed between any two cons
 minutes_data_used      This is NOT a feature. This is just a quality control check, and if set to TRUE, a new column is added to the output file with the number of minutes containing location data that were used to compute all features. The more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
 ===================    ===================
 
-.. _location-available-features:
+.. _location-doryab-available-features:
 
 **Available Location Features**
 
@@ -682,7 +683,7 @@ Name                           Units                    Description
 locationvariance               :math:`meters^2`         The sum of the variances of the latitude and longitude columns.
 loglocationvariance                                     Log of the sum of the variances of the latitude and longitude columns.
 totaldistance                  meters                   Total distance travelled in a ``day_segment`` using the haversine formula.
-averagespeed                   km/hr                    Average speed in a ``day_segment` considering only the instances labeled as Moving.
+averagespeed                   km/hr                    Average speed in a ``day_segment`` considering only the instances labeled as Moving.
 varspeed                       km/hr                    Speed variance in a ``day_segment`` considering only the instances labeled as Moving.
 circadianmovement                                       "It encodes the extent to which a person’s location patterns follow a 24-hour circadian cycle." (Doryab et. al. 2019)
 numberofsignificantplaces      places                   Number of significant locations visited. It is calculated using the DBSCAN clustering algorithm which takes in EPS and MIN_SAMPLES as paramters to identify clusters. Each cluster is a significant place.
