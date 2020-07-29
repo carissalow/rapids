@@ -1,7 +1,31 @@
 import pandas as pd
 
 def is_valid_frequency_segments(day_segments):
-    return False
+    """
+        returns true if day_segment has the expected structure for generating frequency segments
+    """
+    if day_segments is None:
+        return False
+
+    if day_segments.shape[0] == 0:
+        return False
+    if day_segments.shape[0] > 1:
+        return False
+
+    if 'length' not in day_segments.columns:
+        return False
+    if 'label' not in day_segments.columns:
+        return False
+
+    if not pd.api.types.is_integer_dtype(day_segments.dtypes['length']):
+        return False
+
+    if day_segments.iloc[0].loc['length'] < 0:
+        return False
+    if day_segments.iloc[0].loc['length'] >= 1440:
+        return False
+
+    return True
 
 def is_valid_interval_segments(day_segments):
     return True
@@ -9,8 +33,33 @@ def is_valid_interval_segments(day_segments):
 def is_valid_event_segments(day_segments):
     return False
 
-def parse_frequency_segments(day_segments):
-    return day_segments
+
+def parse_frequency_segments(day_segments: pd.DataFrame) -> pd.DataFrame:
+    """
+        returns a table with row identifying start and end of time slots with frequency freq (in minutes). For example,
+        for freq = 10 it outputs
+        bin_id start end   label
+        0      00:00 00:10 epoch_0000
+        1      00:10 00:20 epoch_0001
+        2      00:20 00:30 epoch_0002
+        ...
+        143    23:50 00:00 epoch_0143
+    """
+    freq = day_segments.iloc[0].loc['length']
+    slots = pd.date_range(start='2020-01-01', end='2020-01-02', freq='{}min'.format(freq))
+    slots = ['{:02d}:{:02d}'.format(x.hour, x.minute) for x in slots]
+
+    table = pd.DataFrame(slots, columns=['start'])
+    table['end'] = table['start'].shift(-1)
+    table = table.iloc[:-1, :]
+
+    label = day_segments.loc[0, 'label']
+    table['label'] = range(0, table.shape[0])
+    table['label'] = table['label'].apply(lambda x: '{}_{:04}'.format(label, x))
+
+    table['local_date'] = None
+
+    return table[['local_date', 'start', 'end', 'label']]
 
 def parse_interval_segments(day_segments):
     day_segments["local_date"] = 1
