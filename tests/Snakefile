@@ -4,7 +4,6 @@ include: "../rules/preprocessing.snakefile"
 include: "../rules/features.snakefile"
 include: "../rules/models.snakefile"
 include: "../rules/reports.snakefile"
-include: "../rules/mystudy.snakefile" # You can add snakfiles with rules tailored to your project
 
 files_to_compute = []
 
@@ -66,6 +65,10 @@ if config["APPLICATIONS_FOREGROUND"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["APPLICATIONS_FOREGROUND"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/interim/{pid}/{sensor}_with_datetime_with_genre.csv", pid=config["PIDS"], sensor=config["APPLICATIONS_FOREGROUND"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/processed/{pid}/applications_foreground_{day_segment}.csv", pid = config["PIDS"], day_segment = config["APPLICATIONS_FOREGROUND"]["DAY_SEGMENTS"]))
+
+if config["ACTIVITY_RECOGNITION"]["COMPUTE"]:
+    # TODO add files_to_compute.extend(optional_ar_input(None)), the Android or iOS table gets processed depending on each participant
+    files_to_compute.extend(expand("data/processed/{pid}/activity_recognition_{day_segment}.csv",pid=config["PIDS"], day_segment = config["ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]))
 
 rule all:
     input:
