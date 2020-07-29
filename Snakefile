@@ -4,7 +4,6 @@ include: "rules/preprocessing.snakefile"
 include: "rules/features.snakefile"
 include: "rules/models.snakefile"
 include: "rules/reports.snakefile"
-include: "rules/mystudy.snakefile" # You can add snakfiles with rules tailored to your project
 
 import itertools
 
