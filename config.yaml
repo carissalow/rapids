@@ -226,7 +226,7 @@ HEATMAP_DAYS_BY_SENSORS:
   MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
   MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
   EXPECTED_NUM_OF_DAYS: -1
-  SENSORS: [accelerometer, activity_recognition, applications_foreground, conversation, battery, bluetooth, calls, light, locations, messages, screen]
+  DB_TABLES: [accelerometer, applications_foreground, battery, bluetooth, calls, light, locations, messages, screen, wifi, sensor_wifi, plugin_google_activity_recognition, plugin_ios_activity_recognition, plugin_studentlife_audio_android, plugin_studentlife_audio]
 
 HEATMAP_SENSED_BINS:
   PLOT: False

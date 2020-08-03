@@ -7,16 +7,19 @@ def optional_heatmap_days_by_sensors_input(wildcards):
     else:
         platform = platforms[0]
     
-    input_for_heatmap_days_by_sensors = []
-    for sensor in config["HEATMAP_DAYS_BY_SENSORS"]["SENSORS"]:
-        if sensor == "activity_recognition" or sensor == "conversation":
-            if sensor.upper() not in config:
-                raise ValueError("Please check SENEORS parameter in HEATMAP_DAYS_BY_SENSORS section of config.yaml")
-            if platform not in ["android", "ios"]:
-                raise ValueError("Platform (line 2) in a participant file should be 'android', 'ios', or 'multiple'. You typed '" + platforms + "'")
-            input_for_heatmap_days_by_sensors.append("data/raw/{pid}/" + config[sensor.upper()]["DB_TABLE"][platform.upper()] + "_with_datetime.csv")
-        else:
-            input_for_heatmap_days_by_sensors.append("data/raw/{pid}/" + sensor + "_with_datetime.csv")
+    if platform not in ["android", "ios"]:
+        raise ValueError("Platform (line 2) in a participant file should be 'android', 'ios', or 'multiple'. You typed '" + platforms + "'")
+
+    input_for_heatmap_days_by_sensors, tables = [], config["HEATMAP_DAYS_BY_SENSORS"]["DB_TABLES"]
+
+    for sensor in ["ACTIVITY_RECOGNITION", "CONVERSATION"]:
+        table = config[sensor]["DB_TABLE"][platform.upper()]
+        if table in tables:
+            input_for_heatmap_days_by_sensors.append("data/raw/{pid}/" + table + "_with_datetime.csv")
+            tables = [x for x in tables if x not in config[sensor]["DB_TABLE"].values()]
+    for table in tables:
+        input_for_heatmap_days_by_sensors.append("data/raw/{pid}/" + table + "_with_datetime.csv")
+
     return input_for_heatmap_days_by_sensors
 
 rule heatmap_features_correlations:
