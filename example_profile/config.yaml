@@ -1,0 +1,3 @@
+directory: ./
+configfile: ./example_profile/example_config.yaml
+snakefile: ./Snakefile

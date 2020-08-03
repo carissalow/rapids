@@ -9,6 +9,12 @@ rule restore_sql_file:
     script:
         "../src/data/restore_sql_file.py"
 
+rule create_example_participant_files:
+    output:
+        expand("data/external/{pid}", pid = ["example01", "example02"])
+    shell:
+        "echo 'a748ee1a-1d0b-4ae9-9074-279a2b6ba524\nandroid\ntest01\n2020/04/23,2020/05/04\n' >> ./data/external/example01 && echo '13dbc8a3-dae3-4834-823a-4bc96a7d459d\nios\ntest02\n2020/04/23,2020/05/04\n' >> ./data/external/example02"
+
 rule download_participants:
     params:
         group = config["DOWNLOAD_PARTICIPANTS"]["GROUP"],

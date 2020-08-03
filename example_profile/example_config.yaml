@@ -1,0 +1,319 @@
+# Participants to include in the analysis
+# You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
+PIDS: [example01, example02]
+
+# Global var with common day segments
+DAY_SEGMENTS: &day_segments
+  [daily]
+
+# Global timezone
+# Use codes from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+# Double check your code, for example EST is not US Eastern Time.
+TIMEZONE: &timezone
+  America/New_York
+
+DATABASE_GROUP: &database_group
+  RAPIDS_EXAMPLE
+
+DOWNLOAD_PARTICIPANTS:
+  IGNORED_DEVICE_IDS: [] # for example "5a1dd68c-6cd1-48fe-ae1e-14344ac5215f"
+  GROUP: *database_group
+
+# Download data config
+DOWNLOAD_DATASET:
+  GROUP: *database_group
+
+# Readable datetime config
+READABLE_DATETIME:
+  FIXED_TIMEZONE: *timezone
+
+PHONE_VALID_SENSED_BINS:
+  COMPUTE: False # This flag is automatically ignored (set to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features
+  BIN_SIZE: &bin_size 5 # (in minutes)
+  # Add as many sensor tables as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
+  # If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
+  TABLES: [messages, calls, locations, plugin_google_activity_recognition, plugin_ios_activity_recognition, battery, screen, light, accelerometer, applications_foreground, plugin_studentlife_audio_android, plugin_studentlife_audio, wifi, sensor_wifi, bluetooth, applications_notifications, aware_log, ios_status_monitor, push_notification, significant, timezone, touch, keyboard]
+
+PHONE_VALID_SENSED_DAYS:
+  COMPUTE: False
+  MIN_VALID_HOURS_PER_DAY: &min_valid_hours_per_day [16] # (out of 24) MIN_HOURS_PER_DAY
+  MIN_VALID_BINS_PER_HOUR: &min_valid_bins_per_hour [6] # (out of 60min/BIN_SIZE bins)
+
+# Communication SMS features config, TYPES and FEATURES keys need to match
+MESSAGES:
+  COMPUTE: True
+  DB_TABLE: messages
+  TYPES : [received, sent]
+  FEATURES: 
+    received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+    sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+  DAY_SEGMENTS: *day_segments  
+
+# Communication call features config, TYPES and FEATURES keys need to match
+CALLS:
+  COMPUTE: True
+  DB_TABLE: calls
+  TYPES: [missed, incoming, outgoing]
+  FEATURES:
+    missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
+    incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+    outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+  DAY_SEGMENTS: *day_segments
+
+APPLICATION_GENRES:
+  CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
+  CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
+  UPDATE_CATALOGUE_FILE: false # if CATALOGUE_SOURCE is equal to FILE, whether or not to update CATALOGUE_FILE, if CATALOGUE_SOURCE is equal to GOOGLE all scraped genres will be saved to CATALOGUE_FILE
+  SCRAPE_MISSING_GENRES: false # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
+
+RESAMPLE_FUSED_LOCATION:
+  CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
+  TIME_SINCE_VALID_LOCATION: 720 # minutes, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
+  TIMEZONE: *timezone
+
+BARNETT_LOCATION:
+  COMPUTE: False
+  DB_TABLE: locations
+  DAY_SEGMENTS: [daily] # These features are only available on a daily basis
+  FEATURES: ["hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","circdnrtn","wkenddayrtn"]
+  LOCATIONS_TO_USE: ALL # ALL, ALL_EXCEPT_FUSED OR RESAMPLE_FUSED
+  ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
+  TIMEZONE: *timezone
+  MINUTES_DATA_USED: False # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
+
+DORYAB_LOCATION:
+  COMPUTE: True
+  DB_TABLE: locations
+  DAY_SEGMENTS: *day_segments
+  FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
+  LOCATIONS_TO_USE: RESAMPLE_FUSED # ALL, ALL_EXCEPT_FUSED OR RESAMPLE_FUSED  
+  DBSCAN_EPS: 10 # meters
+  DBSCAN_MINSAMPLES: 5
+  THRESHOLD_STATIC : 1 # km/h
+  MAXIMUM_GAP_ALLOWED: 300
+  MINUTES_DATA_USED: False
+
+BLUETOOTH:
+  COMPUTE: True
+  DB_TABLE: bluetooth
+  DAY_SEGMENTS: *day_segments
+  FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+
+ACTIVITY_RECOGNITION:
+  COMPUTE: True
+  DB_TABLE: 
+    ANDROID: plugin_google_activity_recognition
+    IOS: plugin_ios_activity_recognition
+  DAY_SEGMENTS: *day_segments
+  FEATURES: ["count","mostcommonactivity","countuniqueactivities","activitychangecount","sumstationary","summobile","sumvehicle"]
+
+BATTERY:
+  COMPUTE: True
+  DB_TABLE: battery
+  DAY_SEGMENTS: *day_segments
+  FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
+
+SCREEN:
+  COMPUTE: True
+  DB_TABLE: screen
+  DAY_SEGMENTS: *day_segments
+  REFERENCE_HOUR_FIRST_USE: 0
+  IGNORE_EPISODES_SHORTER_THAN: 0 # in minutes, set to 0 to disable
+  IGNORE_EPISODES_LONGER_THAN: 0 # in minutes, set to 0 to disable
+  FEATURES_DELTAS: ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]
+  EPISODE_TYPES: ["unlock"]
+
+LIGHT:
+  COMPUTE: True
+  DB_TABLE: light
+  DAY_SEGMENTS: *day_segments
+  FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
+
+ACCELEROMETER:
+  COMPUTE: True
+  DB_TABLE: accelerometer
+  DAY_SEGMENTS: *day_segments
+  FEATURES:
+    MAGNITUDE: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
+    EXERTIONAL_ACTIVITY_EPISODE: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
+    NONEXERTIONAL_ACTIVITY_EPISODE: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
+    VALID_SENSED_MINUTES: True
+
+APPLICATIONS_FOREGROUND:
+  COMPUTE: True
+  DB_TABLE: applications_foreground
+  DAY_SEGMENTS: *day_segments
+  SINGLE_CATEGORIES: ["all", "email"]
+  MULTIPLE_CATEGORIES:
+    social: ["socialnetworks", "socialmediatools"]
+    entertainment: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
+  SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
+  EXCLUDED_CATEGORIES: ["system_apps"]
+  EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
+  FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+
+HEARTRATE:
+  COMPUTE: True
+  DB_TABLE: fitbit_data
+  DAY_SEGMENTS: *day_segments
+  SUMMARY_FEATURES: ["restinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. heigh, weight) use with care: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
+  INTRADAY_FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
+
+STEP:
+  COMPUTE: True
+  DB_TABLE: fitbit_data
+  DAY_SEGMENTS: *day_segments
+  EXCLUDE_SLEEP:
+    EXCLUDE: False
+    TYPE: FIXED # FIXED OR FITBIT_BASED (CONFIGURE FITBIT's SLEEP DB_TABLE)
+    FIXED:
+      START: "23:00"
+      END: "07:00"
+  FEATURES:
+    ALL_STEPS: ["sumallsteps", "maxallsteps", "minallsteps", "avgallsteps", "stdallsteps"]
+    SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+    ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+  THRESHOLD_ACTIVE_BOUT: 10 # steps
+  INCLUDE_ZERO_STEP_ROWS: False
+
+SLEEP:
+  COMPUTE: True
+  DB_TABLE: fitbit_data
+  DAY_SEGMENTS: *day_segments
+  SLEEP_TYPES: ["main", "nap", "all"]
+  SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
+
+WIFI:
+  COMPUTE: True
+  DB_TABLE: 
+    VISIBLE_ACCESS_POINTS: "wifi" # if you only have a CONNECTED_ACCESS_POINTS table, set this value to ""
+    CONNECTED_ACCESS_POINTS: "sensor_wifi" # if you only have a VISIBLE_ACCESS_POINTS table, set this value to ""
+  DAY_SEGMENTS: *day_segments
+  FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+
+CONVERSATION:
+  COMPUTE: True
+  DB_TABLE: 
+    ANDROID: plugin_studentlife_audio_android
+    IOS: plugin_studentlife_audio
+  DAY_SEGMENTS: *day_segments
+  FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
+    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
+    "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
+    "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
+    "unknownexpectedfraction","countconversation"]
+  RECORDINGMINUTES: 1
+  PAUSEDMINUTES : 3
+
+### Visualizations ################################################################
+HEATMAP_FEATURES_CORRELATIONS:
+  PLOT: True
+  MIN_ROWS_RATIO: 0.5
+  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
+  FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
+  CORR_THRESHOLD: 0.1
+  CORR_METHOD: "pearson" # choose from {"pearson", "kendall", "spearman"}
+
+HISTOGRAM_VALID_SENSED_HOURS:
+  PLOT: True
+  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+
+HEATMAP_DAYS_BY_SENSORS:
+  PLOT: True
+  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+  EXPECTED_NUM_OF_DAYS: -1
+  DB_TABLES: [accelerometer, applications_foreground, battery, bluetooth, calls, light, locations, messages, screen, wifi, sensor_wifi, plugin_google_activity_recognition, plugin_ios_activity_recognition, plugin_studentlife_audio_android, plugin_studentlife_audio]
+
+
+HEATMAP_SENSED_BINS:
+  PLOT: True
+  BIN_SIZE: *bin_size
+
+OVERALL_COMPLIANCE_HEATMAP:
+  PLOT: True
+  ONLY_SHOW_VALID_DAYS: False
+  EXPECTED_NUM_OF_DAYS: -1
+  BIN_SIZE: *bin_size
+  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+
+### Example Analysis ################################################################
+PARAMS_FOR_ANALYSIS:
+  COMPUTE: False
+  GROUNDTRUTH_TABLE: participant_info
+  TARGET_TABLE: participant_target
+  SOURCES: &sources ["phone_features", "fitbit_features", "phone_fitbit_features"]
+  DAY_SEGMENTS: *day_segments
+  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, bluetooth, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
+  FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
+  PHONE_FITBIT_FEATURES: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
+  DEMOGRAPHIC_FEATURES: [age, gender, inpatientdays]
+  CATEGORICAL_DEMOGRAPHIC_FEATURES: ["gender"]
+  FEATURES_EXCLUDE_DAY_IDX: True
+
+  # Whether or not to include only days with enough valid sensed hours
+  # logic can be found in rule phone_valid_sensed_days of rules/preprocessing.snakefile
+  DROP_VALID_SENSED_DAYS: 
+    ENABLED: True
+
+  # Whether or not to include certain days in the analysis, logic can be found in rule days_to_analyse of rules/mystudy.snakefile
+  # If you want to include all days downloaded for each participant, set ENABLED to False
+  DAYS_TO_ANALYSE:
+    ENABLED: True
+    DAYS_BEFORE_SURGERY: 6 #15
+    DAYS_IN_HOSPITAL: F # T or F
+    DAYS_AFTER_DISCHARGE: 5 #7
+
+  # Cleaning Parameters
+  COLS_NAN_THRESHOLD: [0.3] #[0.1, 0.3, 0.5]
+  COLS_VAR_THRESHOLD: True
+  ROWS_NAN_THRESHOLD: [0.3] #[0.1, 0.3, 0.5]
+  PARTICIPANT_DAYS_BEFORE_THRESHOLD: 3 #7
+  PARTICIPANT_DAYS_AFTER_THRESHOLD: 2 #4
+
+  # Extract summarised features from daily features with any of the following substrings
+  NUMERICAL_OPERATORS: ["count", "sum", "length", "avg", "restinghr"]
+  CATEGORICAL_OPERATORS: ["mostcommon"]
+
+  MODEL_NAMES: ["LogReg", "kNN", "SVM", "DT", "RF", "GB", "XGBoost", "LightGBM"]
+  CV_METHODS: ["LeaveOneOut"]
+  SUMMARISED: ["notsummarised"] # "summarised" or "notsummarised"
+  RESULT_COMPONENTS: ["fold_predictions", "fold_metrics", "overall_results", "fold_feature_importances"]
+
+  MODEL_SCALER:
+    LogReg: ["notnormalized", "minmaxscaler", "standardscaler", "robustscaler"]
+    kNN: ["minmaxscaler", "standardscaler", "robustscaler"]
+    SVM:  ["minmaxscaler", "standardscaler", "robustscaler"]
+    DT: ["notnormalized"]
+    RF: ["notnormalized"]
+    GB: ["notnormalized"]
+    XGBoost: ["notnormalized"]
+    LightGBM: ["notnormalized"]
+
+  MODEL_HYPERPARAMS:
+    LogReg:
+      {"clf__C": [0.01, 0.1, 1, 10, 100], "clf__solver": ["newton-cg", "lbfgs", "liblinear", "saga"], "clf__penalty": ["l2"]}
+    kNN:
+      {"clf__n_neighbors": [1, 3, 5], "clf__weights": ["uniform", "distance"], "clf__metric": ["euclidean", "manhattan", "minkowski"]}
+    SVM:
+      {"clf__C": [0.01, 0.1, 1, 10, 100], "clf__gamma": ["scale", "auto"], "clf__kernel": ["rbf", "poly", "sigmoid"]}
+    DT:
+      {"clf__criterion": ["gini", "entropy"], "clf__max_depth": [null, 3, 5, 7, 9], "clf__max_features": [null, "auto", "sqrt", "log2"]}
+    RF:
+      {"clf__n_estimators": [2, 5, 10, 100],"clf__max_depth": [null, 3, 5, 7, 9]}
+    GB:
+      {"clf__learning_rate": [0.01, 0.1, 1], "clf__n_estimators": [5, 10, 100, 200], "clf__subsample": [0.5, 0.7, 1.0], "clf__max_depth": [3, 5, 7, 9]}
+    XGBoost:
+      {"clf__learning_rate": [0.01, 0.1, 1], "clf__n_estimators": [5, 10, 100, 200], "clf__num_leaves": [5, 16, 31, 62]}
+    LightGBM:
+      {"clf__learning_rate": [0.01, 0.1, 1], "clf__n_estimators": [5, 10, 100, 200], "clf__num_leaves": [5, 16, 31, 62]}
+
+
+  # Target Settings:
+  # 1 => TARGETS_RATIO_THRESHOLD (ceiling) or more of available CESD scores were TARGETS_VALUE_THRESHOLD or higher; 0 => otherwise
+  TARGETS_RATIO_THRESHOLD: 0.5
+  TARGETS_VALUE_THRESHOLD: 16
