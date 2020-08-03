@@ -65,7 +65,13 @@ rowsnan_colsnan_days_colsvar_threshold = snakemake.params["rowsnan_colsnan_days_
 
 
 # Read data and split
-data = pd.read_csv(snakemake.input["data"], index_col=["pid"])
+if summarised == "summarised":
+    data = pd.read_csv(snakemake.input["data"], index_col=["pid"])
+elif summarised == "notsummarised":
+    data = pd.read_csv(snakemake.input["data"], index_col=["pid", "local_date"])
+else:
+    raise ValueError("SUMMARISED parameter in config.yaml can only be 'summarised' or 'notsummarised'")
+
 data_x, data_y = data.drop("target", axis=1), data[["target"]]
 categorical_feature_colnames = categorical_colnames_demographic_features + getMatchingColNames(categorical_operators, data_x)
 

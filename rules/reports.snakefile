@@ -1,3 +1,24 @@
+def optional_heatmap_days_by_sensors_input(wildcards):
+    with open("data/external/"+wildcards.pid, encoding="ISO-8859-1") as external_file:
+        external_file_content = external_file.readlines()
+    platforms = external_file_content[1].strip().split(",")
+    if platforms[0] == "multiple" or (len(platforms) > 1 and "android" in platforms and "ios" in platforms):
+        platform = "android"
+    else:
+        platform = platforms[0]
+    
+    input_for_heatmap_days_by_sensors = []
+    for sensor in config["HEATMAP_DAYS_BY_SENSORS"]["SENSORS"]:
+        if sensor == "activity_recognition" or sensor == "conversation":
+            if sensor.upper() not in config:
+                raise ValueError("Please check SENEORS parameter in HEATMAP_DAYS_BY_SENSORS section of config.yaml")
+            if platform not in ["android", "ios"]:
+                raise ValueError("Platform (line 2) in a participant file should be 'android', 'ios', or 'multiple'. You typed '" + platforms + "'")
+            input_for_heatmap_days_by_sensors.append("data/raw/{pid}/" + config[sensor.upper()]["DB_TABLE"][platform.upper()] + "_with_datetime.csv")
+        else:
+            input_for_heatmap_days_by_sensors.append("data/raw/{pid}/" + sensor + "_with_datetime.csv")
+    return input_for_heatmap_days_by_sensors
+
 rule heatmap_features_correlations:
     input:
         features = expand("data/processed/{pid}/{sensor}_{day_segment}.csv", pid=config["PIDS"], sensor=config["HEATMAP_FEATURES_CORRELATIONS"]["PHONE_FEATURES"]+config["HEATMAP_FEATURES_CORRELATIONS"]["FITBIT_FEATURES"], day_segment=config["DAY_SEGMENTS"]),
@@ -21,7 +42,7 @@ rule histogram_valid_sensed_hours:
 
 rule heatmap_days_by_sensors:
     input:
-        sensors = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["HEATMAP_DAYS_BY_SENSORS"]["PHONE_SENSORS_TABLES"]),
+        sensors = optional_heatmap_days_by_sensors_input,
         phone_valid_sensed_days = "data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins.csv"
     params:
         pid = "{pid}",

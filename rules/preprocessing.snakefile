@@ -1,3 +1,14 @@
+rule restore_sql_file:
+    input:
+        sql_file = "data/external/rapids_example.sql",
+        db_credentials = ".env"
+    params:
+        group = config["DOWNLOAD_PARTICIPANTS"]["GROUP"]
+    output:
+        touch("data/interim/restore_sql_file.done")
+    script:
+        "../src/data/restore_sql_file.py"
+
 rule download_participants:
     params:
         group = config["DOWNLOAD_PARTICIPANTS"]["GROUP"],
@@ -23,6 +34,7 @@ rule download_dataset:
 
 PHONE_SENSORS = []
 PHONE_SENSORS.extend([config["MESSAGES"]["DB_TABLE"], config["CALLS"]["DB_TABLE"], config["BARNETT_LOCATION"]["DB_TABLE"], config["DORYAB_LOCATION"]["DB_TABLE"], config["BLUETOOTH"]["DB_TABLE"], config["BATTERY"]["DB_TABLE"], config["SCREEN"]["DB_TABLE"], config["LIGHT"]["DB_TABLE"], config["ACCELEROMETER"]["DB_TABLE"], config["APPLICATIONS_FOREGROUND"]["DB_TABLE"], config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]])
+PHONE_SENSORS.extend(config["PHONE_VALID_SENSED_BINS"]["TABLES"])
 
 if len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) > 0:
     PHONE_SENSORS.append(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"])

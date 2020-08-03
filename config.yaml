@@ -148,7 +148,7 @@ APPLICATIONS_FOREGROUND:
     social: ["socialnetworks", "socialmediatools"]
     entertainment: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
   SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
-  EXCLUDED_CATEGORIES: ["system_apps", "tvvideoapps"]
+  EXCLUDED_CATEGORIES: ["system_apps"]
   EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
   FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
 
@@ -226,7 +226,7 @@ HEATMAP_DAYS_BY_SENSORS:
   MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
   MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
   EXPECTED_NUM_OF_DAYS: -1
-  PHONE_SENSORS_TABLES: ["accelerometer", "applications_foreground", "battery", "calls", "light", "locations", "messages", "screen", "plugin_google_activity_recognition", "plugin_studentlife_audio_android"]
+  SENSORS: [accelerometer, activity_recognition, applications_foreground, conversation, battery, bluetooth, calls, light, locations, messages, screen]
 
 HEATMAP_SENSED_BINS:
   PLOT: False
@@ -244,9 +244,10 @@ OVERALL_COMPLIANCE_HEATMAP:
 PARAMS_FOR_ANALYSIS:
   COMPUTE: False
   GROUNDTRUTH_TABLE: participant_info
+  TARGET_TABLE: participant_target
   SOURCES: &sources ["phone_features", "fitbit_features", "phone_fitbit_features"]
   DAY_SEGMENTS: *day_segments
-  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
+  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, bluetooth, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
   FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
   PHONE_FITBIT_FEATURES: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
   DEMOGRAPHIC_FEATURES: [age, gender, inpatientdays]

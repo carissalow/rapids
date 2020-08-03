@@ -14,7 +14,7 @@ rule days_to_analyse:
 
 rule targets:
     input:
-        participant_info = "data/raw/{pid}/" + config["PARAMS_FOR_ANALYSIS"]["GROUNDTRUTH_TABLE"] + "_raw.csv"
+        participant_info = "data/raw/{pid}/" + config["PARAMS_FOR_ANALYSIS"]["TARGET_TABLE"] + "_raw.csv"
     params:
         pid = "{pid}",
         summarised = "{summarised}",
@@ -142,7 +142,8 @@ rule merge_features_and_targets:
         summarised = "{summarised}",
         cols_var_threshold = "{cols_var_threshold}",
         numerical_operators = config["PARAMS_FOR_ANALYSIS"]["NUMERICAL_OPERATORS"],
-        categorical_operators = config["PARAMS_FOR_ANALYSIS"]["CATEGORICAL_OPERATORS"]
+        categorical_operators = config["PARAMS_FOR_ANALYSIS"]["CATEGORICAL_OPERATORS"],
+        features_exclude_day_idx = config["PARAMS_FOR_ANALYSIS"]["FEATURES_EXCLUDE_DAY_IDX"],
     output:
         "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_{summarised}.csv"
     script:

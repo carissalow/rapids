@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import plotly.io as pio
 import plotly.graph_objects as go
@@ -20,8 +21,12 @@ phone_valid_sensed_days = phone_valid_sensed_days[phone_valid_sensed_days["is_va
 
 row_count_sensors = pd.DataFrame()
 for sensor_path in snakemake.input["sensors"]:
-    # plugin_studentlife_audio_android => conversion; plugin_google_activity_recognition => AR; applications_foreground => apps
-    sensor_name = sensor_path.split("/")[-1].replace("_with_datetime.csv", "").replace("plugin_studentlife_audio_android", "conversion").replace("plugin_google_activity_recognition", "AR").replace("applications_foreground", "apps")
+    sensor_name = sensor_path.split("/")[-1].replace("_with_datetime.csv", "")
+    # plugin_studentlife_audio_android or plugin_studentlife_audio => conversion; plugin_google_activity_recognition or plugin_ios_activity_recognition => AR; applications_foreground => apps
+    sensor_name = sensor_name.replace("plugin_studentlife_audio_android", "conversion").replace("plugin_studentlife_audio", "conversion") \
+                                .replace("plugin_google_activity_recognition", "AR").replace("plugin_ios_activity_recognition", "AR") \
+                                .replace("applications_foreground", "apps")
+                                
     sensor_data = pd.read_csv(sensor_path, encoding="ISO-8859-1", parse_dates=["local_date"], dtype={"label": str})
     if sensor_data.empty:
         row_count_sensor = pd.DataFrame(columns=[sensor_name])
@@ -56,7 +61,7 @@ row_count_sensors = row_count_sensors.merge(all_dates, left_index=True, right_in
 
 # normalize each sensor (column)
 if row_count_sensors.count().max() > 1:
-    row_count_sensors_normalized = (row_count_sensors-row_count_sensors.min())/(row_count_sensors.max()-row_count_sensors.min())
+    row_count_sensors_normalized = row_count_sensors.fillna(np.nan).apply(lambda x: (x - np.nanmin(x)) / (np.nanmax(x) - np.nanmin(x)) if np.nanmax(x) != np.nanmin(x) else (x / np.nanmin(x)), axis=0)
 else:
     row_count_sensors_normalized = row_count_sensors
 
