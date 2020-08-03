@@ -320,17 +320,23 @@ def radius_of_gyration(locationData):
         return None
     # Center is the centroid, not the home location
     valid_clusters = locationData[locationData["location_label"] != -1]
-    changes_selector = (valid_clusters["location_label"].shift() != valid_clusters["location_label"])
-    mobility_trace = valid_clusters[changes_selector]
+    centroid_ce = (valid_clusters.groupby('location_label')[['double_latitude','double_longitude']].mean()).mean()
+    centroid_clusters = valid_clusters.groupby('location_label')[['double_latitude','double_longitude']].mean()
+    
+    finalX = 0
+    for labels in centroid_clusters.index:
+        lon1, lat1, lon2, lat2 = centroid_clusters.loc[labels].double_longitude, centroid_clusters.loc[labels].double_latitude,centroid_ce.double_longitude, centroid_ce.double_latitude
+        lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
 
-    # Average x,y
-    lat_lon = mobility_trace[["double_latitude", "double_longitude"]].values
-    center = np.average(lat_lon, axis=0)
-    norm = np.linalg.norm(lat_lon - center)
-    if len(lat_lon) != 0: 
-        return np.sqrt(norm) / len(lat_lon)
-    else:
-        return 0
+        dlon = lon2 - lon1 
+        dlat = lat2 - lat1 
+        a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+        c = 2 * asin(sqrt(a)) 
+        r = 6371 # Radius of earth in kilometers. Use 3956 for miles
+        distance = (c * r * 1000) ** 2
+        finalX = finalX + (locationData[locationData["location_label"]==labels].shape[0] * distance)
+
+    return np.sqrt(valid_clusters.shape[0]*finalX)
 
 def time_at_topn_clusters_in_group(locationData,n):  # relevant only for global location features since, top3_clusters = top3_clusters_in_group for local
     
