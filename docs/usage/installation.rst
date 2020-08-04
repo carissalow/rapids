@@ -40,9 +40,8 @@ macOS (tested on Catalina 10.15)
 
 #. Install R packages and virtual environment:
 
-    - ``snakemake renv_install``
-    - ``snakemake renv_init``
-    - ``snakemake renv_restore``
+    - ``snakemake -j1 renv_install``
+    - ``snakemake -j1 renv_restore``
 
       - This step could take several minutes to complete, especially if you have less than 3Gb of RAM or packages need to be compiled from source. Please be patient and let it run until completion.  
 
@@ -98,8 +97,8 @@ Linux (tested on Ubuntu 18.04 & 20.04)
 
 #. Install R packages and virtual environment:
 
-    - ``snakemake renv_install``
-    - ``snakemake renv_restore``
+    - ``snakemake -j1 renv_install``
+    - ``snakemake -j1 renv_restore``
 
       - This step could take several minutes to complete, especially if you have less than 3Gb of RAM or packages need to be compiled from source. Please be patient and let it run until completion. 
 
