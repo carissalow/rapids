@@ -19,7 +19,7 @@ cp tests/data/external/* data/external
 # cp rules/preprocessing.snakefile bak
 
 echo Disabling downloading of dataset...
-sed -e '10,22 s/^/#/' -e  's/rules.download_dataset.output/"data\/raw\/\{pid\}\/\{sensor\}_raw\.csv"/' rules/preprocessing.snakefile > tmp
+sed -e '27,39 s/^/#/' -e  's/rules.download_dataset.output/"data\/raw\/\{pid\}\/\{sensor\}_raw\.csv"/' rules/preprocessing.snakefile > tmp
 cp tmp rules/preprocessing.snakefile
 
 echo Running RAPIDS Pipeline on testdata...
