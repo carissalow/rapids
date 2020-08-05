@@ -14,6 +14,7 @@ This is a quick guide for creating and running a simple pipeline to analysis an 
 #. Run the following command to restore database from ``rapids_example.sql`` file. 
 
 ::
+
     sankemake -j1 restore_sql_file
 
 
@@ -30,5 +31,6 @@ This is a quick guide for creating and running a simple pipeline to analysis an 
         snakemake -j1 --profile example_profile
 
     - Execute over multiple cores (here, we use 8 cores)::
+    
         snakemake -j8 --profile example_profile
 
