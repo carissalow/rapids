@@ -4,7 +4,7 @@ from astropy.timeseries import LombScargle
 from sklearn.cluster import DBSCAN
 from math import radians, cos, sin, asin, sqrt
 
-def base_location_features(location_data, day_segment, requested_features, dbscan_eps, dbscan_minsamples, threshold_static, maximum_gap_allowed):
+def base_location_features(location_data, day_segment, requested_features, dbscan_eps, dbscan_minsamples, threshold_static, maximum_gap_allowed,sampling_frequency):
     # name of the features this function can compute
     base_features_names = ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy","minutesdataused"]    
     # the subset of requested features this function can compute
@@ -21,6 +21,9 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
             location_features = pd.DataFrame(columns=["local_date"] + ["location_" + day_segment + "_" + x for x in features_to_compute])
         else:
             location_features = pd.DataFrame()
+
+            if sampling_frequency == 0:
+                sampling_frequency = getSamplingFrequency(location_data)
 
             if "minutesdataused" in features_to_compute:
                 for localDate in location_data["local_date"].unique():
@@ -72,35 +75,35 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
             
             if "radiusgyration" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
-                    location_features.loc[localDate,"location_" + day_segment + "_radiusgyration"] = radius_of_gyration(newLocationData[newLocationData['local_date']==localDate])
+                    location_features.loc[localDate,"location_" + day_segment + "_radiusgyration"] = radius_of_gyration(newLocationData[newLocationData['local_date']==localDate],sampling_frequency)
 
             if "timeattop1location" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
-                    location_features.loc[localDate,"location_" + day_segment + "_timeattop1"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],1)
+                    location_features.loc[localDate,"location_" + day_segment + "_timeattop1"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],1,sampling_frequency)
 
             if "timeattop2location" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
-                    location_features.loc[localDate,"location_" + day_segment + "_timeattop2"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],2)
+                    location_features.loc[localDate,"location_" + day_segment + "_timeattop2"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],2,sampling_frequency)
             
             if "timeattop3location" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
-                    location_features.loc[localDate,"location_" + day_segment + "_timeattop3"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],3)
+                    location_features.loc[localDate,"location_" + day_segment + "_timeattop3"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],3,sampling_frequency)
 
             if "movingtostaticratio" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
-                    location_features.loc[localDate,"location_" + day_segment + "_movingtostaticratio"] =  (newLocationData[newLocationData['local_date']==localDate].shape[0] / location_data[location_data['local_date']==localDate].shape[0])
+                    location_features.loc[localDate,"location_" + day_segment + "_movingtostaticratio"] =  (newLocationData[newLocationData['local_date']==localDate].shape[0]*sampling_frequency) / (location_data[location_data['local_date']==localDate].shape[0] * sampling_frequency)
 
             if "outlierstimepercent" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
-                    location_features.loc[localDate,"location_" + day_segment + "_outlierstimepercent"] = outliers_time_percent(newLocationData[newLocationData['local_date']==localDate])
+                    location_features.loc[localDate,"location_" + day_segment + "_outlierstimepercent"] = outliers_time_percent(newLocationData[newLocationData['local_date']==localDate],sampling_frequency)
 
             preComputedmaxminCluster = pd.DataFrame()
             for localDate in newLocationData['local_date'].unique():
                     smax, smin, sstd,smean = len_stay_at_clusters_in_minutes(newLocationData[newLocationData['local_date']==localDate])
-                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_maxlengthstayatclusters"] = smax
-                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_minlengthstayatclusters"] = smin
-                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_stdlengthstayatclusters"] = sstd
-                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_meanlengthstayatclusters"] = smean
+                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_maxlengthstayatclusters"] = smax * sampling_frequency
+                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_minlengthstayatclusters"] = smin * sampling_frequency
+                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_stdlengthstayatclusters"] = sstd * sampling_frequency
+                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_meanlengthstayatclusters"] = smean * sampling_frequency
             
             if "maxlengthstayatclusters" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
@@ -315,7 +318,7 @@ def number_location_transitions(locationData):
 
     return df[df['boolCol'] == False].shape[0] - 1
 
-def radius_of_gyration(locationData):
+def radius_of_gyration(locationData,sampling_frequency):
     if locationData is None or len(locationData) == 0:
         return None
     # Center is the centroid, not the home location
@@ -333,14 +336,14 @@ def radius_of_gyration(locationData):
         
         distance = haversine(lat_lon_dict) ** 2
         
-        time_in_cluster = locationData[locationData["location_label"]==labels].shape[0]
+        time_in_cluster = locationData[locationData["location_label"]==labels].shape[0]* sampling_frequency
         rog = rog + (time_in_cluster * distance)
-        time_all_clusters = valid_clusters.shape[0]
+        time_all_clusters = valid_clusters.shape[0] * sampling_frequency
         final_rog = (1/time_all_clusters) * rog
 
     return np.sqrt(final_rog)
 
-def time_at_topn_clusters_in_group(locationData,n):  # relevant only for global location features since, top3_clusters = top3_clusters_in_group for local
+def time_at_topn_clusters_in_group(locationData,n,sampling_frequency):  # relevant only for global location features since, top3_clusters = top3_clusters_in_group for local
     
     if locationData is None or len(locationData) == 0:
         return None
@@ -357,12 +360,12 @@ def time_at_topn_clusters_in_group(locationData,n):  # relevant only for global 
 
     return topn_time
 
-def outliers_time_percent(locationData):
+def outliers_time_percent(locationData,sampling_frequency):
     if locationData is None or len(locationData) == 0:
         return None
     clusters = locationData["location_label"]
-    numoutliers = clusters[(clusters == -1)].sum()
-    numtotal = len(clusters)
+    numoutliers = clusters[(clusters == -1)].sum() * sampling_frequency
+    numtotal = len(clusters) * sampling_frequency
     return (float(-1*numoutliers) / numtotal)
 
 
@@ -439,3 +442,8 @@ def location_entropy_normalized(locationData):
         return None
     else:
         return entropy / num_clusters
+
+
+def getSamplingFrequency(locationData):
+
+    return ((pd.to_datetime(locationData['local_time'], format="%H:%M:%S") - pd.to_datetime(locationData['local_time'].shift(periods=1), format="%H:%M:%S")).apply(lambda x: x.total_seconds())/60).median()

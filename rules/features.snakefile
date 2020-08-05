@@ -141,7 +141,8 @@ rule location_doryab_features:
         dbscan_minsamples = config["DORYAB_LOCATION"]["DBSCAN_MINSAMPLES"],
         threshold_static = config["DORYAB_LOCATION"]["THRESHOLD_STATIC"],
         maximum_gap_allowed = config["DORYAB_LOCATION"]["MAXIMUM_GAP_ALLOWED"],
-        minutes_data_used = config["DORYAB_LOCATION"]["MINUTES_DATA_USED"]
+        minutes_data_used = config["DORYAB_LOCATION"]["MINUTES_DATA_USED"],
+        sampling_frequency = config["DORYAB_LOCATION"]["SAMPLING_FREQUENCY"]
     output:
         "data/processed/{pid}/location_doryab_{day_segment}.csv"
     script:

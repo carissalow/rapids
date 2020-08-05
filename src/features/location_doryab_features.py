@@ -10,11 +10,12 @@ dbscan_minsamples = snakemake.params["dbscan_minsamples"]
 threshold_static = snakemake.params["threshold_static"]
 maximum_gap_allowed = snakemake.params["maximum_gap_allowed"]
 minutes_data_used = snakemake.params["minutes_data_used"]
+sampling_frequency = snakemake.params["sampling_frequency"]
 
 if(minutes_data_used):
         requested_features.append("minutesdataused")
 
-base_features = base_location_features(location_data, day_segment, requested_features, dbscan_eps, dbscan_minsamples,threshold_static,maximum_gap_allowed)
+base_features = base_location_features(location_data, day_segment, requested_features, dbscan_eps, dbscan_minsamples,threshold_static,maximum_gap_allowed,sampling_frequency)
 
 location_features = location_features.merge(base_features, on="local_date", how="outer")
 
