@@ -104,7 +104,7 @@ for train_index, test_index in outer_cv.split(data_x):
     # Compute number of participants and features
     # values do not change between folds
     if fold_count == 1:
-        num_of_participants = train_x.shape[0] + test_x.shape[0]
+        num_of_rows = train_x.shape[0] + test_x.shape[0]
         num_of_features = train_x.shape[1]
 
     targets_value_counts = train_y["target"].value_counts()
@@ -150,7 +150,7 @@ else:
 # Step 4. Save results, parameters, and metrics to CSV files
 fold_predictions = pd.DataFrame({"fold_id": fold_id, "pid": pid, "hyperparameters": best_params, "true_y": true_y, "pred_y": pred_y, "pred_y_prob": pred_y_prob})
 fold_metrics = pd.DataFrame({"fold_id":[], "accuracy":[], "precision0": [], "recall0": [], "f10": [], "precision1": [], "recall1": [], "f11": [], "auc": [], "kappa": []})
-overall_results = pd.DataFrame({"num_of_participants": [num_of_participants], "num_of_features": [num_of_features], "rowsnan_colsnan_days_colsvar_threshold": [rowsnan_colsnan_days_colsvar_threshold], "model": [model], "cv_method": [cv_method], "source": [source], "scaler": [scaler], "day_segment": [day_segment], "summarised": [summarised], "accuracy": [metrics["accuracy"]], "precision0": [metrics["precision0"]], "recall0": [metrics["recall0"]], "f10": [metrics["f10"]], "precision1": [metrics["precision1"]], "recall1": [metrics["recall1"]], "f11": [metrics["f11"]], "auc": [metrics["auc"]], "kappa": [metrics["kappa"]]})
+overall_results = pd.DataFrame({"num_of_rows": [num_of_rows], "num_of_features": [num_of_features], "rowsnan_colsnan_days_colsvar_threshold": [rowsnan_colsnan_days_colsvar_threshold], "model": [model], "cv_method": [cv_method], "source": [source], "scaler": [scaler], "day_segment": [day_segment], "summarised": [summarised], "accuracy": [metrics["accuracy"]], "precision0": [metrics["precision0"]], "recall0": [metrics["recall0"]], "f10": [metrics["f10"]], "precision1": [metrics["precision1"]], "recall1": [metrics["recall1"]], "f11": [metrics["f11"]], "auc": [metrics["auc"]], "kappa": [metrics["kappa"]]})
 feature_importances_all_folds.insert(loc=0, column='fold_id', value=fold_id)
 feature_importances_all_folds.insert(loc=1, column='pid', value=pid)
 
