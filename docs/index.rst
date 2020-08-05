@@ -17,6 +17,7 @@ Contents:
    usage/introduction
    usage/installation
    usage/quick_rule
+   usage/example
    usage/snakemake_docs
    usage/faq
 
