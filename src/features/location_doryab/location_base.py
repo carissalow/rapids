@@ -338,8 +338,9 @@ def radius_of_gyration(locationData,sampling_frequency):
         
         time_in_cluster = locationData[locationData["location_label"]==labels].shape[0]* sampling_frequency
         rog = rog + (time_in_cluster * distance)
-        time_all_clusters = valid_clusters.shape[0] * sampling_frequency
-        final_rog = (1/time_all_clusters) * rog
+        
+    time_all_clusters = valid_clusters.shape[0] * sampling_frequency
+    final_rog = (1/time_all_clusters) * rog
 
     return np.sqrt(final_rog)
 

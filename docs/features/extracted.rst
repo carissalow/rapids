@@ -687,6 +687,7 @@ dbscan_minsamples      The number of samples (or total weight) in a neighborhood
 dbscan_eps             The maximum distance between two samples for one to be considered as in the neighborhood of the other. This is not a maximum bound on the distances of points within a cluster. This is the most important DBSCAN parameter to choose appropriately for your data set and distance function.
 maximum_gap_allowed    The maximum gap (in seconds) allowed between any two consecutive rows for them to be considered part of the same displacement. If this threshold is too high, it can throw speed and distance calculations off for periods when the the phone was not sensing.
 minutes_data_used      This is NOT a feature. This is just a quality control check, and if set to TRUE, a new column is added to the output file with the number of minutes containing location data that were used to compute all features. The more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
+sampling_frequency     It defines the time difference between 2 records. If given '0' it will calculate time difference automatically. This parameter impacts all the time calculations.
 ===================    ===================
 
 .. _location-doryab-available-features:
