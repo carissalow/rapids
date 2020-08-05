@@ -489,23 +489,39 @@ features        Features to be computed, see table below
 
 **Available Activity Recognition Features**
 
-======================   ============    =============
-Name                     Units           Description
-======================   ============    =============
-count                    rows            Number of detect activity events (rows).
-mostcommonactivity       factor          The most common activity.
-countuniqueactivities    activities      Number of unique activities.
-activitychangecount      transitions     Number of transitions between two different activities; still to running for example.
-sumstationary            minutes         The total duration of episodes of still and tilting (phone) activities.
-summobile                minutes         The total duration of episodes of on foot, running, and on bicycle activities
-sumvehicle               minutes         The total duration of episodes of on vehicle activity
-======================   ============    =============
+======================   ==============    =============
+Name                     Units             Description
+======================   ==============    =============
+count                    rows              Number of detect activity events (rows).
+mostcommonactivity       activity_type     The most common ``activity_type``. If this feature is not unique the first ``activity_type`` of the set of most common ``activity_types`` is selected ordered by ``activity_type``.
+countuniqueactivities    activities        Number of unique activities.
+activitychangecount      transitions       Number of transitions between two different activities; still to running for example.
+sumstationary            minutes           The total duration of episodes of still and tilting (phone) activities.
+summobile                minutes           The total duration of episodes of on foot, running, and on bicycle activities
+sumvehicle               minutes           The total duration of episodes of on vehicle activity
+======================   ==============    =============
 
 **Assumptions/Observations:**
 
 iOS Activity Recognition data labels are unified with Google Activity Recognition labels: "automotive" to "in_vehicle", "cycling" to "on_bicycle", "walking" and "running" to "on_foot", "stationary" to "still". In addition, iOS activity pairs formed by "stationary" and "automotive" labels (driving but stopped at a traffic light) are transformed to "automotive" only.
 
 In AWARE, Activity Recognition data for Google (Android) and iOS are stored in two different database tables, RAPIDS (via Snakemake) automatically infers what platform each participant belongs to based on their participant file (``data/external/``) which in turn takes this information from the ``aware_device`` table (see ``optional_ar_input`` function in ``rules/features.snakefile``). 
+
+The activties are mapped to activity_types as follows:
+
+===============   ===============
+Activity Name     Activity Type  
+===============   ===============
+in_vehicle        0
+on_bicycle        1
+on_foot           2
+still             3
+unknown           4
+tilting           5
+walking           7
+running           8
+===============   ===============
+
 
 .. _light-doc:
 
