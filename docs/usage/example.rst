@@ -11,16 +11,12 @@ This is a quick guide for creating and running a simple pipeline to analysis an 
 
 #. Make sure your Conda (python) environment is active. See step 6 of :ref:`install-page`.
 
-#. Run the following command to restore database from ``rapids_example.sql`` file. 
-
-::
+#. Run the following command to restore database from ``rapids_example.sql`` file::
 
     sankemake -j1 restore_sql_file
 
 
-#. Create example participants files with the following command.
-
-::
+#. Create example participants files with the following command::
 
     snakemake -j1 create_example_participant_files
 
