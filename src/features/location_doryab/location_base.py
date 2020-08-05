@@ -99,11 +99,11 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
 
             preComputedmaxminCluster = pd.DataFrame()
             for localDate in newLocationData['local_date'].unique():
-                    smax, smin, sstd,smean = len_stay_at_clusters_in_minutes(newLocationData[newLocationData['local_date']==localDate])
-                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_maxlengthstayatclusters"] = smax * sampling_frequency
-                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_minlengthstayatclusters"] = smin * sampling_frequency
-                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_stdlengthstayatclusters"] = sstd * sampling_frequency
-                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_meanlengthstayatclusters"] = smean * sampling_frequency
+                    smax, smin, sstd,smean = len_stay_at_clusters_in_minutes(newLocationData[newLocationData['local_date']==localDate],sampling_frequency)
+                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_maxlengthstayatclusters"] = smax 
+                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_minlengthstayatclusters"] = smin 
+                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_stdlengthstayatclusters"] = sstd
+                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_meanlengthstayatclusters"] = smean
             
             if "maxlengthstayatclusters" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
@@ -355,7 +355,7 @@ def time_at_topn_clusters_in_group(locationData,n,sampling_frequency):  # releva
 
     if len(sorted_valcounts) >= n:
         topn = sorted_valcounts[n-1]
-        topn_time = topn[1]
+        topn_time = topn[1] * sampling_frequency
     else:
         topn_time = None
 
@@ -380,7 +380,7 @@ def moving_time_percent(locationData):
     # print(numtotal)
     return (float(nummoving) / numtotal)
 
-def len_stay_at_clusters_in_minutes(locationData):
+def len_stay_at_clusters_in_minutes(locationData,sampling_frequency):
     if locationData is None or len(locationData) == 0:
         return  (None, None, None,None)
 
@@ -403,7 +403,7 @@ def len_stay_at_clusters_in_minutes(locationData):
                 count = 0 + 1
     if count > 0:  # in case of no transition
         lenstays.append(count)
-    lenstays = np.array(lenstays)
+    lenstays = np.array(lenstays) * sampling_frequency
 
     if len(lenstays) > 0:
         smax = np.max(lenstays)
