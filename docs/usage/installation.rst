@@ -3,7 +3,32 @@
 Installation
 ===============
 
-These instructions have been tested on macOS (Catalina and Mojave) and Ubuntu 16.04. If you find a problem, please create a GitHub issue or contact us.
+These instructions have been tested on macOS (Catalina and Mojave) and Ubuntu 16.04. If you find a problem, please create a GitHub issue or contact us. If you want to test RAPIDS quickly try our docker image or follow the Linux instructions on a virtual machine.
+
+Docker (the fastest and easiest way)
+------------------------------------
+
+#. Install docker
+
+#. Pull RAPIDS' container
+
+    ``docker pull agamk/rapids:latest``
+
+#. Run RAPIDS' container (after this step is done you should see a prompt in the main RAPIDS folder with its python environment active)
+
+    ``docker run -it agamk/rapids:latest``
+
+#. Optional. You can start editing files with vim but we recommend using Visual Studio Code and its Remote extension
+
+    - Make sure RAPIDS container is running
+    - Install the Remote - Containers extension: https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers
+    - Go to the ``Remote Explorer`` panel on the left hand sidebar
+    - On the top right dropdown menu choose ``Containers``
+    - Double click on the ``agamk/rapids`` container in the ``CONTAINERS`` tree
+    - A new VS Code session should open on RAPIDS main folder inside the container.
+
+#. See Usage section below.
+
 
 macOS (tested on Catalina 10.15)
 --------------------------------
