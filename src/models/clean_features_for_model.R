@@ -3,22 +3,23 @@ library(tidyr)
 library(dplyr)
 
 filter_participant_without_enough_days <- function(clean_features, days_before_threshold, days_after_threshold){
+  clean_features$day_type <- ifelse(clean_features$day_idx < 0, -1, ifelse(clean_features$day_idx > 0, 1, 0))
   if("pid" %in% colnames(clean_features)){
     clean_features <- clean_features %>% 
       group_by(pid) %>% 
-      add_count(pid, day_idx) # this adds a new column "n"
+      add_count(pid, day_type) # this adds a new column "n"
   } else {
-    clean_features <- clean_features %>% add_count(day_idx)
+    clean_features <- clean_features %>% add_count(day_type < 0)
   }
 
   # Only keep participants with enough days before surgery and after discharge
   clean_features <- clean_features %>% 
-    mutate(count_before = ifelse(day_idx < 0, n, NA), # before surgery
-          count_after = ifelse(day_idx > 0, n, NA)) %>%  # after discharge
+    mutate(count_before = ifelse(day_type == -1, n, NA), # before surgery
+          count_after = ifelse(day_type == 1, n, NA)) %>%  # after discharge
     fill(count_before, .direction = "downup") %>% 
     fill(count_after, .direction = "downup") %>% 
     filter(count_before >= days_before_threshold & count_after >= days_after_threshold) %>% 
-    select(-n, -count_before, -count_after) %>% 
+    select(-n, -count_before, -count_after, -day_type) %>% 
     ungroup()
 
   return(clean_features)
