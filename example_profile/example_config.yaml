@@ -36,7 +36,7 @@ PHONE_VALID_SENSED_BINS:
 
 PHONE_VALID_SENSED_DAYS:
   COMPUTE: False
-  MIN_VALID_HOURS_PER_DAY: &min_valid_hours_per_day [16] # (out of 24) MIN_HOURS_PER_DAY
+  MIN_VALID_HOURS_PER_DAY: &min_valid_hours_per_day [16, 20] # (out of 24) MIN_HOURS_PER_DAY
   MIN_VALID_BINS_PER_HOUR: &min_valid_bins_per_hour [6] # (out of 60min/BIN_SIZE bins)
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
@@ -243,12 +243,12 @@ OVERALL_COMPLIANCE_HEATMAP:
 
 ### Example Analysis ################################################################
 PARAMS_FOR_ANALYSIS:
-  COMPUTE: False
+  COMPUTE: True
   GROUNDTRUTH_TABLE: participant_info
   TARGET_TABLE: participant_target
   SOURCES: &sources ["phone_features", "fitbit_features", "phone_fitbit_features"]
   DAY_SEGMENTS: *day_segments
-  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, bluetooth, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
+  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, bluetooth, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen, wifi]
   FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
   PHONE_FITBIT_FEATURES: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
   DEMOGRAPHIC_FEATURES: [age, gender, inpatientdays]
@@ -269,11 +269,11 @@ PARAMS_FOR_ANALYSIS:
     DAYS_AFTER_DISCHARGE: 5 #7
 
   # Cleaning Parameters
-  COLS_NAN_THRESHOLD: [0.3] #[0.1, 0.3, 0.5]
+  COLS_NAN_THRESHOLD: [0.1, 0.3]
   COLS_VAR_THRESHOLD: True
-  ROWS_NAN_THRESHOLD: [0.3] #[0.1, 0.3, 0.5]
-  PARTICIPANT_DAYS_BEFORE_THRESHOLD: 3 #7
-  PARTICIPANT_DAYS_AFTER_THRESHOLD: 2 #4
+  ROWS_NAN_THRESHOLD: [0.1, 0.3]
+  PARTICIPANT_DAYS_BEFORE_THRESHOLD: 3
+  PARTICIPANT_DAYS_AFTER_THRESHOLD: 3
 
   # Extract summarised features from daily features with any of the following substrings
   NUMERICAL_OPERATORS: ["count", "sum", "length", "avg", "restinghr"]
