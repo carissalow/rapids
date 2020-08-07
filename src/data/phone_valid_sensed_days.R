@@ -12,9 +12,8 @@ phone_valid_sensed_days <- phone_sensed_bins %>%
   filter(value > 0) %>%
   group_by(local_date, hour) %>%
   summarise(valid_bins = n()) %>% 
-  filter(valid_bins >= min_valid_bins_per_hour) %>% 
   group_by(local_date) %>% 
-  summarise(valid_sensed_hours = n()) %>% 
+  summarise(valid_sensed_hours = sum(valid_bins >= min_valid_bins_per_hour)) %>% 
   mutate(is_valid_sensed_day = ifelse(valid_sensed_hours >= min_valid_hours_per_day, TRUE, FALSE))
 
 write.csv(phone_valid_sensed_days, output_file, row.names = FALSE)
