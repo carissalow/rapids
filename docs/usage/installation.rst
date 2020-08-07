@@ -18,6 +18,10 @@ Docker (the fastest and easiest way)
 
     ``docker run -it agamk/rapids:latest``
 
+#. Pull the latest version of RAPIDS
+
+    ``git pull``
+
 #. Optional. You can start editing files with vim but we recommend using Visual Studio Code and its Remote extension
 
     - Make sure RAPIDS container is running
