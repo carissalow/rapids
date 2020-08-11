@@ -8,9 +8,6 @@ include: "rules/reports.smk"
 
 import itertools
 
-pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
-pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
-
 files_to_compute = []
 
 if len(config["PIDS"]) == 0:
@@ -20,8 +17,11 @@ if config["PHONE_VALID_SENSED_BINS"]["COMPUTE"] or config["PHONE_VALID_SENSED_DA
     if len(config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"]) == 0:
             raise ValueError("If you want to compute PHONE_VALID_SENSED_BINS or PHONE_VALID_SENSED_DAYS, you need to add at least one table to [PHONE_VALID_SENSED_BINS][DB_TABLES] in config.yaml")
 
+    pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
+    pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
     tables_android = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]]] # for android, discard any ios tables that may exist
     tables_ios = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"]]] # for ios, discard any android tables that may exist
+
     for pids,table in zip([pids_android, pids_ios], [tables_android, tables_ios]):
         files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
         files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
@@ -61,6 +61,9 @@ if config["BLUETOOTH"]["COMPUTE"]:
     files_to_compute.extend(expand("data/processed/{pid}/bluetooth_{day_segment}.csv", pid=config["PIDS"], day_segment = config["BLUETOOTH"]["DAY_SEGMENTS"]))
 
 if config["ACTIVITY_RECOGNITION"]["COMPUTE"]:
+    pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
+    pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
+    
     for pids,table in zip([pids_android, pids_ios], [config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]]):
         files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
         files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
@@ -131,6 +134,9 @@ if config["SLEEP"]["COMPUTE"]:
     files_to_compute.extend(expand("data/processed/{pid}/fitbit_sleep_{day_segment}.csv", pid = config["PIDS"], day_segment = config["SLEEP"]["DAY_SEGMENTS"]))
 
 if config["CONVERSATION"]["COMPUTE"]:
+    pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
+    pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
+
     for pids,table in zip([pids_android, pids_ios], [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"]]):
         files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
         files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
