@@ -16,11 +16,11 @@ cp tests/data/external/* data/external
 
 # Uncomment the section below to backup snakemake file when testing locally
 # echo Backing up preprocessing...
-# cp rules/preprocessing.snakefile bak
+# cp rules/preprocessing.smk bak
 
 echo Disabling downloading of dataset...
-sed -e '27,39 s/^/#/' -e  's/rules.download_dataset.output/"data\/raw\/\{pid\}\/\{sensor\}_raw\.csv"/' rules/preprocessing.snakefile > tmp
-cp tmp rules/preprocessing.snakefile
+sed -e '27,39 s/^/#/' -e  's/rules.download_dataset.output/"data\/raw\/\{pid\}\/\{sensor\}_raw\.csv"/' rules/preprocessing.smk > tmp
+cp tmp rules/preprocessing.smk
 
 echo Running RAPIDS Pipeline on testdata...
 snakemake --profile tests/settings 
@@ -30,5 +30,5 @@ python -m unittest discover tests/scripts/ -v
 
 # Uncomment to return snakemake back to the original version when testing locally
 # echo Cleaning up...
-# mv bak rules/preprocessing.snakefile
+# mv bak rules/preprocessing.smk
 # rm tmp
