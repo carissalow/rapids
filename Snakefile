@@ -15,15 +15,18 @@ files_to_compute = []
 if len(config["PIDS"]) == 0:
     raise ValueError("Add participants IDs to PIDS in config.yaml. Remember to create their participant files in data/external")
 
-if config["PHONE_VALID_SENSED_BINS"]["COMPUTE"]:
-    if len(config["PHONE_VALID_SENSED_BINS"]["TABLES"]) == 0:
-            raise ValueError("If you want to compute PHONE_VALID_SENSED_BINS, you need to add at least one table to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml")
+if config["PHONE_VALID_SENSED_BINS"]["COMPUTE"] or config["PHONE_VALID_SENSED_DAYS"]["COMPUTE"]: # valid sensed bins is necessary for sensed days, so we add these files anyways if sensed days are requested
+    if len(config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"]) == 0:
+            raise ValueError("If you want to compute PHONE_VALID_SENSED_BINS or PHONE_VALID_SENSED_DAYS, you need to add at least one table to [PHONE_VALID_SENSED_BINS][DB_TABLES] in config.yaml")
+
+    tables_android = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]]] # for android, discard any ios tables that may exist
+    tables_ios = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"]]] # for ios, discard any android tables that may exist
+    for pids,table in zip([pids_android, pids_ios], [tables_android, tables_ios]):
+        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
+        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
     files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
 
 if config["PHONE_VALID_SENSED_DAYS"]["COMPUTE"]:
-    if len(config["PHONE_VALID_SENSED_BINS"]["TABLES"]) == 0:
-            raise ValueError("If you want to compute PHONE_VALID_SENSED_DAYS, you need to add at least one table to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml")
-    files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
     files_to_compute.extend(expand("data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins.csv",
                                 pid=config["PIDS"],
                                 min_valid_hours_per_day=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_HOURS_PER_DAY"],
@@ -42,11 +45,11 @@ if config["CALLS"]["COMPUTE"]:
 
 if config["BARNETT_LOCATION"]["COMPUTE"]:
     if config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
-        if config["BARNETT_LOCATION"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["TABLES"]:
+        if config["BARNETT_LOCATION"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"]:
             files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
             files_to_compute.extend(expand("data/raw/{pid}/{sensor}_resampled.csv", pid=config["PIDS"], sensor=config["BARNETT_LOCATION"]["DB_TABLE"]))
         else:
-            raise ValueError("Error: Add your locations table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")            
+            raise ValueError("Error: Add your locations table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][DB_TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")            
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["BARNETT_LOCATION"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["BARNETT_LOCATION"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/processed/{pid}/location_barnett_{day_segment}.csv", pid=config["PIDS"], day_segment = config["BARNETT_LOCATION"]["DAY_SEGMENTS"]))
@@ -72,10 +75,10 @@ if config["BATTERY"]["COMPUTE"]:
     files_to_compute.extend(expand("data/processed/{pid}/battery_{day_segment}.csv", pid = config["PIDS"], day_segment = config["BATTERY"]["DAY_SEGMENTS"]))
 
 if config["SCREEN"]["COMPUTE"]:
-    if config["SCREEN"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["TABLES"]:
+    if config["SCREEN"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"]:
         files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
     else:
-        raise ValueError("Error: Add your screen table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data)")
+        raise ValueError("Error: Add your screen table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][DB_TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data)")
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SCREEN"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SCREEN"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["SCREEN"]["DB_TABLE"]))
@@ -135,11 +138,11 @@ if config["CONVERSATION"]["COMPUTE"]:
 
 if config["DORYAB_LOCATION"]["COMPUTE"]:
     if config["DORYAB_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
-        if config["DORYAB_LOCATION"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["TABLES"]:
+        if config["DORYAB_LOCATION"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"]:
             files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
             files_to_compute.extend(expand("data/raw/{pid}/{sensor}_resampled.csv", pid=config["PIDS"], sensor=config["DORYAB_LOCATION"]["DB_TABLE"]))
         else:
-            raise ValueError("Error: Add your locations table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")      
+            raise ValueError("Error: Add your locations table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][DB_TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")      
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["DORYAB_LOCATION"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["DORYAB_LOCATION"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/processed/{pid}/location_doryab_{segment}.csv", pid=config["PIDS"], segment = config["DORYAB_LOCATION"]["DAY_SEGMENTS"]))

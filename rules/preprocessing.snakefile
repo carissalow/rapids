@@ -1,3 +1,22 @@
+def optional_phone_sensed_bins_input(wildcards):
+    with open("data/external/"+wildcards.pid, encoding="ISO-8859-1") as external_file:
+        external_file_content = external_file.readlines()
+    platforms = external_file_content[1].strip().split(",")
+    if platforms[0] == "multiple" or (len(platforms) > 1 and "android" in platforms and "ios" in platforms):
+        platform = "android"
+    else:
+        platform = platforms[0]
+    
+    if platform not in ["android", "ios"]:
+        raise ValueError("Platform (line 2) in a participant file should be 'android', 'ios', or 'multiple'. You typed '" + platforms + "'")
+    
+    if platform == "android":
+        tables_platform = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]]] # for android, discard any ios tables that may exist
+    elif platform == "ios":
+        tables_platform = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"]]] # for ios, discard any android tables that may exist
+
+    return expand("data/raw/{{pid}}/{table}_with_datetime.csv", table = tables_platform)
+
 rule restore_sql_file:
     input:
         sql_file = "data/external/rapids_example.sql",
@@ -40,7 +59,7 @@ rule download_dataset:
 
 PHONE_SENSORS = []
 PHONE_SENSORS.extend([config["MESSAGES"]["DB_TABLE"], config["CALLS"]["DB_TABLE"], config["BARNETT_LOCATION"]["DB_TABLE"], config["DORYAB_LOCATION"]["DB_TABLE"], config["BLUETOOTH"]["DB_TABLE"], config["BATTERY"]["DB_TABLE"], config["SCREEN"]["DB_TABLE"], config["LIGHT"]["DB_TABLE"], config["ACCELEROMETER"]["DB_TABLE"], config["APPLICATIONS_FOREGROUND"]["DB_TABLE"], config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]])
-PHONE_SENSORS.extend(config["PHONE_VALID_SENSED_BINS"]["TABLES"])
+PHONE_SENSORS.extend(config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"])
 
 if len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) > 0:
     PHONE_SENSORS.append(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"])
@@ -63,7 +82,7 @@ rule readable_datetime:
 
 rule phone_sensed_bins:
     input:
-        all_sensors =  expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["PHONE_VALID_SENSED_BINS"]["TABLES"])
+        all_sensors =  optional_phone_sensed_bins_input
     params:
         bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"]
     output:
