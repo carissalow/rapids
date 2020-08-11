@@ -1,9 +1,10 @@
 configfile: "config.yaml"
-include: "rules/renv.snakefile"
-include: "rules/preprocessing.snakefile"
-include: "rules/features.snakefile"
-include: "rules/models.snakefile"
-include: "rules/reports.snakefile"
+include: "rules/common.smk"
+include: "rules/renv.smk"
+include: "rules/preprocessing.smk"
+include: "rules/features.smk"
+include: "rules/models.smk"
+include: "rules/reports.smk"
 
 import itertools
 

@@ -1,27 +1,3 @@
-def optional_heatmap_days_by_sensors_input(wildcards):
-    with open("data/external/"+wildcards.pid, encoding="ISO-8859-1") as external_file:
-        external_file_content = external_file.readlines()
-    platforms = external_file_content[1].strip().split(",")
-    if platforms[0] == "multiple" or (len(platforms) > 1 and "android" in platforms and "ios" in platforms):
-        platform = "android"
-    else:
-        platform = platforms[0]
-    
-    if platform not in ["android", "ios"]:
-        raise ValueError("Platform (line 2) in a participant file should be 'android', 'ios', or 'multiple'. You typed '" + platforms + "'")
-
-    input_for_heatmap_days_by_sensors, tables = [], config["HEATMAP_DAYS_BY_SENSORS"]["DB_TABLES"]
-
-    for sensor in ["ACTIVITY_RECOGNITION", "CONVERSATION"]:
-        table = config[sensor]["DB_TABLE"][platform.upper()]
-        if table in tables:
-            input_for_heatmap_days_by_sensors.append("data/raw/{pid}/" + table + "_with_datetime.csv")
-            tables = [x for x in tables if x not in config[sensor]["DB_TABLE"].values()]
-    for table in tables:
-        input_for_heatmap_days_by_sensors.append("data/raw/{pid}/" + table + "_with_datetime.csv")
-
-    return input_for_heatmap_days_by_sensors
-
 rule heatmap_features_correlations:
     input:
         features = expand("data/processed/{pid}/{sensor}_{day_segment}.csv", pid=config["PIDS"], sensor=config["HEATMAP_FEATURES_CORRELATIONS"]["PHONE_FEATURES"]+config["HEATMAP_FEATURES_CORRELATIONS"]["FITBIT_FEATURES"], day_segment=config["DAY_SEGMENTS"]),
@@ -98,36 +74,3 @@ rule overall_compliance_heatmap:
         "reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/overall_compliance_heatmap.html"
     script:
         "../src/visualization/overall_compliance_heatmap.py"
-
-# rule heatmap_rows:
-#     input:
-#         sensor = "data/raw/{pid}/{sensor}_with_datetime.csv",
-#         pid_file = "data/external/{pid}"
-#     params:
-#         table = "{sensor}",
-#         pid = "{pid}",
-#         bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"]
-#     output:
-#         "reports/figures/{pid}/{sensor}_heatmap_rows.html"
-#     script:
-#         "../src/visualization/heatmap_rows.py"
-
-# rule battery_consumption_rates_barchart:
-#     input:
-#         sensor = "data/processed/{pid}/battery_daily.csv",
-#         pid_file = "data/external/{pid}"
-#     params:
-#         pid = "{pid}"
-#     output:
-#         "reports/figures/{pid}/battery_consumption_rates_barchart.html"
-#     script:
-#         "../src/visualization/battery_consumption_rates_barchart.py"
-
-# rule compliance_report:
-#     input:
-#         sensor_heatmaps =  expand("reports/figures/{{pid}}/{sensor}_heatmap_rows.html", sensor=PHONE_SENSORS),
-#         compliance_heatmap =  rules.compliance_heatmap.output
-#     output:
-#         "reports/compliance/{pid}/compliance_report.html",
-#     script:
-#         "../src/visualization/compliance_report.Rmd"

@@ -36,29 +36,6 @@ rule demographic_features:
     script:
         "../src/features/demographic_features.py"
 
-def input_merge_features_of_single_participant(wildcards):
-    if wildcards.source == "phone_fitbit_features":
-        return expand("data/processed/{pid}/{features}_{day_segment}.csv", pid=wildcards.pid, features=config["PARAMS_FOR_ANALYSIS"]["PHONE_FEATURES"] + config["PARAMS_FOR_ANALYSIS"]["FITBIT_FEATURES"], day_segment=wildcards.day_segment)
-    else:
-        return expand("data/processed/{pid}/{features}_{day_segment}.csv", pid=wildcards.pid, features=config["PARAMS_FOR_ANALYSIS"][wildcards.source.upper()], day_segment=wildcards.day_segment)
-
-def optional_input_days_to_include(wildcards):
-    if config["PARAMS_FOR_ANALYSIS"]["DAYS_TO_ANALYSE"]["ENABLED"]:
-        # This input automatically trigers the rule days_to_analyse in mystudy.snakefile
-        return ["data/interim/{pid}/days_to_analyse" + \
-                    "_" + str(config["PARAMS_FOR_ANALYSIS"]["DAYS_TO_ANALYSE"]["DAYS_BEFORE_SURGERY"]) + \
-                    "_" + str(config["PARAMS_FOR_ANALYSIS"]["DAYS_TO_ANALYSE"]["DAYS_IN_HOSPITAL"]) + \
-                    "_" + str(config["PARAMS_FOR_ANALYSIS"]["DAYS_TO_ANALYSE"]["DAYS_AFTER_DISCHARGE"]) + ".csv"]
-    else:
-        return []
-
-def optional_input_valid_sensed_days(wildcards):
-    if config["PARAMS_FOR_ANALYSIS"]["DROP_VALID_SENSED_DAYS"]["ENABLED"]:
-        # This input automatically trigers the rule phone_valid_sensed_days in preprocessing.snakefile
-        return ["data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins.csv"]
-    else:
-        return []
-
 rule merge_features_for_individual_model:
     input:
         feature_files = input_merge_features_of_single_participant,

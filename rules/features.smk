@@ -1,63 +1,3 @@
-def infer_participant_platform(participant_file):
-    with open(participant_file, encoding="ISO-8859-1") as external_file:
-        external_file_content = external_file.readlines()
-    platforms = external_file_content[1].strip().split(",")
-    if platforms[0] == "multiple" or (len(platforms) > 1 and "android" in platforms and "ios" in platforms):
-        platform = "android"
-    else:
-        platform = platforms[0]
-    return platform
-
-def optional_ar_input(wildcards):
-    platform = infer_participant_platform("data/external/"+wildcards.pid)
-
-    if platform == "android": 
-        return ["data/raw/{pid}/" + config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "_with_datetime_unified.csv",
-                "data/processed/{pid}/" + config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "_deltas.csv"]
-    elif platform == "ios":
-        return ["data/raw/{pid}/"+config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]+"_with_datetime_unified.csv",
-                "data/processed/{pid}/"+config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]+"_deltas.csv"]
-    else:
-        raise ValueError("Platform (line 2) in a participant file should be 'android', 'ios', or 'multiple'. You typed '" + platforms + "'")
-
-def optional_conversation_input(wildcards):
-    platform = infer_participant_platform("data/external/"+wildcards.pid)
-
-    if platform == "android":
-        return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["ANDROID"] + "_with_datetime_unified.csv"]
-    elif platform == "ios":
-        return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["IOS"] + "_with_datetime_unified.csv"]
-    else:
-        raise ValueError("Platform (line 2) in a participant file should be 'android' or 'ios', or 'multiple'. You typed '" + platforms + "'")
-
-def optional_location_input(wildcards):
-    if config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
-        return expand("data/raw/{{pid}}/{sensor}_resampled.csv", sensor=config["BARNETT_LOCATION"]["DB_TABLE"])
-    else:
-        return expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BARNETT_LOCATION"]["DB_TABLE"])
-
-def optional_location_doryab_input(wildcards):
-    if config["DORYAB_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
-        return expand("data/raw/{{pid}}/{sensor}_resampled.csv", sensor=config["DORYAB_LOCATION"]["DB_TABLE"])
-    else:
-        return expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["DORYAB_LOCATION"]["DB_TABLE"])
-
-def optional_steps_sleep_input(wildcards):
-    if config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"] == True and config["STEP"]["EXCLUDE_SLEEP"]["TYPE"] == "FITBIT_BASED":
-        return  "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv"
-    else:
-        return []
-
-def optional_wifi_input(wildcards):
-    if len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) > 0 and len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) == 0:
-        return {"visible_access_points": expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"])}
-    elif len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) == 0 and len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) > 0:
-        return {"connected_access_points": expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"])}
-    elif len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) > 0 and len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) > 0:
-        return {"visible_access_points": expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]), "connected_access_points": expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"])}
-    else:
-        raise ValueError("If you are computing WIFI features you need to provide either VISIBLE_ACCESS_POINTS, CONNECTED_ACCESS_POINTS or both")
-
 rule messages_features:
     input: 
         expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["MESSAGES"]["DB_TABLE"])
@@ -116,7 +56,7 @@ rule ios_activity_recognition_deltas:
 
 rule location_barnett_features:
     input:
-        locations = optional_location_input
+        locations = optional_location_barnett_input
     params:
         features = config["BARNETT_LOCATION"]["FEATURES"],
         locations_to_use = config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"],
