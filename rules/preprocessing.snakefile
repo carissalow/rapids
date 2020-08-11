@@ -32,7 +32,7 @@ rule download_dataset:
         table = "{sensor}",
         timezone = config["TIMEZONE"],
         aware_multiplatform_tables = config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "," + config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"] + "," + config["CONVERSATION"]["DB_TABLE"]["ANDROID"] + "," + config["CONVERSATION"]["DB_TABLE"]["IOS"],
-        unifiable_sensors = {"calls": config["CALLS"]["DB_TABLE"], "battery": config["BATTERY"]["DB_TABLE"], "screen": config["SCREEN"]["DB_TABLE"], "ios_activity_recognition": config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]}
+        unifiable_sensors = {"calls": config["CALLS"]["DB_TABLE"], "battery": config["BATTERY"]["DB_TABLE"], "screen": config["SCREEN"]["DB_TABLE"], "ios_activity_recognition": config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"], "ios_conversation": config["CONVERSATION"]["DB_TABLE"]["IOS"]}
     output:
         "data/raw/{pid}/{sensor}_raw.csv"
     script:
@@ -89,7 +89,7 @@ rule unify_ios_android:
         participant_info = "data/external/{pid}"
     params:
         sensor = "{sensor}",
-        unifiable_sensors = {"calls": config["CALLS"]["DB_TABLE"], "battery": config["BATTERY"]["DB_TABLE"], "screen": config["SCREEN"]["DB_TABLE"], "ios_activity_recognition": config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]}
+        unifiable_sensors = {"calls": config["CALLS"]["DB_TABLE"], "battery": config["BATTERY"]["DB_TABLE"], "screen": config["SCREEN"]["DB_TABLE"], "ios_activity_recognition": config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"], "ios_conversation": config["CONVERSATION"]["DB_TABLE"]["IOS"]}
     output:
         "data/raw/{pid}/{sensor}_with_datetime_unified.csv"
     script:

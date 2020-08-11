@@ -1,11 +1,15 @@
-def optional_ar_input(wildcards):
-    with open("data/external/"+wildcards.pid, encoding="ISO-8859-1") as external_file:
+def infer_participant_platform(participant_file):
+    with open(participant_file, encoding="ISO-8859-1") as external_file:
         external_file_content = external_file.readlines()
     platforms = external_file_content[1].strip().split(",")
     if platforms[0] == "multiple" or (len(platforms) > 1 and "android" in platforms and "ios" in platforms):
         platform = "android"
     else:
         platform = platforms[0]
+    return platform
+
+def optional_ar_input(wildcards):
+    platform = infer_participant_platform("data/external/"+wildcards.pid)
 
     if platform == "android": 
         return ["data/raw/{pid}/" + config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "_with_datetime_unified.csv",
@@ -17,18 +21,12 @@ def optional_ar_input(wildcards):
         raise ValueError("Platform (line 2) in a participant file should be 'android', 'ios', or 'multiple'. You typed '" + platforms + "'")
 
 def optional_conversation_input(wildcards):
-    with open("data/external/"+wildcards.pid, encoding="ISO-8859-1") as external_file:
-        external_file_content = external_file.readlines()
-    platforms = external_file_content[1].strip().split(",")
-    if platforms[0] == "multiple" or (len(platforms) > 1 and "android" in platforms and "ios" in platforms):
-        platform = "android"
-    else:
-        platform = platforms[0]
+    platform = infer_participant_platform("data/external/"+wildcards.pid)
 
     if platform == "android":
-        return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["ANDROID"] + "_with_datetime.csv"]
+        return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["ANDROID"] + "_with_datetime_unified.csv"]
     elif platform == "ios":
-        return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["IOS"] + "_with_datetime.csv"]
+        return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["IOS"] + "_with_datetime_unified.csv"]
     else:
         raise ValueError("Platform (line 2) in a participant file should be 'android' or 'ios', or 'multiple'. You typed '" + platforms + "'")
 

@@ -122,6 +122,20 @@ unify_ios_gar <- function(ios_gar){
     return(ios_gar)
 }
 
+unify_ios_conversation <- function(conversation){
+    if(nrow(conversation) > 0){
+        duration_check <- conversation %>% 
+            select(double_convo_start, double_convo_end) %>% 
+            mutate(start_is_seconds = double_convo_start <= 9999999999,
+                end_is_seconds = double_convo_end <= 9999999999) # Values smaller than 9999999999 are in seconds instead of milliseconds
+        start_end_in_seconds = sum(duration_check$start_is_seconds) + sum(duration_check$end_is_seconds)
+
+        if(start_end_in_seconds > 0) # convert seconds to milliseconds
+            conversation <- conversation %>% mutate(double_convo_start = double_convo_start * 1000, double_convo_end = double_convo_end * 1000)
+    }
+    return(conversation)
+}
+
 # This function is used in download_dataset.R
 unify_raw_data <- function(dbEngine, table, start_datetime_utc, end_datetime_utc, aware_multiplatform_tables, unifiable_tables, device_ids, platforms){
   # If platforms is 'multiple', fetch each device_id's platform from aware_device, otherwise, use those given by the user
@@ -185,6 +199,8 @@ unify_data <- function(sensor_data, sensor, platform, unifiable_sensors){
             sensor_data = unify_ios_screen(sensor_data)
         }
         # android screen remains unchanged
+    } else if(sensor == unifiable_sensors$ios_conversation){
+        sensor_data = unify_ios_conversation(sensor_data)
     }
     return(sensor_data)
 }
