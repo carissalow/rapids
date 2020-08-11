@@ -8,7 +8,7 @@ DAY_SEGMENTS: &day_segments
   [daily, morning, afternoon, evening, night]
 
 PHONE_VALID_SENSED_BINS:
-  TABLES: [messages, calls, screen, battery, bluetooth, wifi, light, applications_foreground]
+  DB_TABLES: [messages, calls, screen, battery, bluetooth, wifi, light, applications_foreground]
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 MESSAGES:
