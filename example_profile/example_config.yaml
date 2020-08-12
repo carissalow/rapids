@@ -32,7 +32,7 @@ PHONE_VALID_SENSED_BINS:
   BIN_SIZE: &bin_size 5 # (in minutes)
   # Add as many sensor tables as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
   # If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
-  TABLES: [messages, calls, locations, plugin_google_activity_recognition, plugin_ios_activity_recognition, battery, screen, light, accelerometer, applications_foreground, plugin_studentlife_audio_android, plugin_studentlife_audio, wifi, sensor_wifi, bluetooth, applications_notifications, aware_log, ios_status_monitor, push_notification, significant, timezone, touch, keyboard]
+  DB_TABLES: [messages, calls, locations, plugin_google_activity_recognition, plugin_ios_activity_recognition, battery, screen, light, accelerometer, applications_foreground, plugin_studentlife_audio_android, plugin_studentlife_audio, wifi, sensor_wifi, bluetooth, applications_notifications, aware_log, ios_status_monitor, push_notification, significant, timezone, touch, keyboard]
 
 PHONE_VALID_SENSED_DAYS:
   COMPUTE: False
