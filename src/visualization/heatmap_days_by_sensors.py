@@ -41,34 +41,34 @@ if row_count_sensors.empty:
     empty_html = open(snakemake.output[0], "w")
     empty_html.write("There are no records of sensors in database.")
     empty_html.close()
-
-# set date_idx based on the first date
-reference_date = row_count_sensors.index.min()
-last_date = row_count_sensors.index.max()
-row_count_sensors["date_idx"] = (row_count_sensors.index - reference_date).days
-row_count_sensors["local_date"] = row_count_sensors.index
-row_count_sensors.set_index(["local_date", "date_idx"], inplace=True)
-
-
-expected_num_of_days = int(snakemake.params["expected_num_of_days"])
-if expected_num_of_days < -1:
-    raise ValueError("EXPECTED_NUM_OF_DAYS of HEATMAP_DAYS_BY_SENSORS section in config.yaml must be larger or equal to -1.")
-# if expected_num_of_days = -1, return all dates
-expected_num_of_days = (last_date - reference_date).days if expected_num_of_days == -1 else expected_num_of_days
-
-# add empty rows to make sure different participants have the same date_idx range
-date_idx_range = [idx for idx in range(expected_num_of_days)]
-date_range = [reference_date + timedelta(days=idx) for idx in date_idx_range]
-all_dates = pd.DataFrame({"local_date": date_range, "date_idx": date_idx_range})
-all_dates.set_index(["local_date", "date_idx"], inplace=True)
-
-row_count_sensors = row_count_sensors.merge(all_dates, left_index=True, right_index=True, how="right")
-
-# normalize each sensor (column)
-if row_count_sensors.count().max() > 1:
-    row_count_sensors_normalized = row_count_sensors.fillna(np.nan).apply(lambda x: (x - np.nanmin(x)) / (np.nanmax(x) - np.nanmin(x)) if np.nanmax(x) != np.nanmin(x) else (x / np.nanmin(x)), axis=0)
 else:
-    row_count_sensors_normalized = row_count_sensors
+    # set date_idx based on the first date
+    reference_date = row_count_sensors.index.min()
+    last_date = row_count_sensors.index.max()
+    row_count_sensors["date_idx"] = (row_count_sensors.index - reference_date).days
+    row_count_sensors["local_date"] = row_count_sensors.index
+    row_count_sensors.set_index(["local_date", "date_idx"], inplace=True)
 
-pid = sensor_path.split("/")[2]
-getRowCountHeatmap(row_count_sensors_normalized, row_count_sensors, pid, snakemake.output[0])
+
+    expected_num_of_days = int(snakemake.params["expected_num_of_days"])
+    if expected_num_of_days < -1:
+        raise ValueError("EXPECTED_NUM_OF_DAYS of HEATMAP_DAYS_BY_SENSORS section in config.yaml must be larger or equal to -1.")
+    # if expected_num_of_days = -1, return all dates
+    expected_num_of_days = (last_date - reference_date).days if expected_num_of_days == -1 else expected_num_of_days
+
+    # add empty rows to make sure different participants have the same date_idx range
+    date_idx_range = [idx for idx in range(expected_num_of_days)]
+    date_range = [reference_date + timedelta(days=idx) for idx in date_idx_range]
+    all_dates = pd.DataFrame({"local_date": date_range, "date_idx": date_idx_range})
+    all_dates.set_index(["local_date", "date_idx"], inplace=True)
+
+    row_count_sensors = row_count_sensors.merge(all_dates, left_index=True, right_index=True, how="right")
+
+    # normalize each sensor (column)
+    if row_count_sensors.count().max() > 1:
+        row_count_sensors_normalized = row_count_sensors.fillna(np.nan).apply(lambda x: (x - np.nanmin(x)) / (np.nanmax(x) - np.nanmin(x)) if np.nanmax(x) != np.nanmin(x) else (x / np.nanmin(x)), axis=0)
+    else:
+        row_count_sensors_normalized = row_count_sensors
+
+    pid = sensor_path.split("/")[2]
+    getRowCountHeatmap(row_count_sensors_normalized, row_count_sensors, pid, snakemake.output[0])
