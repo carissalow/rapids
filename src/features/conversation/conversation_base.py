@@ -69,13 +69,13 @@ def base_conversation_features(conversation_data, day_segment, requested_feature
                 conversation_features["conversation_" + day_segment + "_sumconversationduration"] = conversation_data.groupby(["local_date"])["conv_duration"].sum()
 
             if "avgconversationduration" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_avgconversationduration"] = conversation_data.groupby(["local_date"])["conv_duration"].mean()
+                conversation_features["conversation_" + day_segment + "_avgconversationduration"] = conversation_data[conversation_data["conv_duration"] > 0].groupby(["local_date"])["conv_duration"].mean()
 
             if "sdconversationduration" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_sdconversationduration"] = conversation_data.groupby(["local_date"])["conv_duration"].std()
+                conversation_features["conversation_" + day_segment + "_sdconversationduration"] = conversation_data[conversation_data["conv_duration"] > 0].groupby(["local_date"])["conv_duration"].std()
 
             if "minconversationduration" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_minconversationduration"] = conversation_data.groupby(["local_date"])["conv_duration"].min()
+                conversation_features["conversation_" + day_segment + "_minconversationduration"] = conversation_data[conversation_data["conv_duration"] > 0].groupby(["local_date"])["conv_duration"].min()
 
             if "maxconversationduration" in features_to_compute:
                 conversation_features["conversation_" + day_segment + "_maxconversationduration"] = conversation_data.groupby(["local_date"])["conv_duration"].max()
