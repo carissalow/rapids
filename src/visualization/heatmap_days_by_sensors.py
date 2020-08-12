@@ -37,6 +37,11 @@ for sensor_path in snakemake.input["sensors"]:
 row_count_sensors.index = pd.to_datetime(row_count_sensors.index)
 row_count_sensors = row_count_sensors.join(phone_valid_sensed_days[["valid_sensed_hours"]], how="outer")
 
+if row_count_sensors.empty:
+    empty_html = open(snakemake.output[0], "w")
+    empty_html.write("There are no records of sensors in database.")
+    empty_html.close()
+
 # set date_idx based on the first date
 reference_date = row_count_sensors.index.min()
 last_date = row_count_sensors.index.max()
