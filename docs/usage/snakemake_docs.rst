@@ -21,7 +21,7 @@ It has global settings like ``PIDS``, ``DAY_SEGMENTS``, among others (see :ref:`
 
 The ``Snakefile`` File
 ----------------------
-The ``Snakefile`` file (see the actual `Snakefile`_) pulls the entire system together. The first line in this file identifies the configuration file. Next are a list of included directives that import the rules used to pull, clean, process, analyze and report data. After initializing the list of``files_to_compute`` by checking the config file for the sensors that ``COMPUTE`` is ``True`` the ``all`` rule is called with the list of files that need to be computed (raw files, intermediate files, feature files, reports, etc). 
+The ``Snakefile`` file (see the actual `Snakefile`_) pulls the entire system together. The first line in this file identifies the configuration file. Next are a list of included directives that import the rules used to pull, clean, process, analyze and report data. It compiles the list of ``files_to_compute`` by scaning the config file looking for the sensors with a ``COMPUTE`` flag equal to ``True``. Then, the ``all`` rule is called with this list which prompts Snakemake to exectue the pipeline (raw files, intermediate files, feature files, reports, etc). 
 
 .. _includes-section:
 
@@ -29,12 +29,11 @@ Includes
 """""""""
 There are 5 included files in the ``Snakefile`` file. 
 
-    - ``renv.snakefile`` - Rules to create, backup and restore the R renv virtual environment for RAPIDS. (See `renv`_)
-    - ``preprocessing.snakefile`` - Rules that are used to pre-preprocess the data such as downloading, cleaning and formatting. (See `preprocessing`_)
-    - ``features.snakefile`` - Rules that used for behavioral feature extraction. (See `features`_)
-    - ``models.snakefile`` - Rules that are used to build models from features that have been extreacted from the sensor data. (See `models`_)
-    - ``reports.snakefile`` - Rules that are used to produce reports and visualizations. (See `reports`_)
-    - ``mystudy.snakefile`` - Example file that contains rules specific to your project/study. (See `mystudy`_)
+    - ``renv.smk`` - Rules to create, backup and restore the R renv virtual environment for RAPIDS. (See `renv`_)
+    - ``preprocessing.smk`` - Rules that are used to pre-preprocess the data such as downloading, cleaning and formatting. (See `preprocessing`_)
+    - ``features.smk`` - Rules that used for behavioral feature extraction. (See `features`_)
+    - ``models.smk`` - Rules that are used to build models from features that have been extreacted from the sensor data. (See `models`_)
+    - ``reports.smk`` - Rules that are used to produce reports and visualizations. (See `reports`_)
     
 Includes are relative to the root directory.
 
@@ -42,15 +41,13 @@ Includes are relative to the root directory.
 
 ``Rule all:``
 """""""""""""
-In RAPIDS the ``all`` rule lists the output files we expect the pipeline to compute using the ``expand`` directive. Before the ``all`` rule is called snakemake checks the ``config.yaml`` and adds all the rules for which the sensors ``COMPUTE`` parameter is ``True``. The ``expand`` function allows us to generate a list of file paths that have a common structure except for PIDS or other parameters. Consider the following::
+In RAPIDS the ``all`` rule lists the output files we expect the pipeline to compute. Before the ``all`` rule is called snakemake checks the ``config.yaml`` and adds all the rules for which the sensors ``COMPUTE`` parameter is ``True``. The ``expand`` function allows us to generate a list of file paths that have a common structure except for PIDS or other parameters. Consider the following::
 
-    expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SENSORS"]),
+    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["MESSAGES"]["DB_TABLE"]))
 
-files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["MESSAGES"]["DB_TABLE"]))
+If ``pids = ['p01','p02']`` and ``config["MESSAGES"]["DB_TABLE"] = messages`` then the above directive would produce::
 
-If ``pids = ['p01','p02']`` and ``sensor = ['messages', 'calls']`` then the above directive would produce::
-
-    ["data/raw/p01/messages_raw.csv", "data/raw/p01/calls_raw.csv", "data/raw/p02/messages_raw.csv", "data/raw/p02/calls_raw.csv"]
+    ["data/raw/p01/messages_raw.csv", "data/raw/p02/messages_raw.csv"]
 
 Thus, this allows us to define all the desired output files without having to manually list each path for every participant and every sensor. The way Snakemake works is that it looks for the rule that produces the desired output files and then executes that rule. For more information on ``expand`` see `The Expand Function`_
 
