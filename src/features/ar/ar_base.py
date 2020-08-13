@@ -51,7 +51,11 @@ def base_ar_features(ar_data, ar_deltas, day_segment, requested_features):
             
             for column, activity_labels in deltas_features.items():
                 if column in features_to_compute:
-                    ar_features["ar_" + day_segment + "_" + column] = ar_deltas[ar_deltas["activity"].isin(pd.Series(activity_labels))].groupby(["local_start_date"])["time_diff"].sum()
+                    filtered_data = ar_deltas[ar_deltas["activity"].isin(pd.Series(activity_labels))]
+                    if not filtered_data.empty:
+                        ar_features["ar_" + day_segment + "_" + column] = ar_deltas[ar_deltas["activity"].isin(pd.Series(activity_labels))].groupby(["local_start_date"])["time_diff"].sum().fillna(0)
+                    else:
+                        ar_features["ar_" + day_segment + "_" + column] = 0
         
             ar_features.index.names = ["local_date"]
             ar_features = ar_features.reset_index()

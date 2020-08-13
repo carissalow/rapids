@@ -89,6 +89,13 @@ Application Foreground
     - The raw application foreground data contains 7 - 9 rows of data for each ``epoch``. The records for each ``epoch`` contains apps that are randomly selected from a list of apps that are from the ``MULTIPLE_CATEGORIES`` and ``SINGLE_CATEGORIES`` (See `testing_config.yaml`_). There are also records in each epoch that have apps randomly selected from a list of apps that are from the ``EXCLUDED_CATEGORIES`` and ``EXCLUDED_APPS``. This is to test that these apps are actually being excluded from the calculations of features. There are also records to test ``SINGLE_APPS`` calculations. 
     - Since application foreground is only available for Android there is only one file that contains data for Android. All other files (i.e. for iPhone) are empty data files.
 
+Activity Recognition
+""""""""""""""""""""""
+
+    - The raw Activity Recognition data file contains data for 1 day. 
+    - The raw Activity Recognition data each ``epoch`` period contains rows that records 2 - 5 different ``activity_types``. The is such that durations of activities can be tested. Additionally there are records that mimic the duration of an activity over the time boundary of neighboring epochs. (For example there a set of records that mimic the participant ``in_vehicle`` from ``afternoon`` into ``evening``) 
+    - There is one file each with raw Activity Recognition data for testing both iOS and Android data formats. (plugin_google_activity_recognition_raw.csv for android and plugin_ios_activity_recognition_raw.csv for iOS)
+    - There is also an additional empty data file for both android and iOS for testing empty data files.
 
 
  .. _`testing_config.yaml`: https://github.com/carissalow/rapids/blob/c498b8d2dfd7cc29d1e4d53e978d30cff6cdf3f2/tests/settings/testing_config.yaml#L70
