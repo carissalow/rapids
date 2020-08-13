@@ -81,19 +81,21 @@ def base_conversation_features(conversation_data, day_segment, requested_feature
                 conversation_features["conversation_" + day_segment + "_maxconversationduration"] = conversation_data.groupby(["local_date"])["conv_duration"].max()
 
             if "timefirstconversation" in features_to_compute:
-                timeFirstConversation = conversation_data[conversation_data["double_convo_start"] > 0].groupby(["local_date"])[["double_convo_start","local_hour","local_minute"]].min()
-                if "local_hour" in timeFirstConversation.columns:
-                    conversation_features["conversation_" + day_segment + "_timefirstconversation"] = timeFirstConversation["local_hour"]*60 + timeFirstConversation["local_minute"]
+                timeFirstConversation = conversation_data[conversation_data["double_convo_start"] > 0].groupby(["local_date"])['local_time'].min()
+                if len(list(timeFirstConversation.index)) > 0:
+                    for date in list(timeFirstConversation.index):
+                        conversation_features.loc[date,"conversation_" + day_segment + "_timefirstconversation"] = int(timeFirstConversation.loc[date].split(':')[0])*60 + int(timeFirstConversation.loc[date].split(':')[1])
                 else:
                     conversation_features["conversation_" + day_segment + "_timefirstconversation"] = 0
 
             if "timelastconversation" in features_to_compute:
-                timeLastConversation = conversation_data[conversation_data["double_convo_start"] > 0].groupby(["local_date"])[["double_convo_start","local_hour","local_minute"]].max()
-                if "local_hour" in timeLastConversation:
-                    conversation_features["conversation_" + day_segment + "_timelastconversation"] = timeLastConversation["local_hour"]*60 + timeLastConversation["local_minute"]
+                timeLastConversation = conversation_data[conversation_data["double_convo_start"] > 0].groupby(["local_date"])['local_time'].max()
+                if len(list(timeLastConversation.index)) > 0:
+                    for date in list(timeLastConversation.index):
+                        conversation_features.loc[date,"conversation_" + day_segment + "_timelastconversation"] = int(timeLastConversation.loc[date].split(':')[0])*60 + int(timeLastConversation.loc[date].split(':')[1])
                 else:
                     conversation_features["conversation_" + day_segment + "_timelastconversation"] = 0
-
+            
             if "sumenergy" in features_to_compute:
                 conversation_features["conversation_" + day_segment + "_sumenergy"] = conversation_data.groupby(["local_date"])["double_energy"].sum()
 
