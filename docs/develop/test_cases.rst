@@ -93,9 +93,18 @@ Activity Recognition
 """"""""""""""""""""""
 
     - The raw Activity Recognition data file contains data for 1 day. 
-    - The raw Activity Recognition data each ``epoch`` period contains rows that records 2 - 5 different ``activity_types``. The is such that durations of activities can be tested. Additionally there are records that mimic the duration of an activity over the time boundary of neighboring epochs. (For example there a set of records that mimic the participant ``in_vehicle`` from ``afternoon`` into ``evening``) 
+    - The raw Activity Recognition data each ``epoch`` period contains rows that records 2 - 5 different ``activity_types``. The is such that durations of activities can be tested. Additionally, there are records that mimic the duration of an activity over the time boundary of neighboring epochs. (For example, there a set of records that mimic the participant ``in_vehicle`` from ``afternoon`` into ``evening``) 
     - There is one file each with raw Activity Recognition data for testing both iOS and Android data formats. (plugin_google_activity_recognition_raw.csv for android and plugin_ios_activity_recognition_raw.csv for iOS)
     - There is also an additional empty data file for both android and iOS for testing empty data files.
+
+Conversation
+"""""""""""""
+
+    - The raw conversation data file contains data for 1 day. 
+    - The raw conversation data contains records with a sample of both ``datatypes`` (i.e. ``voice/noise`` = ``0``, and ``conversation`` = ``2`` ) as well as rows with for samples of each of the ``inference`` values (i.e. ``silence`` = ``0``, ``noise`` = ``1``, ``voice`` = ``2``, and ``unknown`` = ``3``) for each ``epoch``. The different ``datatype`` and ``inference`` records are randomly distributed throughout the ``epoch``. 
+    - Additionally there are 2 - 5 records for conversations (``datatype`` = 2, and ``inference`` = -1) in each ``epoch`` and for each ``epoch`` except night, there is a conversation record that has a ``double_convo_start`` ``timestamp`` that is from the previous ``epoch``. This is to test the calculations of features across ``epochs``.
+    - There is a raw conversation data file for both android and iOS platforms (``plugin_studentlife_audio_android_raw.csv`` and ``plugin_studentlife_audio_raw.csv`` respectively).
+    - Finally, there are also additional empty data files for both android and iOS for testing empty data files
 
 
  .. _`testing_config.yaml`: https://github.com/carissalow/rapids/blob/c498b8d2dfd7cc29d1e4d53e978d30cff6cdf3f2/tests/settings/testing_config.yaml#L70

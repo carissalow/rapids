@@ -1,4 +1,4 @@
-.. _analysis-workflow-example
+.. _analysis-workflow-example:
 
 Analysis Workflow Example
 ==========================
@@ -7,7 +7,7 @@ This is a quick guide for creating and running a simple pipeline to analysis an 
 
 #. Install RAPIDS. See :ref:`Installation Section <install-page>`.
 
-#. Make sure your database connection credentials in ``.env`` have write permission and set the correct ``MY_GROUP`` parameter in ``example_profile/example_config.yaml`` file. See step 1 of :ref:`Usage Section <db-configuration>`.
+#. Make sure your database connection credentials in ``.env`` have write permission and set the correct ``MY_GROUP`` parameter in ``config.yaml`` file. See step 1 of :ref:`Usage Section <db-configuration>`.
 
 #. Make sure your Conda (python) environment is active. See step 6 of :ref:`install-page`.
 

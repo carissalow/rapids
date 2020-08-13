@@ -90,7 +90,7 @@ WIFI:
 
 
 CONVERSATION:
-  COMPUTE: False
+  COMPUTE: True
   DB_TABLE: 
     ANDROID: plugin_studentlife_audio_android
     IOS: plugin_studentlife_audio
