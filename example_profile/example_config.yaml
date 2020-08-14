@@ -32,7 +32,7 @@ PHONE_VALID_SENSED_BINS:
   BIN_SIZE: &bin_size 5 # (in minutes)
   # Add as many sensor tables as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
   # If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
-  DB_TABLES: [messages, calls, locations, plugin_google_activity_recognition, plugin_ios_activity_recognition, battery, screen, light, accelerometer, applications_foreground, plugin_studentlife_audio_android, plugin_studentlife_audio, wifi, sensor_wifi, bluetooth, applications_notifications, aware_log, ios_status_monitor, push_notification, significant, timezone, touch, keyboard]
+  DB_TABLES: [messages, calls, locations, plugin_google_activity_recognition, plugin_ios_activity_recognition, battery, screen, light, applications_foreground, plugin_studentlife_audio_android, plugin_studentlife_audio, wifi, sensor_wifi, bluetooth, applications_notifications, aware_log, ios_status_monitor, push_notification, significant, timezone, touch, keyboard]
 
 PHONE_VALID_SENSED_DAYS:
   COMPUTE: False
@@ -130,7 +130,7 @@ LIGHT:
   FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
 
 ACCELEROMETER:
-  COMPUTE: True
+  COMPUTE: False
   DB_TABLE: accelerometer
   DAY_SEGMENTS: *day_segments
   FEATURES:
@@ -211,7 +211,7 @@ HEATMAP_FEATURES_CORRELATIONS:
   MIN_ROWS_RATIO: 0.5
   MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
   MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
-  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
+  PHONE_FEATURES: [activity_recognition, applications_foreground, battery, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
   FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
   CORR_THRESHOLD: 0.1
   CORR_METHOD: "pearson" # choose from {"pearson", "kendall", "spearman"}
@@ -226,7 +226,7 @@ HEATMAP_DAYS_BY_SENSORS:
   MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
   MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
   EXPECTED_NUM_OF_DAYS: -1
-  DB_TABLES: [accelerometer, applications_foreground, battery, bluetooth, calls, light, locations, messages, screen, wifi, sensor_wifi, plugin_google_activity_recognition, plugin_ios_activity_recognition, plugin_studentlife_audio_android, plugin_studentlife_audio]
+  DB_TABLES: [applications_foreground, battery, bluetooth, calls, light, locations, messages, screen, wifi, sensor_wifi, plugin_google_activity_recognition, plugin_ios_activity_recognition, plugin_studentlife_audio_android, plugin_studentlife_audio]
 
 
 HEATMAP_SENSED_BINS:
@@ -248,7 +248,7 @@ PARAMS_FOR_ANALYSIS:
   TARGET_TABLE: participant_target
   SOURCES: &sources ["phone_features", "fitbit_features", "phone_fitbit_features"]
   DAY_SEGMENTS: *day_segments
-  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, bluetooth, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen, wifi]
+  PHONE_FEATURES: [activity_recognition, applications_foreground, battery, bluetooth, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen, wifi]
   FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
   PHONE_FITBIT_FEATURES: "" # This array is merged in the input_merge_features_of_single_participant function in models.snakefile
   DEMOGRAPHIC_FEATURES: [age, gender, inpatientdays]
