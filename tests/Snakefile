@@ -3,7 +3,6 @@ include: "../rules/common.smk"
 include: "../rules/renv.smk"
 include: "../rules/preprocessing.smk"
 include: "../rules/features.smk"
-include: "../rules/models.smk"
 include: "../rules/reports.smk"
 
 files_to_compute = []
