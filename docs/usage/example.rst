@@ -15,6 +15,8 @@ This is a quick guide for creating and running a simple pipeline to analysis an 
     #. If you are trying to connect to a local MySQL server from our docker container set your host according to this link_.
     #. You can name your database anyway you want, for example ``rapids_example``
     
+    .. code-block::
+    
     [MY_GROUP]
     user=rapids
     password=rapids
