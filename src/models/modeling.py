@@ -117,10 +117,10 @@ for train_index, test_index in outer_cv.split(data_x):
     # Inner cross validation
     if min(targets_value_counts) >= 6:
         # SMOTE requires n_neighbors <= n_samples, the default value of n_neighbors is 6
-        clf = GridSearchCV(estimator=createPipeline(model, "SMOTE"), param_grid=model_hyperparams, cv=inner_cv, scoring="f1_micro")
+        clf = GridSearchCV(estimator=createPipeline(model, "SMOTE"), param_grid=model_hyperparams, cv=inner_cv, scoring="f1_macro")
     else:
         # RandomOverSampler: over-sample the minority class(es) by picking samples at random with replacement.
-        clf = GridSearchCV(estimator=createPipeline(model, "RandomOverSampler"), param_grid=model_hyperparams, cv=inner_cv, scoring="f1_micro")
+        clf = GridSearchCV(estimator=createPipeline(model, "RandomOverSampler"), param_grid=model_hyperparams, cv=inner_cv, scoring="f1_macro")
     clf.fit(train_x, train_y.values.ravel())
 
     # Collect results and parameters
@@ -129,10 +129,7 @@ for train_index, test_index in outer_cv.split(data_x):
     pred_y = pred_y + cur_fold_pred
 
     proba_of_two_categories = clf.predict_proba(test_x).tolist()
-    if cur_fold_pred[0]:
-        pred_y_prob = pred_y_prob + [row[proba_of_two_categories[0].index(max(proba_of_two_categories[0]))] for row in proba_of_two_categories]
-    else:
-        pred_y_prob = pred_y_prob + [row[proba_of_two_categories[0].index(min(proba_of_two_categories[0]))] for row in proba_of_two_categories]
+    pred_y_prob = pred_y_prob + [probabilities[clf.classes_.tolist().index(1)] for probabilities in proba_of_two_categories]
 
     true_y = true_y + test_y.values.ravel().tolist()
     pid = pid + test_y.index.tolist() # each test partition (fold) in the outer cv is a participant (LeaveOneOut cv)
