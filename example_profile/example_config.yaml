@@ -311,9 +311,3 @@ PARAMS_FOR_ANALYSIS:
       {"clf__learning_rate": [0.01, 0.1, 1], "clf__n_estimators": [5, 10, 100, 200], "clf__num_leaves": [5, 16, 31, 62]}
     LightGBM:
       {"clf__learning_rate": [0.01, 0.1, 1], "clf__n_estimators": [5, 10, 100, 200], "clf__num_leaves": [5, 16, 31, 62]}
-
-
-  # Target Settings:
-  # 1 => TARGETS_RATIO_THRESHOLD (ceiling) or more of available CESD scores were TARGETS_VALUE_THRESHOLD or higher; 0 => otherwise
-  TARGETS_RATIO_THRESHOLD: 0.5
-  TARGETS_VALUE_THRESHOLD: 16
