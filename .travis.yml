@@ -1,5 +1,8 @@
 services:
   - mysql
+  - docker
+
+sudo: required
 
 language: python            # this works for Linux but is an error on macOS or Windows
 
@@ -61,6 +64,10 @@ install:
     
 script:
   - bash tests/scripts/run_tests.sh
+  - docker build -t rapids .
+
+# after_success:
+# need to push built image to appropriate repo in docker hub (to do: encrypt password)
 
 branches:
   only:
