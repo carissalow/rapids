@@ -20,7 +20,7 @@ This is a quick guide for creating and running a simple pipeline to analysis an 
         [MY_GROUP]
         user=rapids
         password=rapids
-        host=127.0.0.1 # or use host.docker.internal from our docker container
+        host=127.0.0.1
         port=3306
         database=rapids_example
 
