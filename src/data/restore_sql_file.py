@@ -11,7 +11,7 @@ config.read(snakemake.input["db_credentials"])
 # bash command to create table and restore tables from sql file
 checkdb_cmd = "mysql -h " + config[group]["host"] + " -u " + config[group]["user"] + " -p" + config[group]["password"] + " -e use " + config[group]["database"]
 create_cmd = "mysql -h " + config[group]["host"] + " -u " + config[group]["user"] + " -p" + config[group]["password"] + " -e \"CREATE DATABASE IF NOT EXISTS " + config[group]["database"] + ";\""
-restore_cmd = "mysql -h " + config[group]["host"] + " -u " + config[group]["user"] + " -p" + config[group]["password"] + " " + config[group]["database"] + " < data/external/" + config[group]["database"] + ".sql"
+restore_cmd = "mysql -h " + config[group]["host"] + " -u " + config[group]["user"] + " -p" + config[group]["password"] + " " + config[group]["database"] + " < data/external/rapids_example.sql"
 
 try:
     subprocess.run(checkdb_cmd.split(), check = True)
