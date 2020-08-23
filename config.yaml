@@ -199,8 +199,9 @@ CONVERSATION:
     IOS: plugin_studentlife_audio
   DAY_SEGMENTS: *day_segments
   FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
-    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
-    "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
+    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
+    "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
+    "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
     "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
     "unknownexpectedfraction","countconversation"]
   RECORDINGMINUTES: 1

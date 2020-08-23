@@ -3,8 +3,9 @@ import pandas as pd
 def base_conversation_features(conversation_data, day_segment, requested_features,recordingMinutes,pausedMinutes,expectedMinutes):
     # name of the features this function can compute
     base_features_names = ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
-    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
-    "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
+    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
+    "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
+    "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
     "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
     "unknownexpectedfraction","countconversation"]
 
@@ -96,22 +97,36 @@ def base_conversation_features(conversation_data, day_segment, requested_feature
                 else:
                     conversation_features["conversation_" + day_segment + "_timelastconversation"] = 0
             
-            if "sumenergy" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_sumenergy"] = conversation_data.groupby(["local_date"])["double_energy"].sum()
+            if "noisesumenergy" in features_to_compute:
+                conversation_features["conversation_" + day_segment + "_noisesumenergy"] = conversation_data[conversation_data['inference']==1].groupby(["local_date"])["double_energy"].sum()
 
-            if "avgenergy" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_avgenergy"] = conversation_data.groupby(["local_date"])["double_energy"].mean()
+            if "noiseavgenergy" in features_to_compute:
+                conversation_features["conversation_" + day_segment + "_noiseavgenergy"] = conversation_data[conversation_data['inference']==1].groupby(["local_date"])["double_energy"].mean()
 
-            if "sdenergy" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_sdenergy"] = conversation_data.groupby(["local_date"])["double_energy"].std()
+            if "noisesdenergy" in features_to_compute:
+                conversation_features["conversation_" + day_segment + "_noisesdenergy"] = conversation_data[conversation_data['inference']==1].groupby(["local_date"])["double_energy"].std()
 
-            if "minenergy" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_minenergy"] = conversation_data.groupby(["local_date"])["double_energy"].min()
+            if "noiseminenergy" in features_to_compute:
+                conversation_features["conversation_" + day_segment + "_noiseminenergy"] = conversation_data[conversation_data['inference']==1].groupby(["local_date"])["double_energy"].min()
 
-            if "maxenergy" in features_to_compute:
-                conversation_features["conversation_" + day_segment + "_maxenergy"] = conversation_data.groupby(["local_date"])["double_energy"].max()
+            if "noisemaxenergy" in features_to_compute:
+                conversation_features["conversation_" + day_segment + "_noisemaxenergy"] = conversation_data[conversation_data['inference']==1].groupby(["local_date"])["double_energy"].max()
 
+            if "voicesumenergy" in features_to_compute:
+                conversation_features["conversation_" + day_segment + "_voicesumenergy"] = conversation_data[conversation_data['inference']==2].groupby(["local_date"])["double_energy"].sum()
+
+            if "voiceavgenergy" in features_to_compute:
+                conversation_features["conversation_" + day_segment + "_voiceavgenergy"] = conversation_data[conversation_data['inference']==2].groupby(["local_date"])["double_energy"].mean()
+
+            if "voicesdenergy" in features_to_compute:
+                conversation_features["conversation_" + day_segment + "_voicesdenergy"] = conversation_data[conversation_data['inference']==2].groupby(["local_date"])["double_energy"].std()
+
+            if "voiceminenergy" in features_to_compute:
+                conversation_features["conversation_" + day_segment + "_voiceminenergy"] = conversation_data[conversation_data['inference']==2].groupby(["local_date"])["double_energy"].min()
+
+            if "voicemaxenergy" in features_to_compute:
+                conversation_features["conversation_" + day_segment + "_voicemaxenergy"] = conversation_data[conversation_data['inference']==2].groupby(["local_date"])["double_energy"].max()
 
             conversation_features = conversation_features.reset_index()
-
+            
     return conversation_features
