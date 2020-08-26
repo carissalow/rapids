@@ -12,13 +12,13 @@ rule messages_features:
 
 rule call_features:
     input: 
-        expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["CALLS"]["DB_TABLE"])
+        expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["CALLS"]["DB_TABLE"]),
+        day_segments_labels = expand("data/interim/{sensor}_day_segments_labels.csv", sensor=config["CALLS"]["DB_TABLE"])
     params:
         call_type = "{call_type}",
-        day_segment = "{day_segment}",
         features = lambda wildcards: config["CALLS"]["FEATURES"][wildcards.call_type]
     output:
-        "data/processed/{pid}/calls_{call_type}_{day_segment}.csv"
+        "data/processed/{pid}/calls_{call_type}.csv"
     script:
         "../src/features/call_features.R"
 

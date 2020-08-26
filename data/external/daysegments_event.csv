@@ -1,0 +1,8 @@
+label,start_date_time,length,shift,shift_direction
+stress,2020-05-04 11:30:00,1hours,30minutes,-1
+stress,2020-05-04 13:30:00,1hours,30minutes,-1
+stress1,2020-05-04 11:30:00,1hours,30minutes,-1
+stress2,2020-05-04 13:30:00,1hours,30minutes,-1
+weekly,2020-04-21 00:00:00,7days,0,0
+weekly,2020-04-28 00:00:00,7days,0,0
+weekly,2020-05-05 00:00:00,7days,0,0

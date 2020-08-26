@@ -1,0 +1,6 @@
+label,start_time,length
+daily,00:00:00,23H 59M 59S
+morning,06:00:00,5H 59M 59S
+afternoon,12:00:00,5H 59M 59S
+evening,18:00:00,5H 59M 59S
+night,00:00:00,5H 59M 59S

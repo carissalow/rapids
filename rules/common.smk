@@ -26,6 +26,22 @@ def optional_phone_sensed_bins_input(wildcards):
 
     return expand("data/raw/{{pid}}/{table}_with_datetime.csv", table = tables_platform)
 
+def find_day_segments_input_file(wildcards):
+    for key, values in config.items():
+        if  "DB_TABLE" in config[key] and config[key]["DB_TABLE"] == wildcards.sensor:
+            if "DAY_SEGMENTS" in config[key]:
+                return config[key]["DAY_SEGMENTS"]["FILE"]
+            else:
+                raise ValueError("{} should have a [DAY_SEGMENTS][FILE] parameter containing the path to its day segments file".format(wildcards.sensor))
+
+def find_day_segments_input_type(wildcards):
+    for key, values in config.items():
+        if  "DB_TABLE" in config[key] and config[key]["DB_TABLE"] == wildcards.sensor:
+            if "DAY_SEGMENTS" in config[key]:
+                return config[key]["DAY_SEGMENTS"]["TYPE"]
+            else:
+                raise ValueError("{} should have a [DAY_SEGMENTS][TYPE] parameter containing INTERVAL, FREQUENCY, or EVENT".format(wildcards.sensor))
+
 # Features.smk #########################################################################################################
 
 def optional_ar_input(wildcards):
@@ -111,11 +127,3 @@ def optional_heatmap_days_by_sensors_input(wildcards):
         tables_platform = [table for table in config["HEATMAP_DAYS_BY_SENSORS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"]]] # for ios, discard any android tables that may exist
 
     return expand("data/raw/{{pid}}/{table}_with_datetime.csv", table = tables_platform)
-
-def find_day_segments_input_file(wildcards):
-    for key, values in config.items():
-        if  "DB_TABLE" in config[key] and config[key]["DB_TABLE"] == wildcards.sensor:
-            if "DAY_SEGMENTS" in config[key]:
-                return config[key]["DAY_SEGMENTS"]
-            else:
-                raise ValueError("{} should have a DAY_SEGMENTS parameter containing the path to its day segments file".format(wildcards.sensor))

@@ -41,8 +41,11 @@ rule download_dataset:
 rule compute_day_segments:
     input: 
         find_day_segments_input_file
+    params:
+        day_segments_type = find_day_segments_input_type
     output:
         segments_file = "data/interim/{sensor}_day_segments.csv",
+        segments_labels_file = "data/interim/{sensor}_day_segments_labels.csv",
     script:
         "../src/data/compute_day_segments.py"
 
@@ -62,7 +65,8 @@ rule readable_datetime:
         day_segments = "data/interim/{sensor}_day_segments.csv"
     params:
         timezones = None,
-        fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"]
+        fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
+        day_segments_type = find_day_segments_input_type
     wildcard_constraints:
         sensor = '.*(' + '|'.join([re.escape(x) for x in PHONE_SENSORS]) + ').*' # only process smartphone sensors, not fitbit
     output:

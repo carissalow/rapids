@@ -4,7 +4,8 @@ PIDS: [t01]
 
 # Global var with common day segments
 DAY_SEGMENTS: &day_segments
-  "data/external/daysegments_default.csv"
+  TYPE: INTERVAL_EVERY_DAY # FREQUENCY_EVERY_DAY, INTERVAL_EVERY_DAY, INTERVAL_FLEXIBLE_DAY
+  FILE: "data/external/daysegments_interval.csv"
 
 # Global timezone
 # Use codes from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones

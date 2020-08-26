@@ -54,7 +54,7 @@ unify_ios_calls <- function(ios_calls){
                         local_time = first(local_time),
                         local_hour = first(local_hour),
                         local_minute = first(local_minute),
-                        local_day_segment = first(local_day_segment))
+                        assigned_segments = first(assigned_segments))
         }
         else {
             ios_calls <- ios_calls %>% summarise(call_type_sequence = paste(call_type, collapse = ","), call_duration = sum(call_duration),  timestamp = first(timestamp))
