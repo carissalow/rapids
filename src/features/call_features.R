@@ -16,7 +16,7 @@ if(ncol(features) != length(requested_features) + 1)
   stop(paste0("The number of features in the output dataframe (=", ncol(features),") does not match the expected value (=", length(requested_features)," + 1). Verify your Call feature extraction functions"))
 
 features <- features %>% separate(col = local_segment, 
-                                  into = c("segment", "local_start_date", "local_start_time", "local_end_date", "local_end_time"),
+                                  into = c("local_segment_label", "local_start_date", "local_start_time", "local_end_date", "local_end_time"),
                                   sep = "#", 
                                   remove = FALSE)
 
