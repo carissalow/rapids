@@ -1,17 +1,9 @@
 library('tidyr') 
-
-filter_by_day_segment <- function(data, day_segment) {
-  if(day_segment %in% c("morning", "afternoon", "evening", "night"))
-    data <- data %>% filter(local_day_segment == day_segment)
-  else if(day_segment == "daily")
-    return(data)
-  else 
-    return(data %>% head(0))
-}
+library('stringr')
 
 base_messages_features <- function(messages, messages_type, day_segment, requested_features){
     # Output dataframe
-    features = data.frame(local_date = character(), stringsAsFactors = FALSE)
+    features = data.frame(local_segment = character(), stringsAsFactors = FALSE)
 
     # The name of the features this function can compute
     base_features_names  <- c("countmostfrequentcontact", "count", "distinctcontacts", "timefirstmessage", "timelastmessage")
@@ -19,15 +11,20 @@ base_messages_features <- function(messages, messages_type, day_segment, request
     # The subset of requested features this function can compute
     features_to_compute  <- intersect(base_features_names, requested_features)
 
-    # Filter rows that belong to the message type and day segment of interest
-    messages <- messages %>% filter(message_type == ifelse(messages_type == "received", "1", ifelse(messages_type == "sent", 2, NA))) %>% 
-        filter_by_day_segment(day_segment)
-
+    # Filter the rows that belong to day_segment, and put the segment full name in a new column for grouping
+    date_regex = "[0-9]{4}[\\-|\\/][0-9]{2}[\\-|\\/][0-9]{2}"
+    hour_regex = "[0-9]{2}:[0-9]{2}:[0-9]{2}"
+    messages <- messages %>% 
+        filter(message_type == ifelse(messages_type == "received", "1", ifelse(messages_type == "sent", 2, NA))) %>% 
+        filter(grepl(paste0("\\[", day_segment, "#"),assigned_segments)) %>% 
+        mutate(local_segment = str_extract(assigned_segments, paste0("\\[", day_segment, "#", date_regex, "#", hour_regex, "#", date_regex, "#", hour_regex, "\\]")),
+                local_segment = str_sub(local_segment, 2, -2)) # get rid of first and last character([])
+ 
     # If there are not features or data to work with, return an empty df with appropiate columns names
     if(length(features_to_compute) == 0)
         return(features)
     if(nrow(messages) < 1)
-        return(cbind(features, read.csv(text = paste(paste("messages", messages_type, day_segment, features_to_compute, sep = "_"), collapse = ","), stringsAsFactors = FALSE)))
+        return(cbind(features, read.csv(text = paste(paste("messages", messages_type, features_to_compute, sep = "_"), collapse = ","), stringsAsFactors = FALSE)))
 
     for(feature_name in features_to_compute){
         if(feature_name == "countmostfrequentcontact"){
@@ -41,21 +38,21 @@ base_messages_features <- function(messages, messages_type, day_segment, request
                 pull(trace)
             feature <- messages %>% 
                 filter(trace == mostfrequentcontact) %>% 
-                group_by(local_date) %>% 
-                summarise(!!paste("messages", messages_type, day_segment, feature_name, sep = "_") := n())  %>% 
+                group_by(local_segment) %>% 
+                summarise(!!paste("messages", messages_type, feature_name, sep = "_") := n())  %>% 
                 replace(is.na(.), 0)
-            features <- merge(features, feature, by="local_date", all = TRUE)
+            features <- merge(features, feature, by="local_segment", all = TRUE)
         } else {
             feature <- messages %>% 
-                group_by(local_date)
+                group_by(local_segment)
             
             feature <- switch(feature_name,
-                    "count" = feature %>% summarise(!!paste("messages", messages_type, day_segment, feature_name, sep = "_") := n()),
-                    "distinctcontacts" = feature %>% summarise(!!paste("messages", messages_type, day_segment, feature_name, sep = "_") := n_distinct(trace)),
-                    "timefirstmessage" = feature %>% summarise(!!paste("messages", messages_type, day_segment, feature_name, sep = "_") := first(local_hour) * 60 + first(local_minute)),
-                    "timelastmessage" = feature %>% summarise(!!paste("messages", messages_type, day_segment, feature_name, sep = "_") := last(local_hour) * 60 + last(local_minute)))
+                    "count" = feature %>% summarise(!!paste("messages", messages_type, feature_name, sep = "_") := n()),
+                    "distinctcontacts" = feature %>% summarise(!!paste("messages", messages_type, feature_name, sep = "_") := n_distinct(trace)),
+                    "timefirstmessage" = feature %>% summarise(!!paste("messages", messages_type, feature_name, sep = "_") := first(local_hour) * 60 + first(local_minute)),
+                    "timelastmessage" = feature %>% summarise(!!paste("messages", messages_type, feature_name, sep = "_") := last(local_hour) * 60 + last(local_minute)))
 
-            features <- merge(features, feature, by="local_date", all = TRUE)
+            features <- merge(features, feature, by="local_segment", all = TRUE)
         }
     }
     features <- features %>% mutate_at(vars(contains("countmostfrequentcontact")), list( ~ replace_na(., 0)))

@@ -1,12 +1,12 @@
 rule messages_features:
     input: 
-        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["MESSAGES"]["DB_TABLE"])
+        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["MESSAGES"]["DB_TABLE"]),
+        day_segments_labels = expand("data/interim/{sensor}_day_segments_labels.csv", sensor=config["MESSAGES"]["DB_TABLE"])
     params:
         messages_type = "{messages_type}",
-        day_segment = "{day_segment}",
         features = lambda wildcards: config["MESSAGES"]["FEATURES"][wildcards.messages_type]
     output:
-        "data/processed/{pid}/messages_{messages_type}_{day_segment}.csv"
+        "data/processed/{pid}/messages_{messages_type}.csv"
     script:
         "../src/features/messages_features.R"
 
