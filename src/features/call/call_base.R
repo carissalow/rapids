@@ -1,5 +1,6 @@
 library('tidyr')
 library('stringr')
+library('entropy')
 
 Mode <- function(v) {
   uniqv <- unique(v)
