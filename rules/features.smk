@@ -18,17 +18,29 @@ rule messages_features:
     script:
         "../src/features/messages_features.R"
 
-rule call_features:
-    input: 
-        expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["CALLS"]["DB_TABLE"]),
-        day_segments_labels = expand("data/interim/{sensor}_day_segments_labels.csv", sensor=config["CALLS"]["DB_TABLE"])
+rule calls_python_features:
+    input:
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["CALLS"]["DB_TABLE"]),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
     params:
-        call_type = "{call_type}",
-        features = lambda wildcards: config["CALLS"]["FEATURES"][wildcards.call_type]
+        provider = lambda wildcards: config["CALLS"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
     output:
-        "data/processed/{pid}/calls_{call_type}.csv"
+        "data/interim/{pid}/calls_features/calls_python_{provider_key}.csv"
     script:
-        "../src/features/call_features.R"
+        "../src/features/calls/calls_entry.py"
+
+rule calls_r_features:
+    input:
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["CALLS"]["DB_TABLE"]),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["CALLS"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
+    output:
+        "data/interim/{pid}/calls_features/calls_r_{provider_key}.csv"
+    script:
+        "../src/features/calls/calls_entry.R"
 
 rule battery_deltas:
     input:

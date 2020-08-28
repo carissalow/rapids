@@ -52,14 +52,18 @@ MESSAGES:
 
 # Communication call features config, TYPES and FEATURES keys need to match
 CALLS:
-  COMPUTE: False
   DB_TABLE: calls
-  TYPES: [missed, incoming, outgoing]
-  FEATURES:
-    missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
-    incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
-    outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
-  DAY_SEGMENTS: *day_segments
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      CALL_TYPES: [missed, incoming, outgoing]
+      FEATURES:
+        missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
+        incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+        outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+      DAY_SEGMENTS: *day_segments
+      SRC_LANGUAGE: "r"
+      SRC_FOLDER: "rapids"
 
 APPLICATION_GENRES:
   CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
@@ -73,26 +77,25 @@ LOCATIONS:
   FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
   FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION: 720 # minutes, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
   TIMEZONE: *timezone
-  
   PROVIDERS:
     DORYAB:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
       DBSCAN_EPS: 10 # meters
       DBSCAN_MINSAMPLES: 5
       THRESHOLD_STATIC : 1 # km/h
       MAXIMUM_GAP_ALLOWED: 300
-      MINUTES_DATA_USED: True
+      MINUTES_DATA_USED: False
       SAMPLING_FREQUENCY: 0
       SRC_FOLDER: "doryab"
       SRC_LANGUAGE: "python"
 
     BARNETT:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","circdnrtn","wkenddayrtn"]
       ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
       TIMEZONE: *timezone
-      MINUTES_DATA_USED: True # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
+      MINUTES_DATA_USED: False # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
       SRC_FOLDER: "barnett"
       SRC_LANGUAGE: "r"
 

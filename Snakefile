@@ -37,11 +37,13 @@ if config["MESSAGES"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["MESSAGES"]["DB_TABLE"]))
     files_to_compute.extend(expand("data/processed/{pid}/messages_{messages_type}.csv", pid=config["PIDS"], messages_type = config["MESSAGES"]["TYPES"]))
 
-if config["CALLS"]["COMPUTE"]:
-    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["CALLS"]["DB_TABLE"]))
-    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["CALLS"]["DB_TABLE"]))
-    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["CALLS"]["DB_TABLE"]))
-    files_to_compute.extend(expand("data/processed/{pid}/calls_{call_type}.csv", pid=config["PIDS"], call_type=config["CALLS"]["TYPES"]))
+for provider in config["CALLS"]["PROVIDERS"].keys():
+    if config["CALLS"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["CALLS"]["DB_TABLE"]))
+        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["CALLS"]["DB_TABLE"]))
+        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["CALLS"]["DB_TABLE"]))
+        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["CALLS"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="CALLS".lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="CALLS".lower()))
 
 if config["BLUETOOTH"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["BLUETOOTH"]["DB_TABLE"]))
