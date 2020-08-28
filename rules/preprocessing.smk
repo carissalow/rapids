@@ -40,17 +40,17 @@ rule download_dataset:
 
 rule compute_day_segments:
     input: 
-        find_day_segments_input_file
+        config["DAY_SEGMENTS"]["FILE"]
     params:
-        day_segments_type = find_day_segments_input_type
+        day_segments_type = config["DAY_SEGMENTS"]["TYPE"]
     output:
-        segments_file = "data/interim/{sensor}_day_segments.csv",
-        segments_labels_file = "data/interim/{sensor}_day_segments_labels.csv",
+        segments_file = "data/interim/day_segments.csv",
+        segments_labels_file = "data/interim/day_segments_labels.csv",
     script:
         "../src/data/compute_day_segments.py"
 
 PHONE_SENSORS = []
-PHONE_SENSORS.extend([config["MESSAGES"]["DB_TABLE"], config["CALLS"]["DB_TABLE"], config["BARNETT_LOCATION"]["DB_TABLE"], config["DORYAB_LOCATION"]["DB_TABLE"], config["BLUETOOTH"]["DB_TABLE"], config["BATTERY"]["DB_TABLE"], config["SCREEN"]["DB_TABLE"], config["LIGHT"]["DB_TABLE"], config["ACCELEROMETER"]["DB_TABLE"], config["APPLICATIONS_FOREGROUND"]["DB_TABLE"], config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]])
+PHONE_SENSORS.extend([config["MESSAGES"]["DB_TABLE"], config["CALLS"]["DB_TABLE"], config["LOCATIONS"]["DB_TABLE"], config["BLUETOOTH"]["DB_TABLE"], config["BATTERY"]["DB_TABLE"], config["SCREEN"]["DB_TABLE"], config["LIGHT"]["DB_TABLE"], config["ACCELEROMETER"]["DB_TABLE"], config["APPLICATIONS_FOREGROUND"]["DB_TABLE"], config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]])
 PHONE_SENSORS.extend(config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"])
 
 if len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) > 0:
@@ -62,11 +62,11 @@ if len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) > 0:
 rule readable_datetime:
     input:
         sensor_input = "data/raw/{pid}/{sensor}_raw.csv",
-        day_segments = "data/interim/{sensor}_day_segments.csv"
+        day_segments = "data/interim/day_segments.csv"
     params:
         timezones = None,
         fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
-        day_segments_type = find_day_segments_input_type
+        day_segments_type = config["DAY_SEGMENTS"]["TYPE"]
     wildcard_constraints:
         sensor = '.*(' + '|'.join([re.escape(x) for x in PHONE_SENSORS]) + ').*' # only process smartphone sensors, not fitbit
     output:
@@ -108,19 +108,22 @@ rule unify_ios_android:
     script:
         "../src/data/unify_ios_android.R"
 
-rule resample_fused_location:
+rule process_location_types:
     input:
-        locations = "data/raw/{pid}/{sensor}_raw.csv",
-        phone_sensed_bins = rules.phone_sensed_bins.output
+        locations = "data/raw/{pid}/{sensor}_with_datetime.csv",
+        phone_sensed_bins = rules.phone_sensed_bins.output,
+        day_segments = "data/interim/day_segments.csv"
     params:
         bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"],
-        timezone = config["RESAMPLE_FUSED_LOCATION"]["TIMEZONE"],
-        consecutive_threshold = config["RESAMPLE_FUSED_LOCATION"]["CONSECUTIVE_THRESHOLD"],
-        time_since_valid_location = config["RESAMPLE_FUSED_LOCATION"]["TIME_SINCE_VALID_LOCATION"]
+        timezone = config["LOCATIONS"]["TIMEZONE"],
+        consecutive_threshold = config["LOCATIONS"]["FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD"],
+        time_since_valid_location = config["LOCATIONS"]["FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION"],
+        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
+        locations_to_use = "{locations_to_used}"
     output:
-        "data/raw/{pid}/{sensor}_resampled.csv"
+        "data/raw/{pid}/{sensor}_processed_{locations_to_used}.csv"
     script:
-        "../src/data/resample_fused_location.R"
+        "../src/data/process_location_types.R"
 
 rule application_genres:
     input:

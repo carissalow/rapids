@@ -26,23 +26,13 @@ def optional_phone_sensed_bins_input(wildcards):
 
     return expand("data/raw/{{pid}}/{table}_with_datetime.csv", table = tables_platform)
 
-def find_day_segments_input_file(wildcards):
-    for key, values in config.items():
-        if  "DB_TABLE" in config[key] and config[key]["DB_TABLE"] == wildcards.sensor:
-            if "DAY_SEGMENTS" in config[key]:
-                return config[key]["DAY_SEGMENTS"]["FILE"]
-            else:
-                raise ValueError("{} should have a [DAY_SEGMENTS][FILE] parameter containing the path to its day segments file".format(wildcards.sensor))
-
-def find_day_segments_input_type(wildcards):
-    for key, values in config.items():
-        if  "DB_TABLE" in config[key] and config[key]["DB_TABLE"] == wildcards.sensor:
-            if "DAY_SEGMENTS" in config[key]:
-                return config[key]["DAY_SEGMENTS"]["TYPE"]
-            else:
-                raise ValueError("{} should have a [DAY_SEGMENTS][TYPE] parameter containing INTERVAL, FREQUENCY, or EVENT".format(wildcards.sensor))
-
 # Features.smk #########################################################################################################
+def find_features_files(wildcards):
+    feature_files = []
+    for provider_key, provider in config[(wildcards.sensor_key).upper()]["PROVIDERS"].items():
+        if provider["COMPUTE"]:
+            feature_files.extend(expand("data/interim/{{pid}}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", sensor_key=(wildcards.sensor_key).lower(), language=provider["SRC_LANGUAGE"].lower(), provider_key=provider_key))
+    return(feature_files)
 
 def optional_ar_input(wildcards):
     platform = infer_participant_platform("data/external/"+wildcards.pid)
@@ -61,18 +51,6 @@ def optional_conversation_input(wildcards):
         return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["ANDROID"] + "_with_datetime_unified.csv"]
     elif platform == "ios":
         return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["IOS"] + "_with_datetime_unified.csv"]
-
-def optional_location_barnett_input(wildcards):
-    if config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
-        return expand("data/raw/{{pid}}/{sensor}_resampled.csv", sensor=config["BARNETT_LOCATION"]["DB_TABLE"])
-    else:
-        return expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BARNETT_LOCATION"]["DB_TABLE"])
-
-def optional_location_doryab_input(wildcards):
-    if config["DORYAB_LOCATION"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
-        return expand("data/raw/{{pid}}/{sensor}_resampled.csv", sensor=config["DORYAB_LOCATION"]["DB_TABLE"])
-    else:
-        return expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["DORYAB_LOCATION"]["DB_TABLE"])
 
 def optional_steps_sleep_input(wildcards):
     if config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"] == True and config["STEP"]["EXCLUDE_SLEEP"]["TYPE"] == "FITBIT_BASED":

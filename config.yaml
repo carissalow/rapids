@@ -67,33 +67,34 @@ APPLICATION_GENRES:
   UPDATE_CATALOGUE_FILE: false # if CATALOGUE_SOURCE is equal to FILE, whether or not to update CATALOGUE_FILE, if CATALOGUE_SOURCE is equal to GOOGLE all scraped genres will be saved to CATALOGUE_FILE
   SCRAPE_MISSING_GENRES: false # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
 
-RESAMPLE_FUSED_LOCATION:
-  CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
-  TIME_SINCE_VALID_LOCATION: 720 # minutes, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
-  TIMEZONE: *timezone
-
-BARNETT_LOCATION:
-  COMPUTE: False
+LOCATIONS:
   DB_TABLE: locations
-  DAY_SEGMENTS: [daily] # These features are only available on a daily basis
-  FEATURES: ["hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","circdnrtn","wkenddayrtn"]
-  LOCATIONS_TO_USE: ALL # ALL, ALL_EXCEPT_FUSED OR RESAMPLE_FUSED
-  ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
+  LOCATIONS_TO_USE: FUSED_RESAMPLED # ALL, GPS OR FUSED_RESAMPLED  
+  FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
+  FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION: 720 # minutes, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
   TIMEZONE: *timezone
-  MINUTES_DATA_USED: False # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
+  
+  PROVIDERS:
+    DORYAB:
+      COMPUTE: True
+      FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
+      DBSCAN_EPS: 10 # meters
+      DBSCAN_MINSAMPLES: 5
+      THRESHOLD_STATIC : 1 # km/h
+      MAXIMUM_GAP_ALLOWED: 300
+      MINUTES_DATA_USED: True
+      SAMPLING_FREQUENCY: 0
+      SRC_FOLDER: "doryab"
+      SRC_LANGUAGE: "python"
 
-DORYAB_LOCATION:
-  COMPUTE: False
-  DB_TABLE: locations
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
-  LOCATIONS_TO_USE: ALL # ALL, ALL_EXCEPT_FUSED OR RESAMPLE_FUSED  
-  DBSCAN_EPS: 10 # meters
-  DBSCAN_MINSAMPLES: 5
-  THRESHOLD_STATIC : 1 # km/h
-  MAXIMUM_GAP_ALLOWED: 300
-  MINUTES_DATA_USED: False
-  SAMPLING_FREQUENCY: 0
+    BARNETT:
+      COMPUTE: True
+      FEATURES: ["hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","circdnrtn","wkenddayrtn"]
+      ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
+      TIMEZONE: *timezone
+      MINUTES_DATA_USED: True # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
+      SRC_FOLDER: "barnett"
+      SRC_LANGUAGE: "r"
 
 BLUETOOTH:
   COMPUTE: False

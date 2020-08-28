@@ -1,3 +1,11 @@
+rule join_features_from_providers:
+    input:
+        location_features = find_features_files
+    output:
+        "data/processed/features/{pid}/{sensor_key}.csv"
+    script:
+        "../src/features/join_features_from_providers.R"
+
 rule messages_features:
     input: 
         expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["MESSAGES"]["DB_TABLE"]),
@@ -54,37 +62,29 @@ rule ios_activity_recognition_deltas:
     script:
         "../src/features/activity_recognition_deltas.R"
 
-rule location_barnett_features:
+rule locations_python_features:
     input:
-        locations = optional_location_barnett_input
+        location_data = expand("data/raw/{{pid}}/{sensor}_processed_{locations_to_use}.csv", sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
     params:
-        features = config["BARNETT_LOCATION"]["FEATURES"],
-        locations_to_use = config["BARNETT_LOCATION"]["LOCATIONS_TO_USE"],
-        accuracy_limit = config["BARNETT_LOCATION"]["ACCURACY_LIMIT"],
-        timezone = config["BARNETT_LOCATION"]["TIMEZONE"],
-        minutes_data_used = config["BARNETT_LOCATION"]["MINUTES_DATA_USED"],
-        day_segment = "{day_segment}"
+        provider = lambda wildcards: config["LOCATIONS"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}",
     output:
-        "data/processed/{pid}/location_barnett_{day_segment}.csv"
+        "data/interim/{pid}/locations_features/locations_python_{provider_key}.csv"
     script:
-        "../src/features/location_barnett_features.R"
+        "../src/features/location/locations_entry.py"
 
-rule location_doryab_features:
+rule locations_r_features:
     input:
-        locations = optional_location_doryab_input
+        location_data = expand("data/raw/{{pid}}/{sensor}_processed_{locations_to_use}.csv", sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
     params:
-        features = config["DORYAB_LOCATION"]["FEATURES"],
-        day_segment = "{day_segment}",
-        dbscan_eps = config["DORYAB_LOCATION"]["DBSCAN_EPS"],
-        dbscan_minsamples = config["DORYAB_LOCATION"]["DBSCAN_MINSAMPLES"],
-        threshold_static = config["DORYAB_LOCATION"]["THRESHOLD_STATIC"],
-        maximum_gap_allowed = config["DORYAB_LOCATION"]["MAXIMUM_GAP_ALLOWED"],
-        minutes_data_used = config["DORYAB_LOCATION"]["MINUTES_DATA_USED"],
-        sampling_frequency = config["DORYAB_LOCATION"]["SAMPLING_FREQUENCY"]
+        provider = lambda wildcards: config["LOCATIONS"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
     output:
-        "data/processed/{pid}/location_doryab_{day_segment}.csv"
+        "data/interim/{pid}/locations_features/locations_r_{provider_key}.csv"
     script:
-        "../src/features/location_doryab_features.py"
+        "../src/features/location/locations_entry.R"
 
 rule bluetooth_features:
     input: 
