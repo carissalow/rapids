@@ -81,13 +81,12 @@ APPLICATIONS_FOREGROUND:
   FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
 
 WIFI:
-  COMPUTE: True
+  COMPUTE: True 
   DB_TABLE: 
     VISIBLE_ACCESS_POINTS: "wifi" # if you only have a CONNECTED_ACCESS_POINTS table, set this value to ""
     CONNECTED_ACCESS_POINTS: "sensor_wifi" # if you only have a VISIBLE_ACCESS_POINTS table, set this value to ""
   DAY_SEGMENTS: *day_segments
   FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
-
 
 CONVERSATION:
   COMPUTE: True
@@ -96,8 +95,9 @@ CONVERSATION:
     IOS: plugin_studentlife_audio
   DAY_SEGMENTS: *day_segments
   FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
-    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
-    "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
+    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
+    "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
+    "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
     "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
     "unknownexpectedfraction","countconversation"]
   RECORDINGMINUTES: 1

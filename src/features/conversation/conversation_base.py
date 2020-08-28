@@ -20,7 +20,7 @@ def base_conversation_features(conversation_data, day_segment, requested_feature
         if not conversation_data.empty:
             conversation_features = pd.DataFrame()
 
-            conversation_data = conversation_data.drop_duplicates(subset="local_time", keep="first")
+            conversation_data = conversation_data.drop_duplicates(subset=['local_date','local_time'], keep="first")
 
             if "minutessilence" in features_to_compute:
                 conversation_features["conversation_" + day_segment + "_minutessilence"] = conversation_data[conversation_data['inference']==0].groupby(["local_date"])['inference'].count()/60
