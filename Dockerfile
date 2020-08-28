@@ -17,10 +17,12 @@ RUN apt install -y git
 RUN apt-get update && apt-get install -y vim
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV PATH /opt/conda/bin:$PATH
+
 RUN apt-get update --fix-missing && \
     apt-get install -y wget bzip2 ca-certificates curl git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
 RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
     rm ~/miniconda.sh && \
@@ -28,6 +30,7 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-4.5.11-Linux-x86
     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
     echo "conda activate base" >> ~/.bashrc
+
 ENV TINI_VERSION v0.16.1
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 RUN chmod +x /usr/bin/tini
@@ -37,6 +40,7 @@ CMD [ "/bin/bash" ]
 RUN conda update -n base -c defaults conda
 WORKDIR /rapids
 RUN conda env create -f environment.yml -n rapids
+RUN Rscript --vanilla -e 'install.packages("rmarkdown", repos="http://cran.us.r-project.org")'
 RUN R -e 'renv::restore()'
 COPY rapids_example.sql ./data/external
 RUN echo "source activate rapids" > ~/.bashrc
