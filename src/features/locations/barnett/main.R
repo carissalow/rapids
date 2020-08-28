@@ -3,7 +3,7 @@ library("dplyr")
 library("stringr")
 
 # Load Ian Barnett's code. Taken from https://scholar.harvard.edu/ibarnett/software/gpsmobility
-file.sources = list.files(c("src/features/location/barnett/library"), pattern="*.R$", full.names=TRUE, ignore.case=TRUE)
+file.sources = list.files(c("src/features/locations/barnett/library"), pattern="*.R$", full.names=TRUE, ignore.case=TRUE)
 sapply(file.sources,source,.GlobalEnv)
 
 create_empty_file <- function(requested_features){
@@ -27,7 +27,7 @@ create_empty_file <- function(requested_features){
                       ) %>% select(all_of(requested_features)))
 }
 
-barnett_location_features <- function(location_data, day_segment, params){
+barnett_features <- function(location_data, day_segment, params){
   location_features <- NULL
   location <- location_data
   accuracy_limit <- params[["ACCURACY_LIMIT"]]

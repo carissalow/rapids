@@ -64,7 +64,7 @@ rule ios_activity_recognition_deltas:
 
 rule locations_python_features:
     input:
-        location_data = expand("data/raw/{{pid}}/{sensor}_processed_{locations_to_use}.csv", sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]),
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_processed_{locations_to_use}.csv", sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]),
         day_segments_labels = "data/interim/day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["LOCATIONS"]["PROVIDERS"][wildcards.provider_key],
@@ -72,11 +72,11 @@ rule locations_python_features:
     output:
         "data/interim/{pid}/locations_features/locations_python_{provider_key}.csv"
     script:
-        "../src/features/location/locations_entry.py"
+        "../src/features/locations/locations_entry.py"
 
 rule locations_r_features:
     input:
-        location_data = expand("data/raw/{{pid}}/{sensor}_processed_{locations_to_use}.csv", sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]),
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_processed_{locations_to_use}.csv", sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]),
         day_segments_labels = "data/interim/day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["LOCATIONS"]["PROVIDERS"][wildcards.provider_key],
@@ -84,7 +84,7 @@ rule locations_r_features:
     output:
         "data/interim/{pid}/locations_features/locations_r_{provider_key}.csv"
     script:
-        "../src/features/location/locations_entry.R"
+        "../src/features/locations/locations_entry.R"
 
 rule bluetooth_features:
     input: 
