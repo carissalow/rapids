@@ -46,10 +46,11 @@ macOS (tested on Catalina 10.15)
     - ``brew install mysql``
     - ``brew services start mysql``
 
-#. Install R 4.0 and pandoc. If you have other instances of R, we recommend uninstalling them.
+#. Install R 4.0, pandoc and rmarkdown. If you have other instances of R, we recommend uninstalling them.
 
     - ``brew install r``
     - ``brew install pandoc``
+    - ``Rscript --vanilla -e 'install.packages("rmarkdown", repos="http://cran.us.r-project.org")'``
 
 #. Install miniconda:
 
@@ -102,9 +103,10 @@ Linux (tested on Ubuntu 18.04 & 20.04)
     - ``sudo apt update``
     - ``sudo apt install r-base``
 
-#. Install Pandoc
+#. Install Pandoc and rmarkdown
 
     - ``sudo apt install pandoc``
+    - ``Rscript --vanilla -e 'install.packages("rmarkdown", repos="http://cran.us.r-project.org")'``
 
 #. Install GIT
 

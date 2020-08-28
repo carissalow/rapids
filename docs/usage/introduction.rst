@@ -7,6 +7,8 @@ At the moment, mobile data can be collected using different sensing frameworks (
 
 We recommend reading Snakemake_ docs, but the main idea behind the pipeline is that every link in the analysis chain is a rule with an input and an output. Input and output are files, which can be manipulated using any programming language (although Snakemake_ has wrappers for Julia_, Python_, and R_ that can make development slightly more comfortable). Snakemake_ also allows the pipeline rules to be executed in parallel on multiple cores without any code changes. This can drastically reduce the time needed to complete an analysis.
 
+Do you want to keep up to date with new functionality or have a question? Join the #rapids channel in AWARE Framework's slack_
+
 Available features:
 
 - :ref:`accelerometer-sensor-doc`
@@ -39,3 +41,4 @@ We are updating these docs constantly, but if you think something needs clarific
 .. _Fitbit: https://www.fitbit.com/us/home
 .. _Python: https://www.python.org/
 .. _Julia: https://julialang.org/
+.. _slack: http://awareframework.com:3000/

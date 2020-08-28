@@ -842,11 +842,16 @@ avgconversationduration     minutes             Average duration of all conversa
 sdconversationduration      minutes             Standard Deviation of the duration of all conversations
 timefirstconversation       minutes             Minutes since midnight when the first conversation for a day segment was detected
 timelastconversation        minutes             Minutes since midnight when the last conversation for a day segment was detected
-sumenergy                   L2-norm             Sum of all energy values
-avgenergy                   L2-norm             Average of all energy values
-sdenergy                    L2-norm             Standard Deviation of all energy values
-minenergy                   L2-norm             Minimum of all energy values
-maxenergy                   L2-norm             Maximum of all energy values
+noisesumenergy              L2-norm             Sum of all energy values when inference is noise
+noiseavgenergy              L2-norm             Average of all energy values when inference is noise
+noisesdenergy               L2-norm             Standard Deviation of all energy values when inference is noise
+noiseminenergy              L2-norm             Minimum of all energy values when inference is noise
+noisemaxenergy              L2-norm             Maximum of all energy values when inference is noise
+voicesumenergy              L2-norm             Sum of all energy values when inference is voice
+voiceavgenergy              L2-norm             Average of all energy values when inference is voice
+voicesdenergy               L2-norm             Standard Deviation of all energy values when inference is voice
+voiceminenergy              L2-norm             Minimum of all energy values when inference is voice
+voicemaxenergy              L2-norm             Maximum of all energy values when inference is voice
 silencesensedfraction                           Ratio between minutessilence and the sum of (minutessilence, minutesnoise, minutesvoice, minutesunknown)
 noisesensedfraction                             Ratio between minutesnoise and the sum of (minutessilence, minutesnoise, minutesvoice, minutesunknown)
 voicesensedfraction                             Ratio between minutesvoice and the sum of (minutessilence, minutesnoise, minutesvoice, minutesunknown)

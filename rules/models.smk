@@ -17,9 +17,7 @@ rule targets:
         participant_info = "data/raw/{pid}/" + config["PARAMS_FOR_ANALYSIS"]["TARGET_TABLE"] + "_raw.csv"
     params:
         pid = "{pid}",
-        summarised = "{summarised}",
-        targets_ratio_threshold = config["PARAMS_FOR_ANALYSIS"]["TARGETS_RATIO_THRESHOLD"],
-        targets_value_threshold = config["PARAMS_FOR_ANALYSIS"]["TARGETS_VALUE_THRESHOLD"]
+        summarised = "{summarised}"
     output:
         "data/processed/{pid}/targets_{summarised}.csv"
     script:

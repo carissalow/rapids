@@ -15,12 +15,12 @@ This is a quick guide for creating and running a simple pipeline to analysis an 
     - If you are trying to connect to a local MySQL server from our docker container set your host according to this link_.
     - You can name your database any way you want, for example ``rapids_example``
     
-    .. code-block::
+    .. code-block:: bash
 
         [MY_GROUP]
         user=rapids
         password=rapids
-        host=127.0.0.1 # or use host.docker.internal from our docker container
+        host=127.0.0.1
         port=3306
         database=rapids_example
 

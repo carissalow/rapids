@@ -8,6 +8,8 @@ RAPIDS
 
 **R**\ eproducible **A**\ nalysis **Pi**\ pline for **D**\ ata **S**\ treams
 
+Do you want to keep up to date with new functionality or have a question? Join the #rapids channel in AWARE Framework's slack_
+
 Contents:
 
 .. toctree::
@@ -37,3 +39,5 @@ Contents:
    develop/contributors
    develop/testing
    develop/test_cases
+   
+.. _slack: http://awareframework.com:3000/
