@@ -1,19 +1,13 @@
 library(dplyr)
 library(tidyr)
 
-filter_by_day_segment <- function(data, day_segment) {
-  if(day_segment != "daily")
-    data <- data %>% filter(local_day_segment == day_segment)
-
-  return(data %>% group_by(local_date))
-}
-
 compute_bluetooth_feature <- function(data, feature, day_segment){
-  data <- data %>% filter_by_day_segment(day_segment)
+  data <- data %>% filter_data_by_segment(day_segment)
   if(feature %in% c("countscans", "uniquedevices")){
+    data <- data %>% group_by(local_segment)
     data <- switch(feature,
-              "countscans" = data %>% summarise(!!paste("bluetooth", day_segment, feature, sep = "_") := n()),
-              "uniquedevices" = data %>% summarise(!!paste("bluetooth", day_segment, feature, sep = "_") := n_distinct(bt_address)))
+              "countscans" = data %>% summarise(!!paste("bluetooth_rapids", feature, sep = "_") := n()),
+              "uniquedevices" = data %>% summarise(!!paste("bluetooth_rapids", feature, sep = "_") := n_distinct(bt_address)))
     return(data)
    } else if(feature == "countscansmostuniquedevice"){
      # Get the most scanned device
@@ -26,15 +20,17 @@ compute_bluetooth_feature <- function(data, feature, day_segment){
       pull(bt_address)
     return(data %>% 
              filter(bt_address == mostuniquedevice) %>%
-             group_by(local_date) %>% 
-             summarise(!!paste("bluetooth", day_segment, feature, sep = "_") := n()) %>%
+             group_by(local_segment) %>% 
+             summarise(!!paste("bluetooth_rapids", feature, sep = "_") := n()) %>%
              replace(is.na(.), 0))
   }
 }
 
-base_bluetooth_features <- function(bluetooth_data, day_segment, requested_features){
+rapids_features <- function(bluetooth_data, day_segment, provider){
+    requested_features <- provider[["FEATURES"]]
+    
     # Output dataframe
-    features = data.frame(local_date = character(), stringsAsFactors = FALSE)
+    features = data.frame(local_segment = character(), stringsAsFactors = FALSE)
 
     # The name of the features this function can compute
     base_features_names  <- c("countscans", "uniquedevices", "countscansmostuniquedevice")
@@ -43,8 +39,8 @@ base_bluetooth_features <- function(bluetooth_data, day_segment, requested_featu
     features_to_compute  <- intersect(base_features_names, requested_features)
 
     for(feature_name in features_to_compute){
-    feature <- compute_bluetooth_feature(bluetooth_data, feature_name, day_segment)
-    features <- merge(features, feature, by="local_date", all = TRUE)
+      feature <- compute_bluetooth_feature(bluetooth_data, feature_name, day_segment)
+      features <- merge(features, feature, by="local_segment", all = TRUE)
     }
 
     features <- features %>% mutate_at(vars(contains("countscansmostuniquedevice")), list( ~ replace_na(., 0)))

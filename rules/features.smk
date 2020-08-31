@@ -110,16 +110,29 @@ rule locations_r_features:
     script:
         "../src/features/locations/locations_entry.R"
 
-rule bluetooth_features:
-    input: 
-        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BLUETOOTH"]["DB_TABLE"]),
-        day_segments = expand("data/interim/{sensor}_day_segments.csv", sensor=config["BLUETOOTH"]["DB_TABLE"])
+rule bluetooth_r_features:
+    input:
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BLUETOOTH"]["DB_TABLE"]),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
     params:
-        features = config["BLUETOOTH"]["FEATURES"]
+        provider = lambda wildcards: config["BLUETOOTH"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
     output:
-        "data/processed/{pid}/bluetooth_features.csv"
+        "data/interim/{pid}/bluetooth_features/bluetooth_r_{provider_key}.csv"
     script:
-        "../src/features/bluetooth_features.R"
+        "../src/features/bluetooth/bluetooth_entry.R"
+
+rule bluetooth_python_features:
+    input:
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BLUETOOTH"]["DB_TABLE"]),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["BLUETOOTH"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
+    output:
+        "data/interim/{pid}/bluetooth_features/bluetooth_python_{provider_key}.csv"
+    script:
+        "../src/features/bluetooth/bluetooth_entry.py"
 
 rule activity_features:
     input:

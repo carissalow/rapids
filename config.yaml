@@ -102,10 +102,15 @@ LOCATIONS:
       SRC_LANGUAGE: "r"
 
 BLUETOOTH:
-  COMPUTE: False
   DB_TABLE: bluetooth
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      DAY_SEGMENTS: *day_segments
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_FOLDER: "rapids" # inside src/features/bluetooth
+      SRC_LANGUAGE: "r"
+
 
 ACTIVITY_RECOGNITION:
   COMPUTE: False
