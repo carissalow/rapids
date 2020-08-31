@@ -1,18 +1,12 @@
 library(dplyr)
 
-filter_by_day_segment <- function(data, day_segment) {
-  if(day_segment != "daily")
-    data <- data %>% filter(local_day_segment == day_segment)
-
-  return(data %>% group_by(local_date))
-}
-
 compute_wifi_feature <- function(data, feature, day_segment){
-  data <- data %>% filter_by_day_segment(day_segment)
+  data <- data %>% filter_data_by_segment(day_segment)
   if(feature %in% c("countscans", "uniquedevices")){
+    data <- data %>% group_by(local_segment)
     data <- switch(feature,
-              "countscans" = data %>% summarise(!!paste("wifi", day_segment, feature, sep = "_") := n()),
-              "uniquedevices" = data %>% summarise(!!paste("wifi", day_segment, feature, sep = "_") := n_distinct(bssid)))
+              "countscans" = data %>% summarise(!!paste("wifi_rapids", feature, sep = "_") := n()),
+              "uniquedevices" = data %>% summarise(!!paste("wifi_rapids", feature, sep = "_") := n_distinct(bssid)))
     return(data)
    } else if(feature == "countscansmostuniquedevice"){
      # Get the most scanned device
@@ -25,15 +19,16 @@ compute_wifi_feature <- function(data, feature, day_segment){
       pull(bssid)
     return(data %>% 
              filter(bssid == mostuniquedevice) %>%
-             group_by(local_date) %>% 
-             summarise(!!paste("wifi", day_segment, feature, sep = "_") := n()) %>%
+             group_by(local_segment) %>% 
+             summarise(!!paste("wifi_rapids", feature, sep = "_") := n()) %>%
              replace(is.na(.), 0))
   }
 }
 
-base_wifi_features <- function(wifi_data, day_segment, requested_features){
+rapids_features <- function(wifi_data, day_segment, provider){
+    requested_features <- provider[["FEATURES"]]
     # Output dataframe
-    features = data.frame(local_date = character(), stringsAsFactors = FALSE)
+    features = data.frame(local_segment = character(), stringsAsFactors = FALSE)
 
     # The name of the features this function can compute
     base_features_names  <- c("countscans", "uniquedevices", "countscansmostuniquedevice")
@@ -42,8 +37,8 @@ base_wifi_features <- function(wifi_data, day_segment, requested_features){
     features_to_compute  <- intersect(base_features_names, requested_features)
 
     for(feature_name in features_to_compute){
-    feature <- compute_wifi_feature(wifi_data, feature_name, day_segment)
-    features <- merge(features, feature, by="local_date", all = TRUE)
+      feature <- compute_wifi_feature(wifi_data, feature_name, day_segment)
+      features <- merge(features, feature, by="local_segment", all = TRUE)
     }
 
     return(features)

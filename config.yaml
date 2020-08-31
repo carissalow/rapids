@@ -106,7 +106,6 @@ BLUETOOTH:
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
-      DAY_SEGMENTS: *day_segments
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/bluetooth
       SRC_LANGUAGE: "r"
@@ -197,12 +196,15 @@ SLEEP:
   SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
 
 WIFI:
-  COMPUTE: False
   DB_TABLE: 
     VISIBLE_ACCESS_POINTS: "wifi" # if you only have a CONNECTED_ACCESS_POINTS table, set this value to ""
     CONNECTED_ACCESS_POINTS: "sensor_wifi" # if you only have a VISIBLE_ACCESS_POINTS table, set this value to ""
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_FOLDER: "rapids" # inside src/features/bluetooth
+      SRC_LANGUAGE: "r"
 
 CONVERSATION:
   COMPUTE: False

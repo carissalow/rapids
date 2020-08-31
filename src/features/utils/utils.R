@@ -20,7 +20,7 @@ fetch_provider_features <- function(provider, provider_key, config_key, sensor_d
     day_segments_labels <-  read.csv(day_segments_file, stringsAsFactors = FALSE)
 
     if(!"FEATURES" %in% names(provider))
-        stop(paste0("Provider config[CALLS][PROVIDERS][", provider_key,"] is missing a FEATURES attribute in config.yaml"))
+        stop(paste0("Provider config[", config_key,"][PROVIDERS][", provider_key,"] is missing a FEATURES attribute in config.yaml"))
 
     if(provider[["COMPUTE"]] == TRUE){
         code_path <- paste0("src/features/", config_key,"/", provider[["SRC_FOLDER"]], "/main.R")  

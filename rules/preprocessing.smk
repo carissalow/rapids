@@ -172,3 +172,11 @@ rule fitbit_sleep_with_datetime:
         intraday_data = "data/raw/{pid}/fitbit_sleep_intraday_with_datetime.csv"
     script:
         "../src/data/fitbit_readable_datetime.py"
+
+rule join_wifi_tables:
+    input: 
+        unpack(optional_wifi_input)
+    output:
+        "data/raw/{pid}/wifi_with_datetime_visibleandconnected.csv"
+    script:
+        "../src/data/join_visible_and_connected_wifi.R"

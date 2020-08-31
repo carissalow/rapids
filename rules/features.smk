@@ -227,16 +227,29 @@ rule applications_foreground_features:
     script:
         "../src/features/applications_foreground_features.py"
 
-rule wifi_features:
-    input: 
-        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]),
-        day_segments = expand("data/interim/{sensor}_day_segments.csv", sensor=config["WIFI"]["DB_TABLE"])
+rule wifi_r_features:
+    input:
+        sensor_data = expand("data/raw/{{pid}}/{sensor_key}_with_datetime_visibleandconnected.csv", sensor_key="WIFI".lower()),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
     params:
-        features = config["WIFI"]["FEATURES"]
+        provider = lambda wildcards: config["WIFI"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
     output:
-        "data/processed/{pid}/wifi_features.csv"
+        "data/interim/{pid}/wifi_features/wifi_r_{provider_key}.csv"
     script:
-        "../src/features/wifi_features.R"
+        "../src/features/wifi/wifi_entry.R"
+
+rule wifi_python_features:
+    input:
+        sensor_data = expand("data/raw/{{pid}}/{sensor_key}_with_datetime_visibleandconnected.csv", sensor_key="WIFI".lower()),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["WIFI"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
+    output:
+        "data/interim/{pid}/wifi_features/wifi_python_{provider_key}.csv"
+    script:
+        "../src/features/wifi/wifi_entry.py"
 
 rule fitbit_heartrate_features:
     input:
