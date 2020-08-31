@@ -42,28 +42,30 @@ PHONE_VALID_SENSED_DAYS:
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 MESSAGES:
-  COMPUTE: False
   DB_TABLE: messages
-  TYPES : [received, sent]
-  FEATURES: 
-    received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
-    sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
-  DAY_SEGMENTS: *day_segments  
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      MESSAGES_TYPES : [received, sent]
+      FEATURES: 
+        received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+        sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+      SRC_LANGUAGE: "r"
+      SRC_FOLDER: "rapids" # inside src/features/messages
 
 # Communication call features config, TYPES and FEATURES keys need to match
 CALLS:
   DB_TABLE: calls
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       CALL_TYPES: [missed, incoming, outgoing]
       FEATURES:
         missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
         incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
         outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
-      DAY_SEGMENTS: *day_segments
       SRC_LANGUAGE: "r"
-      SRC_FOLDER: "rapids"
+      SRC_FOLDER: "rapids" # inside src/features/calls
 
 APPLICATION_GENRES:
   CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
@@ -87,7 +89,7 @@ LOCATIONS:
       MAXIMUM_GAP_ALLOWED: 300
       MINUTES_DATA_USED: False
       SAMPLING_FREQUENCY: 0
-      SRC_FOLDER: "doryab"
+      SRC_FOLDER: "doryab" # inside src/features/locations
       SRC_LANGUAGE: "python"
 
     BARNETT:
@@ -96,7 +98,7 @@ LOCATIONS:
       ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
       TIMEZONE: *timezone
       MINUTES_DATA_USED: False # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
-      SRC_FOLDER: "barnett"
+      SRC_FOLDER: "barnett" # inside src/features/locations
       SRC_LANGUAGE: "r"
 
 BLUETOOTH:

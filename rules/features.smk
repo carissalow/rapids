@@ -6,17 +6,29 @@ rule join_features_from_providers:
     script:
         "../src/features/join_features_from_providers.R"
 
-rule messages_features:
-    input: 
-        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["MESSAGES"]["DB_TABLE"]),
-        day_segments_labels = expand("data/interim/{sensor}_day_segments_labels.csv", sensor=config["MESSAGES"]["DB_TABLE"])
+rule messages_r_features:
+    input:
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["MESSAGES"]["DB_TABLE"]),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
     params:
-        messages_type = "{messages_type}",
-        features = lambda wildcards: config["MESSAGES"]["FEATURES"][wildcards.messages_type]
+        provider = lambda wildcards: config["MESSAGES"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
     output:
-        "data/processed/{pid}/messages_{messages_type}.csv"
+        "data/interim/{pid}/messages_features/messages_r_{provider_key}.csv"
     script:
-        "../src/features/messages_features.R"
+        "../src/features/messages/messages_entry.R"
+
+rule messages_python_features:
+    input:
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["MESSAGES"]["DB_TABLE"]),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["MESSAGES"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
+    output:
+        "data/interim/{pid}/messages_features/messages_python_{provider_key}.csv"
+    script:
+        "../src/features/messages/messages_entry.py"
 
 rule calls_python_features:
     input:
