@@ -214,18 +214,21 @@ WIFI:
       SRC_LANGUAGE: "r"
 
 CONVERSATION:
-  COMPUTE: False
   DB_TABLE: 
     ANDROID: plugin_studentlife_audio_android
     IOS: plugin_studentlife_audio
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
-    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
-    "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
-    "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
-    "unknownexpectedfraction","countconversation"]
-  RECORDINGMINUTES: 1
-  PAUSEDMINUTES : 3
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
+        "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
+        "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
+        "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
+        "unknownexpectedfraction","countconversation"]
+      RECORDING_MINUTES: 1
+      PAUSED_MINUTES : 3
+      SRC_FOLDER: "rapids" # inside src/features/conversation
+      SRC_LANGUAGE: "python"
 
 ### Visualizations ################################################################
 HEATMAP_FEATURES_CORRELATIONS:

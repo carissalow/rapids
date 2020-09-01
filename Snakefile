@@ -135,15 +135,17 @@ if config["SLEEP"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["intraday", "summary"]))
     files_to_compute.extend(expand("data/processed/{pid}/fitbit_sleep_{day_segment}.csv", pid = config["PIDS"], day_segment = config["SLEEP"]["DAY_SEGMENTS"]))
 
-if config["CONVERSATION"]["COMPUTE"]:
-    pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
-    pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
+pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
+pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
 
-    for pids,table in zip([pids_android, pids_ios], [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"]]):
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=pids, sensor=table))
-    files_to_compute.extend(expand("data/processed/{pid}/conversation_{day_segment}.csv",pid=config["PIDS"], day_segment = config["CONVERSATION"]["DAY_SEGMENTS"]))
+for provider in config["CONVERSATION"]["PROVIDERS"].keys():    
+    if config["CONVERSATION"]["PROVIDERS"][provider]["COMPUTE"]:
+        for pids,table in zip([pids_android, pids_ios], [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"]]):
+            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
+            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
+            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=pids, sensor=table))
+        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["CONVERSATION"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="CONVERSATION".lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="CONVERSATION".lower()))
 
 for provider in config["LOCATIONS"]["PROVIDERS"].keys():
     if config["LOCATIONS"]["PROVIDERS"][provider]["COMPUTE"]:

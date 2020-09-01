@@ -197,18 +197,29 @@ rule light_python_features:
     script:
         "../src/features/light/light_entry.py"
 
-rule conversation_features:
+rule conversation_r_features:
     input:
-        optional_conversation_input
+        sensor_data = optional_conversation_input,
+        day_segments_labels = "data/interim/day_segments_labels.csv"
     params:
-        day_segment = "{day_segment}",
-        features = config["CONVERSATION"]["FEATURES"],
-        recordingMinutes = config["CONVERSATION"]["RECORDINGMINUTES"],
-        pausedMinutes = config["CONVERSATION"]["PAUSEDMINUTES"],
+        provider = lambda wildcards: config["CONVERSATION"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
     output:
-        "data/processed/{pid}/conversation_{day_segment}.csv"
+        "data/interim/{pid}/conversation_features/conversation_r_{provider_key}.csv"
     script:
-        "../src/features/conversation_features.py"
+        "../src/features/conversation/conversation_entry.R"
+
+rule conversation_python_features:
+    input:
+        sensor_data = optional_conversation_input,
+        day_segments_labels = "data/interim/day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["CONVERSATION"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
+    output:
+        "data/interim/{pid}/conversation_features/conversation_python_{provider_key}.csv"
+    script:
+        "../src/features/conversation/conversation_entry.py"
 
 rule accelerometer_features:
     input:
