@@ -15,6 +15,7 @@ RUN apt update && apt install -y r-base
 RUN apt install -y pandoc
 RUN apt install -y git
 RUN apt-get update && apt-get install -y vim
+RUN apt update && apt install -y unzip
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV PATH /opt/conda/bin:$PATH
 
@@ -42,6 +43,11 @@ WORKDIR /rapids
 RUN conda env create -f environment.yml -n rapids
 RUN Rscript --vanilla -e 'install.packages("rmarkdown", repos="http://cran.us.r-project.org")'
 RUN R -e 'renv::restore()'
-COPY rapids_example.sql ./data/external
+ADD https://osf.io/587wc/download data/external
+RUN mv data/external/download data/external/rapids_example.sql.zip
+RUN unzip data/external/rapids_example.sql.zip
+RUN cp rapids_example.sql data/external/rapids_example.sql
+RUN rm data/external/rapids_example.sql.zip
+RUN rm rapids_example.sql
 RUN echo "source activate rapids" > ~/.bashrc
 ENV PATH /opt/conda/envs/rapids/bin:$PATH
