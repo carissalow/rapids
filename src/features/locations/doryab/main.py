@@ -4,15 +4,15 @@ from astropy.timeseries import LombScargle
 from sklearn.cluster import DBSCAN
 from math import radians, cos, sin, asin, sqrt
 
-def doryab_features(location_data, day_segment, params, filter_data_by_segment, *args, **kwargs):
-    requested_features = params["FEATURES"]
-    dbscan_eps = params["DBSCAN_EPS"]
-    dbscan_minsamples = params["DBSCAN_MINSAMPLES"]
-    threshold_static = params["THRESHOLD_STATIC"]
-    maximum_gap_allowed = params["MAXIMUM_GAP_ALLOWED"]
-    sampling_frequency = params["SAMPLING_FREQUENCY"]
+def doryab_features(location_data, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+    requested_features = provider["FEATURES"]
+    dbscan_eps = provider["DBSCAN_EPS"]
+    dbscan_minsamples = provider["DBSCAN_MINSAMPLES"]
+    threshold_static = provider["THRESHOLD_STATIC"]
+    maximum_gap_allowed = provider["MAXIMUM_GAP_ALLOWED"]
+    sampling_frequency = provider["SAMPLING_FREQUENCY"]
     
-    minutes_data_used = params["MINUTES_DATA_USED"]
+    minutes_data_used = provider["MINUTES_DATA_USED"]
     if(minutes_data_used):
             requested_features.append("minutesdataused")
 
