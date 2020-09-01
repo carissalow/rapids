@@ -136,10 +136,14 @@ SCREEN:
   EPISODE_TYPES: ["unlock"]
 
 LIGHT:
-  COMPUTE: False
   DB_TABLE: light
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: TRUE
+      FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
+      SRC_FOLDER: "rapids" # inside src/features/light
+      SRC_LANGUAGE: "python"
+
 
 ACCELEROMETER:
   COMPUTE: False

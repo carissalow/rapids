@@ -173,16 +173,29 @@ rule screen_features:
     script:
         "../src/features/screen_features.py"
 
-rule light_features:
+rule light_r_features:
     input:
-        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["LIGHT"]["DB_TABLE"]),
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["LIGHT"]["DB_TABLE"]),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
     params:
-        day_segment = "{day_segment}",
-        features = config["LIGHT"]["FEATURES"],
+        provider = lambda wildcards: config["LIGHT"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
     output:
-        "data/processed/{pid}/light_{day_segment}.csv"
+        "data/interim/{pid}/light_features/light_r_{provider_key}.csv"
     script:
-        "../src/features/light_features.py"
+        "../src/features/light/light_entry.R"
+
+rule light_python_features:
+    input:
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["LIGHT"]["DB_TABLE"]),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["LIGHT"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
+    output:
+        "data/interim/{pid}/light_features/light_python_{provider_key}.csv"
+    script:
+        "../src/features/light/light_entry.py"
 
 rule conversation_features:
     input:
