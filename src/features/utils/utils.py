@@ -24,14 +24,11 @@ def fetch_provider_features(provider, provider_key, config_key, sensor_data_file
             
             for day_segment in day_segments_labels["label"]:
                     print("{} Processing {} {} {}".format(rapids_log_tag, config_key, provider_key, day_segment))
-                    print("---")
                     features = feature_function(sensor_data, day_segment, provider, filter_data_by_segment=filter_data_by_segment)
-                    print("2")
                     sensor_features = sensor_features.merge(features, how="outer")
     else:
             for feature in provider["FEATURES"]:
                     sensor_features[feature] = None
-    print("3")
     segment_colums = pd.DataFrame()
     split_segemnt_columns = sensor_features["local_segment"].str.split(pat="#", expand=True)
     new_segment_columns = split_segemnt_columns if split_segemnt_columns.shape[1] == 5 else pd.DataFrame(columns=["local_segment_label", "local_start_date", "local_start_time", "local_end_date", "local_end_time"])
