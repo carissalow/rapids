@@ -224,21 +224,29 @@ rule accelerometer_features:
     script:
         "../src/features/accelerometer_features.py"
 
-rule applications_foreground_features:
+rule applications_foreground_r_features:
     input:
-        expand("data/interim/{{pid}}/{sensor}_with_datetime_with_genre.csv", sensor=config["APPLICATIONS_FOREGROUND"]["DB_TABLE"])
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime_with_genre.csv", sensor=config["APPLICATIONS_FOREGROUND"]["DB_TABLE"]),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
     params:
-        day_segment = "{day_segment}",
-        single_categories = config["APPLICATIONS_FOREGROUND"]["SINGLE_CATEGORIES"],
-        multiple_categories = config["APPLICATIONS_FOREGROUND"]["MULTIPLE_CATEGORIES"],
-        single_apps = config["APPLICATIONS_FOREGROUND"]["SINGLE_APPS"],
-        excluded_categories = config["APPLICATIONS_FOREGROUND"]["EXCLUDED_CATEGORIES"],
-        excluded_apps = config["APPLICATIONS_FOREGROUND"]["EXCLUDED_APPS"],
-        features = config["APPLICATIONS_FOREGROUND"]["FEATURES"],
+        provider = lambda wildcards: config["APPLICATIONS_FOREGROUND"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
     output:
-        "data/processed/{pid}/applications_foreground_{day_segment}.csv"
+        "data/interim/{pid}/applications_foreground_features/applications_foreground_r_{provider_key}.csv"
     script:
-        "../src/features/applications_foreground_features.py"
+        "../src/features/applications_foreground/applications_foreground_entry.R"
+
+rule applications_foreground_python_features:
+    input:
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime_with_genre.csv", sensor=config["APPLICATIONS_FOREGROUND"]["DB_TABLE"]),
+        day_segments_labels = "data/interim/day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["APPLICATIONS_FOREGROUND"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
+    output:
+        "data/interim/{pid}/applications_foreground_features/applications_foreground_python_{provider_key}.csv"
+    script:
+        "../src/features/applications_foreground/applications_foreground_entry.py"
 
 rule wifi_r_features:
     input:

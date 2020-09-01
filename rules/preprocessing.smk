@@ -134,7 +134,7 @@ rule application_genres:
         update_catalogue_file = config["APPLICATION_GENRES"]["UPDATE_CATALOGUE_FILE"],
         scrape_missing_genres = config["APPLICATION_GENRES"]["SCRAPE_MISSING_GENRES"]
     output:
-        "data/interim/{pid}/{sensor}_with_datetime_with_genre.csv"
+        "data/raw/{pid}/{sensor}_with_datetime_with_genre.csv"
     script:
         "../src/data/application_genres.R"
 

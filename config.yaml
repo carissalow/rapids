@@ -156,17 +156,20 @@ ACCELEROMETER:
     VALID_SENSED_MINUTES: False
 
 APPLICATIONS_FOREGROUND:
-  COMPUTE: False
   DB_TABLE: applications_foreground
-  DAY_SEGMENTS: *day_segments
-  SINGLE_CATEGORIES: ["all", "email"]
-  MULTIPLE_CATEGORIES:
-    social: ["socialnetworks", "socialmediatools"]
-    entertainment: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
-  SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
-  EXCLUDED_CATEGORIES: ["system_apps"]
-  EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
-  FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: TRUE
+      SINGLE_CATEGORIES: ["all", "email"]
+      MULTIPLE_CATEGORIES:
+        social: ["socialnetworks", "socialmediatools"]
+        entertainment: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
+      SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
+      EXCLUDED_CATEGORIES: []
+      EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
+      FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+      SRC_FOLDER: "rapids" # inside src/features/applications_foreground
+      SRC_LANGUAGE: "python"
 
 HEARTRATE:
   COMPUTE: False
