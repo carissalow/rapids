@@ -26,11 +26,21 @@ jobs:
         - source "$HOME/miniconda/etc/profile.d/conda.sh"
         - hash -r
         - conda config --set always_yes yes --set changeps1 no
+      install:
+        - conda init bash
+        - conda update -q --all --yes conda
+        - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
+        - conda activate test-environment
+        - snakemake -j1 renv_install
+        - R -e 'renv::settings$use.cache(FALSE)'
+        - snakemake -j1 renv_restore 
       cache:
         directories:
           - /home/travis/.linuxbrew
           - $HOME/.local/share/renv
           - $TRAVIS_BUILD_DIR/renv/library
+      script:
+        - bash tests/scripts/run_tests.sh
             
     - name: "Python 3.7 on macOS"
       os: osx
@@ -45,7 +55,14 @@ jobs:
         - HOMEBREW_NO_AUTO_UPDATE=1 brew cask install miniconda
         - eval "$(/opt/miniconda3/condabin/conda shell.bash hook)"
         - eval "$(conda shell.bash hook)" # properly initialise non-interactive shell with gcc and no update brew
-
+      install:
+       - conda init bash
+       - conda update -q --all --yes conda
+       - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
+       - conda activate test-environment
+       - snakemake -j1 renv_install
+       - R -e 'renv::settings$use.cache(FALSE)'
+       - snakemake -j1 renv_restore 
       env:
         - RENV_PATHS_ROOT="$HOME/renv/cache"
       cache:
@@ -53,6 +70,8 @@ jobs:
           - /usr/local/lib/R
           - $RENV_PATHS_ROOT
           - $TRAVIS_BUILD_DIR/renv/library
+      script:
+        - bash tests/scripts/run_tests.sh
 
     - stage: deploy
       name: "Python 3.7 on Xenial Linux Docker"
@@ -64,17 +83,6 @@ jobs:
        - docker tag rapids agamk/rapids:travislatest
        - docker push agamk/rapids:travislatest
 
-install:
-  - conda init bash
-  - conda update -q --all --yes conda
-  - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
-  - conda activate test-environment
-  - snakemake -j1 renv_install
-  - R -e 'renv::settings$use.cache(FALSE)'
-  - snakemake -j1 renv_restore 
-    
-script:
-  - bash tests/scripts/run_tests.sh
 
 branches:
   only:
