@@ -5,13 +5,10 @@ services:
 sudo: required
 
 language: python            # this works for Linux but is an error on macOS or Windows
-stages:
-  - test
-  - dockerize
-  
+
 jobs:
   include:
-    - stage: test
+    - stage: "Tests"
       name: "Python 3.7 on Xenial Linux"
       os: linux
       language: python
@@ -35,8 +32,7 @@ jobs:
           - $HOME/.local/share/renv
           - $TRAVIS_BUILD_DIR/renv/library
             
-    - stage: test
-      name: "Python 3.7 on macOS"
+    - name: "Python 3.7 on macOS"
       os: osx
       osx_image: xcode11.3  # Python 3.7 running on macOS 10.14.4
       language: generic       # 'language: python' is an error on Travis CI macOS
@@ -58,15 +54,15 @@ jobs:
           - $RENV_PATHS_ROOT
           - $TRAVIS_BUILD_DIR/renv/library
 
-      - stage: dockerize
-        name: "Python 3.7 on Xenial Linux"
-        os: linux
-        language: python
-        script: 
-          - docker build -t rapids .
-          - docker login -u "agamk" -p "Qjp4by3FUUqyXNe5lkBPg6LT0LZIdBobHWS3GTsA6jTk26m0bkuUvmJjsjK+/BtGtIqOcaTy+9e1q2+erpUl3hv2NyG6+yzjCfHyPUjWE5MOLE5ve1u+1fQatQueAtwxcsRCN1JE9zmlzvrMwJ4Xx7hb/0KifLWtkOF1LyiVnLuV4lmMaoBRNgtxrhSEOcSm+gMWw8jTEppThHXVEiN+F7tMKTkQtOsRK+R0wX5eieV8API8a0yiXHORXsVQWUn7BjjGgp69pGCY2QqwJi2xFeOIj4GPKBIv3a0YffYbx3D96uX7lcnQk2vSnM88LBbW2PMXwIBEaBxLWeBAUbn5obquybo8P6sYfPa255dAVOfFnyufKyHvyh2VhNnuc/nEdcd/pGjgPrQjh+G2uofKSzAQNbYSLH4XQDuGoMjXbcw4xcijZjF6o9PslFb9SNWirECL+UPAiddgapW8dfq8kc+4vw8f5zO/MEvYswvq8BEaXTqxUvtHrT7nT+gnDYMrMNEAYZlS/8oaTfdbkcWGbnuzcwMRRvubLQat/rLomY1mZMxGNYR8ZVgswKz7TAEIKmWgFYVuQAXIbBPDoKovVT3EYRlWKSeTvxeQGSj87xGqHnmKeGp+xgeoTnp2IwQTRE4t9RmS27SHwASR/mhdPnhCAaw1GWSH05TVDbQEKHw="
-          - docker tag rapids agamk/rapids:travislatest
-          - docker push agamk/rapids:travislatest
+    - stage: deploy
+      name: "Python 3.7 on Xenial Linux Docker"
+      os: linux
+      language: python
+      script: 
+       - docker build -t rapids .
+       - docker login -u "agamk" -p "Qjp4by3FUUqyXNe5lkBPg6LT0LZIdBobHWS3GTsA6jTk26m0bkuUvmJjsjK+/BtGtIqOcaTy+9e1q2+erpUl3hv2NyG6+yzjCfHyPUjWE5MOLE5ve1u+1fQatQueAtwxcsRCN1JE9zmlzvrMwJ4Xx7hb/0KifLWtkOF1LyiVnLuV4lmMaoBRNgtxrhSEOcSm+gMWw8jTEppThHXVEiN+F7tMKTkQtOsRK+R0wX5eieV8API8a0yiXHORXsVQWUn7BjjGgp69pGCY2QqwJi2xFeOIj4GPKBIv3a0YffYbx3D96uX7lcnQk2vSnM88LBbW2PMXwIBEaBxLWeBAUbn5obquybo8P6sYfPa255dAVOfFnyufKyHvyh2VhNnuc/nEdcd/pGjgPrQjh+G2uofKSzAQNbYSLH4XQDuGoMjXbcw4xcijZjF6o9PslFb9SNWirECL+UPAiddgapW8dfq8kc+4vw8f5zO/MEvYswvq8BEaXTqxUvtHrT7nT+gnDYMrMNEAYZlS/8oaTfdbkcWGbnuzcwMRRvubLQat/rLomY1mZMxGNYR8ZVgswKz7TAEIKmWgFYVuQAXIbBPDoKovVT3EYRlWKSeTvxeQGSj87xGqHnmKeGp+xgeoTnp2IwQTRE4t9RmS27SHwASR/mhdPnhCAaw1GWSH05TVDbQEKHw="
+       - docker tag rapids agamk/rapids:travislatest
+       - docker push agamk/rapids:travislatest
 
 install:
   - conda init bash
