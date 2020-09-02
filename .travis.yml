@@ -1,102 +1,100 @@
 services:
-  - mysql
-  - docker
-
+- mysql
+- docker
 sudo: required
-
-language: python            # this works for Linux but is an error on macOS or Windows
-
+language: python
 jobs:
   include:
-    - stage: "Tests"
-      name: "Python 3.7 on Xenial Linux"
-      os: linux
-      language: python
-      python: 3.7
-      before_install:
-        - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-        - export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
-        - source ~/.bashrc
-        - sudo apt-get install linuxbrew-wrapper
-        - brew tap --shallow linuxbrew/xorg
-        - brew install r
-        - R --version
-        - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-        - bash miniconda.sh -b -p $HOME/miniconda
-        - source "$HOME/miniconda/etc/profile.d/conda.sh"
-        - hash -r
-        - conda config --set always_yes yes --set changeps1 no
-      install:
-        - conda init bash
-        - conda update -q --all --yes conda
-        - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
-        - conda activate test-environment
-        - snakemake -j1 renv_install
-        - R -e 'renv::settings$use.cache(FALSE)'
-        - snakemake -j1 renv_restore 
-      cache:
-        directories:
-          - /home/travis/.linuxbrew
-          - $HOME/.local/share/renv
-          - $TRAVIS_BUILD_DIR/renv/library
-      script:
-        - bash tests/scripts/run_tests.sh
-            
-    - name: "Python 3.7 on macOS"
-      os: osx
-      osx_image: xcode11.3  # Python 3.7 running on macOS 10.14.4
-      language: generic       # 'language: python' is an error on Travis CI macOS
-      before_install:
-        - HOMEBREW_NO_AUTO_UPDATE=1 brew install gcc@9
-        - HOMEBREW_NO_AUTO_UPDATE=1 brew install https://github.com/Homebrew/homebrew-core/raw/218998d/Formula/r.rb # R 4.0.0
-        - R --version
-        - HOMEBREW_NO_AUTO_UPDATE=1 brew install mysql
-        - HOMEBREW_NO_AUTO_UPDATE=1 brew services start mysql
-        - HOMEBREW_NO_AUTO_UPDATE=1 brew cask install miniconda
-        - eval "$(/opt/miniconda3/condabin/conda shell.bash hook)"
-        - eval "$(conda shell.bash hook)" # properly initialise non-interactive shell with gcc and no update brew
-      install:
-       - conda init bash
-       - conda update -q --all --yes conda
-       - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file environment.yml
-       - conda activate test-environment
-       - snakemake -j1 renv_install
-       - R -e 'renv::settings$use.cache(FALSE)'
-       - snakemake -j1 renv_restore 
-      env:
-        - RENV_PATHS_ROOT="$HOME/renv/cache"
-      cache:
-        directories:
-          - /usr/local/lib/R
-          - $RENV_PATHS_ROOT
-          - $TRAVIS_BUILD_DIR/renv/library
-      script:
-        - bash tests/scripts/run_tests.sh
-
-    - stage: deploy
-      name: "Python 3.7 on Xenial Linux Docker"
-      env:
-       - secure: Xq5Gq6PniOqSgU6BTycBBNd1UrsKru/aEuTds+9WGP8zwEsfjqzs/bKXpkLSWXWqdNYNlkT0FqHOcmB1K/z62DvstsFpjnsYAfQiW8fN6jKM22JUbLjwY2AJHRuNx9IyGcRMndsr/HrnyEKPCND7+abUWYxGc1GwErL4+MCLDY7JUKUtVGMoArqWNTYOu95YJX7r+XTEmq3Hlw5DV7/BZMoyHwHMhsg2ERGRVQi7tPnGdRXE7rQWcwV+99e9JS+DVOuiu3KInyvculHjsdT9YnLHku65pELINnPefNHIn59rdfb+sBj455RzYxPPFgAbt0lXndaJ/LU60+gPL3H14g/CA9Qak9qVt/QlUh8YjmUcsq4ExRlYfOWLOiXPYgaduGDRwYxmUKJUDSIPdAgP8Dcgm4X2HgImyIziMplgjjl5zUkD9AQkYpoFVxL4L8RXgXgVb6Iis81AUBjxq3KSba8lk1GPGM7GNRzkvbDyqqt7SXmKlmOtCapDNNAyzrlx+l6FqtJJm9dIFULJqy8l7LcoGz5D4kbvlKNgGf9UoWI58cHiURFlMGC8NwKKjfm/TVJYKmO7Lb6SZ/lJHQ7tctePn15r8AVVgo/xM7r0QH8yPp4jmgBVJ6NV0PaCFnftXBewInWHbHpu0CsVTY/wFLfIUc4FxmR/CBXmmjpROx4=
-      os: linux
-      language: python
-      script: 
-       - docker build -t rapids .
-       - docker login -u "agamk" -p $DOCKERPWD
-       - docker tag rapids agamk/rapids:travislatest
-       - docker push agamk/rapids:travislatest
-
-
+  - stage: Tests
+    name: Python 3.7 on Xenial Linux
+    os: linux
+    language: python
+    python: 3.7
+    before_install:
+    - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    - export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+    - source ~/.bashrc
+    - sudo apt-get install linuxbrew-wrapper
+    - brew tap --shallow linuxbrew/xorg
+    - brew install r
+    - R --version
+    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O
+      miniconda.sh;
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - source "$HOME/miniconda/etc/profile.d/conda.sh"
+    - hash -r
+    - conda config --set always_yes yes --set changeps1 no
+    install:
+    - conda init bash
+    - conda update -q --all --yes conda
+    - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file
+      environment.yml
+    - conda activate test-environment
+    - snakemake -j1 renv_install
+    - R -e 'renv::settings$use.cache(FALSE)'
+    - snakemake -j1 renv_restore
+    cache:
+      directories:
+      - "/home/travis/.linuxbrew"
+      - "$HOME/.local/share/renv"
+      - "$TRAVIS_BUILD_DIR/renv/library"
+    script:
+    - bash tests/scripts/run_tests.sh
+  - name: Python 3.7 on macOS
+    os: osx
+    osx_image: xcode11.3
+    language: generic
+    before_install:
+    - HOMEBREW_NO_AUTO_UPDATE=1 brew install gcc@9
+    - HOMEBREW_NO_AUTO_UPDATE=1 brew install https://github.com/Homebrew/homebrew-core/raw/218998d/Formula/r.rb
+    - R --version
+    - HOMEBREW_NO_AUTO_UPDATE=1 brew install mysql
+    - HOMEBREW_NO_AUTO_UPDATE=1 brew services start mysql
+    - HOMEBREW_NO_AUTO_UPDATE=1 brew cask install miniconda
+    - eval "$(/opt/miniconda3/condabin/conda shell.bash hook)"
+    - eval "$(conda shell.bash hook)"
+    install:
+    - conda init bash
+    - conda update -q --all --yes conda
+    - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file
+      environment.yml
+    - conda activate test-environment
+    - snakemake -j1 renv_install
+    - R -e 'renv::settings$use.cache(FALSE)'
+    - snakemake -j1 renv_restore
+    env:
+    - RENV_PATHS_ROOT="$HOME/renv/cache"
+    cache:
+      directories:
+      - "/usr/local/lib/R"
+      - "$RENV_PATHS_ROOT"
+      - "$TRAVIS_BUILD_DIR/renv/library"
+    script:
+    - bash tests/scripts/run_tests.sh
+  - stage: deploy
+    name: Python 3.7 on Xenial Linux Docker
+    env:
+    - secure: Xq5Gq6PniOqSgU6BTycBBNd1UrsKru/aEuTds+9WGP8zwEsfjqzs/bKXpkLSWXWqdNYNlkT0FqHOcmB1K/z62DvstsFpjnsYAfQiW8fN6jKM22JUbLjwY2AJHRuNx9IyGcRMndsr/HrnyEKPCND7+abUWYxGc1GwErL4+MCLDY7JUKUtVGMoArqWNTYOu95YJX7r+XTEmq3Hlw5DV7/BZMoyHwHMhsg2ERGRVQi7tPnGdRXE7rQWcwV+99e9JS+DVOuiu3KInyvculHjsdT9YnLHku65pELINnPefNHIn59rdfb+sBj455RzYxPPFgAbt0lXndaJ/LU60+gPL3H14g/CA9Qak9qVt/QlUh8YjmUcsq4ExRlYfOWLOiXPYgaduGDRwYxmUKJUDSIPdAgP8Dcgm4X2HgImyIziMplgjjl5zUkD9AQkYpoFVxL4L8RXgXgVb6Iis81AUBjxq3KSba8lk1GPGM7GNRzkvbDyqqt7SXmKlmOtCapDNNAyzrlx+l6FqtJJm9dIFULJqy8l7LcoGz5D4kbvlKNgGf9UoWI58cHiURFlMGC8NwKKjfm/TVJYKmO7Lb6SZ/lJHQ7tctePn15r8AVVgo/xM7r0QH8yPp4jmgBVJ6NV0PaCFnftXBewInWHbHpu0CsVTY/wFLfIUc4FxmR/CBXmmjpROx4=
+    os: linux
+    language: python
+    script:
+    - docker build -t rapids .
+    - docker login -u "agamk" -p $DOCKERPWD
+    - docker tag rapids agamk/rapids:travislatest
+    - docker push agamk/rapids:travislatest
 branches:
   only:
   - master
-
 notifications:
   email: false
   slack:
-    # if: branch = travis_test
     secure: cJIpmIjb3zA5AMDBo9axF1v6fYNIgMm6s6UdMNOlHiT511xHGsaLUFej3lACwQLig4Gr94ySI61YdrP+RX1lFcYxusH+kUU/c8LX0PmSKNeKnycM3w/pCM+yTp/6oQG6ZrJD7pNm6zhB0xPL61uSmYhcr+JJ1sh4iLiON+J8/C+IfnAHm1ORkxJ0IxASkiP/LvaiAQDw8lNyYIZNWjSDNZbx68o1VNakyk6Vik3x8omiE3w33rzI2/JAx//QTxOq2J0dtV1AqYYSOWS4iXblV09NLBqgGrhAhrQ6+TbPHSPIyL/4EdhvS+YXO+SBWS7ODD7j/MuL6XiA4SujW72od2rgXNmOjFnlQvIrULO5bzv39BKKDkldvz9+XCyXLcjoLIwA/rmUnwMndNoC7NoD/CkQEevUxswXXB9811BmIFx/7GOHouVxwB2gaMAzkCroZJVwgbrc6ESSOVE5SMcb3wPMbpd8cXOgVZXJcmk5wK206zxXPigCvFfknqOnwDqRgyIWSFoTd/2wHppA7ND3R5U42nQTbEQ7MiONsOo61GlJTTxJELz32sLKl388AuAgOY7+0sqPibxMaHJkF1V4nYVTH0/H5bO/edK4VHMloJ6s0kuyko7LT5EMQf3pBJij5TnYmD2E60t+bSBAxHuH7WA5dvL+igjGEwROnxDc9pc=
     on_success: always
     template:
-      - "Repo `%{repository_slug}` *%{result}* build (<%{build_url}|#%{build_number}>) for commit (<%{compare_url}|%{commit}>) on branch `%{branch}`."
-      - "Execution time: *%{duration}*"
-      - "Message: %{message}"
+    - Repo `%{repository_slug}` *%{result}* build (<%{build_url}|#%{build_number}>)
+      for commit (<%{compare_url}|%{commit}>) on branch `%{branch}`.
+    - 'Execution time: *%{duration}*'
+    - 'Message: %{message}'
+env:
+  global:
+    secure: FD2aOa8L3lWf1xClZ24uS59SOBjMH16sdSLPGkb6bQLwrKAQw6BVna5wOw3iRscZtx2iqEQw3LdLmNb6ftI4fgHhf7qoAZlKVlc2Q8wU4L623Ad8S//2Ny1AxXRyzwmRw4emmIUqRXiGaeZYkzcptf38+2d9PjHazVsL3A6T2vFK+VAQmZBq3Iblx0i3g25qevQxFUACH1FIpZsmn08cesblZp0MiQ7GOq4YhBAqmbraT4/w7yFe1rwm/yPSWeBQKu8tZeZnEW6/FPYidxxuBgl/BxTdVuIKHcVzL95Mu4q6Y7uVaYeGYgyxai8eyntpY2dPu0wN1ng4JxulwqKBdxkWFPdbBJSGnYQq5EmrqULjro7wk9GVLSN9Lx0QjcmZRbNbDH0rpgxcXS9mtvzmgFbmatdsMa3VrObqKL2yYMsPZ6e5N4ve3gTU5+sm6oz/zYNWK2CDN2f08BJuaoKv9hETTfvWaZitKT7lFZ2LpsDdHSPUtRiAviDcLZcCZsTQjyCi6JeKSF2aMQ0+4rCsZgFkqpmjEVJB5N6DMkdZaUn+4HrbGsivAHWQsDcvPTD4n2CUcboV407NFsckr3PlDy0+fNNHr2h45VjO7DxAwDIJAdiwlhbj9l9gn8i3aZOtMCT6p4xIC2CgqOcY4yOTHmyOswJwnkz3uoSOq3eNLR4=
