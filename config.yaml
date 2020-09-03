@@ -1,6 +1,6 @@
 # Participants to include in the analysis
 # You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
-PIDS: [t01,t02]
+PIDS: [test01]
 
 # Global var with common day segments
 DAY_SEGMENTS: &day_segments
