@@ -65,6 +65,7 @@ script:
 branches:
   only:
   - master
+  - day_segments
 
 notifications:
   email: false
