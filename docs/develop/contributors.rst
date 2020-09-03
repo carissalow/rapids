@@ -70,6 +70,7 @@ Agam Kumar, BS
 Agam is a junior at Carnegie Mellon University studying Statistics and Machine Learning and pursuing an additional major in Computer Science.  He is a member of the Data Science team in the Health and Human Performance Lab at CMU and has keen interests in software development and data science.  His research interests include ML applications in medicine.
 
 `Agam Kumar Linkedin Profile`_
+
 `Agam Kumar Github Profile`_
 
 .. _`Julio Vega Personal Website`: https://juliovega.info/
