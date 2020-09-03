@@ -1,6 +1,5 @@
 # Participants to include in the analysis
 # You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
-# PIDS: [test01, test02, test03, test04]
 PIDS: [test01, test02, test03, test04]
 
 # Global var with common day segments
@@ -10,6 +9,20 @@ DAY_SEGMENTS: &day_segments
 
 PHONE_VALID_SENSED_BINS:
   DB_TABLES: [bluetooth]
+
+# Communication SMS features config, TYPES and FEATURES keys need to match
+MESSAGES:
+  DB_TABLE: messages
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      MESSAGES_TYPES : [received, sent]
+      FEATURES: 
+        received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+        sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+      SRC_LANGUAGE: "r"
+      SRC_FOLDER: "rapids" # inside src/features/messages
+
 
 BLUETOOTH:
   DB_TABLE: bluetooth
