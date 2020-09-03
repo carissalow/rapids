@@ -139,7 +139,7 @@ LIGHT:
   DB_TABLE: light
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE
+      COMPUTE: False
       FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
       SRC_FOLDER: "rapids" # inside src/features/light
       SRC_LANGUAGE: "python"
@@ -159,7 +159,7 @@ APPLICATIONS_FOREGROUND:
   DB_TABLE: applications_foreground
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE
+      COMPUTE: False
       SINGLE_CATEGORIES: ["all", "email"]
       MULTIPLE_CATEGORIES:
         social: ["socialnetworks", "socialmediatools"]
@@ -219,7 +219,7 @@ CONVERSATION:
     IOS: plugin_studentlife_audio
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
         "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
         "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
