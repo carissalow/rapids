@@ -5,100 +5,18 @@ PIDS: [test01, test02, test03, test04]
 
 # Global var with common day segments
 DAY_SEGMENTS: &day_segments
-  [daily, morning, afternoon, evening, night]
+  TYPE: INTERVAL_EVERY_DAY # FREQUENCY_EVERY_DAY, INTERVAL_EVERY_DAY, INTERVAL_FLEXIBLE_DAY
+  FILE: "data/external/daysegments_interval.csv"
 
 PHONE_VALID_SENSED_BINS:
-  DB_TABLES: [messages, calls, screen, battery, bluetooth, wifi, light, applications_foreground]
-
-# Communication SMS features config, TYPES and FEATURES keys need to match
-MESSAGES:
-  COMPUTE: True
-  DB_TABLE: messages
-  TYPES : [received, sent]
-  FEATURES: 
-    received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
-    sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
-  DAY_SEGMENTS: *day_segments  
-
-# Communication call features config, TYPES and FEATURES keys need to match
-CALLS:
-  COMPUTE: True
-  DB_TABLE: calls
-  TYPES: [missed, incoming, outgoing]
-  FEATURES:
-    missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
-    incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
-    outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
-  DAY_SEGMENTS: *day_segments
+  DB_TABLES: [bluetooth]
 
 BLUETOOTH:
-  COMPUTE: True
   DB_TABLE: bluetooth
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_FOLDER: "rapids" # inside src/features/bluetooth
+      SRC_LANGUAGE: "r"
 
-ACTIVITY_RECOGNITION:
-  COMPUTE: True
-  DB_TABLE: 
-    ANDROID: plugin_google_activity_recognition
-    IOS: plugin_ios_activity_recognition
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["count","mostcommonactivity","countuniqueactivities","activitychangecount","sumstationary","summobile","sumvehicle"]
-
-BATTERY:
-  COMPUTE: True
-  DB_TABLE: battery
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
-
-SCREEN:
-  COMPUTE: True
-  DB_TABLE: screen
-  DAY_SEGMENTS: *day_segments
-  REFERENCE_HOUR_FIRST_USE: 0
-  IGNORE_EPISODES_SHORTER_THAN: 0 # in minutes, set to 0 to disable
-  IGNORE_EPISODES_LONGER_THAN: 0 # in minutes, set to 0 to disable
-  FEATURES_DELTAS: ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]
-  EPISODE_TYPES: ["unlock"]
-
-LIGHT:
-  COMPUTE: True
-  DB_TABLE: light
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
-
-APPLICATIONS_FOREGROUND:
-  COMPUTE: True
-  DB_TABLE: applications_foreground
-  DAY_SEGMENTS: *day_segments
-  SINGLE_CATEGORIES: ["all", "email"]
-  MULTIPLE_CATEGORIES:
-    social: ["socialnetworks", "socialmediatools"]
-    entertainment: ["entertainment", "gamingstrategy"]
-  SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube"] # There's no entropy for single apps
-  EXCLUDED_CATEGORIES: ["systemapp", "tvvideoapps"]
-  EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
-  FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
-
-WIFI:
-  COMPUTE: True
-  DB_TABLE: 
-    VISIBLE_ACCESS_POINTS: "wifi" # if you only have a CONNECTED_ACCESS_POINTS table, set this value to ""
-    CONNECTED_ACCESS_POINTS: "sensor_wifi" # if you only have a VISIBLE_ACCESS_POINTS table, set this value to ""
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
-
-
-CONVERSATION:
-  COMPUTE: True
-  DB_TABLE: 
-    ANDROID: plugin_studentlife_audio_android
-    IOS: plugin_studentlife_audio
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
-    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
-    "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
-    "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
-    "unknownexpectedfraction","countconversation"]
-  RECORDINGMINUTES: 1
-  PAUSEDMINUTES : 3
