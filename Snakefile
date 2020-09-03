@@ -135,11 +135,10 @@ if config["SLEEP"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["intraday", "summary"]))
     files_to_compute.extend(expand("data/processed/{pid}/fitbit_sleep_{day_segment}.csv", pid = config["PIDS"], day_segment = config["SLEEP"]["DAY_SEGMENTS"]))
 
-pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
-pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
-
 for provider in config["CONVERSATION"]["PROVIDERS"].keys():    
     if config["CONVERSATION"]["PROVIDERS"][provider]["COMPUTE"]:
+        pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
+        pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
         for pids,table in zip([pids_android, pids_ios], [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"]]):
             files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
             files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
