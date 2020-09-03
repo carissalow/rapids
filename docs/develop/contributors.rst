@@ -57,11 +57,21 @@ Nicolas is a rising senior studying computer science at the University of Pittsb
 
 Nikunj Goel, BS
 """"""""""""""""
-**intern**
+**Intern**
 
 Nik is a graduate student at the University of Pittsburgh pursuing Master of Science in Information Science. He earned his Bachelor of Technology degree in Information Technology from India. He is a Data Enthusiasts and passionate about finding the meaning out of raw data. In a long term, his goal is to create a breakthrough in Data Science and Deep Learning.
 
 `Nikunj Goel Linkedin Profile`_
+
+Agam Kumar, BS
+""""""""""""""""
+**Research Assistant at CMU**
+
+Agam is a junior at Carnegie Mellon University studying Statistics and Machine Learning and pursuing an additional major in Computer Science.  He is a member of the Data Science team in the Health and Human Performance Lab at CMU and has keen interests in software development and data science.  His research interests include ML applications in medicine.
+
+`Agam Kumar Linkedin Profile`_
+
+`Agam Kumar Github Profile`_
 
 .. _`Julio Vega Personal Website`: https://juliovega.info/
 .. _`Meng Li Linkedin Profile`: https://www.linkedin.com/in/meng-li-57238414a
@@ -69,3 +79,5 @@ Nik is a graduate student at the University of Pittsburgh pursuing Master of Sci
 .. _`Kwesi Aguillera Linkedin Profile`: https://www.linkedin.com/in/kwesi-aguillera-29529823
 .. _`Echhit Joshi Linkedin Profile`: https://www.linkedin.com/in/echhitjoshi/
 .. _`Nikunj Goel Linkedin Profile`: https://www.linkedin.com/in/nikunjgoel95/
+.. _`Agam Kumar Linkedin Profile`: https://www.linkedin.com/in/agam-kumar
+.. _`Agam Kumar Github Profile`: https://github.com/agam-kumar
