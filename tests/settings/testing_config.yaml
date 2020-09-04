@@ -8,7 +8,7 @@ DAY_SEGMENTS: &day_segments
   FILE: "data/external/daysegments_interval.csv"
 
 PHONE_VALID_SENSED_BINS:
-  DB_TABLES: [bluetooth]
+  DB_TABLES: [messages, calls, bluetooth]
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 MESSAGES:
@@ -23,6 +23,19 @@ MESSAGES:
       SRC_LANGUAGE: "r"
       SRC_FOLDER: "rapids" # inside src/features/messages
 
+# Communication call features config, TYPES and FEATURES keys need to match
+CALLS:
+  DB_TABLE: calls
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      CALL_TYPES: [missed, incoming, outgoing]
+      FEATURES:
+        missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
+        incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+        outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+      SRC_LANGUAGE: "r"
+      SRC_FOLDER: "rapids" # inside src/features/calls
 
 BLUETOOTH:
   DB_TABLE: bluetooth
