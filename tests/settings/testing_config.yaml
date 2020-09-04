@@ -8,7 +8,7 @@ DAY_SEGMENTS: &day_segments
   FILE: "data/external/daysegments_interval.csv"
 
 PHONE_VALID_SENSED_BINS:
-  DB_TABLES: [messages, calls, bluetooth, light]
+  DB_TABLES: [messages, calls, bluetooth, light, wifi]
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 MESSAGES:
@@ -55,3 +55,13 @@ LIGHT:
       SRC_FOLDER: "rapids" # inside src/features/light
       SRC_LANGUAGE: "python"
 
+WIFI:
+  DB_TABLE: 
+    VISIBLE_ACCESS_POINTS: "wifi" # if you only have a CONNECTED_ACCESS_POINTS table, set this value to ""
+    CONNECTED_ACCESS_POINTS: "sensor_wifi" # if you only have a VISIBLE_ACCESS_POINTS table, set this value to ""
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_FOLDER: "rapids" # inside src/features/bluetooth
+      SRC_LANGUAGE: "r"
