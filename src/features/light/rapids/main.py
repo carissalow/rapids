@@ -27,7 +27,7 @@ def rapids_features(light_data, day_segment, provider, filter_data_by_segment, *
             if "medianlux" in features_to_compute:
                 light_features["light_rapids_" + "_medianlux"] = light_data.groupby(["local_segment"])["double_light_lux"].median()
             if "stdlux" in features_to_compute:
-                light_features["light_rapids_" + "_stdlux"] = light_data.groupby(["local_segment"])["double_light_lux"].std().fillna('NA')
+                light_features["light_rapids_" + "_stdlux"] = light_data.groupby(["local_segment"])["double_light_lux"].std()
             
             light_features = light_features.reset_index()
 
