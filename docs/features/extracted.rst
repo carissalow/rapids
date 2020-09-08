@@ -49,6 +49,8 @@ Global Parameters
     - ``FIXED_TIMEZONE``. See ``TIMEZONE`` above. This assumes that all data of all participants was collected within one time zone.
     - Support for multiple time zones for each participant coming soon based on the ``timezone`` table collected by Aware.
 
+.. _phone-valid-sensed-bins:
+
 - ``PHONE_VALID_SENSED_BINS``
      Contains three attributes: ``COMPUTE``, ``BIN_SIZE`` and ``TABLES``. See the PHONE_VALID_SENSED_BINS_ section in the ``config.yaml`` file
 
