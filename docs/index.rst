@@ -33,11 +33,7 @@ Contents:
    :maxdepth: 2
    :caption: Visualization
 
-   visualization/histogram_of_valid_sensed_hours
-   visualization/heatmap_of_phone_sensed_bins
-   visualization/heatmap_of_days_by_sensors
-   visualization/overall_compliance_heatmap
-   visualization/heatmap_of_correlation_matrix_between_features
+   visualization/data_exploration
 
 .. toctree::
    :maxdepth: 2
