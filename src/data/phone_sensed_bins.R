@@ -2,6 +2,7 @@ source("renv/activate.R")
 
 library(dplyr)
 library(tidyr)
+library(lubridate)
 
 all_sensors <- snakemake@input[["all_sensors"]]
 bin_size <- snakemake@params[["bin_size"]]
@@ -21,6 +22,9 @@ phone_sensed_bins <- all_sensor_data %>%
   group_by(local_date, local_hour, bin) %>% 
   summarise(sensor_count = n_distinct(sensor)) %>%
   ungroup() %>% 
+  mutate(local_date = lubridate::ymd(local_date)) %>% 
+  complete(local_date = seq.Date(min(local_date), max(local_date), by="day"), 
+           fill = list(local_hour = 0, bin = 0, sensor_count = 0)) %>% 
   complete(nesting(local_date), 
            local_hour = seq(0, 23, 1), 
            bin = seq(0, (59 %/% bin_size) * bin_size, bin_size), 
