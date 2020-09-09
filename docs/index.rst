@@ -6,7 +6,7 @@
 RAPIDS
 ======
 
-**R**\ eproducible **A**\ nalysis **Pi**\ pline for **D**\ ata **S**\ treams
+**R**\ eproducible **A**\ nalysis **Pi**\ peline for **D**\ ata **S**\ treams
 
 Do you want to keep up to date with new functionality or have a question? Join the #rapids channel in AWARE Framework's slack_
 
