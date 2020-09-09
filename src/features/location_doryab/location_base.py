@@ -79,15 +79,15 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
 
             if "timeattop1location" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
-                    location_features.loc[localDate,"location_" + day_segment + "_timeattop1"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],1,sampling_frequency)
+                    location_features.loc[localDate,"location_" + day_segment + "_timeattop1location"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],1,sampling_frequency)
 
             if "timeattop2location" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
-                    location_features.loc[localDate,"location_" + day_segment + "_timeattop2"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],2,sampling_frequency)
+                    location_features.loc[localDate,"location_" + day_segment + "_timeattop2location"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],2,sampling_frequency)
             
             if "timeattop3location" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
-                    location_features.loc[localDate,"location_" + day_segment + "_timeattop3"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],3,sampling_frequency)
+                    location_features.loc[localDate,"location_" + day_segment + "_timeattop3location"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],3,sampling_frequency)
 
             if "movingtostaticratio" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
