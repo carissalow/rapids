@@ -83,6 +83,12 @@ jobs:
 branches:
   only:
   - master
+
+stages:
+  - name: deploy
+    if: branch = master AND \
+        type = push
+
 notifications:
   email: false
   slack:
