@@ -83,6 +83,7 @@ jobs:
 branches:
   only:
   - master
+  - day_segment
 
 stages:
   - name: deploy
