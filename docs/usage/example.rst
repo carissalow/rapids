@@ -26,6 +26,8 @@ This is a quick guide for creating and running a simple pipeline to analysis an 
 
 #. Make sure your conda environment is active (the environment is already active in our docker container). See step 6 of :ref:`install-page`.
 
+#. If you installed RAPIDS from GitHub (did not use docker) you need to download the `example db backup <https://osf.io/skqfv/files/>`_ and save it to ``data/external/rapids_example.sql``.
+
 #. Run the following command to restore database from ``rapids_example.sql`` file::
 
     snakemake -j1 restore_sql_file
