@@ -67,6 +67,11 @@ branches:
   - master
   - day_segments
 
+stages:
+  - deploy
+    if: branch = master
+    if: type = push
+
 notifications:
   email: false
   slack:
