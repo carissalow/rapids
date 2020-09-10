@@ -1,17 +1,21 @@
 How to Edit Documentation
 ============================
 
-The following is a basic guide for editing the documentation for this project. The documentation is rendered using Sphinx_ documentation builder. This guide is intended to be a basic guide that will allow a contributer to start editing the documentation for the RAPIDS Pipeline. The first step is to install Sphinx.
+The following is a basic guide for editing the documentation for this project. The documentation is rendered using Sphinx_ documentation builder
 
-Mac OS  
+Quick start up
+----------------------------------
 
-    - ``brew install sphinx-doc``
+#. Install Sphinx in Mac OS  ``brew install sphinx-doc`` or Linux (Ubuntu) ``apt-get install python3-sphinx``
 
-Linux (Ubuntu)
+#. Go to the docs folder ``cd docs``
 
-    - ``apt-get install python3-sphinx``
+#. Change any ``.rst`` file you need to modify
 
-Sphinx is a tool that translates a set of reStructuredText_ source files into various output formats such as HTML and PDF, automatically producing cross-references, indices, etc. The following is a basic outline of structure of Sphinx workspace and the syntax of reStructuredText.
+#. To visualise the results locally do ``make dirhtml`` and check the html files in the ``_build/dirhtml`` directory
+
+#. When you are done, push your changes to the git repo.
+
 
 Sphinx Workspace Structure
 ----------------------------
@@ -33,12 +37,6 @@ Thus the directory structure for the above example is shown below::
     └── usage
         ├── introduction.rst
         └── installation.rst
-
-Once the ``index.rst`` has been editted and content has been added and/or editted the documentation is built using the following command::
-
-    $ make dirhtml
-
-This command creates the ``_build`` directory which contains the generated HTML files of the documentation. It shoould be noted that once you have pushed your change to the repository the changes will be published even if you have not run ``make dirhtml``
 
 
 Basic reStructuredText Syntax

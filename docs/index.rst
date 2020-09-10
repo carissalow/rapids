@@ -39,6 +39,7 @@ Contents:
    :maxdepth: 2
    :caption: Developers
 
+   develop/remotesupport
    develop/documentation
    develop/features
    develop/environments
