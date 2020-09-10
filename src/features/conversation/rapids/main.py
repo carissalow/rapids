@@ -11,8 +11,9 @@ def rapids_features(conversation_data, day_segment, provider, filter_data_by_seg
 
     # name of the features this function can compute
     base_features_names = ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
-    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
-    "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
+    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
+    "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
+    "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
     "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
     "unknownexpectedfraction","countconversation"]
 
@@ -107,20 +108,35 @@ def rapids_features(conversation_data, day_segment, provider, filter_data_by_seg
                 else:
                     conversation_features["conversation_rapids" + "_timelastconversation"] = np.nan
             
-            if "sumenergy" in features_to_compute:
-                conversation_features["conversation_rapids" + "_sumenergy"] = conversation_data.groupby(["local_segment"])["double_energy"].sum()
+            if "noisesumenergy" in features_to_compute:
+                conversation_features["conversation_rapids" + "_noisesumenergy"] = conversation_data[conversation_data['inference']==1].groupby(["local_segment"])["double_energy"].sum()
 
-            if "avgenergy" in features_to_compute:
-                conversation_features["conversation_rapids" + "_avgenergy"] = conversation_data.groupby(["local_segment"])["double_energy"].mean()
+            if "noiseavgenergy" in features_to_compute:
+                conversation_features["conversation_rapids" + "_noiseavgenergy"] = conversation_data[conversation_data['inference']==1].groupby(["local_segment"])["double_energy"].mean()
 
-            if "sdenergy" in features_to_compute:
-                conversation_features["conversation_rapids" + "_sdenergy"] = conversation_data.groupby(["local_segment"])["double_energy"].std()
+            if "noisesdenergy" in features_to_compute:
+                conversation_features["conversation_rapids" + "_noisesdenergy"] = conversation_data[conversation_data['inference']==1].groupby(["local_segment"])["double_energy"].std()
 
-            if "minenergy" in features_to_compute:
-                conversation_features["conversation_rapids" + "_minenergy"] = conversation_data.groupby(["local_segment"])["double_energy"].min()
+            if "noiseminenergy" in features_to_compute:
+                conversation_features["conversation_rapids" + "_noiseminenergy"] = conversation_data[conversation_data['inference']==1].groupby(["local_segment"])["double_energy"].min()
 
-            if "maxenergy" in features_to_compute:
-                conversation_features["conversation_rapids" + "_maxenergy"] = conversation_data.groupby(["local_segment"])["double_energy"].max()
+            if "noisemaxenergy" in features_to_compute:
+                conversation_features["conversation_rapids" + "_noisemaxenergy"] = conversation_data[conversation_data['inference']==1].groupby(["local_segment"])["double_energy"].max()
+
+            if "voicesumenergy" in features_to_compute:
+                conversation_features["conversation_rapids" + "_voicesumenergy"] = conversation_data[conversation_data['inference']==2].groupby(["local_segment"])["double_energy"].sum()
+
+            if "voiceavgenergy" in features_to_compute:
+                conversation_features["conversation_rapids" + "_voiceavgenergy"] = conversation_data[conversation_data['inference']==2].groupby(["local_segment"])["double_energy"].mean()
+
+            if "voicesdenergy" in features_to_compute:
+                conversation_features["conversation_rapids" + "_voicesdenergy"] = conversation_data[conversation_data['inference']==2].groupby(["local_segment"])["double_energy"].std()
+
+            if "voiceminenergy" in features_to_compute:
+                conversation_features["conversation_rapids" + "_voiceminenergy"] = conversation_data[conversation_data['inference']==2].groupby(["local_segment"])["double_energy"].min()
+
+            if "voicemaxenergy" in features_to_compute:
+                conversation_features["conversation_rapids" + "_voicemaxenergy"] = conversation_data[conversation_data['inference']==2].groupby(["local_segment"])["double_energy"].max()
 
 
             conversation_features = conversation_features.reset_index()

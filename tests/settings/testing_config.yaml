@@ -65,3 +65,21 @@ WIFI:
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/bluetooth
       SRC_LANGUAGE: "r"
+
+CONVERSATION:
+  DB_TABLE: 
+    ANDROID: plugin_studentlife_audio_android
+    IOS: plugin_studentlife_audio
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
+        "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
+        "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
+        "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
+        "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
+        "unknownexpectedfraction","countconversation"]
+      RECORDING_MINUTES: 1
+      PAUSED_MINUTES : 3
+      SRC_FOLDER: "rapids" # inside src/features/conversation
+      SRC_LANGUAGE: "python"
