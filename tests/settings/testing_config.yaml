@@ -8,7 +8,7 @@ DAY_SEGMENTS: &day_segments
   FILE: "data/external/daysegments_interval.csv"
 
 PHONE_VALID_SENSED_BINS:
-  DB_TABLES: [messages, calls, bluetooth, light, wifi]
+  DB_TABLES: [messages, calls, bluetooth, light, wifi, applications_foreground]
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 MESSAGES:
@@ -65,6 +65,22 @@ WIFI:
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/bluetooth
       SRC_LANGUAGE: "r"
+
+APPLICATIONS_FOREGROUND:
+  DB_TABLE: applications_foreground
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      SINGLE_CATEGORIES: ["all", "email"]
+      MULTIPLE_CATEGORIES:
+        social: ["socialnetworks", "socialmediatools"]
+        entertainment: ["entertainment", "gamingstrategy"]
+      SINGLE_APPS: ["top1global", "com.facebook.moments"] # There's no entropy for single apps
+      EXCLUDED_CATEGORIES: ["systemapp", "tvvideoapps"]
+      EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
+      FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+      SRC_FOLDER: "rapids" # inside src/features/applications_foreground
+      SRC_LANGUAGE: "python"
 
 CONVERSATION:
   DB_TABLE: 

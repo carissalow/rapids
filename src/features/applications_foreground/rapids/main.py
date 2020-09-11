@@ -54,10 +54,11 @@ def rapids_features(apps_data, day_segment, provider, filter_data_by_segment, *a
 
     apps_features = pd.DataFrame(columns=["local_segment"] + ["apps_rapids_" + "_" + x for x in ["".join(feature) for feature in itertools.product(requested_features, single_categories + multiple_categories + single_apps)]])
     if not apps_data.empty:
-        apps_data = filter_data_by_segment(apps_data, day_segment)
         # deep copy the apps_data for the top1global computation
         apps_data_global = apps_data.copy()
-
+        
+        apps_data = filter_data_by_segment(apps_data, day_segment)
+        
         if not apps_data.empty:
             apps_features = pd.DataFrame()
             # single category
@@ -77,12 +78,12 @@ def rapids_features(apps_data, day_segment, provider, filter_data_by_segment, *a
                 col_name = app
                 if app == "top1global":
                     # get the most used app
-                    apps_with_count = apps_data_global.groupby(["local_segment","package_name"]).count().sort_values(by="timestamp", ascending=False).reset_index()
+                    apps_with_count = apps_data_global.groupby(["package_name"]).count().sort_values(by="timestamp", ascending=False).reset_index()
                     app = apps_with_count.iloc[0]["package_name"]
                     col_name = "top1global"
                 filtered_data = apps_data[apps_data["package_name"].isin([app])]
                 apps_features = compute_features(filtered_data, col_name, requested_features, apps_features, day_segment)
-
+ 
             apps_features = apps_features.reset_index()
     
     return apps_features
