@@ -129,3 +129,4 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type){
     
 
   }
+}
