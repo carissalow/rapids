@@ -68,7 +68,7 @@ if(locations_to_use == "ALL"){
             filter(n == 1 | (n > 1 & provider == "fused")) %>% 
             select(-n) %>% 
             ungroup()
-        processed_locations <- assign_to_day_segment(resampled_locations, day_segments, day_segments_type, timezone)
+        processed_locations <- assign_to_day_segment(resampled_locations, day_segments, day_segments_type)
     } else {
         processed_locations <- locations
     }

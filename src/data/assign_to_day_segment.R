@@ -1,30 +1,43 @@
 library("tidyverse")
 library("lubridate")
 
+find_segments_frequency <- function(local_date, local_time_obj, segments){
+  return(paste(segments %>% 
+                 mutate(in_segment = local_time_obj >= segment_start & local_time_obj <= segment_end) %>% 
+                 filter(in_segment == TRUE) %>% 
+                 mutate(segment_id =  paste0("[", 
+                                                label, "#",
+                                                local_date, "#",
+                                                paste(str_pad(hour(segment_start),2, pad="0"), str_pad(minute(segment_start),2, pad="0"), str_pad(second(segment_start),2, pad="0"),sep =":"), "#",
+                                                local_date, "#",
+                                                paste(str_pad(hour(segment_end),2, pad="0"), str_pad(minute(segment_end),2, pad="0"), str_pad(second(segment_end),2, pad="0"),sep =":"),
+                                                "]")) %>% 
+                 pull(segment_id), collapse = "|"))
+}
+
+find_segments_periodic <- function(date_time, segments){
+  return(paste(segments[[1]] %>% 
+                 select(segment_interval, segment_id) %>% 
+                 mutate(in_segment = date_time %within% segment_interval) %>% 
+                 filter(in_segment == TRUE) %>% 
+                 pull(segment_id), collapse = "|"))
+}
+
+find_segments_event <- function(timestamp, segments){
+  return(paste(segments %>% 
+                 mutate(in_segment = timestamp >= segment_start & timestamp <= segment_end) %>% 
+                 filter(in_segment == TRUE) %>% 
+                 pull(segment_id), collapse = "|"))
+}
+
 assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type){
 
   if(day_segments_type == "FREQUENCY"){ #FREQUENCY
-    sensor_data <- sensor_data %>% mutate(local_date_time_obj = lubridate::parse_date_time(local_time, orders = c("HMS", "HM")))
-    day_segments <- day_segments %>% mutate(start_time = lubridate::parse_date_time(start_time, orders = c("HMS", "HM")),
-                                            end_time = start_time + minutes(length))
     
-    # Create a new column for each day_segment
-    for(row_id in 1:nrow(day_segments)){
-      row = day_segments[row_id,]
-      sensor_data <- sensor_data %>% mutate(!!paste("local_day_segment", row_id, sep = "_") := ifelse(local_date_time_obj >= row$start_time & local_date_time_obj < row$end_time, 
-                                                                                        paste0("[", 
-                                                                                               row$label, "#", 
-                                                                                               local_date, "#",
-                                                                                               paste(str_pad(hour(row$start_time),2, pad="0"), str_pad(minute(row$start_time),2, pad="0"), str_pad(second(row$start_time),2, pad="0"),sep =":"), "#",
-                                                                                               local_date, "#",
-                                                                                               paste(str_pad(hour(row$end_time),2, pad="0"), str_pad(minute(row$end_time),2, pad="0"), str_pad(second(row$end_time),2, pad="0"),sep =":"),
-                                                                                               "]"), NA))
-    }
-    # Join all day_segments in a single column
-    sensor_data <- sensor_data %>% 
-      unite("assigned_segments", starts_with("local_day_segment"), sep = "|", na.rm = TRUE) %>% 
-      select(-local_date_time_obj)
- 
+    day_segments <- day_segments %>% mutate(segment_start = lubridate::parse_date_time(start_time, orders = c("HMS", "HM")),
+                                            segment_end = segment_start + minutes(length))
+    sensor_data <- sensor_data %>% mutate(local_time_obj = lubridate::parse_date_time(local_time, orders = c("HMS", "HM")),
+                                          assigned_segments = map2_chr(local_date, local_time_obj, ~find_segments_frequency(.x, .y, day_segments))) %>% select(-local_time_obj)
     
   } else if (day_segments_type == "PERIODIC"){ #PERIODIC
     
@@ -65,22 +78,14 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type){
                                                                          "]")) %>%
                                            select(segment_interval, label, segment_id)),
              # loop thorugh every day segment and assigned it to the rows that fall within its start and end
-             data = map2(data, inferred_day_segments, function(nested_data, segments){
-               nested_data <- nested_data %>% mutate(assigned_segments = NA_character_, row_date_time = lubridate::ymd_hms(local_date_time, tz = local_timezone))
-               for(row_id in 1:nrow(segments)){
-                 row = segments[row_id,]
-                 nested_data <- nested_data %>%
-                   mutate(assigned_segments_temp = if_else(row_date_time %within% row$segment_interval, row$segment_id, NA_character_)) %>%
-                   unite(col = "assigned_segments", c(assigned_segments, assigned_segments_temp), na.rm = TRUE, sep = "") %>%
-                   mutate(assigned_segments = str_replace(assigned_segments, pattern = "\\]\\[", replacement = "\\]\\|\\[")) # this replaces ][ with ]|[
-               }
-
-               return(nested_data %>% select(-row_date_time))
-             })
+             data = map2(data, inferred_day_segments, ~ .x %>% mutate(row_date_time = lubridate::ymd_hms(local_date_time, tz = local_timezone),
+                                                                      assigned_segments = map_chr(row_date_time, ~find_segments_periodic(.x, inferred_day_segments))) %>% 
+                                                               select(-row_date_time))
              ) %>% 
+      select(-existent_dates, -inferred_day_segments) %>% 
       unnest(cols = data) %>% 
       arrange(row_n) %>%
-      select(-row_n, -existent_dates, -inferred_day_segments)
+      select(-row_n)
       
     
   } else if ( day_segments_type == "EVENT"){
@@ -106,27 +111,8 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type){
                                                                 "]")) %>% 
       select(-segment_start_datetime, -segment_end_datetime)
     
-    
-    sensor_data <- sensor_data %>%
-      mutate(row_n = row_number()) %>% 
-      group_by(local_timezone) %>% 
-      nest() %>% 
-      mutate(data = map(data, function(nested_data){
-        nested_data <- nested_data %>% mutate(assigned_segments = NA_character_)
-        for(row_id in 1:nrow(day_segments)){
-          row = day_segments[row_id,]
-          nested_data <- nested_data %>%
-            mutate(assigned_segments_temp = if_else(timestamp >= row$segment_start & timestamp <= row$segment_end, row$segment_id, NA_character_)) %>%
-            unite(col = "assigned_segments", c(assigned_segments, assigned_segments_temp), na.rm = TRUE, sep = "") %>% 
-            mutate(assigned_segments = str_replace(assigned_segments, pattern = "\\]\\[", replacement = "\\]\\|\\[")) #replace ][ with ]|[
-        }
-        
-        return(nested_data)
-      })) %>% 
-      unnest(cols = data) %>% 
-      arrange(row_n) %>% 
-      select(-row_n)
-    
-
+    sensor_data <- sensor_data %>% mutate(assigned_segments = map_chr(timestamp, ~find_segments_event(.x, day_segments)))
   }
+  
+  return(sensor_data)
 }

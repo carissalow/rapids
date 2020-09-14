@@ -43,6 +43,6 @@ if(!is.null(timezone_periods)){
           local_timezone = fixed_timezone,
            local_date_time = format(utc_date_time, tz = fixed_timezone,  "%Y-%m-%d %H:%M:%S"))
   output <- split_local_date_time(output, day_segments)
-  output <- assign_to_day_segment(output, day_segments, day_segments_type, fixed_timezone)
+  output <- assign_to_day_segment(output, day_segments, day_segments_type)
   write_csv(output, sensor_output)
 }
