@@ -3,8 +3,7 @@ library("lubridate")
 
 find_segments_frequency <- function(local_date, local_time_obj, segments){
   return(paste(segments %>% 
-                 mutate(in_segment = local_time_obj >= segment_start & local_time_obj <= segment_end) %>% 
-                 filter(in_segment == TRUE) %>% 
+                 filter(local_time_obj >= segment_start & local_time_obj <= segment_end) %>% 
                  mutate(segment_id =  paste0("[", 
                                                 label, "#",
                                                 local_date, "#",
@@ -16,17 +15,14 @@ find_segments_frequency <- function(local_date, local_time_obj, segments){
 }
 
 find_segments_periodic <- function(date_time, segments){
-  return(paste(segments[[1]] %>% 
-                 select(segment_interval, segment_id) %>% 
-                 mutate(in_segment = date_time %within% segment_interval) %>% 
-                 filter(in_segment == TRUE) %>% 
+  return(stringi::stri_c(segments[[1]] %>% 
+                 filter(date_time %within% segment_interval) %>%
                  pull(segment_id), collapse = "|"))
 }
 
 find_segments_event <- function(timestamp, segments){
-  return(paste(segments %>% 
-                 mutate(in_segment = timestamp >= segment_start & timestamp <= segment_end) %>% 
-                 filter(in_segment == TRUE) %>% 
+  return(stringi::stri_c(segments %>% 
+                 filter(timestamp >= segment_start & timestamp <= segment_end) %>% 
                  pull(segment_id), collapse = "|"))
 }
 
@@ -54,7 +50,7 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type){
                                            mday = mday(local_date_obj),
                                            qday = qday(local_date_obj),
                                            yday = yday(local_date_obj)
-                                           ) %>%  select(local_date, every_day, wday, mday, qday, yday)),
+                                    ) ),
              # build the actual day segments taking into account the users requested leangth and repeat schedule
              inferred_day_segments = map(existent_dates,
                                          ~ crossing(day_segments, .x) %>%
@@ -81,8 +77,8 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type){
              data = map2(data, inferred_day_segments, ~ .x %>% mutate(row_date_time = lubridate::ymd_hms(local_date_time, tz = local_timezone),
                                                                       assigned_segments = map_chr(row_date_time, ~find_segments_periodic(.x, inferred_day_segments))) %>% 
                                                                select(-row_date_time))
-             ) %>% 
-      select(-existent_dates, -inferred_day_segments) %>% 
+      ) %>%
+      select(-existent_dates, -inferred_day_segments) %>%
       unnest(cols = data) %>% 
       arrange(row_n) %>%
       select(-row_n)
