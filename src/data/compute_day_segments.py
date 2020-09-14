@@ -8,50 +8,97 @@ def is_valid_frequency_segments(day_segments, day_segments_file):
     
     valid_columns = ["label", "length"]
     if len(list(set(day_segments.columns) - set(valid_columns))) > 0:
-        error_message = 'The FREQUENCY_EVERY_DAY day segments file in [DAY_SEGMENTS][FILE] must have two columns: label, and length ' \
+        error_message = 'The FREQUENCY day segments file in [DAY_SEGMENTS][FILE] must have two columns: label, and length ' \
                   'but instead we found {}. Modify {}'.format(list(day_segments.columns), day_segments_file)
         raise ValueError(error_message)
 
     if day_segments.shape[0] > 1:
-        message = 'The FREQUENCY_EVERY_DAY day segments file in [DAY_SEGMENTS][FILE] can only have 1 row.' \
+        message = 'The FREQUENCY day segments file in [DAY_SEGMENTS][FILE] can only have 1 row.' \
                   'Modify {}'.format(day_segments_file)
         raise ValueError(message)
 
     if not pd.api.types.is_integer_dtype(day_segments.dtypes['length']):
-        message = 'The column length in the FREQUENCY_EVERY_DAY day segments file in [DAY_SEGMENTS][FILE] must be integer but instead is ' \
-                  '{}. Modify {}'.format(day_segments.dtypes['length'], day_segments_file)
+        message = 'The column length in the FREQUENCY day segments file in [DAY_SEGMENTS][FILE] must be integer but instead is ' \
+                  '{}. . This usually means that not all values in this column are formed by digits. Modify {}'.format(day_segments.dtypes['length'], day_segments_file)
         raise ValueError(message)
 
     if day_segments.iloc[0].loc['length'] < 0:
-        message = 'The value in column length in the FREQUENCY_EVERY_DAY day segments file in [DAY_SEGMENTS][FILE] must be positive but instead is  ' \
+        message = 'The value in column length in the FREQUENCY day segments file in [DAY_SEGMENTS][FILE] must be positive but instead is  ' \
                   '{}. Modify {}'.format(day_segments.iloc[0].loc['length'], day_segments_file)
         raise ValueError(message)
     if day_segments.iloc[0].loc['length'] >= 1440:
-        message = 'The column length in the FREQUENCY_EVERY_DAY day segments file in [DAY_SEGMENTS][FILE] must be shorter than a day in minutes (1440) but instead is ' \
+        message = 'The column length in the FREQUENCY day segments file in [DAY_SEGMENTS][FILE] must be shorter than a day in minutes (1440) but instead is ' \
                   '{}. Modify {}'.format(day_segments.iloc[0].loc['length'], day_segments_file)
         raise ValueError(message)
 
     return True
 
-def is_valid_interval_segments(day_segments, day_segments_file):
+def is_valid_periodic_segments(day_segments, day_segments_file):
     day_segments = day_segments.copy(deep=True)
 
-    valid_columns = ["label", "start_time", "length"]
+    valid_columns = ["label", "start_time", "length", "repeats_on", "repeats_value"]
     if len(list(set(day_segments.columns) - set(valid_columns))) > 0:
-        error_message = 'The INTERVAL_EVERY_DAY day segments file in [DAY_SEGMENTS][FILE] must have three columns: label, start_time and length ' \
+        error_message = 'The PERIODIC day segments file in [DAY_SEGMENTS][FILE] must have five columns: label, start_time, length, repeats_on, repeats_value ' \
                   'but instead we found {}. Modify {}'.format(list(day_segments.columns), day_segments_file)
         raise ValueError(error_message)
+
+    valid_repeats_on = ["every_day", "wday", "mday", "qday", "yday"]
+    if len(list(set(day_segments["repeats_on"]) - set(valid_repeats_on))) > 0:
+        error_message = 'The column repeats_on in the PERIODIC day segments file in [DAY_SEGMENTS][FILE] can only accept: "every_day", "wday", "mday", "qday", or "yday" ' \
+                  'but instead we found {}. Modify {}'.format(list(set(day_segments["repeats_on"])), day_segments_file)
+        raise ValueError(error_message)
+
+    if not pd.api.types.is_integer_dtype(day_segments.dtypes['repeats_value']):
+        message = 'The column repeats_value in the PERIODIC day segments file in [DAY_SEGMENTS][FILE] must be integer but instead is ' \
+                  '{}. . This usually means that not all values in this column are formed by digits. Modify {}'.format(day_segments.dtypes['repeats_value'], day_segments_file)
+        raise ValueError(message)
+
+    invalid_day_segments = day_segments.query("repeats_on == 'every_day' and repeats_value != 0")
+    if invalid_day_segments.shape[0] > 0:
+        message = 'Every row with repeats_on=every_day must have a repeats_value=0 in the PERIODIC day segments file in [DAY_SEGMENTS][FILE].' \
+                  ' Modify row(s) of segment(s) {} of {}'.format(invalid_day_segments["label"].to_numpy(), day_segments_file)
+        raise ValueError(message)
+
+    invalid_day_segments = day_segments.query("repeats_on == 'wday' and (repeats_value < 1 | repeats_value > 7)")
+    if invalid_day_segments.shape[0] > 0:
+        message = 'Every row with repeats_on=wday must have a repeats_value=[1,7] in the PERIODIC day segments file in [DAY_SEGMENTS][FILE].' \
+                  ' Modify row(s) of segment(s) {} of {}'.format(invalid_day_segments["label"].to_numpy(), day_segments_file)
+        raise ValueError(message)
+
+    invalid_day_segments = day_segments.query("repeats_on == 'mday' and (repeats_value < 1 | repeats_value > 31)")
+    if invalid_day_segments.shape[0] > 0:
+        message = 'Every row with repeats_on=mday must have a repeats_value=[1,31] in the PERIODIC day segments file in [DAY_SEGMENTS][FILE].' \
+                  ' Modify row(s) of segment(s) {} of {}'.format(invalid_day_segments["label"].to_numpy(), day_segments_file)
+        raise ValueError(message)
+
+    invalid_day_segments = day_segments.query("repeats_on == 'qday' and (repeats_value < 1 | repeats_value > 92)")
+    if invalid_day_segments.shape[0] > 0:
+        message = 'Every row with repeats_on=qday must have a repeats_value=[1,92] in the PERIODIC day segments file in [DAY_SEGMENTS][FILE].' \
+                  ' Modify row(s) of segment(s) {} of {}'.format(invalid_day_segments["label"].to_numpy(), day_segments_file)
+        raise ValueError(message)
+
+    invalid_day_segments = day_segments.query("repeats_on == 'yday' and (repeats_value < 1 | repeats_value > 366)")
+    if invalid_day_segments.shape[0] > 0:
+        message = 'Every row with repeats_on=yday must have a repeats_value=[1,366] in the PERIODIC day segments file in [DAY_SEGMENTS][FILE].' \
+                  ' Modify row(s) of segment(s) {} of {}'.format(invalid_day_segments["label"].to_numpy(), day_segments_file)
+        raise ValueError(message)
 
     try:
         day_segments["start_time"] = pd.to_datetime(day_segments["start_time"])
     except ValueError as err:
-        raise ValueError("At least one start_time in the INTERVAL_EVERY_DAY day segments file in [DAY_SEGMENTS][FILE] has an invalid format, it should be HH:MM in 24hr clock({}). Modify {}".format(err, day_segments_file))
+        raise ValueError("At least one start_time in the PERIODIC day segments file in [DAY_SEGMENTS][FILE] has an invalid format, it should be HH:MM:SS in 24hr clock({}). Modify {}".format(err, day_segments_file))
 
     if(day_segments.shape[0] != day_segments.drop_duplicates().shape[0]):
-        error_message = 'The INTERVAL_EVERY_DAY day segments file in [DAY_SEGMENTS][FILE] has two or more rows that are identical. ' \
+        error_message = 'The PERIODIC day segments file in [DAY_SEGMENTS][FILE] has two or more rows that are identical. ' \
                   'Modify {}'.format(day_segments_file)
         raise ValueError(error_message)
-
+    
+    duplicated_labels = day_segments[day_segments["label"].duplicated()]
+    if(duplicated_labels.shape[0] > 0):
+        error_message = 'Segements labels must be unique. The PERIODIC day segments file in [DAY_SEGMENTS][FILE] has {} row(s) with the same label {}. ' \
+                  'Modify {}'.format(duplicated_labels.shape[0], duplicated_labels["label"].to_numpy(), day_segments_file)
+        raise ValueError(error_message)
+    
     # TODO Validate string format for lubridate
     
     return True
@@ -59,30 +106,31 @@ def is_valid_interval_segments(day_segments, day_segments_file):
 def is_valid_event_segments(day_segments, day_segments_file):
     day_segments = day_segments.copy(deep=True)
 
-    valid_columns = ["label", "start_date_time", "length", "shift", "shift_direction"]
+    valid_columns = ["label", "event_timestamp", "length", "shift", "shift_direction", "pid"]
     if len(list(set(day_segments.columns) - set(valid_columns))) > 0:
-        error_message = 'The INTERVAL_FLEXIBLE_DAY day segments file in [DAY_SEGMENTS][FILE] must have five columns: label, start_date_time, length, shift and shift_direction ' \
+        error_message = 'The EVENT day segments file in [DAY_SEGMENTS][FILE] must have six columns: label, event_timestamp, length, shift, shift_direction and pid ' \
                   'but instead we found {}. Modify {}'.format(list(day_segments.columns), day_segments_file)
         raise ValueError(error_message)
 
-    try:
-        day_segments["start_date_time"] = pd.to_datetime(day_segments["start_date_time"], format='%Y-%m-%d %H:%M:%S', errors='raise')
-    except ValueError as err:
-        raise ValueError("At least one start_date_time has an invalid format, it should be YYYY-MM-DD HH:MM:SS in 24hr clock({}). Modify {}".format(err, day_segments_file))
+    if not pd.api.types.is_integer_dtype(day_segments.dtypes['event_timestamp']):
+        message = 'The column event_timestamp in the EVENT day segments file in [DAY_SEGMENTS][FILE] must be integer but instead is ' \
+                  '{}. This usually means that not all values in this column are formed by digits. Modify {}'.format(day_segments.dtypes['event_timestamp'], day_segments_file)
+        raise ValueError(message)
 
     valid_shift_direction_values = [1, -1, 0]
     provided_values = day_segments["shift_direction"].unique()
     if len(list(set(provided_values) - set(valid_shift_direction_values))) > 0:
-        error_message = 'The values of shift_direction column in the INTERVAL_FLEXIBLE_DAY day segments file in [DAY_SEGMENTS][FILE] can only be 1, -1 or 0 ' \
+        error_message = 'The values of shift_direction column in the EVENT day segments file in [DAY_SEGMENTS][FILE] can only be 1, -1 or 0 ' \
                   'but instead we found {}. Modify {}'.format(provided_values, day_segments_file)
         raise ValueError(error_message)
 
     if(day_segments.shape[0] != day_segments.drop_duplicates().shape[0]):
-        error_message = 'The INTERVAL_FLEXIBLE_DAY day segments file in [DAY_SEGMENTS][FILE] has two or more rows that are identical. ' \
+        error_message = 'The EVENT day segments file in [DAY_SEGMENTS][FILE] has two or more rows that are identical. ' \
                   'Modify {}'.format(day_segments_file)
         raise ValueError(error_message)
 
     # TODO Validate string format for lubridate of length and shift
+    # TODO validate unique labels per participant
     return True
 
 
@@ -114,13 +162,14 @@ def parse_frequency_segments(day_segments: pd.DataFrame) -> pd.DataFrame:
 
     return table[['start_time', 'length', 'label']]
 
-def parse_interval_segments(day_segments):
+def parse_periodic_segments(day_segments):
+    day_segments.loc[day_segments["repeats_on"] == "every_day", "repeats_value"] = 0
     return day_segments
 
-def parse_event_segments(day_segments):
-    return day_segments
+def parse_event_segments(day_segments, pid):
+    return day_segments.query("pid == @pid")
 
-def parse_day_segments(day_segments_file, segments_type):
+def parse_day_segments(day_segments_file, segments_type, pid):
     # Add code to validate and parse frequencies, intervals, and events
     # Expected formats:
     # Frequency: label, length columns (e.g. my_prefix, 5) length has to be in minutes (int)
@@ -130,26 +179,26 @@ def parse_day_segments(day_segments_file, segments_type):
     day_segments = pd.read_csv(day_segments_file)
 
     if day_segments is None:
-        message = 'The day segments file in [DAY_SEGMENTS][FILE] is None. Modify {}'.format(local_date)
+        message = 'The day segments file in [DAY_SEGMENTS][FILE] is None. Modify {}'.format(day_segments_file)
         raise ValueError(message)
 
     if day_segments.shape[0] == 0:
-        message = 'The day segments file in [DAY_SEGMENTS][FILE] is empty. Modify {}'.format(local_date)
+        message = 'The day segments file in [DAY_SEGMENTS][FILE] is empty. Modify {}'.format(day_segments_file)
         raise ValueError(message)
 
-    if(segments_type not in ["FREQUENCY_EVERY_DAY", "INTERVAL_EVERY_DAY", "INTERVAL_FLEXIBLE_DAY"]):
-        raise ValueError("[DAY_SEGMENTS][TYPE] can only be FREQUENCY_EVERY_DAY, INTERVAL_EVERY_DAY, or INTERVAL_FLEXIBLE_DAY")
+    if(segments_type not in ["FREQUENCY", "PERIODIC", "EVENT"]):
+        raise ValueError("[DAY_SEGMENTS][TYPE] can only be FREQUENCY, PERIODIC, or EVENT")
     
-    if(segments_type == "FREQUENCY_EVERY_DAY" and is_valid_frequency_segments(day_segments, day_segments_file)):
+    if(segments_type == "FREQUENCY" and is_valid_frequency_segments(day_segments, day_segments_file)):
         day_segments = parse_frequency_segments(day_segments)
-    elif(segments_type == "INTERVAL_EVERY_DAY" and is_valid_interval_segments(day_segments, day_segments_file)):
-        day_segments = parse_interval_segments(day_segments)
-    elif(segments_type == "INTERVAL_FLEXIBLE_DAY" and is_valid_event_segments(day_segments, day_segments_file)):
-        day_segments = parse_event_segments(day_segments)
+    elif(segments_type == "PERIODIC" and is_valid_periodic_segments(day_segments, day_segments_file)):
+        day_segments = parse_periodic_segments(day_segments)
+    elif(segments_type == "EVENT" and is_valid_event_segments(day_segments, day_segments_file)):
+        day_segments = parse_event_segments(day_segments, pid)
     else:
-        raise ValueError("{} does not have a format compatible with frequency, interval or event day segments. Please refer to [LINK]".format(day_segments_file))
+        raise ValueError("{} does not have a format compatible with frequency, periodic or event day segments. Please refer to [LINK]".format(day_segments_file))
     return day_segments
 
-final_day_segments = parse_day_segments(snakemake.input[0], snakemake.params["day_segments_type"])
+final_day_segments = parse_day_segments(snakemake.input[0], snakemake.params["day_segments_type"], snakemake.params["pid"])
 final_day_segments.to_csv(snakemake.output["segments_file"], index=False)
 pd.DataFrame({"label" : final_day_segments["label"].unique()}).to_csv(snakemake.output["segments_labels_file"], index=False)

@@ -40,7 +40,8 @@ if(!is.null(timezone_periods)){
 } else if(!is.null(fixed_timezone)){
   output <- input %>% 
     mutate(utc_date_time = as.POSIXct(timestamp/1000, origin="1970-01-01", tz="UTC"),
-           local_date_time = format(utc_date_time, tz = fixed_timezone, usetz = F, "%Y-%m-%d %H:%M:%S"))
+          local_timezone = fixed_timezone,
+           local_date_time = format(utc_date_time, tz = fixed_timezone,  "%Y-%m-%d %H:%M:%S"))
   output <- split_local_date_time(output, day_segments)
   output <- assign_to_day_segment(output, day_segments, day_segments_type, fixed_timezone)
   write_csv(output, sensor_output)

@@ -54,6 +54,7 @@ unify_ios_calls <- function(ios_calls){
                         local_time = first(local_time),
                         local_hour = first(local_hour),
                         local_minute = first(local_minute),
+                        local_timezone = first(local_timezone),
                         assigned_segments = first(assigned_segments))
         }
         else {

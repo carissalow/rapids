@@ -9,7 +9,7 @@ rule join_features_from_providers:
 rule messages_r_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["MESSAGES"]["DB_TABLE"]),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["MESSAGES"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -21,7 +21,7 @@ rule messages_r_features:
 rule messages_python_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["MESSAGES"]["DB_TABLE"]),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["MESSAGES"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -33,7 +33,7 @@ rule messages_python_features:
 rule calls_python_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["CALLS"]["DB_TABLE"]),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["CALLS"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -45,7 +45,7 @@ rule calls_python_features:
 rule calls_r_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["CALLS"]["DB_TABLE"]),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["CALLS"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -89,7 +89,7 @@ rule ios_activity_recognition_deltas:
 rule locations_python_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor}_processed_{locations_to_use}.csv", sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["LOCATIONS"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}",
@@ -101,7 +101,7 @@ rule locations_python_features:
 rule locations_r_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor}_processed_{locations_to_use}.csv", sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["LOCATIONS"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -113,7 +113,7 @@ rule locations_r_features:
 rule bluetooth_r_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BLUETOOTH"]["DB_TABLE"]),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["BLUETOOTH"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -125,7 +125,7 @@ rule bluetooth_r_features:
 rule bluetooth_python_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["BLUETOOTH"]["DB_TABLE"]),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["BLUETOOTH"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -176,7 +176,7 @@ rule screen_features:
 rule light_r_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["LIGHT"]["DB_TABLE"]),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["LIGHT"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -188,7 +188,7 @@ rule light_r_features:
 rule light_python_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["LIGHT"]["DB_TABLE"]),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["LIGHT"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -200,7 +200,7 @@ rule light_python_features:
 rule conversation_r_features:
     input:
         sensor_data = optional_conversation_input,
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["CONVERSATION"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -212,7 +212,7 @@ rule conversation_r_features:
 rule conversation_python_features:
     input:
         sensor_data = optional_conversation_input,
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["CONVERSATION"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -238,7 +238,7 @@ rule accelerometer_features:
 rule applications_foreground_r_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime_with_genre.csv", sensor=config["APPLICATIONS_FOREGROUND"]["DB_TABLE"]),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["APPLICATIONS_FOREGROUND"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -250,7 +250,7 @@ rule applications_foreground_r_features:
 rule applications_foreground_python_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime_with_genre.csv", sensor=config["APPLICATIONS_FOREGROUND"]["DB_TABLE"]),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["APPLICATIONS_FOREGROUND"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -262,7 +262,7 @@ rule applications_foreground_python_features:
 rule wifi_r_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor_key}_with_datetime_visibleandconnected.csv", sensor_key="WIFI".lower()),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["WIFI"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"
@@ -274,7 +274,7 @@ rule wifi_r_features:
 rule wifi_python_features:
     input:
         sensor_data = expand("data/raw/{{pid}}/{sensor_key}_with_datetime_visibleandconnected.csv", sensor_key="WIFI".lower()),
-        day_segments_labels = "data/interim/day_segments_labels.csv"
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
         provider = lambda wildcards: config["WIFI"]["PROVIDERS"][wildcards.provider_key],
         provider_key = "{provider_key}"

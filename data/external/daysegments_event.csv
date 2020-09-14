@@ -1,8 +1,9 @@
-label,start_date_time,length,shift,shift_direction
-stress,2020-05-04 11:30:00,1hours,30minutes,-1
-stress,2020-05-04 13:30:00,1hours,30minutes,-1
-stress1,2020-05-04 11:30:00,1hours,30minutes,-1
-stress2,2020-05-04 13:30:00,1hours,30minutes,-1
-weekly,2020-04-21 00:00:00,7days,0,0
-weekly,2020-04-28 00:00:00,7days,0,0
-weekly,2020-05-05 00:00:00,7days,0,0
+label,event_timestamp,length,shift,shift_direction,pid
+stress,1587661220000,1hours,0minutes,1,test01
+stress,1587747620000,4hours,4hours,-1,test01
+stress,1587906020000,3hours,0minutes,1,test01
+stress,1588003220000,7hours,4hours,-1,test01
+stress,1588172420000,9hours,0,-1,test01
+mood,1587661220000,7days,0,0,p02
+mood,1587747620000,7days,0,0,p02
+mood,1587906020000,7days,0,0,p02

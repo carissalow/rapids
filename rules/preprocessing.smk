@@ -42,10 +42,11 @@ rule compute_day_segments:
     input: 
         config["DAY_SEGMENTS"]["FILE"]
     params:
-        day_segments_type = config["DAY_SEGMENTS"]["TYPE"]
+        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
+        pid = "{pid}"
     output:
-        segments_file = "data/interim/day_segments.csv",
-        segments_labels_file = "data/interim/day_segments_labels.csv",
+        segments_file = "data/interim/day_segments/{pid}_day_segments.csv",
+        segments_labels_file = "data/interim/day_segments/{pid}_day_segments_labels.csv",
     script:
         "../src/data/compute_day_segments.py"
 
@@ -62,7 +63,7 @@ if len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) > 0:
 rule readable_datetime:
     input:
         sensor_input = "data/raw/{pid}/{sensor}_raw.csv",
-        day_segments = "data/interim/day_segments.csv"
+        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
         timezones = None,
         fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
@@ -112,7 +113,7 @@ rule process_location_types:
     input:
         locations = "data/raw/{pid}/{sensor}_with_datetime.csv",
         phone_sensed_bins = rules.phone_sensed_bins.output,
-        day_segments = "data/interim/day_segments.csv"
+        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
         bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"],
         timezone = config["LOCATIONS"]["TIMEZONE"],
