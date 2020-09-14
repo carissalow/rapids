@@ -4,8 +4,8 @@ PIDS: [test01, test02, test03, test04]
 
 # Global var with common day segments
 DAY_SEGMENTS: &day_segments
-  TYPE: INTERVAL_EVERY_DAY # FREQUENCY_EVERY_DAY, INTERVAL_EVERY_DAY, INTERVAL_FLEXIBLE_DAY
-  FILE: "data/external/daysegments_interval.csv"
+  TYPE: PERIODIC # FREQUENCY, PERIODIC, EVENT
+  FILE: "data/external/daysegments_periodic.csv"
 
 PHONE_VALID_SENSED_BINS:
   DB_TABLES: [messages, calls, bluetooth, light, wifi, applications_foreground]
