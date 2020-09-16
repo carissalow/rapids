@@ -5,29 +5,28 @@ find_segments_frequency <- function(local_date, local_time_obj, segments){
   return(paste(segments %>% 
                  filter(local_time_obj >= segment_start & local_time_obj <= segment_end) %>% 
                  mutate(segment_id =  paste0("[", 
-                                                label, "#",
-                                                local_date, "#",
-                                                paste(str_pad(hour(segment_start),2, pad="0"), str_pad(minute(segment_start),2, pad="0"), str_pad(second(segment_start),2, pad="0"),sep =":"), "#",
-                                                local_date, "#",
-                                                paste(str_pad(hour(segment_end),2, pad="0"), str_pad(minute(segment_end),2, pad="0"), str_pad(second(segment_end),2, pad="0"),sep =":"),
-                                                "]")) %>% 
+                                             label, "#",
+                                             local_date, "#",
+                                             paste(str_pad(hour(segment_start),2, pad="0"), str_pad(minute(segment_start),2, pad="0"), str_pad(second(segment_start),2, pad="0"),sep =":"), "#",
+                                             local_date, "#",
+                                             paste(str_pad(hour(segment_end),2, pad="0"), str_pad(minute(segment_end),2, pad="0"), str_pad(second(segment_end),2, pad="0"),sep =":"),
+                                             "]")) %>% 
                  pull(segment_id), collapse = "|"))
 }
 
-find_segments_periodic <- function(date_time, segments){
-  return(stringi::stri_c(segments[[1]] %>% 
-                 filter(date_time %within% segment_interval) %>%
-                 pull(segment_id), collapse = "|"))
+find_segments_periodic <- function(timestamp, segments){
+  # We might need to optimise the frequency and event functions as well
+  return(stringi::stri_c(segments[[1]][segments[[1]]$segment_start_ts<= timestamp & segments[[1]]$segment_end_ts >= timestamp, "segment_id"][["segment_id"]], collapse = "|"))
 }
 
 find_segments_event <- function(timestamp, segments){
   return(stringi::stri_c(segments %>% 
-                 filter(timestamp >= segment_start & timestamp <= segment_end) %>% 
-                 pull(segment_id), collapse = "|"))
+                           filter(timestamp >= segment_start & timestamp <= segment_end) %>% 
+                           pull(segment_id), collapse = "|"))
 }
 
-assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type){
-
+assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, include_past_periodic_segments){
+  
   if(day_segments_type == "FREQUENCY"){ #FREQUENCY
     
     day_segments <- day_segments %>% mutate(segment_start = lubridate::parse_date_time(start_time, orders = c("HMS", "HM")),
@@ -37,20 +36,62 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type){
     
   } else if (day_segments_type == "PERIODIC"){ #PERIODIC
     
+    # We need to take into account segment start dates that could include the first day of data
+    day_segments <- day_segments %>% mutate(length_duration = duration(length))
+    wday_delay <- day_segments %>% mutate(length_duration = duration(length)) %>%  filter(repeats_on == "wday") %>% arrange(-length_duration) %>% pull(length_duration) %>% first()
+    wday_delay <- if_else(is.na(wday_delay) | include_past_periodic_segments == FALSE, duration("0days"), wday_delay)
+    
+    mday_delay <- day_segments %>% mutate(length_duration = duration(length)) %>%  filter(repeats_on == "mday") %>% arrange(-length_duration) %>% pull(length_duration) %>% first()
+    mday_delay <- if_else(is.na(mday_delay) | include_past_periodic_segments == FALSE, duration("0days"), mday_delay)
+    
+    qday_delay <- day_segments %>% mutate(length_duration = duration(length)) %>%  filter(repeats_on == "qday") %>% arrange(-length_duration) %>% pull(length_duration) %>% first()
+    qday_delay <- if_else(is.na(qday_delay) | include_past_periodic_segments == FALSE, duration("0days"), qday_delay)
+    
+    yday_delay <- day_segments %>% mutate(length_duration = duration(length)) %>%  filter(repeats_on == "yday") %>% arrange(-length_duration) %>% pull(length_duration) %>% first()
+    yday_delay <- if_else(is.na(yday_delay) | include_past_periodic_segments == FALSE, duration("0days"), yday_delay)
+    
     sensor_data <- sensor_data %>%
-      mutate(row_n = row_number()) %>% 
+      # mutate(row_n = row_number()) %>% 
       group_by(local_timezone) %>% 
       nest() %>% 
       # get existent days that we need to start segments from
-      mutate(existent_dates = map(data, ~.x %>% 
+      mutate(every_date = map(data, ~.x %>% 
                                     distinct(local_date) %>% 
-                                    mutate(local_date_obj = lubridate::ymd(local_date, tz = local_timezone), 
-                                           every_day = 0,
-                                           wday = wday(local_date_obj, week_start = 1),
-                                           mday = mday(local_date_obj),
-                                           qday = qday(local_date_obj),
-                                           yday = yday(local_date_obj)
-                                    ) ),
+                                    mutate(local_date_obj = date(lubridate::ymd(local_date, tz = local_timezone))) %>% 
+                                    complete(local_date_obj = seq(min(local_date_obj), max(local_date_obj), by="days")) %>%
+                                    mutate(local_date = replace_na(as.character(date(local_date_obj)))) %>% 
+                                    mutate(every_day = 0)),
+             week_dates = map(data, ~.x %>% 
+                               distinct(local_date) %>% 
+                                mutate(local_date_obj = date(lubridate::ymd(local_date, tz = local_timezone))) %>% 
+                                complete(local_date_obj = seq(date(min(local_date_obj) - wday_delay), max(local_date_obj), by="days")) %>%
+                               mutate(local_date = replace_na(as.character(date(local_date_obj)))) %>% 
+                               mutate(wday = wday(local_date_obj, week_start = 1))  ), 
+             month_dates = map(data, ~.x %>% 
+                                   distinct(local_date) %>% 
+                                   mutate(local_date_obj = date(lubridate::ymd(local_date, tz = local_timezone))) %>% 
+                                   complete(local_date_obj = seq(date(min(local_date_obj) - mday_delay), max(local_date_obj), by="days")) %>%
+                                   mutate(local_date = replace_na(as.character(date(local_date_obj)))) %>%
+                                   mutate(mday = mday(local_date_obj))), 
+             quarter_dates = map(data, ~.x %>% 
+                                distinct(local_date) %>% 
+                                mutate(local_date_obj = date(lubridate::ymd(local_date, tz = local_timezone))) %>% 
+                                complete(local_date_obj = seq(date(min(local_date_obj) - qday_delay), max(local_date_obj), by="days")) %>%
+                                mutate(local_date = replace_na(as.character(date(local_date_obj)))) %>%
+                                mutate(qday = qday(local_date_obj)) ), 
+             year_dates = map(data, ~.x %>% 
+                                 distinct(local_date) %>% 
+                                 mutate(local_date_obj = date(lubridate::ymd(local_date, tz = local_timezone))) %>% 
+                                 complete(local_date_obj = seq(date(min(local_date_obj) - yday_delay), max(local_date_obj), by="days")) %>%
+                                 mutate(local_date = replace_na(as.character(date(local_date_obj)))) %>%
+                                 mutate(yday = yday(local_date_obj)) ),
+             existent_dates = pmap(list(every_date, week_dates, month_dates, quarter_dates, year_dates),
+                                    function(every_date, week_dates, month_dates, quarter_dates, year_dates) reduce(list(every_date, week_dates,month_dates, quarter_dates, year_dates), .f=full_join)),
+             every_date = NULL,
+             week_dates = NULL,
+             month_dates = NULL,
+             quarter_dates = NULL,
+             year_dates = NULL,
              # build the actual day segments taking into account the users requested leangth and repeat schedule
              inferred_day_segments = map(existent_dates,
                                          ~ crossing(day_segments, .x) %>%
@@ -58,31 +99,31 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type){
                                            filter(repeats_on == day_type & repeats_value == day_value) %>%
                                            mutate(segment_start = (lubridate::parse_date_time(paste(local_date, start_time), orders = c("Ymd HMS", "Ymd HM"), tz = local_timezone)),
                                                   segment_end = segment_start + lubridate::period(length),
-                                                  segment_interval = lubridate::interval(segment_start, segment_end),
+                                                  segment_start_ts = as.numeric(segment_start),
+                                                  segment_end_ts = as.numeric(segment_end),
                                                   segment_id = paste0("[",
-                                                                         paste(sep= "#",
-                                                                               label,
-                                                                               lubridate::date(int_start(segment_interval)),
-                                                                               paste(str_pad(hour(int_start(segment_interval)),2, pad="0"),
-                                                                                     str_pad(minute(int_start(segment_interval)),2, pad="0"),
-                                                                                     str_pad(second(int_start(segment_interval)),2, pad="0"),sep =":"),
-                                                                               lubridate::date(int_end(segment_interval)),
-                                                                               paste(str_pad(hour(int_end(segment_interval)),2, pad="0"),
-                                                                                     str_pad(minute(int_end(segment_interval)),2, pad="0"),
-                                                                                     str_pad(second(int_end(segment_interval)),2, pad="0"),sep =":")
-                                                                         ),
-                                                                         "]")) %>%
-                                           select(segment_interval, label, segment_id)),
+                                                                      paste(sep= "#",
+                                                                            label,
+                                                                            lubridate::date(segment_start),
+                                                                            paste(str_pad(hour(segment_start),2, pad="0"),
+                                                                                  str_pad(minute(segment_start),2, pad="0"),
+                                                                                  str_pad(second(segment_start),2, pad="0"),sep =":"),
+                                                                            lubridate::date(segment_end),
+                                                                            paste(str_pad(hour(segment_end),2, pad="0"),
+                                                                                  str_pad(minute(segment_end),2, pad="0"),
+                                                                                  str_pad(second(segment_end),2, pad="0"),sep =":")
+                                                                      ),
+                                                                      "]")) %>%
+                                           select(segment_start_ts, segment_end_ts,  segment_id)),
              # loop thorugh every day segment and assigned it to the rows that fall within its start and end
-             data = map2(data, inferred_day_segments, ~ .x %>% mutate(row_date_time = lubridate::ymd_hms(local_date_time, tz = local_timezone),
-                                                                      assigned_segments = map_chr(row_date_time, ~find_segments_periodic(.x, inferred_day_segments))) %>% 
-                                                               select(-row_date_time))
+             data = map2(data, inferred_day_segments, ~ .x %>% mutate(row_date_time = as.numeric(lubridate::ymd_hms(local_date_time, tz = local_timezone)),
+                                                                      assigned_segments = map_chr(row_date_time, ~find_segments_periodic(.x, inferred_day_segments)),
+                                                                      row_date_time = NULL))
       ) %>%
       select(-existent_dates, -inferred_day_segments) %>%
       unnest(cols = data) %>% 
-      arrange(row_n) %>%
-      select(-row_n)
-      
+      arrange(timestamp)
+    
     
   } else if ( day_segments_type == "EVENT"){
     

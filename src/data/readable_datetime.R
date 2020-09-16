@@ -10,6 +10,7 @@ day_segments_type <- snakemake@params[["day_segments_type"]]
 sensor_output <- snakemake@output[[1]]
 timezone_periods <- snakemake@params[["timezone_periods"]]
 fixed_timezone <- snakemake@params[["fixed_timezone"]]
+include_past_periodic_segments <- snakemake@params[["include_past_periodic_segments"]]
 
 split_local_date_time <- function(data, day_segments){
   split_data <- data %>% 
@@ -43,6 +44,6 @@ if(!is.null(timezone_periods)){
           local_timezone = fixed_timezone,
            local_date_time = format(utc_date_time, tz = fixed_timezone,  "%Y-%m-%d %H:%M:%S"))
   output <- split_local_date_time(output, day_segments)
-  output <- assign_to_day_segment(output, day_segments, day_segments_type)
+  output <- assign_to_day_segment(output, day_segments, day_segments_type, include_past_periodic_segments)
   write_csv(output, sensor_output)
 }

@@ -67,7 +67,8 @@ rule readable_datetime:
     params:
         timezones = None,
         fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
-        day_segments_type = config["DAY_SEGMENTS"]["TYPE"]
+        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     wildcard_constraints:
         sensor = '.*(' + '|'.join([re.escape(x) for x in PHONE_SENSORS]) + ').*' # only process smartphone sensors, not fitbit
     output:
