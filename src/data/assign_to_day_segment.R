@@ -1,27 +1,26 @@
 library("tidyverse")
 library("lubridate")
 
-find_segments_frequency <- function(local_date, local_time_obj, segments){
-  return(paste(segments %>% 
-                 filter(local_time_obj >= segment_start & local_time_obj <= segment_end) %>% 
-                 mutate(segment_id =  paste0("[", 
-                                             label, "#",
-                                             local_date, "#",
-                                             paste(str_pad(hour(segment_start),2, pad="0"), str_pad(minute(segment_start),2, pad="0"), str_pad(second(segment_start),2, pad="0"),sep =":"), "#",
-                                             local_date, "#",
-                                             paste(str_pad(hour(segment_end),2, pad="0"), str_pad(minute(segment_end),2, pad="0"), str_pad(second(segment_end),2, pad="0"),sep =":"),
-                                             "]")) %>% 
-                 pull(segment_id), collapse = "|"))
+find_segments_frequency <- function(local_date, local_time, segments){
+  assigned_segments <- segments[segments$segment_start<= local_time & segments$segment_end >= local_time, ]
+
+  return(stringi::stri_c(stringi::stri_c("[", 
+                                assigned_segments[["label"]], "#",
+                                local_date, "#",
+                                assigned_segments[["segment_id_start_time"]], "#",
+                                local_date, "#",
+                                assigned_segments[["segment_id_end_time"]], 
+                                "]"), collapse = "|"))
 }
 
 find_segments_periodic <- function(timestamp, segments){
-  # We might need to optimise the frequency and event functions as well
   return(stringi::stri_c(segments[[1]][segments[[1]]$segment_start_ts<= timestamp & segments[[1]]$segment_end_ts >= timestamp, "segment_id"][["segment_id"]], collapse = "|"))
 }
 
+  # We might need to optimise the event function as well, filter, and pull are slow
 find_segments_event <- function(timestamp, segments){
   return(stringi::stri_c(segments %>% 
-                           filter(timestamp >= segment_start & timestamp <= segment_end) %>% 
+                           filter(segment_start <= timestamp  & segment_end >= timestamp) %>% 
                            pull(segment_id), collapse = "|"))
 }
 
@@ -29,9 +28,13 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, 
   
   if(day_segments_type == "FREQUENCY"){ #FREQUENCY
     
-    day_segments <- day_segments %>% mutate(segment_start = lubridate::parse_date_time(start_time, orders = c("HMS", "HM")),
-                                            segment_end = segment_start + minutes(length))
-    sensor_data <- sensor_data %>% mutate(local_time_obj = lubridate::parse_date_time(local_time, orders = c("HMS", "HM")),
+    day_segments <- day_segments %>% mutate(start_time = lubridate::hm(start_time),
+                                            end_time = start_time + minutes(length) - seconds(1),
+                                            segment_id_start_time = paste(str_pad(hour(start_time),2, pad="0"), str_pad(minute(start_time),2, pad="0"), str_pad(second(start_time),2, pad="0"),sep =":"),
+                                            segment_id_end_time = paste(str_pad(hour(ymd("1970-01-01") + end_time),2, pad="0"), str_pad(minute(ymd("1970-01-01") + end_time),2, pad="0"), str_pad(second(ymd("1970-01-01") + end_time),2, pad="0"),sep =":"), # add ymd("1970-01-01") to get a real time instead of duration
+                                            segment_start = as.numeric(start_time),
+                                            segment_end = as.numeric(end_time))
+    sensor_data <- sensor_data %>% mutate(local_time_obj = as.numeric(lubridate::hms(local_time)),
                                           assigned_segments = map2_chr(local_date, local_time_obj, ~find_segments_frequency(.x, .y, day_segments))) %>% select(-local_time_obj)
     
   } else if (day_segments_type == "PERIODIC"){ #PERIODIC
@@ -97,21 +100,21 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, 
                                          ~ crossing(day_segments, .x) %>%
                                            pivot_longer(cols = c(every_day,wday, mday, qday, yday), names_to = "day_type", values_to = "day_value") %>%
                                            filter(repeats_on == day_type & repeats_value == day_value) %>%
-                                           mutate(segment_start = (lubridate::parse_date_time(paste(local_date, start_time), orders = c("Ymd HMS", "Ymd HM"), tz = local_timezone)),
-                                                  segment_end = segment_start + lubridate::period(length),
-                                                  segment_start_ts = as.numeric(segment_start),
-                                                  segment_end_ts = as.numeric(segment_end),
+                                           mutate(segment_id_start = lubridate::parse_date_time(paste(local_date, start_time), orders = c("Ymd HMS", "Ymd HM")), # The segment ids (label#start#end) are computed in UTC to avoid having different labels for instances of a segment that happen in different timezones
+                                                  segment_id_end = segment_id_start + lubridate::duration(length),
+                                                  segment_start_ts = as.numeric(lubridate::parse_date_time(paste(local_date, start_time), orders = c("Ymd HMS", "Ymd HM"), tz = local_timezone)), # The actual segments are computed using timestamps taking into account the timezone
+                                                  segment_end_ts = segment_start_ts + as.numeric(lubridate::duration(length)),
                                                   segment_id = paste0("[",
                                                                       paste(sep= "#",
                                                                             label,
-                                                                            lubridate::date(segment_start),
-                                                                            paste(str_pad(hour(segment_start),2, pad="0"),
-                                                                                  str_pad(minute(segment_start),2, pad="0"),
-                                                                                  str_pad(second(segment_start),2, pad="0"),sep =":"),
-                                                                            lubridate::date(segment_end),
-                                                                            paste(str_pad(hour(segment_end),2, pad="0"),
-                                                                                  str_pad(minute(segment_end),2, pad="0"),
-                                                                                  str_pad(second(segment_end),2, pad="0"),sep =":")
+                                                                            lubridate::date(segment_id_start),
+                                                                            paste(str_pad(hour(segment_id_start),2, pad="0"),
+                                                                                  str_pad(minute(segment_id_start),2, pad="0"),
+                                                                                  str_pad(second(segment_id_start),2, pad="0"),sep =":"),
+                                                                            lubridate::date(segment_id_end),
+                                                                            paste(str_pad(hour(segment_id_end),2, pad="0"),
+                                                                                  str_pad(minute(segment_id_end),2, pad="0"),
+                                                                                  str_pad(second(segment_id_end),2, pad="0"),sep =":")
                                                                       ),
                                                                       "]")) %>%
                                            select(segment_start_ts, segment_end_ts,  segment_id)),
