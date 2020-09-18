@@ -1,5 +1,5 @@
 directory: ./
-configfile: ./tests/settings/testing_config.yaml
+configfile: ./tests/settings/frequency/testing_config.yaml
 snakefile: ./tests/Snakefile
 cores: 1
 forcerun: [join_features_from_providers]

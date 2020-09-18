@@ -1,0 +1,102 @@
+# Participants to include in the analysis
+# You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
+PIDS: [test01, test02, test03, test04]
+
+
+# Global var with common day segments
+DAY_SEGMENTS: &day_segments
+  TYPE: PERIODIC # FREQUENCY, PERIODIC, EVENT
+  FILE: "data/external/daysegments_periodic.csv"
+
+PHONE_VALID_SENSED_BINS:
+  DB_TABLES: [messages, calls, bluetooth, light, wifi, applications_foreground]
+
+# Communication SMS features config, TYPES and FEATURES keys need to match
+MESSAGES:
+  DB_TABLE: messages
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      MESSAGES_TYPES : [received, sent]
+      FEATURES: 
+        received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+        sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+      SRC_LANGUAGE: "r"
+      SRC_FOLDER: "rapids" # inside src/features/messages
+
+# Communication call features config, TYPES and FEATURES keys need to match
+CALLS:
+  DB_TABLE: calls
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      CALL_TYPES: [missed, incoming, outgoing]
+      FEATURES:
+        missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
+        incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+        outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+      SRC_LANGUAGE: "r"
+      SRC_FOLDER: "rapids" # inside src/features/calls
+
+BLUETOOTH:
+  DB_TABLE: bluetooth
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_FOLDER: "rapids" # inside src/features/bluetooth
+      SRC_LANGUAGE: "r"
+
+LIGHT:
+  DB_TABLE: light
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
+      SRC_FOLDER: "rapids" # inside src/features/light
+      SRC_LANGUAGE: "python"
+
+WIFI:
+  DB_TABLE: 
+    VISIBLE_ACCESS_POINTS: "wifi" # if you only have a CONNECTED_ACCESS_POINTS table, set this value to ""
+    CONNECTED_ACCESS_POINTS: "sensor_wifi" # if you only have a VISIBLE_ACCESS_POINTS table, set this value to ""
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_FOLDER: "rapids" # inside src/features/bluetooth
+      SRC_LANGUAGE: "r"
+
+APPLICATIONS_FOREGROUND:
+  DB_TABLE: applications_foreground
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      SINGLE_CATEGORIES: ["all", "email"]
+      MULTIPLE_CATEGORIES:
+        social: ["socialnetworks", "socialmediatools"]
+        entertainment: ["entertainment", "gamingstrategy"]
+      SINGLE_APPS: ["top1global", "com.facebook.moments"] # There's no entropy for single apps
+      EXCLUDED_CATEGORIES: ["systemapp", "tvvideoapps"]
+      EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
+      FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+      SRC_FOLDER: "rapids" # inside src/features/applications_foreground
+      SRC_LANGUAGE: "python"
+
+CONVERSATION:
+  DB_TABLE: 
+    ANDROID: plugin_studentlife_audio_android
+    IOS: plugin_studentlife_audio
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
+        "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
+        "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
+        "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
+        "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
+        "unknownexpectedfraction","countconversation"]
+      RECORDING_MINUTES: 1
+      PAUSED_MINUTES : 3
+      SRC_FOLDER: "rapids" # inside src/features/conversation
+      SRC_LANGUAGE: "python"

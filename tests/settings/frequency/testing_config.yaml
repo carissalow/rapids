@@ -4,18 +4,18 @@ PIDS: [test01, test02, test03, test04]
 
 # Global var with common day segments
 DAY_SEGMENTS: &day_segments
-  TYPE: PERIODIC # FREQUENCY, PERIODIC, EVENT
-  FILE: "data/external/daysegments_periodic.csv"
+  TYPE: FREQUENCY # FREQUENCY, PERIODIC, EVENT
+  FILE: "data/external/daysegments_frequency.csv"
 
 PHONE_VALID_SENSED_BINS:
-  DB_TABLES: [messages, calls, bluetooth, light, wifi, applications_foreground]
+  DB_TABLES: [bluetooth]
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 MESSAGES:
   DB_TABLE: messages
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       MESSAGES_TYPES : [received, sent]
       FEATURES: 
         received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
@@ -28,7 +28,7 @@ CALLS:
   DB_TABLE: calls
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       CALL_TYPES: [missed, incoming, outgoing]
       FEATURES:
         missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
@@ -50,7 +50,7 @@ LIGHT:
   DB_TABLE: light
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
       SRC_FOLDER: "rapids" # inside src/features/light
       SRC_LANGUAGE: "python"
@@ -61,7 +61,7 @@ WIFI:
     CONNECTED_ACCESS_POINTS: "sensor_wifi" # if you only have a VISIBLE_ACCESS_POINTS table, set this value to ""
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/bluetooth
       SRC_LANGUAGE: "r"
@@ -70,7 +70,7 @@ APPLICATIONS_FOREGROUND:
   DB_TABLE: applications_foreground
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       SINGLE_CATEGORIES: ["all", "email"]
       MULTIPLE_CATEGORIES:
         social: ["socialnetworks", "socialmediatools"]
@@ -88,7 +88,7 @@ CONVERSATION:
     IOS: plugin_studentlife_audio
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
         "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
         "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",

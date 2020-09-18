@@ -4,6 +4,7 @@ import hashlib
 import pandas as pd
 import utils
 import yaml
+import sys
 import os
 
 class TestSensorFeatures(unittest.TestCase):
@@ -15,13 +16,14 @@ class TestSensorFeatures(unittest.TestCase):
     def setUpClass(cls):
         # Runs once to Setup env
         global configs 
-        with open(r'tests/settings/testing_config.yaml') as file:
+        with open(r'tests/settings/periodic/testing_config.yaml') as file:
             configs = yaml.full_load(file)
 
 
     def test_sensors_files_exist(self):
         # Loop through the file_list dictionary and check if the files exist. 
     
+        #print("Testing existance of files")
         file_lists = utils.generate_sensor_file_lists(configs)
         for each in file_lists:
             #for out_file, _ in file_lists[each]:
@@ -30,7 +32,7 @@ class TestSensorFeatures(unittest.TestCase):
 
     def test_sensors_features_calculations(self):
 
-                       
+        # print("Testing calculations..")               
         sensor_file_list = utils.generate_sensor_file_lists(configs)        
         for each in sensor_file_list:
             for act_result, exp_result in sensor_file_list:
@@ -49,3 +51,4 @@ class TestSensorFeatures(unittest.TestCase):
 if __name__ == '__main__':
 
     unittest.main()
+   

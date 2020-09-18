@@ -49,8 +49,8 @@ def generate_file_list(configs, sensor):
     # i.e. The sensor passed into the function. 
 
     # Initialize string of file path for both expected and actual metric values
-    act_str = "data/processed/{pid}/{sensor}_{sensor_type}{day_segment}.csv"
-    exp_str = "tests/data/processed/{pid}/{sensor}_{sensor_type}{day_segment}.csv"
+    act_str = "data/processed/features/{pid}/{sensor}_{sensor_type}{day_segment}.csv"
+    exp_str = "tests/data/processed/features/period/{pid}/{sensor}_{sensor_type}{day_segment}.csv"
     
     sensor_cap = sensor.upper()
     if 'DAY_SEGMENTS' and 'FEATURES' in configs[sensor_cap]:
@@ -79,8 +79,10 @@ def generate_sensor_file_lists(configs):
     # actual files for each sensor listed in the config file. Added for Travis.
 
     # Initialize string of file path for both expected and actual metric values
-    act_str = "data/processed/features/{pid}/{sensor_key}.csv"
-    exp_str = "tests/data/processed/features/{pid}/{sensor_key}.csv"
+    segment = configs['DAY_SEGMENTS']['TYPE'].lower()
+    print(segment)
+    act_str = "data/processed/features/"+segment+"/{pid}/{sensor_key}.csv"
+    exp_str = "tests/data/processed/features/"+segment+"/{pid}/{sensor_key}.csv"
 
     # List of available sensors that can be tested by the testing suite
     TESTABLE_SENSORS = ['MESSAGES', 'CALLS', 'SCREEN', 'BATTERY', 'BLUETOOTH', 'WIFI', 'LIGHT', 'APPLICATIONS_FOREGROUND', 'ACTIVITY_RECOGNITION', 'CONVERSATION']

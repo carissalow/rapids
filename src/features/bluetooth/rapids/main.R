@@ -18,6 +18,7 @@ compute_bluetooth_feature <- function(data, feature, day_segment){
       filter(N == max(N)) %>% 
       head(1) %>% # if there are multiple device with the same amount of scans pick the first one only
       pull(bt_address)
+    mostuniquedevice
     return(data %>% 
              filter(bt_address == mostuniquedevice) %>%
              group_by(local_segment) %>% 
