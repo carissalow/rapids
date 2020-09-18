@@ -50,7 +50,7 @@ sed -e  's/tests\/settings\/periodic\/testing_config\.yaml/tests\/settings\/freq
 cp test_tmp tests/scripts/test_sensor_features.py
 
 echo Running tests on frequency data produced...
-./env/bin/python -m unittest discover tests/scripts/ -v
+python -m unittest discover tests/scripts/ -v
 
 # Uncomment to return snakemake back to the original version when testing locally
 # echo Cleaning up...
