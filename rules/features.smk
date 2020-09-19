@@ -62,13 +62,38 @@ rule battery_deltas:
     script:
         "../src/features/battery_deltas.R"
 
-rule screen_deltas:
+rule screen_episodes:
     input:
         screen = expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["SCREEN"]["DB_TABLE"])
     output:
-        "data/processed/{pid}/screen_deltas.csv"
+        "data/interim/{pid}/screen_episodes.csv"
     script:
-        "../src/features/screen_deltas.R"
+        "../src/features/screen/episodes/screen_episodes.R"
+
+rule resample_episodes:
+    input:
+        "data/interim/{pid}/{sensor}_episodes.csv"
+    params:
+        sensor = "{sensor}"
+    output:
+        "data/interim/{pid}/{sensor}_episodes_resampled.csv"
+    script:
+        "../src/features/utils/resample_episodes.py"
+
+rule resample_screen_episodes_with_datetime:
+    input:
+        sensor_input = "data/interim/{pid}/screen_episodes_resampled.csv",
+        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
+    params:
+        timezones = None,
+        fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
+        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+    output:
+        "data/interim/{pid}/screen_episodes_resampled_with_datetime.csv"
+    script:
+        "../src/data/readable_datetime.R"
+
 
 rule google_activity_recognition_deltas:
     input:
@@ -156,22 +181,29 @@ rule battery_features:
     script:
         "../src/features/battery_features.py"
 
-rule screen_features:
+rule screen_r_features:
     input:
-        screen_deltas = "data/processed/{pid}/screen_deltas.csv",
-        phone_sensed_bins = "data/interim/{pid}/phone_sensed_bins.csv"
+        screen_episodes = "data/interim/{pid}/screen_episodes_resampled_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
-        day_segment = "{day_segment}",
-        reference_hour_first_use = config["SCREEN"]["REFERENCE_HOUR_FIRST_USE"],
-        features_deltas = config["SCREEN"]["FEATURES_DELTAS"],
-        episode_types = config["SCREEN"]["EPISODE_TYPES"],
-        ignore_episodes_shorter_than = config["SCREEN"]["IGNORE_EPISODES_SHORTER_THAN"],
-        ignore_episodes_longer_than = config["SCREEN"]["IGNORE_EPISODES_LONGER_THAN"],
-        bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"]
+        provider = lambda wildcards: config["SCREEN"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
     output:
-        "data/processed/{pid}/screen_{day_segment}.csv"
+        "data/interim/{pid}/screen_features/screen_r_{provider_key}.csv"
     script:
-        "../src/features/screen_features.py"
+        "../src/features/screen/screen_entry.R"
+
+rule screen_python_features:
+    input:
+        screen_episodes = "data/interim/{pid}/screen_episodes_resampled_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["SCREEN"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
+    output:
+        "data/interim/{pid}/screen_features/screen_python_{provider_key}.csv"
+    script:
+        "../src/features/screen/screen_entry.py"
 
 rule light_r_features:
     input:

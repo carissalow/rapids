@@ -45,12 +45,8 @@ get_screen_episodes <- function(screen){
     summarise(episode = "unlock",
               screen_sequence = toString(screen_status),
               time_diff = (last(timestamp) - first(timestamp)) / (1000 * 60),
-              local_start_date_time = first(local_date_time),
-              local_end_date_time = last(local_date_time),
-              local_start_date = first(local_date),
-              local_end_date = last(local_date),
-              local_start_day_segment = first(local_day_segment),
-              local_end_day_segment = last(local_day_segment)) %>% 
+              start_timestamp = first(timestamp),
+              end_timestamp = last(timestamp)) %>% 
     filter(str_detect(screen_sequence,
                       paste0("^(",
                             paste(c(3), collapse = "|"), # Filter sequences that start with 3 (UNLOCK) AND
@@ -61,13 +57,10 @@ get_screen_episodes <- function(screen){
 
 if(nrow(screen) < 2){
   episodes <- data.frame(episode = character(), 
+                                screen_sequence = character(),
                                 time_diff = numeric(),
-                                local_start_date_time = character(),
-                                local_end_date_time = character(),
-                                local_start_date = character(),
-                                local_end_date = character(),
-                                local_start_day_segment = character(),
-                                local_end_day_segment = character())
+                                start_timestamp = character(),
+                                end_timestamp = character())
 } else {
   episodes <- get_screen_episodes(screen)
 }

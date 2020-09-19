@@ -127,14 +127,17 @@ BATTERY:
   FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
 
 SCREEN:
-  COMPUTE: False
   DB_TABLE: screen
-  DAY_SEGMENTS: *day_segments
-  REFERENCE_HOUR_FIRST_USE: 0
-  IGNORE_EPISODES_SHORTER_THAN: 0 # in minutes, set to 0 to disable
-  IGNORE_EPISODES_LONGER_THAN: 0 # in minutes, set to 0 to disable
-  FEATURES_DELTAS: ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]
-  EPISODE_TYPES: ["unlock"]
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      REFERENCE_HOUR_FIRST_USE: 0
+      IGNORE_EPISODES_SHORTER_THAN: 0 # in minutes, set to 0 to disable
+      IGNORE_EPISODES_LONGER_THAN: 0 # in minutes, set to 0 to disable
+      FEATURES: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"] # "episodepersensedminutes" needs to be added later
+      EPISODE_TYPES: ["unlock"]
+      SRC_FOLDER: "rapids" # inside src/features/screen
+      SRC_LANGUAGE: "python"
 
 LIGHT:
   DB_TABLE: light
