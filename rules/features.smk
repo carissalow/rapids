@@ -54,13 +54,13 @@ rule calls_r_features:
     script:
         "../src/features/calls/calls_entry.R"
 
-rule battery_deltas:
+rule battery_episodes:
     input:
-        expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["BATTERY"]["DB_TABLE"])
+        expand("data/raw/{{pid}}/{sensor}_raw.csv", sensor=config["BATTERY"]["DB_TABLE"])
     output:
-        "data/processed/{pid}/battery_deltas.csv"
+        "data/interim/{pid}/battery_episodes.csv"
     script:
-        "../src/features/battery_deltas.R"
+        "../src/features/battery/episodes/battery_episodes.R"
 
 rule screen_episodes:
     input:
@@ -172,7 +172,7 @@ rule activity_features:
 
 rule battery_features:
     input:
-        "data/processed/{pid}/battery_deltas.csv"
+        "data/interim/{pid}/battery_episodes.csv"
     params:
         day_segment = "{day_segment}",
         features = config["BATTERY"]["FEATURES"]
