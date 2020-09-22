@@ -99,17 +99,17 @@ rule google_activity_recognition_deltas:
     input:
         expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"])
     output:
-        expand("data/processed/{{pid}}/{sensor}_deltas.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"])
+        expand("data/interim/{{pid}}/{sensor}_episodes.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"])
     script:
-        "../src/features/activity_recognition_deltas.R"
+        "../src/features/ar/episodes/activity_recognition_episodes.R"
 
 rule ios_activity_recognition_deltas:
     input:
         expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"])
     output:
-        expand("data/processed/{{pid}}/{sensor}_deltas.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"])
+        expand("data/interim/{{pid}}/{sensor}_episodes.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"])
     script:
-        "../src/features/activity_recognition_deltas.R"
+        "../src/features/ar/episodes/activity_recognition_episodes.R"
 
 rule locations_python_features:
     input:
