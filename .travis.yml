@@ -38,7 +38,7 @@ jobs:
       - "$HOME/.local/share/renv"
       - "$TRAVIS_BUILD_DIR/renv/library"
     script:
-    - bash tests/scripts/run_tests.sh
+    - bash tests/scripts/run_tests.sh all test
   - name: Python 3.7 on macOS
     os: osx
     osx_image: xcode11.3

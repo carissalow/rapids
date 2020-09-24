@@ -9,8 +9,8 @@ clean_old_data() {
     rm -rf data/processed/*
     rm -rf data/interim/*
 
-    # echo Backing up preprocessing...
-    # cp rules/preprocessing.smk bak
+    echo Backing up preprocessing...
+    cp rules/preprocessing.smk bak
 } 
 
 run_periodic_pipeline() {
@@ -128,7 +128,7 @@ then
         else
             display_usage
         fi
-        
+        mv bak rules/preprocessing.smk
     elif [ $1 == 'all' ]
     then
         run_periodic_pipeline
@@ -164,13 +164,3 @@ then
 else
     display_usage
 fi
-
-mv bak rules/preprocessing.smk
-# Uncomment to return snakemake back to the original version when testing locally
-# echo Cleaning up...
-# mv bak rules/preprocessing.smk
-# mv test_bak tests/scripts/test_sensor_features.py
-# rm test_bak 
-# rm test_tmp
-# rm bak
-# rm tmp
