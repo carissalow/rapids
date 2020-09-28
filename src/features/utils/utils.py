@@ -5,9 +5,13 @@ def filter_data_by_segment(data, day_segment):
     timestamps_regex = "[0-9]{13}"
     segment_regex = "\[({}#{},{};{},{})\]".format(day_segment, datetime_regex, datetime_regex, timestamps_regex, timestamps_regex)
     data["local_segment"] = data["assigned_segments"].str.extract(segment_regex, expand=True)
-    data[["local_segment","timestamps_segment"]] = data["local_segment"].str.split(pat =";",n=1, expand=True)
     data = data.drop(columns=["assigned_segments"])
-    return(data.dropna(subset = ["local_segment"]))
+    data = data.dropna(subset = ["local_segment"])
+    if(data.shape[0] == 0): # there are no rows belonging to day_segment
+        data["timestamps_segment"] = None
+    else:
+        data[["local_segment","timestamps_segment"]] = data["local_segment"].str.split(pat =";",n=1, expand=True)
+    return(data)
 
 def chunk_episodes(sensor_episodes):
     import pytz, copy
