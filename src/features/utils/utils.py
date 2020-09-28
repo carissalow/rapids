@@ -1,10 +1,12 @@
 rapids_log_tag =  "RAPIDS:"
 
 def filter_data_by_segment(data, day_segment):
-    date_regex = "[0-9]{4}[\-|\/][0-9]{2}[\-|\/][0-9]{2}"
-    hour_regex = "[0-9]{2}:[0-9]{2}:[0-9]{2}"
-    segment_regex = "\[({}#{}#{}#{}#{})\]".format(day_segment, date_regex, hour_regex, date_regex, hour_regex)
+    datetime_regex = "[0-9]{4}[\-|\/][0-9]{2}[\-|\/][0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}"
+    timestamps_regex = "[0-9]{13}"
+    segment_regex = "\[({}#{},{};{},{})\]".format(day_segment, datetime_regex, datetime_regex, timestamps_regex, timestamps_regex)
     data["local_segment"] = data["assigned_segments"].str.extract(segment_regex, expand=True)
+    data[["local_segment","timestamps_segment"]] = data["local_segment"].str.split(pat =";",n=1, expand=True)
+    data = data.drop(columns=["assigned_segments"])
     return(data.dropna(subset = ["local_segment"]))
 
 def chunk_episodes(sensor_episodes):
@@ -80,9 +82,9 @@ def fetch_provider_features(provider, provider_key, config_key, sensor_data_file
             for feature in provider["FEATURES"]:
                     sensor_features[feature] = None
     segment_colums = pd.DataFrame()
-    split_segemnt_columns = sensor_features["local_segment"].str.split(pat="#", expand=True)
-    new_segment_columns = split_segemnt_columns if split_segemnt_columns.shape[1] == 5 else pd.DataFrame(columns=["local_segment_label", "local_start_date", "local_start_time", "local_end_date", "local_end_time"])
-    segment_colums[["local_segment_label", "local_start_date", "local_start_time", "local_end_date", "local_end_time"]] = new_segment_columns
+    split_segemnt_columns = sensor_features["local_segment"].str.split(pat="(.*)#(.*),(.*)", expand=True)
+    new_segment_columns = split_segemnt_columns.iloc[:,1:4] if split_segemnt_columns.shape[1] == 5 else pd.DataFrame(columns=["local_segment_label", "local_segment_start_datetime","local_segment_end_datetime"])
+    segment_colums[["local_segment_label", "local_segment_start_datetime", "local_segment_end_datetime"]] = new_segment_columns
     for i in range(segment_colums.shape[1]):
             sensor_features.insert(1 + i, segment_colums.columns[i], segment_colums[segment_colums.columns[i]])
 

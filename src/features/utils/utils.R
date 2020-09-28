@@ -3,14 +3,44 @@ library("stringr")
 rapids_log_tag <- "RAPIDS:"
 
 filter_data_by_segment <- function(data, day_segment){
-    # Filter the rows that belong to day_segment, and put the segment full name in a new column for grouping
-    date_regex = "[0-9]{4}[\\-|\\/][0-9]{2}[\\-|\\/][0-9]{2}"
-    hour_regex = "[0-9]{2}:[0-9]{2}:[0-9]{2}"
-    data <- data %>% 
-        filter(grepl(paste0("\\[", day_segment, "#"), assigned_segments)) %>% 
-        mutate(local_segment = str_extract(assigned_segments, paste0("\\[", day_segment, "#", date_regex, "#", hour_regex, "#", date_regex, "#", hour_regex, "\\]")),
-                local_segment = str_sub(local_segment, 2, -2)) # get rid of first and last character([])
-    return(data)
+  # Filter the rows that belong to day_segment, and put the segment full name in a new column for grouping
+  datetime_regex = "[0-9]{4}[\\-|\\/][0-9]{2}[\\-|\\/][0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}"
+  timestamp_regex = "[0-9]{13}"
+  data <- data %>% 
+    filter(grepl(paste0("\\[", day_segment, "#"), assigned_segments)) %>% 
+    mutate(local_segment = str_extract(assigned_segments, paste0("\\[", day_segment, "#", datetime_regex, ",", datetime_regex, ";", timestamp_regex, ",", timestamp_regex, "\\]"))) %>% 
+    extract(local_segment, into = c("local_segment", "timestamps_segment"), paste0("\\[(", day_segment, "#", datetime_regex, ",", datetime_regex, ");(", timestamp_regex, ",", timestamp_regex, ")\\]")) %>% 
+    select(-assigned_segments)
+  return(data)
+}
+
+chunk_episodes <- function(sensor_episodes){
+  columns_to_drop <- c("timestamp", "duration", "utc_date_time", "local_date_time", "local_date", "local_time", "local_hour", "local_minute", "segment_start", "segment_end", 'timestamp_plus_duration' )
+  
+  chunked_episodes <- sensor_episodes %>% separate(col = local_segment, 
+                                                   into = c("local_segment_label", "local_start_date", "local_start_time", "local_end_date", "local_end_time"),
+                                                   sep = "#", 
+                                                   remove = FALSE) %>% 
+    unite(col = "segment_start", "local_start_date", "local_start_time", sep = " ",remove = TRUE) %>% 
+    unite(col = "segment_end", "local_end_date", "local_end_time", sep = " ",remove = TRUE) %>% 
+    mutate(local_segment_label = NULL,
+           timestamp_plus_duration = timestamp + (duration * 1000 * 60)) %>% 
+    group_by(local_timezone) %>% 
+    nest() %>% 
+    mutate(
+      data = map(data, ~.x %>% mutate(segment_start = as.numeric(lubridate::ymd_hms(segment_start, tz = local_timezone)) * 1000,
+                             segment_end = as.numeric(lubridate::ymd_hms(segment_end, tz = local_timezone)) * 1000)),
+      # We group by episode_id and those variables from the original episodes we want to keep once we summarise
+      data = map(data, ~.x %>% group_by_at(vars(c("episode_id", setdiff(colnames(.x), columns_to_drop)  ))) %>%
+                   summarize(chunked_start = max(first(timestamp), first(segment_start)), 
+                             chunked_end = min(last(timestamp_plus_duration), last(segment_end)),
+                             duration = (chunked_end - chunked_start) / (1000 * 60 ),
+                             chunked_start = format(lubridate::as_datetime(chunked_start / 1000, tz = local_timezone),  "%Y-%m-%d %H:%M:%S"), 
+                             chunked_end = format(lubridate::as_datetime(chunked_end  / 1000, tz = local_timezone),  "%Y-%m-%d %H:%M:%S")))
+        ) %>%
+    unnest(data)
+    
+  return(chunked_episodes)
 }
 
 fetch_provider_features <- function(provider, provider_key, config_key, sensor_data_file, day_segments_file){
@@ -39,14 +69,14 @@ fetch_provider_features <- function(provider, provider_key, config_key, sensor_d
 
             sensor_features <- merge(sensor_features, features, all = TRUE)
         }
-    } else {
+    } else { # This is redundant, if COMPUTE is FALSE this script will be never executed
     for(feature in provider[["FEATURES"]])
         sensor_features[,feature] <- NA
     }
 
-    sensor_features <- sensor_features %>% separate(col = local_segment, 
-                                    into = c("local_segment_label", "local_start_date", "local_start_time", "local_end_date", "local_end_time"),
-                                    sep = "#", 
-                                    remove = FALSE)
+    sensor_features <- sensor_features %>% extract(col = local_segment, 
+                                                into = c("local_segment_label", "local_segment_start_datetime", "local_segment_end_datetime"),
+                                                "(.*)#(.*),(.*)", 
+                                                remove = FALSE)
     return(sensor_features)
 }
