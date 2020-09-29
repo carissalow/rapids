@@ -73,16 +73,14 @@ rule screen_episodes:
 rule resample_episodes:
     input:
         "data/interim/{pid}/{sensor}_episodes.csv"
-    params:
-        sensor = "{sensor}"
     output:
         "data/interim/{pid}/{sensor}_episodes_resampled.csv"
     script:
         "../src/features/utils/resample_episodes.R"
 
-rule resample_screen_episodes_with_datetime:
+rule resample_episodes_with_datetime:
     input:
-        sensor_input = "data/interim/{pid}/screen_episodes_resampled.csv",
+        sensor_input = "data/interim/{pid}/{sensor}_episodes_resampled.csv",
         day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
         timezones = None,
@@ -90,7 +88,7 @@ rule resample_screen_episodes_with_datetime:
         day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
-        "data/interim/{pid}/screen_episodes_resampled_with_datetime.csv"
+        "data/interim/{pid}/{sensor}_episodes_resampled_with_datetime.csv"
     script:
         "../src/data/readable_datetime.R"
 
@@ -170,16 +168,29 @@ rule activity_features:
     script:
         "../src/features/activity_recognition.py"
 
-rule battery_features:
+rule battery_r_features:
     input:
-        "data/interim/{pid}/battery_episodes.csv"
+        battery_episodes = "data/interim/{pid}/battery_episodes_resampled_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
-        day_segment = "{day_segment}",
-        features = config["BATTERY"]["FEATURES"]
+        provider = lambda wildcards: config["BATTERY"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
     output:
-        "data/processed/{pid}/battery_{day_segment}.csv"
+        "data/interim/{pid}/battery_features/battery_r_{provider_key}.csv"
     script:
-        "../src/features/battery_features.py"
+        "../src/features/battery/battery_entry.R"
+
+rule battery_python_features:
+    input:
+        battery_episodes = "data/interim/{pid}/battery_episodes_resampled_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["BATTERY"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}"
+    output:
+        "data/interim/{pid}/battery_features/battery_python_{provider_key}.csv"
+    script:
+        "../src/features/battery/battery_entry.py"
 
 rule screen_r_features:
     input:

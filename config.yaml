@@ -121,10 +121,13 @@ ACTIVITY_RECOGNITION:
   FEATURES: ["count","mostcommonactivity","countuniqueactivities","activitychangecount","sumstationary","summobile","sumvehicle"]
 
 BATTERY:
-  COMPUTE: False
   DB_TABLE: battery
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
+      SRC_FOLDER: "rapids" # inside src/features/battery
+      SRC_LANGUAGE: "python"
 
 SCREEN:
   DB_TABLE: screen

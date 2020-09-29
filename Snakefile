@@ -65,12 +65,15 @@ if config["ACTIVITY_RECOGNITION"]["COMPUTE"]:
         files_to_compute.extend(expand("data/processed/{pid}/{sensor}_deltas.csv", pid=pids, sensor=table))
     files_to_compute.extend(expand("data/processed/{pid}/activity_recognition_{day_segment}.csv",pid=config["PIDS"], day_segment = config["ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]))
 
-if config["BATTERY"]["COMPUTE"]:
-    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["BATTERY"]["DB_TABLE"]))
-    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["BATTERY"]["DB_TABLE"]))
-    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["BATTERY"]["DB_TABLE"]))
-    files_to_compute.extend(expand("data/processed/{pid}/battery_deltas.csv", pid=config["PIDS"]))
-    files_to_compute.extend(expand("data/processed/{pid}/battery_{day_segment}.csv", pid = config["PIDS"], day_segment = config["BATTERY"]["DAY_SEGMENTS"]))
+for provider in config["BATTERY"]["PROVIDERS"].keys():
+    if config["BATTERY"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["BATTERY"]["DB_TABLE"]))
+        files_to_compute.extend(expand("data/interim/{pid}/battery_episodes.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/battery_episodes_resampled.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/battery_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["SCREEN"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="BATTERY".lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="BATTERY".lower()))
+
 
 for provider in config["SCREEN"]["PROVIDERS"].keys():
     if config["SCREEN"]["PROVIDERS"][provider]["COMPUTE"]:

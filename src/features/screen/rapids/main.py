@@ -47,6 +47,7 @@ def rapids_features(screen_data, day_segment, provider, filter_data_by_segment, 
     if not screen_data.empty:
 
         screen_data = filter_data_by_segment(screen_data, day_segment)
+        screen_data = kwargs["deduplicate_episodes"](screen_data)
         if not screen_data.empty:
             # chunk_episodes
             screen_data = kwargs["chunk_episodes"](screen_data)
