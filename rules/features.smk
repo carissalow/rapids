@@ -78,7 +78,7 @@ rule resample_episodes:
     output:
         "data/interim/{pid}/{sensor}_episodes_resampled.csv"
     script:
-        "../src/features/utils/resample_episodes.py"
+        "../src/features/utils/resample_episodes.R"
 
 rule resample_screen_episodes_with_datetime:
     input:
