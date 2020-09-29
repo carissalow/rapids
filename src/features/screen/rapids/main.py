@@ -5,17 +5,17 @@ def getEpisodeDurationFeatures(screen_data, day_segment, episode, features, refe
     screen_data_episode = screen_data[screen_data["episode"] == episode]
     duration_helper = pd.DataFrame()
     if "countepisode" in features:
-        duration_helper = pd.concat([duration_helper, screen_data_episode.groupby(["local_segment"])[["time_diff"]].count().rename(columns = {"time_diff": "screen_rapids_countepisode" + episode})], axis = 1)
+        duration_helper = pd.concat([duration_helper, screen_data_episode.groupby(["local_segment"])[["duration"]].count().rename(columns = {"duration": "screen_rapids_countepisode" + episode})], axis = 1)
     if "sumduration" in features:
-        duration_helper = pd.concat([duration_helper, screen_data_episode.groupby(["local_segment"])[["time_diff"]].sum().rename(columns = {"time_diff": "screen_rapids_sumduration" + episode})], axis = 1)
+        duration_helper = pd.concat([duration_helper, screen_data_episode.groupby(["local_segment"])[["duration"]].sum().rename(columns = {"duration": "screen_rapids_sumduration" + episode})], axis = 1)
     if "maxduration" in features:
-        duration_helper = pd.concat([duration_helper, screen_data_episode.groupby(["local_segment"])[["time_diff"]].max().rename(columns = {"time_diff": "screen_rapids_maxduration" + episode})], axis = 1)        
+        duration_helper = pd.concat([duration_helper, screen_data_episode.groupby(["local_segment"])[["duration"]].max().rename(columns = {"duration": "screen_rapids_maxduration" + episode})], axis = 1)        
     if "minduration" in features:
-        duration_helper = pd.concat([duration_helper, screen_data_episode.groupby(["local_segment"])[["time_diff"]].min().rename(columns = {"time_diff": "screen_rapids_minduration" + episode})], axis = 1)
+        duration_helper = pd.concat([duration_helper, screen_data_episode.groupby(["local_segment"])[["duration"]].min().rename(columns = {"duration": "screen_rapids_minduration" + episode})], axis = 1)
     if "avgduration" in features:
-        duration_helper = pd.concat([duration_helper, screen_data_episode.groupby(["local_segment"])[["time_diff"]].mean().rename(columns = {"time_diff":"screen_rapids_avgduration" + episode})], axis = 1)
+        duration_helper = pd.concat([duration_helper, screen_data_episode.groupby(["local_segment"])[["duration"]].mean().rename(columns = {"duration":"screen_rapids_avgduration" + episode})], axis = 1)
     if "stdduration" in features:
-        duration_helper = pd.concat([duration_helper, screen_data_episode.groupby(["local_segment"])[["time_diff"]].std().rename(columns = {"time_diff":"screen_rapids_stdduration" + episode})], axis = 1)
+        duration_helper = pd.concat([duration_helper, screen_data_episode.groupby(["local_segment"])[["duration"]].std().rename(columns = {"duration":"screen_rapids_stdduration" + episode})], axis = 1)
     if "firstuseafter" + "{0:0=2d}".format(reference_hour_first_use) in features:
         screen_data_episode_after_hour = screen_data_episode.copy()
         screen_data_episode_after_hour["hour"] = pd.to_datetime(screen_data_episode["local_start_date_time"]).dt.hour
@@ -32,6 +32,7 @@ def rapids_features(screen_data, day_segment, provider, filter_data_by_segment, 
     requested_episode_types = provider["EPISODE_TYPES"]
     ignore_episodes_shorter_than = provider["IGNORE_EPISODES_SHORTER_THAN"]
     ignore_episodes_longer_than = provider["IGNORE_EPISODES_LONGER_THAN"]
+    chunk_episodes = kwargs["chunk_episodes"]
 
     # name of the features this function can compute
     base_features_episodes = ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]
@@ -47,15 +48,14 @@ def rapids_features(screen_data, day_segment, provider, filter_data_by_segment, 
     if not screen_data.empty:
 
         screen_data = filter_data_by_segment(screen_data, day_segment)
-        screen_data = kwargs["deduplicate_episodes"](screen_data)
         if not screen_data.empty:
             # chunk_episodes
-            screen_data = kwargs["chunk_episodes"](screen_data)
+            screen_data = chunk_episodes(screen_data)
 
             if ignore_episodes_shorter_than > 0:
-                screen_data = screen_data.query('@ignore_episodes_shorter_than <= time_diff')
+                screen_data = screen_data.query('@ignore_episodes_shorter_than <= duration')
             if ignore_episodes_longer_than > 0:
-                screen_data = screen_data.query('time_diff <= @ignore_episodes_longer_than')
+                screen_data = screen_data.query('duration <= @ignore_episodes_longer_than')
 
         if not screen_data.empty:
             screen_features = pd.DataFrame()

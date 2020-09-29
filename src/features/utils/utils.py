@@ -19,18 +19,20 @@ def filter_data_by_segment(data, day_segment):
 # Then, we check if the segments of start_timestamp are the same as the segments of end_timestamp:
 # if they are the same (only fall into one segment), we will discard the second row;
 # otherwise (fall into two segments), we will keep both.
-def deduplicate_episodes(sensor_episodes):
+def chunk_episodes(sensor_episodes):
+    import copy
+    import pandas as pd
+
+    # Deduplicate episodes
     # Drop rows where segments of start_timestamp and end_timestamp are the same
     sensor_episodes = sensor_episodes.drop_duplicates(subset=["start_timestamp", "end_timestamp", "local_segment"], keep="first")
 
     # Delete useless columns
     for drop_col in ["utc_date_time", "local_date_time", "local_date", "local_time", "local_hour", "local_minute"]:
         del sensor_episodes[drop_col]
-
-    return sensor_episodes
-
-def chunk_episodes(sensor_episodes):
-    import pandas as pd
+    
+    # Avoid SettingWithCopyWarning
+    sensor_episodes = sensor_episodes.copy()
 
     # Unix timestamp for current segment in milliseconds
     sensor_episodes[["segment_start_timestamp", "segment_end_timestamp"]] = sensor_episodes["timestamps_segment"].str.split(",", expand=True)
@@ -39,8 +41,8 @@ def chunk_episodes(sensor_episodes):
     sensor_episodes["chunked_start_timestamp"] = sensor_episodes[["start_timestamp", "segment_start_timestamp"]].max(axis=1)
     sensor_episodes["chunked_end_timestamp"] = sensor_episodes[["end_timestamp", "segment_end_timestamp"]].min(axis=1)
 
-    # Compute time_diff: intersection of current row and segment
-    sensor_episodes["time_diff"] = (sensor_episodes["chunked_end_timestamp"] - sensor_episodes["chunked_start_timestamp"]) / (1000 * 60)
+    # Compute duration: intersection of current row and segment
+    sensor_episodes["duration"] = (sensor_episodes["chunked_end_timestamp"] - sensor_episodes["chunked_start_timestamp"]) / (1000 * 60)
 
     # Compute chunked datetime
     sensor_episodes["chunked_start_datetime"] = pd.to_datetime(sensor_episodes["chunked_start_timestamp"], unit="ms", utc=True)
@@ -50,10 +52,10 @@ def chunk_episodes(sensor_episodes):
     sensor_episodes["chunked_end_datetime"] = pd.concat([data["chunked_end_datetime"].dt.tz_convert(tz) for tz, data in sensor_episodes.groupby("local_timezone")])
 
     # Merge episodes
-    cols_for_groupby = [col for col in sensor_episodes.columns if col not in ["local_timezone", "timestamps_segment", "timestamp", "assigned_segments", "start_datetime", "end_datetime", "start_timestamp", "end_timestamp", "time_diff", "segment_start_timestamp", "segment_end_timestamp", "chunked_start_timestamp", "chunked_end_timestamp", "chunked_start_datetime", "chunked_end_datetime"]]
+    cols_for_groupby = [col for col in sensor_episodes.columns if col not in ["local_timezone", "timestamps_segment", "timestamp", "assigned_segments", "start_datetime", "end_datetime", "start_timestamp", "end_timestamp", "duration", "segment_start_timestamp", "segment_end_timestamp", "chunked_start_timestamp", "chunked_end_timestamp", "chunked_start_datetime", "chunked_end_datetime"]]
 
     sensor_episodes_grouped = sensor_episodes.groupby(by=cols_for_groupby)
-    merged_sensor_episodes = sensor_episodes_grouped[["time_diff"]].sum()
+    merged_sensor_episodes = sensor_episodes_grouped[["duration"]].sum()
 
     merged_sensor_episodes["start_timestamp"] = sensor_episodes_grouped["chunked_start_timestamp"].first()
     merged_sensor_episodes["end_timestamp"] = sensor_episodes_grouped["chunked_end_timestamp"].last()
@@ -82,7 +84,7 @@ def fetch_provider_features(provider, provider_key, config_key, sensor_data_file
             
             for day_segment in day_segments_labels["label"]:
                     print("{} Processing {} {} {}".format(rapids_log_tag, config_key, provider_key, day_segment))
-                    features = feature_function(sensor_data, day_segment, provider, filter_data_by_segment=filter_data_by_segment, deduplicate_episodes=deduplicate_episodes, chunk_episodes=chunk_episodes)
+                    features = feature_function(sensor_data, day_segment, provider, filter_data_by_segment=filter_data_by_segment, chunk_episodes=chunk_episodes)
                     sensor_features = sensor_features.merge(features, how="outer")
     else:
             for feature in provider["FEATURES"]:
