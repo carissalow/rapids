@@ -1,5 +1,6 @@
 source("renv/activate.R")
 library("dplyr")
+library("tidyr")
 
 # Using mostly indeixng instead of tidyr because is faster
 resampled_episodes <- read.csv(snakemake@input[[1]]) 
@@ -17,6 +18,5 @@ resampled_episodes["timestamp"] = NA_real_
 resampled_episodes[resampled_episodes$end_flag ==1, "timestamp"] = resampled_episodes[resampled_episodes$end_flag ==1, "start_timestamp"]
 resampled_episodes[resampled_episodes$end_flag ==2, "timestamp"] = resampled_episodes[resampled_episodes$end_flag ==2, "end_timestamp"]
 resampled_episodes <- resampled_episodes %>% select(-end_flag)
-
 
 write.csv(resampled_episodes, snakemake@output[[1]], row.names = FALSE)
