@@ -44,7 +44,6 @@ get_screen_episodes <- function(screen){
     filter( (screen_status == 3 & lead(screen_status) == 0) | (screen_status == 0 & lag(screen_status) == 3) ) %>%
     summarise(episode = "unlock",
               screen_sequence = toString(screen_status),
-              time_diff = (last(timestamp) - first(timestamp)) / (1000 * 60),
               start_timestamp = first(timestamp),
               end_timestamp = last(timestamp)) %>% 
     filter(str_detect(screen_sequence,
@@ -58,7 +57,6 @@ get_screen_episodes <- function(screen){
 if(nrow(screen) < 2){
   episodes <- data.frame(episode = character(), 
                                 screen_sequence = character(),
-                                time_diff = numeric(),
                                 start_timestamp = character(),
                                 end_timestamp = character())
 } else {

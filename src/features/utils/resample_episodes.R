@@ -1,5 +1,6 @@
 source("renv/activate.R")
 library("dplyr")
+library("tidyr")
 
 # Using mostly indeixng instead of tidyr because is faster
 resampled_episodes <- read.csv(snakemake@input[[1]]) 
