@@ -70,8 +70,8 @@ echo Disabling downloading of dataset...
 sed -e '27,39 s/^/#/' -e  's/rules.download_dataset.output/"data\/raw\/\{pid\}\/\{sensor\}_raw\.csv"/' rules/preprocessing.smk > tmp
 mv tmp rules/preprocessing.smk
 
-echo $1 
-echo $2
+#echo $1 
+#echo $2
 
 if [ $# -eq 1 ]
 then
