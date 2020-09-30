@@ -31,6 +31,9 @@ find_segments_event <- function(timestamp, segments){
 
 assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, include_past_periodic_segments){
 
+  if(nrow(sensor_data) == 0)
+    return(sensor_data %>% mutate(assigned_segments = NA))
+
   if(day_segments_type == "FREQUENCY"){ #FREQUENCY
     
     day_segments <- day_segments %>% mutate(start_time = lubridate::hm(start_time),
