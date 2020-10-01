@@ -34,7 +34,9 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
             location_data = location_data[(location_data['double_latitude']!=0.0) & (location_data['double_longitude']!=0.0)]
 
             if location_data.empty:
-                dataEmptyFlag = 1
+                location_features = pd.DataFrame(columns=["local_date"] + ["location_" + day_segment + "_" + x for x in features_to_compute])
+                location_features = location_features.reset_index(drop=True)
+                return location_features
 
             if "locationvariance" in features_to_compute:
                 location_features["location_" + day_segment + "_locationvariance"] = location_data.groupby(['local_date'])['double_latitude'].var() + location_data.groupby(['local_date'])['double_longitude'].var()
@@ -50,125 +52,87 @@ def base_location_features(location_data, day_segment, requested_features, dbsca
                 preComputedDistanceandSpeed.loc[localDate,"avgspeed"] = speeddf[speeddf['speedTag'] == 'Moving']['speed'].mean()
                 preComputedDistanceandSpeed.loc[localDate,"varspeed"] = speeddf[speeddf['speedTag'] == 'Moving']['speed'].var()
 
-            if "totaldistance" in features_to_compute and dataEmptyFlag==0:
+            if "totaldistance" in features_to_compute:
                 for localDate in location_data['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_totaldistance"] = preComputedDistanceandSpeed.loc[localDate,"distance"]
-            else:
-                location_features["location_" + day_segment + "_totaldistance"] = 0
 
-            if "averagespeed" in features_to_compute and dataEmptyFlag==0:
+            if "averagespeed" in features_to_compute:
                 for localDate in location_data['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_averagespeed"] = preComputedDistanceandSpeed.loc[localDate,"avgspeed"]
-            else:
-                location_features["location_" + day_segment + "_averagespeed"] = 0
 
-            if "varspeed" in features_to_compute and dataEmptyFlag==0:
+            if "varspeed" in features_to_compute:
                 for localDate in location_data['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_varspeed"] = preComputedDistanceandSpeed.loc[localDate,"varspeed"]
-            else:
-                location_features["location_" + day_segment + "_varspeed"] = 0
 
-            if "circadianmovement" in features_to_compute and dataEmptyFlag==0:
+            if "circadianmovement" in features_to_compute:
                 for localDate in location_data['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_circadianmovement"] = circadian_movement(location_data[location_data['local_date']==localDate])
-            else:
-                location_features["location_" + day_segment + "_circadianmovement"] = 0
 
-            if dataEmptyFlag==0:
-                newLocationData = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
+            newLocationData = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
 
-            if "numberofsignificantplaces" in features_to_compute and dataEmptyFlag==0:
+            if "numberofsignificantplaces" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_numberofsignificantplaces"] = number_of_significant_places(newLocationData[newLocationData['local_date']==localDate])
-            else:
-                location_features["location_" + day_segment + "_numberofsignificantplaces"] = 0
 
-            if "numberlocationtransitions" in features_to_compute and dataEmptyFlag==0:
+            if "numberlocationtransitions" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_numberlocationtransitions"] = number_location_transitions(newLocationData[newLocationData['local_date']==localDate])
-            else:
-                location_features["location_" + day_segment + "_numberlocationtransitions"] = 0
 
-            if "radiusgyration" in features_to_compute and dataEmptyFlag==0:
+            if "radiusgyration" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_radiusgyration"] = radius_of_gyration(newLocationData[newLocationData['local_date']==localDate],sampling_frequency)
-            else:
-                location_features["location_" + day_segment + "_radiusgyration"] = 0
 
-            if "timeattop1location" in features_to_compute and dataEmptyFlag==0:
+            if "timeattop1location" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_timeattop1location"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],1,sampling_frequency)
-            else:
-                location_features["location_" + day_segment + "_timeattop1location"] = 0
 
-            if "timeattop2location" in features_to_compute and dataEmptyFlag==0:
+            if "timeattop2location" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_timeattop2location"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],2,sampling_frequency)
-            else:
-                location_features["location_" + day_segment + "_timeattop2location"] = 0
 
-            if "timeattop3location" in features_to_compute and dataEmptyFlag==0:
+            if "timeattop3location" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_timeattop3location"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_date']==localDate],3,sampling_frequency)
-            else:
-                location_features["location_" + day_segment + "_timeattop3location"] = 0
 
-            if "movingtostaticratio" in features_to_compute and dataEmptyFlag==0:
+            if "movingtostaticratio" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_movingtostaticratio"] =  (newLocationData[newLocationData['local_date']==localDate].shape[0]*sampling_frequency) / (location_data[location_data['local_date']==localDate].shape[0] * sampling_frequency)
-            else:
-                location_features["location_" + day_segment + "_movingtostaticratio"] = 0
             
-            if "outlierstimepercent" in features_to_compute and dataEmptyFlag==0:
+            if "outlierstimepercent" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_outlierstimepercent"] = outliers_time_percent(newLocationData[newLocationData['local_date']==localDate],sampling_frequency)
-            else:
-                location_features["location_" + day_segment + "_outlierstimepercent"] = 0
 
-            if dataEmptyFlag==0:
-                preComputedmaxminCluster = pd.DataFrame()
-                for localDate in newLocationData['local_date'].unique():
-                        smax, smin, sstd,smean = len_stay_at_clusters_in_minutes(newLocationData[newLocationData['local_date']==localDate],sampling_frequency)
-                        preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_maxlengthstayatclusters"] = smax 
-                        preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_minlengthstayatclusters"] = smin 
-                        preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_stdlengthstayatclusters"] = sstd
-                        preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_meanlengthstayatclusters"] = smean
+            preComputedmaxminCluster = pd.DataFrame()
+            for localDate in newLocationData['local_date'].unique():
+                    smax, smin, sstd,smean = len_stay_at_clusters_in_minutes(newLocationData[newLocationData['local_date']==localDate],sampling_frequency)
+                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_maxlengthstayatclusters"] = smax 
+                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_minlengthstayatclusters"] = smin 
+                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_stdlengthstayatclusters"] = sstd
+                    preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_meanlengthstayatclusters"] = smean
             
-            if "maxlengthstayatclusters" in features_to_compute and dataEmptyFlag==0:
+            if "maxlengthstayatclusters" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_maxlengthstayatclusters"] = preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_maxlengthstayatclusters"]
-            else:
-                location_features["location_" + day_segment + "_maxlengthstayatclusters"] = 0
 
-            if "minlengthstayatclusters" in features_to_compute and dataEmptyFlag==0:
+            if "minlengthstayatclusters" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_minlengthstayatclusters"] = preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_minlengthstayatclusters"]
-            else:
-                location_features["location_" + day_segment + "_minlengthstayatclusters"] = 0
 
-            if "stdlengthstayatclusters" in features_to_compute and dataEmptyFlag==0:
+            if "stdlengthstayatclusters" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_stdlengthstayatclusters"] = preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_stdlengthstayatclusters"]
-            else:
-                location_features["location_" + day_segment + "_stdlengthstayatclusters"] = 0
 
-            if "meanlengthstayatclusters" in features_to_compute and dataEmptyFlag==0:
+            if "meanlengthstayatclusters" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_meanlengthstayatclusters"] = preComputedmaxminCluster.loc[localDate,"location_" + day_segment + "_meanlengthstayatclusters"]
-            else:
-                location_features["location_" + day_segment + "_meanlengthstayatclusters"] = 0
 
-            if "locationentropy" in features_to_compute and dataEmptyFlag==0:
+            if "locationentropy" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_locationentropy"] = location_entropy(newLocationData[newLocationData['local_date']==localDate])
-            else:
-                location_features["location_" + day_segment + "_locationentropy"] = 0
 
-            if "normalizedlocationentropy" in features_to_compute and dataEmptyFlag==0:
+            if "normalizedlocationentropy" in features_to_compute:
                 for localDate in newLocationData['local_date'].unique():
                     location_features.loc[localDate,"location_" + day_segment + "_normalizedlocationentropy"] = location_entropy_normalized(newLocationData[newLocationData['local_date']==localDate])
-            else:
-                location_features["location_" + day_segment + "_normalizedlocationentropy"] = 0
 
             location_features = location_features.reset_index()
 
