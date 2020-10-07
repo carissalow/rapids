@@ -36,18 +36,15 @@ run_frequency_pipeline() {
 
 run_periodic_test() {
 
-    echo Running tests on periodic data produced...
-    python -m unittest discover tests/scripts/ -v 
-
     echo Re-writing the config file being loaded for testing
     sed -e  's/tests\/settings\/[a-z]*\/testing_config\.yaml/tests\/settings\/periodic\/testing_config\.yaml/' tests/scripts/test_sensor_features.py > test_tmp
     mv test_tmp tests/scripts/test_sensor_features.py
+
+    echo Running tests on periodic data produced...
+    python -m unittest discover tests/scripts/ -v 
 }
 
 run_frequency_test() {
-
-    # echo Backing up Testing script...
-    # cp tests/scripts/test_sensor_features.py test_bak
 
     echo Re-writing the config file being loaded for testing
     sed -e  's/tests\/settings\/[a-z]*\/testing_config\.yaml/tests\/settings\/frequency\/testing_config\.yaml/' tests/scripts/test_sensor_features.py > test_tmp
@@ -69,9 +66,6 @@ cp tests/data/external/* data/external
 echo Disabling downloading of dataset...
 sed -e '27,39 s/^/#/' -e  's/rules.download_dataset.output/"data\/raw\/\{pid\}\/\{sensor\}_raw\.csv"/' rules/preprocessing.smk > tmp
 mv tmp rules/preprocessing.smk
-
-#echo $1 
-#echo $2
 
 if [ $# -eq 1 ]
 then
@@ -104,8 +98,6 @@ then
             then
                 run_periodic_test
                 run_frequency_test
-            else
-                display_usage
             fi
         elif [ $2 == 'periodic' ]
         then
@@ -113,8 +105,6 @@ then
             if [ $# -gt 2 ] && [ $3 == 'test' ]
             then
                 run_periodic_test
-            else
-                display_usage
             fi
         elif [ $2 == 'frequency' ]
         then
@@ -122,8 +112,6 @@ then
             if [ $# -gt 2 ] && [ $3 == 'test' ]
             then
                 run_frequency_test
-            else
-                display_usage
             fi
         else
             display_usage

@@ -29,7 +29,7 @@ CALLS:
   DB_TABLE: calls
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       CALL_TYPES: [missed, incoming, outgoing]
       FEATURES:
         missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]

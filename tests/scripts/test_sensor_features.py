@@ -16,7 +16,7 @@ class TestSensorFeatures(unittest.TestCase):
     def setUpClass(cls):
         # Runs once to Setup env
         global configs 
-        with open(r'tests/settings/periodic/testing_config.yaml') as file:
+        with open(r'tests/settings/frequency/testing_config.yaml') as file:
             configs = yaml.full_load(file)
 
 
