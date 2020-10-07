@@ -25,6 +25,7 @@ if config["PHONE_VALID_SENSED_BINS"]["COMPUTE"] or config["PHONE_VALID_SENSED_DA
         files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
         files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
     files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
+    files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_timestamps.csv", pid=config["PIDS"]))
 
 if config["PHONE_VALID_SENSED_DAYS"]["COMPUTE"]:
     files_to_compute.extend(expand("data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins.csv",
@@ -163,7 +164,8 @@ for provider in config["LOCATIONS"]["PROVIDERS"].keys():
             
         files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["LOCATIONS"]["DB_TABLE"]))
         files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["LOCATIONS"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_processed_{locations_to_use}.csv", pid=config["PIDS"], sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]))
+        files_to_compute.extend(expand("data/interim/{pid}/{sensor}_processed_{locations_to_use}.csv", pid=config["PIDS"], sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]))
+        files_to_compute.extend(expand("data/interim/{pid}/{sensor}_processed_{locations_to_use}_with_datetime.csv", pid=config["PIDS"], sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]))
         files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["LOCATIONS"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="LOCATIONS".lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="LOCATIONS".lower()))
 

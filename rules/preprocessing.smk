@@ -70,7 +70,7 @@ rule readable_datetime:
         day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     wildcard_constraints:
-        sensor = '.*(' + '|'.join([re.escape(x) for x in PHONE_SENSORS]) + ').*' # only process smartphone sensors, not fitbit
+        sensor = '(' + '|'.join([re.escape(x) for x in PHONE_SENSORS]) + ')' # only process smartphone sensors, not fitbit
     output:
         "data/raw/{pid}/{sensor}_with_datetime.csv"
     script:
@@ -85,6 +85,14 @@ rule phone_sensed_bins:
         "data/interim/{pid}/phone_sensed_bins.csv"
     script:
         "../src/data/phone_sensed_bins.R"
+
+rule phone_sensed_timestamps:
+    input:
+        all_sensors = optional_phone_sensed_timestamps_input
+    output:
+        "data/interim/{pid}/phone_sensed_timestamps.csv"
+    script:
+        "../src/data/phone_sensed_timestamps.R"
 
 rule phone_valid_sensed_days:
     input:
@@ -112,20 +120,34 @@ rule unify_ios_android:
 
 rule process_location_types:
     input:
-        locations = "data/raw/{pid}/{sensor}_with_datetime.csv",
-        phone_sensed_bins = rules.phone_sensed_bins.output,
-        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
+        locations = "data/raw/{pid}/{sensor}_raw.csv",
+        phone_sensed_timestamps = "data/interim/{pid}/phone_sensed_timestamps.csv",
     params:
-        bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"],
-        timezone = config["LOCATIONS"]["TIMEZONE"],
         consecutive_threshold = config["LOCATIONS"]["FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD"],
         time_since_valid_location = config["LOCATIONS"]["FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION"],
-        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
-        locations_to_use = "{locations_to_used}"
+        locations_to_use = "{locations_to_use}"
+    wildcard_constraints:
+        locations_to_use = '(ALL|GPS|FUSED_RESAMPLED)'
     output:
-        "data/raw/{pid}/{sensor}_processed_{locations_to_used}.csv"
+        "data/interim/{pid}/{sensor}_processed_{locations_to_use}.csv"
     script:
         "../src/data/process_location_types.R"
+
+rule readable_datetime_location_processed:
+    input:
+        sensor_input = expand("data/interim/{{pid}}/{sensor}_processed_{locations_to_use}.csv", sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]),
+        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
+    params:
+        timezones = None,
+        fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
+        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+    wildcard_constraints:
+        locations_to_use = '(ALL|GPS|FUSED_RESAMPLED)'
+    output:
+        expand("data/interim/{{pid}}/{sensor}_processed_{locations_to_use}_with_datetime.csv", sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"])
+    script:
+        "../src/data/readable_datetime.R"
 
 rule application_genres:
     input:

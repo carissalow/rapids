@@ -26,6 +26,16 @@ def optional_phone_sensed_bins_input(wildcards):
 
     return expand("data/raw/{{pid}}/{table}_with_datetime.csv", table = tables_platform)
 
+def optional_phone_sensed_timestamps_input(wildcards):
+    platform = infer_participant_platform("data/external/"+wildcards.pid)
+    
+    if platform == "android":
+        tables_platform = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]]] # for android, discard any ios tables that may exist
+    elif platform == "ios":
+        tables_platform = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"]]] # for ios, discard any android tables that may exist
+
+    return expand("data/raw/{{pid}}/{table}_raw.csv", table = tables_platform)
+
 # Features.smk #########################################################################################################
 def find_features_files(wildcards):
     feature_files = []
