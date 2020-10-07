@@ -46,21 +46,19 @@ def find_features_files(wildcards):
 
 def optional_ar_input(wildcards):
     platform = infer_participant_platform("data/external/"+wildcards.pid)
-
+    
     if platform == "android": 
-        return ["data/raw/{pid}/" + config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "_with_datetime_unified.csv",
-                "data/interim/{pid}/" + config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "_episodes.csv"]
+        return expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"])
     elif platform == "ios":
-        return ["data/raw/{pid}/"+config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]+"_with_datetime_unified.csv",
-                "data/interim/{pid}/"+config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]+"_episodes.csv"]
+        return expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"])
 
 def optional_conversation_input(wildcards):
     platform = infer_participant_platform("data/external/"+wildcards.pid)
 
     if platform == "android":
-        return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["ANDROID"] + "_with_datetime_unified.csv"]
+        return expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["CONVERSATION"]["DB_TABLE"]["ANDROID"])[0]
     elif platform == "ios":
-        return ["data/raw/{pid}/" + config["CONVERSATION"]["DB_TABLE"]["IOS"] + "_with_datetime_unified.csv"]
+        return expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["CONVERSATION"]["DB_TABLE"]["IOS"])[0]
 
 def optional_steps_sleep_input(wildcards):
     if config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"] == True and config["STEP"]["EXCLUDE_SLEEP"]["TYPE"] == "FITBIT_BASED":

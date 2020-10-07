@@ -25,7 +25,9 @@ def getEpisodeDurationFeatures(screen_data, day_segment, episode, features, refe
     return duration_helper
 
 
-def rapids_features(screen_data, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+
+    screen_data = pd.read_csv(sensor_data_files["sensor_episodes"])
 
     reference_hour_first_use = provider["REFERENCE_HOUR_FIRST_USE"]
     requested_features_episodes = provider["FEATURES"]

@@ -9,28 +9,31 @@ def compute_features(filtered_data, apps_type, requested_features, apps_features
     if "timeoffirstuse" in requested_features:
         time_first_event = filtered_data.sort_values(by="timestamp", ascending=True).drop_duplicates(subset="local_segment", keep="first").set_index("local_segment")
         if time_first_event.empty:
-            apps_features["apps_rapids" + "_timeoffirstuse" + apps_type] = np.nan
+            apps_features["apps_rapids_timeoffirstuse" + apps_type] = np.nan
         else:
-            apps_features["apps_rapids" + "_timeoffirstuse" + apps_type] = time_first_event["local_hour"] * 60 + time_first_event["local_minute"]
+            apps_features["apps_rapids_timeoffirstuse" + apps_type] = time_first_event["local_hour"] * 60 + time_first_event["local_minute"]
     if "timeoflastuse" in requested_features:
         time_last_event = filtered_data.sort_values(by="timestamp", ascending=False).drop_duplicates(subset="local_segment", keep="first").set_index("local_segment")
         if time_last_event.empty:
-            apps_features["apps_rapids" + "_timeoflastuse" + apps_type] = np.nan
+            apps_features["apps_rapids_timeoflastuse" + apps_type] = np.nan
         else:
-            apps_features["apps_rapids" + "_timeoflastuse" + apps_type] = time_last_event["local_hour"] * 60 + time_last_event["local_minute"]
+            apps_features["apps_rapids_timeoflastuse" + apps_type] = time_last_event["local_hour"] * 60 + time_last_event["local_minute"]
     if "frequencyentropy" in requested_features:
         apps_with_count = filtered_data.groupby(["local_segment","application_name"]).count().sort_values(by="timestamp", ascending=False).reset_index()
         if (len(apps_with_count.index) < 2 ):
-            apps_features["apps_rapids" + "_frequencyentropy" + apps_type] = np.nan
+            apps_features["apps_rapids_frequencyentropy" + apps_type] = np.nan
         else:    
-            apps_features["apps_rapids" + "_frequencyentropy" + apps_type] = apps_with_count.groupby("local_segment")["timestamp"].agg(entropy)
+            apps_features["apps_rapids_frequencyentropy" + apps_type] = apps_with_count.groupby("local_segment")["timestamp"].agg(entropy)
     if "count" in requested_features:
-        apps_features["apps_rapids" + "_count" + apps_type] = filtered_data.groupby(["local_segment"]).count()["timestamp"]
-        apps_features.fillna(value={"apps_rapids" + "_count" + apps_type: 0}, inplace=True)
+        apps_features["apps_rapids_count" + apps_type] = filtered_data.groupby(["local_segment"]).count()["timestamp"]
+        apps_features.fillna(value={"apps_rapids_count" + apps_type: 0}, inplace=True)
     return apps_features
 
 
-def rapids_features(apps_data, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+    
+    apps_data = pd.read_csv(sensor_data_files["sensor_data"])
+
     requested_features = provider["FEATURES"]
     excluded_categories = provider["EXCLUDED_CATEGORIES"]
     excluded_apps = provider["EXCLUDED_APPS"]
@@ -49,10 +52,8 @@ def rapids_features(apps_data, day_segment, provider, filter_data_by_segment, *a
     apps_data = apps_data[~apps_data["genre"].isin(excluded_categories)]
     # exclude apps in the excluded_apps list
     apps_data = apps_data[~apps_data["package_name"].isin(excluded_apps)]
-
     
-
-    apps_features = pd.DataFrame(columns=["local_segment"] + ["apps_rapids_" + "_" + x for x in ["".join(feature) for feature in itertools.product(requested_features, single_categories + multiple_categories + single_apps)]])
+    apps_features = pd.DataFrame(columns=["local_segment"] + ["apps_rapids_" + x for x in ["".join(feature) for feature in itertools.product(requested_features, single_categories + multiple_categories + single_apps)]])
     if not apps_data.empty:
         # deep copy the apps_data for the top1global computation
         apps_data_global = apps_data.copy()

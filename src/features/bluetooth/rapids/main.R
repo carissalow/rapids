@@ -27,24 +27,26 @@ compute_bluetooth_feature <- function(data, feature, day_segment){
   }
 }
 
-rapids_features <- function(bluetooth_data, day_segment, provider){
-    requested_features <- provider[["FEATURES"]]
-    
-    # Output dataframe
-    features = data.frame(local_segment = character(), stringsAsFactors = FALSE)
+rapids_features <- function(sensor_data_files, day_segment, provider){
+  
+  bluetooth_data <-  read.csv(sensor_data_files[["sensor_data"]], stringsAsFactors = FALSE)
+  requested_features <- provider[["FEATURES"]]
+  
+  # Output dataframe
+  features = data.frame(local_segment = character(), stringsAsFactors = FALSE)
 
-    # The name of the features this function can compute
-    base_features_names  <- c("countscans", "uniquedevices", "countscansmostuniquedevice")
+  # The name of the features this function can compute
+  base_features_names  <- c("countscans", "uniquedevices", "countscansmostuniquedevice")
 
-    # The subset of requested features this function can compute
-    features_to_compute  <- intersect(base_features_names, requested_features)
+  # The subset of requested features this function can compute
+  features_to_compute  <- intersect(base_features_names, requested_features)
 
-    for(feature_name in features_to_compute){
-      feature <- compute_bluetooth_feature(bluetooth_data, feature_name, day_segment)
-      features <- merge(features, feature, by="local_segment", all = TRUE)
-    }
+  for(feature_name in features_to_compute){
+    feature <- compute_bluetooth_feature(bluetooth_data, feature_name, day_segment)
+    features <- merge(features, feature, by="local_segment", all = TRUE)
+  }
 
-    features <- features %>% mutate_at(vars(contains("countscansmostuniquedevice")), list( ~ replace_na(., 0)))
+  features <- features %>% mutate_at(vars(contains("countscansmostuniquedevice")), list( ~ replace_na(., 0)))
 
-    return(features)
+  return(features)
 }

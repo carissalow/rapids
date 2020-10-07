@@ -4,7 +4,9 @@ from astropy.timeseries import LombScargle
 from sklearn.cluster import DBSCAN
 from math import radians, cos, sin, asin, sqrt
 
-def doryab_features(location_data, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+def doryab_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+
+    location_data = pd.read_csv(sensor_data_files["sensor_data"])
     requested_features = provider["FEATURES"]
     dbscan_eps = provider["DBSCAN_EPS"]
     dbscan_minsamples = provider["DBSCAN_MINSAMPLES"]

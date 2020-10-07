@@ -62,8 +62,9 @@ call_features_of_type <- function(calls, call_type, day_segment, requested_featu
     return(features)
 }
 
-rapids_features <- function(calls, day_segment, provider){
-    calls <- calls %>% filter_data_by_segment(day_segment)
+rapids_features <- function(sensor_data_files, day_segment, provider){
+    calls_data <-  read.csv(sensor_data_files[["sensor_data"]], stringsAsFactors = FALSE)
+    calls_data <- calls_data %>% filter_data_by_segment(day_segment)
     call_types = provider[["CALL_TYPES"]]
     call_features <- setNames(data.frame(matrix(ncol=1, nrow=0)), c("local_segment"))
 
@@ -74,7 +75,7 @@ rapids_features <- function(calls, day_segment, provider){
             stop(paste("Call type can online be incoming, outgoing or missed but instead you typed: ", call_type, " in config[CALLS][CALL_TYPES]"))
 
         requested_features <- provider[["FEATURES"]][[call_type]]
-        calls_of_type <- calls %>% filter(call_type == call_type_label)
+        calls_of_type <- calls_data %>% filter(call_type == call_type_label)
 
         features <- call_features_of_type(calls_of_type, call_type, day_segment, requested_features)
         call_features <- merge(call_features, features, all=TRUE)

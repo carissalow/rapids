@@ -27,8 +27,11 @@ create_empty_file <- function(requested_features){
                       ) %>% select(all_of(requested_features)))
 }
 
-barnett_features <- function(location_data, day_segment, params){
+barnett_features <- function(sensor_data_files, day_segment, params){
+  
+  location_data <-  read.csv(sensor_data_files[["sensor_data"]], stringsAsFactors = FALSE)
   location_features <- NULL
+
   location <- location_data
   accuracy_limit <- params[["ACCURACY_LIMIT"]]
   timezone <- params[["TIMEZONE"]]

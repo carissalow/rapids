@@ -43,24 +43,23 @@ chunk_episodes <- function(sensor_episodes){
   return(chunked_episodes)
 }
 
-fetch_provider_features <- function(provider, provider_key, config_key, sensor_data_file, day_segments_file){
+fetch_provider_features <- function(provider, provider_key, sensor_key, sensor_data_files, day_segments_file){
     sensor_features  <-  data.frame(local_segment = character(), stringsAsFactors = FALSE)
 
-    sensor_data <-  read.csv(sensor_data_file, stringsAsFactors = FALSE)
     day_segments_labels <-  read.csv(day_segments_file, stringsAsFactors = FALSE)
 
     if(!"FEATURES" %in% names(provider))
-        stop(paste0("Provider config[", config_key,"][PROVIDERS][", provider_key,"] is missing a FEATURES attribute in config.yaml"))
+        stop(paste0("Provider config[", sensor_key,"][PROVIDERS][", provider_key,"] is missing a FEATURES attribute in config.yaml"))
 
     if(provider[["COMPUTE"]] == TRUE){
-        code_path <- paste0("src/features/", config_key,"/", provider[["SRC_FOLDER"]], "/main.R")  
+        code_path <- paste0("src/features/", sensor_key,"/", provider[["SRC_FOLDER"]], "/main.R")  
         source(code_path)
         features_function <- match.fun(paste0(provider[["SRC_FOLDER"]], "_features"))
         day_segments <- day_segments_labels %>% pull(label)
         for (day_segment in day_segments){
-            print(paste(rapids_log_tag,"Processing", config_key, provider_key, day_segment))
+            print(paste(rapids_log_tag,"Processing", sensor_key, provider_key, day_segment))
 
-            features <- features_function(sensor_data, day_segment, provider)
+            features <- features_function(sensor_data_files, day_segment, provider)
 
             # Check all features names contain the provider key so they are unique
             features_names <- colnames(features %>% select(-local_segment))

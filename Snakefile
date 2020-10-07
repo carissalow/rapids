@@ -55,16 +55,22 @@ for provider in config["BLUETOOTH"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["BLUETOOTH"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="BLUETOOTH".lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="BLUETOOTH".lower()))
 
-if config["ACTIVITY_RECOGNITION"]["COMPUTE"]:
-    pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
-    pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
-    
-    for pids,table in zip([pids_android, pids_ios], [config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]]):
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=pids, sensor=table))
-        files_to_compute.extend(expand("data/processed/{pid}/{sensor}_deltas.csv", pid=pids, sensor=table))
-    files_to_compute.extend(expand("data/processed/{pid}/activity_recognition_{day_segment}.csv",pid=config["PIDS"], day_segment = config["ACTIVITY_RECOGNITION"]["DAY_SEGMENTS"]))
+for provider in config["ACTIVITY_RECOGNITION"]["PROVIDERS"].keys():
+    if config["ACTIVITY_RECOGNITION"]["PROVIDERS"][provider]["COMPUTE"]:
+        pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
+        pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
+        
+        for pids,table in zip([pids_android, pids_ios], [config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]]):
+            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
+            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
+            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=pids, sensor=table))
+        
+        files_to_compute.extend(expand("data/interim/{pid}/activity_recognition_episodes.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/activity_recognition_episodes_resampled.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/activity_recognition_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["ACTIVITY_RECOGNITION"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="ACTIVITY_RECOGNITION".lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="ACTIVITY_RECOGNITION".lower()))
+
 
 for provider in config["BATTERY"]["PROVIDERS"].keys():
     if config["BATTERY"]["PROVIDERS"][provider]["COMPUTE"]:

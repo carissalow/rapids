@@ -67,24 +67,24 @@ def chunk_episodes(sensor_episodes):
 
     return merged_sensor_episodes
 
-def fetch_provider_features(provider, provider_key, config_key, sensor_data_file, day_segments_file):
+def fetch_provider_features(provider, provider_key, sensor_key, sensor_data_files, day_segments_file):
     import pandas as pd
     from importlib import import_module, util
 
     sensor_features = pd.DataFrame(columns=["local_segment"])
-    sensor_data = pd.read_csv(sensor_data_file)
     day_segments_labels = pd.read_csv(day_segments_file, header=0)
     if "FEATURES" not in provider:
-        raise ValueError("Provider config[{}][PROVIDERS][{}] is missing a FEATURES attribute in config.yaml".format(config_key.upper(), provider_key))
+        raise ValueError("Provider config[{}][PROVIDERS][{}] is missing a FEATURES attribute in config.yaml".format(sensor_key.upper(), provider_key))
 
     if provider["COMPUTE"] == True:
-            code_path = provider["SRC_FOLDER"] + ".main"
+
+            code_path =  sensor_key + "." + provider["SRC_FOLDER"] + ".main"
             feature_module = import_module(code_path)
             feature_function = getattr(feature_module,  provider["SRC_FOLDER"] + "_features")
             
             for day_segment in day_segments_labels["label"]:
-                    print("{} Processing {} {} {}".format(rapids_log_tag, config_key, provider_key, day_segment))
-                    features = feature_function(sensor_data, day_segment, provider, filter_data_by_segment=filter_data_by_segment, chunk_episodes=chunk_episodes)
+                    print("{} Processing {} {} {}".format(rapids_log_tag, sensor_key, provider_key, day_segment))
+                    features = feature_function(sensor_data_files, day_segment, provider, filter_data_by_segment=filter_data_by_segment, chunk_episodes=chunk_episodes)
                     sensor_features = sensor_features.merge(features, how="outer")
     else:
             for feature in provider["FEATURES"]:

@@ -50,8 +50,9 @@ message_features_of_type <- function(messages, messages_type, day_segment, reque
     return(features)
 }
 
-rapids_features <- function(messages, day_segment, provider){
-    messages <- messages %>% filter_data_by_segment(day_segment)
+rapids_features <- function(sensor_data_files, day_segment, provider){
+    messages_data <-  read.csv(sensor_data_files[["sensor_data"]], stringsAsFactors = FALSE)
+    messages_data <- messages_data %>% filter_data_by_segment(day_segment)
     messages_types = provider[["MESSAGES_TYPES"]]
     messages_features <- setNames(data.frame(matrix(ncol=1, nrow=0)), c("local_segment"))
 
@@ -62,7 +63,7 @@ rapids_features <- function(messages, day_segment, provider){
             stop(paste("Message type can online be received or sent but instead you typed: ", message_type, " in config[MESSAGES][MESSAGES_TYPES]"))
 
         requested_features <- provider[["FEATURES"]][[message_type]]
-        messages_of_type <- messages %>% filter(message_type == message_type_label)
+        messages_of_type <- messages_data %>% filter(message_type == message_type_label)
 
         features <- message_features_of_type(messages_of_type, message_type, day_segment, requested_features)
         messages_features <- merge(messages_features, features, all=TRUE)

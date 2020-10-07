@@ -113,12 +113,19 @@ BLUETOOTH:
 
 
 ACTIVITY_RECOGNITION:
-  COMPUTE: False
   DB_TABLE: 
     ANDROID: plugin_google_activity_recognition
     IOS: plugin_ios_activity_recognition
-  DAY_SEGMENTS: *day_segments
-  FEATURES: ["count","mostcommonactivity","countuniqueactivities","activitychangecount","sumstationary","summobile","sumvehicle"]
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["count", "mostcommonactivity", "countuniqueactivities", "durationstationary", "durationmobile", "durationvehicle"]
+      ACTIVITY_CLASSES:
+        STATIONARY: ["still", "tilting"]
+        MOBILE: ["on_foot", "walking", "running", "on_bicycle"]
+        VEHICLE: ["in_vehicle"]
+      SRC_FOLDER: "rapids" # inside src/features/activity_recognition
+      SRC_LANGUAGE: "python"
 
 BATTERY:
   DB_TABLE: battery

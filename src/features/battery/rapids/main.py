@@ -1,8 +1,9 @@
 import pandas as pd
 from datetime import datetime, timedelta, time
 
-def rapids_features(battery_data, day_segment, provider, filter_data_by_segment, *args, **kwargs):
-
+def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+    
+    battery_data = pd.read_csv(sensor_data_files["sensor_episodes"])
     chunk_episodes = kwargs["chunk_episodes"]
 
     # name of the features this function can compute

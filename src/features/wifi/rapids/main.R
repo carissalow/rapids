@@ -25,21 +25,22 @@ compute_wifi_feature <- function(data, feature, day_segment){
   }
 }
 
-rapids_features <- function(wifi_data, day_segment, provider){
-    requested_features <- provider[["FEATURES"]]
-    # Output dataframe
-    features = data.frame(local_segment = character(), stringsAsFactors = FALSE)
+rapids_features <- function(sensor_data_files, day_segment, provider){
+  wifi_data <-  read.csv(sensor_data_files[["sensor_data"]], stringsAsFactors = FALSE)
+  requested_features <- provider[["FEATURES"]]
+  # Output dataframe
+  features = data.frame(local_segment = character(), stringsAsFactors = FALSE)
 
-    # The name of the features this function can compute
-    base_features_names  <- c("countscans", "uniquedevices", "countscansmostuniquedevice")
+  # The name of the features this function can compute
+  base_features_names  <- c("countscans", "uniquedevices", "countscansmostuniquedevice")
 
-    # The subset of requested features this function can compute
-    features_to_compute  <- intersect(base_features_names, requested_features)
+  # The subset of requested features this function can compute
+  features_to_compute  <- intersect(base_features_names, requested_features)
 
-    for(feature_name in features_to_compute){
-      feature <- compute_wifi_feature(wifi_data, feature_name, day_segment)
-      features <- merge(features, feature, by="local_segment", all = TRUE)
-    }
+  for(feature_name in features_to_compute){
+    feature <- compute_wifi_feature(wifi_data, feature_name, day_segment)
+    features <- merge(features, feature, by="local_segment", all = TRUE)
+  }
 
-    return(features)
+  return(features)
 }
