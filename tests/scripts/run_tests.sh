@@ -74,7 +74,7 @@ then
         display_usage
     elif [ $1 == 'all' ]
     then
-        run_periodic_pipeline
+        run_periodic_pipeline || travis_terminate 1;
         run_frequency_pipeline
     elif [ $1 == 'periodic' ]
     then
@@ -123,7 +123,7 @@ then
         run_frequency_pipeline
         if [ $2 == 'test' ]
         then
-            run_periodic_test
+            run_periodic_test || travis_terminate 1;
             run_frequency_test
         else
             display_usage
