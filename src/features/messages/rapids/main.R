@@ -28,10 +28,8 @@ message_features_of_type <- function(messages, messages_type, day_segment, reque
                 head(1) %>% # if there are multiple contacts with the same amount of messages pick the first one only
                 pull(trace)
             feature <- messages %>% 
-                filter(trace == mostfrequentcontact) %>% 
                 group_by(local_segment) %>% 
-                summarise(!!paste("messages_rapids", messages_type, feature_name, sep = "_") := n())  %>% 
-                replace(is.na(.), 0)
+                summarise(!!paste("messages_rapids", messages_type, feature_name, sep = "_") := sum(trace == mostfrequentcontact))
             features <- merge(features, feature, by="local_segment", all = TRUE)
         } else {
             feature <- messages %>% 
@@ -46,7 +44,6 @@ message_features_of_type <- function(messages, messages_type, day_segment, reque
             features <- merge(features, feature, by="local_segment", all = TRUE)
         }
     }
-    features <- features %>% mutate_at(vars(contains("countmostfrequentcontact")), list( ~ replace_na(., 0)))
     return(features)
 }
 
@@ -68,6 +65,6 @@ rapids_features <- function(sensor_data_files, day_segment, provider){
         features <- message_features_of_type(messages_of_type, message_type, day_segment, requested_features)
         messages_features <- merge(messages_features, features, all=TRUE)
     }
-
+    messages_features <- messages_features %>% mutate_at(vars(contains("countmostfrequentcontact") | contains("distinctcontacts") | contains("count")), list( ~ replace_na(., 0)))
     return(messages_features)
 }
