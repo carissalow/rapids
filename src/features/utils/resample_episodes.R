@@ -14,9 +14,11 @@ resampled_episodes["end_timestamp"] <- pmin(resampled_episodes["start_timestamp"
 resampled_episodes <- resampled_episodes %>% select(-nrow)
 resampled_episodes <- resampled_episodes %>% uncount(2, .id = "end_flag") 
 
-resampled_episodes["timestamp"] = NA_real_
-resampled_episodes[resampled_episodes$end_flag ==1, "timestamp"] = resampled_episodes[resampled_episodes$end_flag ==1, "start_timestamp"]
-resampled_episodes[resampled_episodes$end_flag ==2, "timestamp"] = resampled_episodes[resampled_episodes$end_flag ==2, "end_timestamp"]
+resampled_episodes <- resampled_episodes %>% add_column(timestamp = NA_real_)
+if(nrow(resampled_episodes) > 0){
+  resampled_episodes[resampled_episodes$end_flag ==1, "timestamp"] = resampled_episodes[resampled_episodes$end_flag ==1, "start_timestamp"]
+  resampled_episodes[resampled_episodes$end_flag ==2, "timestamp"] = resampled_episodes[resampled_episodes$end_flag ==2, "end_timestamp"]
+}
 resampled_episodes <- resampled_episodes %>% select(-end_flag)
 
 write.csv(resampled_episodes, snakemake@output[[1]], row.names = FALSE)
