@@ -38,7 +38,8 @@ jobs:
       - "$HOME/.local/share/renv"
       - "$TRAVIS_BUILD_DIR/renv/library"
     script:
-    - bash tests/scripts/run_tests.sh all test
+    - bash tests/scripts/run_tests.sh all test 
+    # - bash tests/scripts/run_tests.sh periodic test && tests/scripts/run_tests.sh frequency test 
   - name: Python 3.7 on macOS
     os: osx
     osx_image: xcode11.3
@@ -69,7 +70,8 @@ jobs:
       - "$RENV_PATHS_ROOT"
       - "$TRAVIS_BUILD_DIR/renv/library"
     script:
-    - bash tests/scripts/run_tests.sh periodic test && tests/scripts/run_tests.sh frequency test 
+    - bash tests/scripts/run_tests.sh all test 
+    # - bash tests/scripts/run_tests.sh periodic test # && tests/scripts/run_tests.sh frequency test 
   - stage: deploy
     name: Python 3.7 on Xenial Linux Docker
     os: linux

@@ -74,8 +74,7 @@ then
         display_usage
     elif [ $1 == 'all' ]
     then
-        run_periodic_pipeline || travis_terminate 1;
-        run_frequency_pipeline
+        run_periodic_pipeline && run_frequency_pipeline
     elif [ $1 == 'periodic' ]
     then
         run_periodic_pipeline
@@ -92,8 +91,7 @@ then
         clean_old_data
         if [ $2 == 'all' ]
         then
-            run_periodic_pipeline
-            run_frequency_pipeline
+            run_periodic_pipeline && run_frequency_pipeline
             if [ $# -gt 2 ] && [ $3 == 'test' ]
             then
                 run_periodic_test
@@ -123,8 +121,7 @@ then
         run_frequency_pipeline
         if [ $2 == 'test' ]
         then
-            run_periodic_test || travis_terminate 1;
-            run_frequency_test
+            run_periodic_test && run_frequency_test
         else
             display_usage
         fi
