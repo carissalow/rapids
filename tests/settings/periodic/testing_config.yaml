@@ -51,7 +51,7 @@ LIGHT:
   DB_TABLE: light
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
       SRC_FOLDER: "rapids" # inside src/features/light
       SRC_LANGUAGE: "python"
