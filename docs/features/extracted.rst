@@ -494,13 +494,12 @@ features        Features to be computed, see table below
 ======================   ==============    =============
 Name                     Units             Description
 ======================   ==============    =============
-count                    rows              Number of detect activity events (rows).
+count                    rows              Number of episodes.
 mostcommonactivity       activity_type     The most common ``activity_type``. If this feature is not unique the first ``activity_type`` of the set of most common ``activity_types`` is selected ordered by ``activity_type``.
-countuniqueactivities    activities        Number of unique activities.
-activitychangecount      transitions       Number of transitions between two different activities; still to running for example.
-sumstationary            minutes           The total duration of episodes of still and tilting (phone) activities.
-summobile                minutes           The total duration of episodes of on foot, running, and on bicycle activities
-sumvehicle               minutes           The total duration of episodes of on vehicle activity
+countuniqueactivities    activity_type     Number of unique ``activity_type``.
+durationstationary       minutes           The total duration of episodes of still and tilting (phone) activities.
+durationmobile           minutes           The total duration of episodes of on foot, running, and on bicycle activities
+durationvehicle          minutes           The total duration of episodes of on vehicle activity
 ======================   ==============    =============
 
 **Assumptions/Observations:**
