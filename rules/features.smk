@@ -28,19 +28,31 @@ rule resample_episodes_with_datetime:
     script:
         "../src/data/readable_datetime.R"
 
-rule accelerometer_features:
+rule accelerometer_r_features:
     input:
-        expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["ACCELEROMETER"]["DB_TABLE"]),
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["ACCELEROMETER"]["DB_TABLE"])[0],
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
-        day_segment = "{day_segment}",
-        magnitude = config["ACCELEROMETER"]["FEATURES"]["MAGNITUDE"],
-        exertional_activity_episode = config["ACCELEROMETER"]["FEATURES"]["EXERTIONAL_ACTIVITY_EPISODE"],
-        nonexertional_activity_episode = config["ACCELEROMETER"]["FEATURES"]["NONEXERTIONAL_ACTIVITY_EPISODE"],
-        valid_sensed_minutes = config["ACCELEROMETER"]["FEATURES"]["VALID_SENSED_MINUTES"],
+        provider = lambda wildcards: config["ACCELEROMETER"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}",
+        sensor_key = "accelerometer"
     output:
-        "data/processed/{pid}/accelerometer_{day_segment}.csv"
+        "data/interim/{pid}/accelerometer_features/accelerometer_r_{provider_key}.csv"
     script:
-        "../src/features/accelerometer_features.py"
+        "../src/features/entry.R"
+
+rule accelerometer_python_features:
+    input:
+        sensor_data = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["ACCELEROMETER"]["DB_TABLE"])[0],
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["ACCELEROMETER"]["PROVIDERS"][wildcards.provider_key],
+        provider_key = "{provider_key}",
+        sensor_key = "accelerometer"
+    output:
+        "data/interim/{pid}/accelerometer_features/accelerometer_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
 
 rule activity_recognition_episodes:
     input:

@@ -158,16 +158,14 @@ LIGHT:
       SRC_FOLDER: "rapids" # inside src/features/light
       SRC_LANGUAGE: "python"
 
-
 ACCELEROMETER:
-  COMPUTE: False
   DB_TABLE: accelerometer
-  DAY_SEGMENTS: *day_segments
-  FEATURES:
-    MAGNITUDE: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
-    EXERTIONAL_ACTIVITY_EPISODE: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
-    NONEXERTIONAL_ACTIVITY_EPISODE: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
-    VALID_SENSED_MINUTES: False
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
+      SRC_FOLDER: "rapids" # inside src/features/accelerometer
+      SRC_LANGUAGE: "python"
 
 APPLICATIONS_FOREGROUND:
   DB_TABLE: applications_foreground
