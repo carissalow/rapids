@@ -71,7 +71,7 @@ APPLICATIONS_FOREGROUND:
   DB_TABLE: applications_foreground
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       SINGLE_CATEGORIES: ["all", "email"]
       MULTIPLE_CATEGORIES:
         social: ["socialnetworks", "socialmediatools"]
