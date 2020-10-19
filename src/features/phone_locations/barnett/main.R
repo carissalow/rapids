@@ -3,7 +3,7 @@ library("dplyr")
 library("stringr")
 
 # Load Ian Barnett's code. Taken from https://scholar.harvard.edu/ibarnett/software/gpsmobility
-file.sources = list.files(c("src/features/locations/barnett/library"), pattern="*.R$", full.names=TRUE, ignore.case=TRUE)
+file.sources = list.files(c("src/features/phone_locations/barnett/library"), pattern="*.R$", full.names=TRUE, ignore.case=TRUE)
 sapply(file.sources,source,.GlobalEnv)
 
 create_empty_file <- function(requested_features){
@@ -52,10 +52,13 @@ barnett_features <- function(sensor_data_files, day_segment, params){
   if (nrow(location) > 1){
     # Filter by segment and skipping any non-daily segment
     location <- location %>% filter_data_by_segment(day_segment)
-    segment <- location %>% head(1) %>% pull(local_segment) 
-    segment_data <- str_split(segment, "#")[[1]]
-    if(segment_data[[2]] != segment_data[[4]] || segment_data[[3]] != "00:00:00" || segment_data[[5]] != "23:59:59"){
-      warning(paste("Barnett's location features cannot be computed for day segmentes that are not daily (cover 00:00:00 to 23:59:59 of every day). Skipping for ", segment))
+    
+    datetime_start_regex = "[0-9]{4}[\\-|\\/][0-9]{2}[\\-|\\/][0-9]{2} 00:00:00"
+    datetime_end_regex = "[0-9]{4}[\\-|\\/][0-9]{2}[\\-|\\/][0-9]{2} 23:59:59"
+    location <- location %>% mutate(is_daily = str_detect(local_segment, paste0(day_segment, "#", datetime_start_regex, ",", datetime_end_regex))) 
+
+    if(!all(location$is_daily)){
+      message(paste("Barnett's location features cannot be computed for day segmentes that are not daily (cover 00:00:00 to 23:59:59 of every day). Skipping ", day_segment))
       location_features <- create_empty_file(requested_features)  
     } else {
       # Count how many minutes of data we use to get location features

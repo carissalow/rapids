@@ -101,7 +101,7 @@ clean_ios_activity_column <- function(ios_gar){
     return(ios_gar)
 }
 
-unify_ios_gar <- function(ios_gar){
+unify_ios_activity_recognition <- function(ios_gar){
     # We only need to unify Google Activity Recognition data for iOS
     # discard rows where activities column is blank
     ios_gar <- ios_gar[-which(ios_gar$activities == ""), ]
@@ -138,7 +138,7 @@ unify_ios_conversation <- function(conversation){
 }
 
 # This function is used in download_dataset.R
-unify_raw_data <- function(dbEngine, table, start_datetime_utc, end_datetime_utc, aware_multiplatform_tables, unifiable_tables, device_ids, platforms){
+unify_raw_data <- function(dbEngine, sensor_table, sensor, start_datetime_utc, end_datetime_utc, aware_multiplatform_tables, device_ids, platforms){
   # If platforms is 'multiple', fetch each device_id's platform from aware_device, otherwise, use those given by the user
   if(length(platforms) == 1 && platforms == "multiple")
       devices_platforms <- dbGetQuery(dbEngine, paste0("SELECT device_id,brand FROM aware_device WHERE device_id IN ('", paste0(device_ids, collapse = "','"), "')")) %>% 
@@ -147,8 +147,9 @@ unify_raw_data <- function(dbEngine, table, start_datetime_utc, end_datetime_utc
       devices_platforms <- data.frame(device_id = device_ids, platform = platforms)
 
   # Get existent tables in database
-  available_tables_in_db <- dbGetQuery(dbEngine, paste0("SELECT table_name FROM information_schema.tables WHERE table_type = 'base table' AND table_schema='", dbGetInfo(dbEngine)$dbname,"'")) %>% pull(table_name)
-  
+  available_tables_in_db <- dbGetQuery(dbEngine, paste0("SELECT table_name FROM information_schema.tables WHERE table_schema='", dbGetInfo(dbEngine)$dbname,"'"))[[1]]
+  if(!any(sensor_table %in% available_tables_in_db))
+    stop(paste0("You requested data from these table(s) ", paste0(sensor_table, collapse=", "), " but they don't exist in your database ", dbGetInfo(dbEngine)$dbname))
   # Parse the table names for activity recognition and conversation plugins because they are different between android and ios
   ar_tables <- setNames(aware_multiplatform_tables[1:2], c("android", "ios"))
   conversation_tables <- setNames(aware_multiplatform_tables[3:4], c("android", "ios"))
@@ -160,17 +161,19 @@ unify_raw_data <- function(dbEngine, table, start_datetime_utc, end_datetime_utc
     platform <- row$platform
     
     # Handle special cases when tables for the same sensor have different names for Android and iOS (AR and conversation)
-    if(table %in% ar_tables)
+    if(length(sensor_table) == 1)
+        table <- sensor_table
+    else if(all(sensor_table == ar_tables))
       table <- ar_tables[[platform]]
-    else if(table %in% conversation_tables)
+    else if(all(sensor_table == conversation_tables))
       table <- conversation_tables[[platform]]
 
     if(table %in% available_tables_in_db){
       query <- paste0("SELECT * FROM ", table, " WHERE device_id IN ('", device_id, "')")
-      if("timestamp" %in% available_columns && !(is.na(start_datetime_utc)) && !(is.na(end_datetime_utc)) && start_datetime_utc < end_datetime_utc){
+      if(!(is.na(start_datetime_utc)) && !(is.na(end_datetime_utc)) && start_datetime_utc < end_datetime_utc){
         query <- paste0(query, "AND timestamp BETWEEN 1000*UNIX_TIMESTAMP('", start_datetime_utc, "') AND 1000*UNIX_TIMESTAMP('", end_datetime_utc, "')")
       }
-      sensor_data <- unify_data(dbGetQuery(dbEngine, query), table, platform, unifiable_tables)
+      sensor_data <- unify_data(dbGetQuery(dbEngine, query), sensor, platform)
       participants_sensordata <- append(participants_sensordata, list(sensor_data))
     }else{
       warning(paste0("Missing ", table, " table. We unified the data from ", paste0(devices_platforms$device_id, collapse = " and "), " but without records from this missing table for ", device_id))
@@ -182,25 +185,16 @@ unify_raw_data <- function(dbEngine, table, start_datetime_utc, end_datetime_utc
 }
 
 # This function is used in unify_ios_android.R and unify_raw_data function
-unify_data <- function(sensor_data, sensor, platform, unifiable_sensors){
-    if(sensor == unifiable_sensors$calls){
-        if(platform == "ios"){
-            sensor_data = unify_ios_calls(sensor_data)
-        }
-        # android calls remain unchanged
-    } else if(sensor == unifiable_sensors$battery){
-        if(platform == "ios"){
-            sensor_data = unify_ios_battery(sensor_data)
-        }
-        # android battery remains unchanged
-    } else if(sensor == unifiable_sensors$ios_activity_recognition){
-        sensor_data = unify_ios_gar(sensor_data)
-    } else if(sensor == unifiable_sensors$screen){
-        if(platform == "ios"){
-            sensor_data = unify_ios_screen(sensor_data)
-        }
-        # android screen remains unchanged
-    } else if(sensor == unifiable_sensors$ios_conversation){
+unify_data <- function(sensor_data, sensor, platform){
+    if(sensor == "phone_calls" & platform == "ios"){
+        sensor_data = unify_ios_calls(sensor_data)
+    } else if(sensor == "phone_battery" & platform == "ios"){
+        sensor_data = unify_ios_battery(sensor_data)
+    } else if(sensor == "phone_activity_recognition" & platform == "ios"){
+        sensor_data = unify_ios_activity_recognition(sensor_data)
+    } else if(sensor == "phone_screen" & platform == "ios"){
+        sensor_data = unify_ios_screen(sensor_data)
+    } else if(sensor == "phone_conversation" & platform == "ios"){
         sensor_data = unify_ios_conversation(sensor_data)
     }
     return(sensor_data)

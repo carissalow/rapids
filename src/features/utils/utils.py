@@ -74,7 +74,7 @@ def fetch_provider_features(provider, provider_key, sensor_key, sensor_data_file
     sensor_features = pd.DataFrame(columns=["local_segment"])
     day_segments_labels = pd.read_csv(day_segments_file, header=0)
     if "FEATURES" not in provider:
-        raise ValueError("Provider config[{}][PROVIDERS][{}] is missing a FEATURES attribute in config.yaml".format(sensor_key.upper(), provider_key))
+        raise ValueError("Provider config[{}][PROVIDERS][{}] is missing a FEATURES attribute in config.yaml".format(sensor_key.upper(), provider_key.upper()))
 
     if provider["COMPUTE"] == True:
 

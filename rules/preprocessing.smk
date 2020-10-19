@@ -29,10 +29,10 @@ rule download_dataset:
         "data/external/{pid}"
     params:
         group = config["DOWNLOAD_DATASET"]["GROUP"],
-        table = "{sensor}",
+        sensor = "{sensor}",
+        table = lambda wildcards: config[str(wildcards.sensor).upper()]["DB_TABLE"],
         timezone = config["TIMEZONE"],
-        aware_multiplatform_tables = config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "," + config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"] + "," + config["CONVERSATION"]["DB_TABLE"]["ANDROID"] + "," + config["CONVERSATION"]["DB_TABLE"]["IOS"],
-        unifiable_sensors = {"calls": config["CALLS"]["DB_TABLE"], "battery": config["BATTERY"]["DB_TABLE"], "screen": config["SCREEN"]["DB_TABLE"], "ios_activity_recognition": config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"], "ios_conversation": config["CONVERSATION"]["DB_TABLE"]["IOS"]}
+        aware_multiplatform_tables = config["PHONE_ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "," + config["PHONE_ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"] + "," + config["PHONE_CONVERSATION"]["DB_TABLE"]["ANDROID"] + "," + config["PHONE_CONVERSATION"]["DB_TABLE"]["IOS"],
     output:
         "data/raw/{pid}/{sensor}_raw.csv"
     script:
@@ -50,35 +50,23 @@ rule compute_day_segments:
     script:
         "../src/data/compute_day_segments.py"
 
-PHONE_SENSORS = []
-PHONE_SENSORS.extend([config["MESSAGES"]["DB_TABLE"], config["CALLS"]["DB_TABLE"], config["LOCATIONS"]["DB_TABLE"], config["BLUETOOTH"]["DB_TABLE"], config["BATTERY"]["DB_TABLE"], config["SCREEN"]["DB_TABLE"], config["LIGHT"]["DB_TABLE"], config["ACCELEROMETER"]["DB_TABLE"], config["APPLICATIONS_FOREGROUND"]["DB_TABLE"], config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]])
-PHONE_SENSORS.extend(config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"])
-
-if len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) > 0:
-    PHONE_SENSORS.append(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"])
-if len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) > 0:
-    PHONE_SENSORS.append(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"])
-
-
-rule readable_datetime:
+rule phone_readable_datetime:
     input:
-        sensor_input = "data/raw/{pid}/{sensor}_raw.csv",
+        sensor_input = "data/raw/{pid}/phone_{sensor}_raw.csv",
         day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
         timezones = None,
         fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
         day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
-    wildcard_constraints:
-        sensor = '(' + '|'.join([re.escape(x) for x in PHONE_SENSORS]) + ')' # only process smartphone sensors, not fitbit
     output:
-        "data/raw/{pid}/{sensor}_with_datetime.csv"
+        "data/raw/{pid}/phone_{sensor}_with_datetime.csv"
     script:
         "../src/data/readable_datetime.R"
 
 rule phone_sensed_bins:
     input:
-        all_sensors =  optional_phone_sensed_bins_input
+        all_sensors = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor = map(str.lower, config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"]))
     params:
         bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"]
     output:
@@ -88,7 +76,7 @@ rule phone_sensed_bins:
 
 rule phone_sensed_timestamps:
     input:
-        all_sensors = optional_phone_sensed_timestamps_input
+        all_sensors = expand("data/raw/{{pid}}/{sensor}_raw.csv", sensor = map(str.lower, config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"]))
     output:
         "data/interim/{pid}/phone_sensed_timestamps.csv"
     script:
@@ -112,55 +100,50 @@ rule unify_ios_android:
         participant_info = "data/external/{pid}"
     params:
         sensor = "{sensor}",
-        unifiable_sensors = {"calls": config["CALLS"]["DB_TABLE"], "battery": config["BATTERY"]["DB_TABLE"], "screen": config["SCREEN"]["DB_TABLE"], "ios_activity_recognition": config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"], "ios_conversation": config["CONVERSATION"]["DB_TABLE"]["IOS"]}
     output:
         "data/raw/{pid}/{sensor}_with_datetime_unified.csv"
     script:
         "../src/data/unify_ios_android.R"
 
-rule process_location_types:
+rule process_phone_location_types:
     input:
-        locations = "data/raw/{pid}/{sensor}_raw.csv",
+        locations = "data/raw/{pid}/phone_locations_raw.csv",
         phone_sensed_timestamps = "data/interim/{pid}/phone_sensed_timestamps.csv",
     params:
-        consecutive_threshold = config["LOCATIONS"]["FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD"],
-        time_since_valid_location = config["LOCATIONS"]["FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION"],
-        locations_to_use = "{locations_to_use}"
-    wildcard_constraints:
-        locations_to_use = '(ALL|GPS|FUSED_RESAMPLED)'
+        consecutive_threshold = config["PHONE_LOCATIONS"]["FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD"],
+        time_since_valid_location = config["PHONE_LOCATIONS"]["FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION"],
+        locations_to_use = config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"]
     output:
-        "data/interim/{pid}/{sensor}_processed_{locations_to_use}.csv"
+        "data/interim/{pid}/phone_locations_processed.csv"
     script:
         "../src/data/process_location_types.R"
 
 rule readable_datetime_location_processed:
     input:
-        sensor_input = expand("data/interim/{{pid}}/{sensor}_processed_{locations_to_use}.csv", sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]),
+        sensor_input = "data/interim/{pid}/phone_locations_processed.csv",
         day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
         timezones = None,
         fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
         day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
-    wildcard_constraints:
-        locations_to_use = '(ALL|GPS|FUSED_RESAMPLED)'
     output:
-        expand("data/interim/{{pid}}/{sensor}_processed_{locations_to_use}_with_datetime.csv", sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"])
+        "data/interim/{pid}/phone_locations_processed_with_datetime.csv"
     script:
         "../src/data/readable_datetime.R"
 
-rule application_genres:
+rule phone_application_categories:
     input:
-        "data/raw/{pid}/{sensor}_with_datetime.csv"
+        "data/raw/{pid}/phone_applications_foreground_with_datetime.csv"
     params:
-        catalogue_source = config["APPLICATION_GENRES"]["CATALOGUE_SOURCE"],
-        catalogue_file = config["APPLICATION_GENRES"]["CATALOGUE_FILE"],
-        update_catalogue_file = config["APPLICATION_GENRES"]["UPDATE_CATALOGUE_FILE"],
-        scrape_missing_genres = config["APPLICATION_GENRES"]["SCRAPE_MISSING_GENRES"]
+        catalogue_source = config["PHONE_APPLICATIONS_FOREGROUND"]["APPLICATION_CATEGORIES"]["CATALOGUE_SOURCE"],
+        catalogue_file = config["PHONE_APPLICATIONS_FOREGROUND"]["APPLICATION_CATEGORIES"]["CATALOGUE_FILE"],
+        update_catalogue_file = config["PHONE_APPLICATIONS_FOREGROUND"]["APPLICATION_CATEGORIES"]["UPDATE_CATALOGUE_FILE"],
+        scrape_missing_genres = config["PHONE_APPLICATIONS_FOREGROUND"]["APPLICATION_CATEGORIES"]["SCRAPE_MISSING_CATEGORIES"]
     output:
-        "data/raw/{pid}/{sensor}_with_datetime_with_genre.csv"
+        "data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv"
     script:
-        "../src/data/application_genres.R"
+        "../src/data/application_categories.R"
 
 rule fitbit_heartrate_with_datetime:
     input:
@@ -196,11 +179,3 @@ rule fitbit_sleep_with_datetime:
         intraday_data = "data/raw/{pid}/fitbit_sleep_intraday_with_datetime.csv"
     script:
         "../src/data/fitbit_readable_datetime.py"
-
-rule join_wifi_tables:
-    input: 
-        unpack(optional_wifi_input)
-    output:
-        "data/raw/{pid}/wifi_with_datetime_visibleandconnected.csv"
-    script:
-        "../src/data/join_visible_and_connected_wifi.R"

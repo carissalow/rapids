@@ -40,9 +40,9 @@ is_multiplaform_participant <- function(dbEngine, device_ids, platforms){
 participant <- snakemake@input[[1]]
 group <- snakemake@params[["group"]]
 table <- snakemake@params[["table"]]
+sensor <- snakemake@params[["sensor"]]
 timezone <- snakemake@params[["timezone"]]
 aware_multiplatform_tables <- str_split(snakemake@params[["aware_multiplatform_tables"]], ",")[[1]]
-unifiable_tables = snakemake@params[["unifiable_sensors"]]
 sensor_file <- snakemake@output[[1]]
 
 device_ids <- strsplit(readLines(participant, n=1), ",")[[1]]
@@ -58,30 +58,26 @@ end_datetime_utc = format(as.POSIXct(paste0(end_date, " 23:59:59"),format="%Y/%m
 
 dbEngine <- dbConnect(MySQL(), default.file = "./.env", group = group)
 
-# Get existent columns in table
-available_columns <- colnames(dbGetQuery(dbEngine, paste0("SELECT * FROM ", table, " LIMIT 1")))
-
-if("device_id" %in% available_columns){
-  if(is_multiplaform_participant(dbEngine, device_ids, platforms)){
-    sensor_data <- unify_raw_data(dbEngine, table, start_datetime_utc, end_datetime_utc, aware_multiplatform_tables, unifiable_tables, device_ids, platforms)
-  }else {
-    query <- paste0("SELECT * FROM ", table, " WHERE device_id IN ('", paste0(device_ids, collapse = "','"), "')")
-    if("timestamp" %in% available_columns && !(is.na(start_datetime_utc)) && !(is.na(end_datetime_utc)) && start_datetime_utc < end_datetime_utc)
-      query <- paste0(query, "AND timestamp BETWEEN 1000*UNIX_TIMESTAMP('", start_datetime_utc, "') AND 1000*UNIX_TIMESTAMP('", end_datetime_utc, "')")
-    sensor_data <- dbGetQuery(dbEngine, query)
+if(is_multiplaform_participant(dbEngine, device_ids, platforms)){
+  sensor_data <- unify_raw_data(dbEngine, table, sensor, start_datetime_utc, end_datetime_utc, aware_multiplatform_tables, device_ids, platforms)
+}else {
+  # table has two elements for conversation and activity recognition (they store data on a different table for ios and android)
+  if(length(table) > 1){
+    table <- table[[toupper(platforms[1])]]
   }
-  
-  if("timestamp" %in% available_columns)
-    sensor_data <- sensor_data %>% arrange(timestamp)
-  
-  # Unify device_id
-  sensor_data <- sensor_data %>% mutate(device_id = unified_device_id)
-  
-  # Droping duplicates on all columns except for _id or id
-  sensor_data <- sensor_data %>% distinct(!!!syms(setdiff(names(sensor_data), c("_id", "id"))))
-  
-} else 
-    stop(paste0("Table ", table, "does not have a device_id column (Aware ID) to link its data to a participant"))
+  query <- paste0("SELECT * FROM ", table, " WHERE device_id IN ('", paste0(device_ids, collapse = "','"), "')")
+  if(!(is.na(start_datetime_utc)) && !(is.na(end_datetime_utc)) && start_datetime_utc < end_datetime_utc)
+    query <- paste0(query, "AND timestamp BETWEEN 1000*UNIX_TIMESTAMP('", start_datetime_utc, "') AND 1000*UNIX_TIMESTAMP('", end_datetime_utc, "')")
+  sensor_data <- dbGetQuery(dbEngine, query)
+}
+
+sensor_data <- sensor_data %>% arrange(timestamp)
+
+# Unify device_id
+sensor_data <- sensor_data %>% mutate(device_id = unified_device_id)
+
+# Droping duplicates on all columns except for _id or id
+sensor_data <- sensor_data %>% distinct(!!!syms(setdiff(names(sensor_data), c("_id", "id"))))
 
 write_csv(sensor_data, sensor_file)
 dbDisconnect(dbEngine)

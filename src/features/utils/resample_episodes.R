@@ -1,6 +1,8 @@
 source("renv/activate.R")
 library("dplyr")
 library("tidyr")
+library("tibble")
+options(scipen=999)
 
 # Using mostly indeixng instead of tidyr because is faster
 resampled_episodes <- read.csv(snakemake@input[[1]]) 

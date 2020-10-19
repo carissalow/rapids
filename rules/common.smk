@@ -14,68 +14,19 @@ def infer_participant_platform(participant_file):
 
     return platform
 
-# Preprocessing.smk ####################################################################################################
-
-def optional_phone_sensed_bins_input(wildcards):
-    platform = infer_participant_platform("data/external/"+wildcards.pid)
-    
-    if platform == "android":
-        tables_platform = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]]] # for android, discard any ios tables that may exist
-    elif platform == "ios":
-        tables_platform = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"]]] # for ios, discard any android tables that may exist
-
-    return expand("data/raw/{{pid}}/{table}_with_datetime.csv", table = tables_platform)
-
-def optional_phone_sensed_timestamps_input(wildcards):
-    platform = infer_participant_platform("data/external/"+wildcards.pid)
-    
-    if platform == "android":
-        tables_platform = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]]] # for android, discard any ios tables that may exist
-    elif platform == "ios":
-        tables_platform = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"]]] # for ios, discard any android tables that may exist
-
-    return expand("data/raw/{{pid}}/{table}_raw.csv", table = tables_platform)
-
 # Features.smk #########################################################################################################
 def find_features_files(wildcards):
     feature_files = []
     for provider_key, provider in config[(wildcards.sensor_key).upper()]["PROVIDERS"].items():
         if provider["COMPUTE"]:
-            feature_files.extend(expand("data/interim/{{pid}}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", sensor_key=(wildcards.sensor_key).lower(), language=provider["SRC_LANGUAGE"].lower(), provider_key=provider_key))
+            feature_files.extend(expand("data/interim/{{pid}}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", sensor_key=wildcards.sensor_key.lower(), language=provider["SRC_LANGUAGE"].lower(), provider_key=provider_key.lower()))
     return(feature_files)
-
-def optional_ar_input(wildcards):
-    platform = infer_participant_platform("data/external/"+wildcards.pid)
-    
-    if platform == "android": 
-        return expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"])
-    elif platform == "ios":
-        return expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"])
-
-def optional_conversation_input(wildcards):
-    platform = infer_participant_platform("data/external/"+wildcards.pid)
-
-    if platform == "android":
-        return expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["CONVERSATION"]["DB_TABLE"]["ANDROID"])[0]
-    elif platform == "ios":
-        return expand("data/raw/{{pid}}/{sensor}_with_datetime_unified.csv", sensor=config["CONVERSATION"]["DB_TABLE"]["IOS"])[0]
 
 def optional_steps_sleep_input(wildcards):
     if config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"] == True and config["STEP"]["EXCLUDE_SLEEP"]["TYPE"] == "FITBIT_BASED":
         return  "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv"
     else:
         return []
-
-def optional_wifi_input(wildcards):
-    if len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) > 0 and len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) == 0:
-        return {"visible_access_points": expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"])}
-    elif len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) == 0 and len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) > 0:
-        return {"connected_access_points": expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"])}
-    elif len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) > 0 and len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) > 0:
-        return {"visible_access_points": expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]), "connected_access_points": expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor=config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"])}
-    else:
-        raise ValueError("If you are computing WIFI features you need to provide either VISIBLE_ACCESS_POINTS, CONNECTED_ACCESS_POINTS or both")
-
 
 # Models.smk ###########################################################################################################
 

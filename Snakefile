@@ -13,17 +13,11 @@ if len(config["PIDS"]) == 0:
     raise ValueError("Add participants IDs to PIDS in config.yaml. Remember to create their participant files in data/external")
 
 if config["PHONE_VALID_SENSED_BINS"]["COMPUTE"] or config["PHONE_VALID_SENSED_DAYS"]["COMPUTE"]: # valid sensed bins is necessary for sensed days, so we add these files anyways if sensed days are requested
-    if len(config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"]) == 0:
-            raise ValueError("If you want to compute PHONE_VALID_SENSED_BINS or PHONE_VALID_SENSED_DAYS, you need to add at least one table to [PHONE_VALID_SENSED_BINS][DB_TABLES] in config.yaml")
+    if len(config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"]) == 0:
+            raise ValueError("If you want to compute PHONE_VALID_SENSED_BINS or PHONE_VALID_SENSED_DAYS, you need to add at least one PHONE_SENSOR to [PHONE_VALID_SENSED_BINS][PHONE_SENSORS] in config.yaml")
 
-    pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
-    pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
-    tables_android = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["IOS"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]]] # for android, discard any ios tables that may exist
-    tables_ios = [table for table in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"] if table not in [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"]]] # for ios, discard any android tables that may exist
-
-    for pids,table in zip([pids_android, pids_ios], [tables_android, tables_ios]):
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
+    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=map(str.lower, config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"])))
+    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=map(str.lower, config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"])))
     files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
     files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_timestamps.csv", pid=config["PIDS"]))
 
@@ -33,106 +27,100 @@ if config["PHONE_VALID_SENSED_DAYS"]["COMPUTE"]:
                                 min_valid_hours_per_day=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_HOURS_PER_DAY"],
                                 min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
 
-for provider in config["MESSAGES"]["PROVIDERS"].keys():
-    if config["MESSAGES"]["PROVIDERS"][provider]["COMPUTE"]:
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["MESSAGES"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["MESSAGES"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["MESSAGES"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="MESSAGES".lower()))
-        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="MESSAGES".lower()))
+for provider in config["PHONE_MESSAGES"]["PROVIDERS"].keys():
+    if config["PHONE_MESSAGES"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_messages_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_messages_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_messages_features/phone_messages_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_MESSAGES"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_messages.csv", pid=config["PIDS"]))
 
-for provider in config["CALLS"]["PROVIDERS"].keys():
-    if config["CALLS"]["PROVIDERS"][provider]["COMPUTE"]:
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["CALLS"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["CALLS"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["CALLS"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["CALLS"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="CALLS".lower()))
-        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="CALLS".lower()))
+for provider in config["PHONE_CALLS"]["PROVIDERS"].keys():
+    if config["PHONE_CALLS"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_calls_raw.csv", pid=config["PIDS"], sensor=config["PHONE_CALLS"]["DB_TABLE"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_calls_with_datetime.csv", pid=config["PIDS"], sensor=config["PHONE_CALLS"]["DB_TABLE"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_calls_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["PHONE_CALLS"]["DB_TABLE"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_calls_features/phone_calls_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_CALLS"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_calls.csv", pid=config["PIDS"]))
 
-for provider in config["BLUETOOTH"]["PROVIDERS"].keys():
-    if config["BLUETOOTH"]["PROVIDERS"][provider]["COMPUTE"]:
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["BLUETOOTH"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["BLUETOOTH"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["BLUETOOTH"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="BLUETOOTH".lower()))
-        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="BLUETOOTH".lower()))
+for provider in config["PHONE_BLUETOOTH"]["PROVIDERS"].keys():
+    if config["PHONE_BLUETOOTH"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_bluetooth_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_bluetooth_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_bluetooth_features/phone_bluetooth_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_BLUETOOTH"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_bluetooth.csv", pid=config["PIDS"]))
 
-for provider in config["ACTIVITY_RECOGNITION"]["PROVIDERS"].keys():
-    if config["ACTIVITY_RECOGNITION"]["PROVIDERS"][provider]["COMPUTE"]:
-        pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
-        pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
-        
-        for pids,table in zip([pids_android, pids_ios], [config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"], config["ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"]]):
-            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
-            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
-            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=pids, sensor=table))
-        
-        files_to_compute.extend(expand("data/interim/{pid}/activity_recognition_episodes.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/interim/{pid}/activity_recognition_episodes_resampled.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/interim/{pid}/activity_recognition_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["ACTIVITY_RECOGNITION"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="ACTIVITY_RECOGNITION".lower()))
-        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="ACTIVITY_RECOGNITION".lower()))
+for provider in config["PHONE_ACTIVITY_RECOGNITION"]["PROVIDERS"].keys():
+    if config["PHONE_ACTIVITY_RECOGNITION"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_activity_recognition_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_activity_recognition_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_activity_recognition_with_datetime_unified.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_activity_recognition_episodes.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_activity_recognition_episodes_resampled.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_activity_recognition_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_activity_recognition_features/phone_activity_recognition_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_ACTIVITY_RECOGNITION"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_activity_recognition.csv", pid=config["PIDS"]))
 
 
-for provider in config["BATTERY"]["PROVIDERS"].keys():
-    if config["BATTERY"]["PROVIDERS"][provider]["COMPUTE"]:
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["BATTERY"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/interim/{pid}/battery_episodes.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/interim/{pid}/battery_episodes_resampled.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/interim/{pid}/battery_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["SCREEN"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="BATTERY".lower()))
-        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="BATTERY".lower()))
+for provider in config["PHONE_BATTERY"]["PROVIDERS"].keys():
+    if config["PHONE_BATTERY"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_battery_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_battery_episodes.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_battery_episodes_resampled.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_battery_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_battery_features/phone_battery_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_BATTERY"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_battery.csv", pid=config["PIDS"]))
 
 
-for provider in config["SCREEN"]["PROVIDERS"].keys():
-    if config["SCREEN"]["PROVIDERS"][provider]["COMPUTE"]:
-        if config["SCREEN"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"]:
+for provider in config["PHONE_SCREEN"]["PROVIDERS"].keys():
+    if config["PHONE_SCREEN"]["PROVIDERS"][provider]["COMPUTE"]:
+        if "PHONE_SCREEN" in config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"]:
             files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
         else:
-            raise ValueError("Error: Add your screen table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][DB_TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data)")
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SCREEN"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["SCREEN"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["SCREEN"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/interim/{pid}/screen_episodes.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/interim/{pid}/screen_episodes_resampled.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/interim/{pid}/screen_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["SCREEN"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="SCREEN".lower()))
-        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="SCREEN".lower()))
+            raise ValueError("Error: Add PHONE_SCREEN (and as many phone sensor as you have in your database) to [PHONE_VALID_SENSED_BINS][PHONE_SENSORS] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data)")
+        files_to_compute.extend(expand("data/raw/{pid}/phone_screen_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_screen_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_screen_with_datetime_unified.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_screen_episodes.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_screen_episodes_resampled.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_screen_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_screen_features/phone_screen_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_SCREEN"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_screen.csv", pid=config["PIDS"]))
 
-for provider in config["LIGHT"]["PROVIDERS"].keys():
-    if config["LIGHT"]["PROVIDERS"][provider]["COMPUTE"]:
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["LIGHT"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["LIGHT"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["LIGHT"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="LIGHT".lower()))
-        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="LIGHT".lower()))
+for provider in config["PHONE_LIGHT"]["PROVIDERS"].keys():
+    if config["PHONE_LIGHT"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_light_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_light_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_light_features/phone_light_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_LIGHT"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_light.csv", pid=config["PIDS"],))
 
-for provider in config["ACCELEROMETER"]["PROVIDERS"].keys():
-    if config["ACCELEROMETER"]["PROVIDERS"][provider]["COMPUTE"]:
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["ACCELEROMETER"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["ACCELEROMETER"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["ACCELEROMETER"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="ACCELEROMETER".lower()))
-        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="ACCELEROMETER".lower()))
+for provider in config["PHONE_ACCELEROMETER"]["PROVIDERS"].keys():
+    if config["PHONE_ACCELEROMETER"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_accelerometer_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_accelerometer_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_accelerometer_features/phone_accelerometer_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_ACCELEROMETER"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_accelerometer.csv", pid=config["PIDS"]))
 
-for provider in config["APPLICATIONS_FOREGROUND"]["PROVIDERS"].keys():
-    if config["APPLICATIONS_FOREGROUND"]["PROVIDERS"][provider]["COMPUTE"]:
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["APPLICATIONS_FOREGROUND"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["APPLICATIONS_FOREGROUND"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_with_genre.csv", pid=config["PIDS"], sensor=config["APPLICATIONS_FOREGROUND"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["APPLICATIONS_FOREGROUND"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="APPLICATIONS_FOREGROUND".lower()))
-        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="APPLICATIONS_FOREGROUND".lower()))
+for provider in config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"].keys():
+    if config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_applications_foreground_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_applications_foreground_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_applications_foreground_features/phone_applications_foreground_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_applications_foreground.csv", pid=config["PIDS"]))
 
-for provider in config["WIFI"]["PROVIDERS"].keys():
-    if config["WIFI"]["PROVIDERS"][provider]["COMPUTE"]:
-        if len(config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]) > 0:
-            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]))
-            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["WIFI"]["DB_TABLE"]["VISIBLE_ACCESS_POINTS"]))
-            files_to_compute.extend(expand("data/raw/{pid}/{sensor_key}_with_datetime_visibleandconnected.csv", pid=config["PIDS"], sensor_key="WIFI".lower()))
-            files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["WIFI"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="WIFI".lower()))
-            files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="WIFI".lower()))
-        if len(config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]) > 0:
-            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]))
-            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["WIFI"]["DB_TABLE"]["CONNECTED_ACCESS_POINTS"]))
-            files_to_compute.extend(expand("data/raw/{pid}/{sensor_key}_with_datetime_visibleandconnected.csv", pid=config["PIDS"], sensor_key="WIFI".lower()))
-            files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["WIFI"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="WIFI".lower()))
-            files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="WIFI".lower()))
+for provider in config["PHONE_WIFI_VISIBLE"]["PROVIDERS"].keys():
+    if config["PHONE_WIFI_VISIBLE"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_wifi_visible_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_wifi_visible_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_wifi_visible_features/phone_wifi_visible_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_WIFI_VISIBLE"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_wifi_visible.csv", pid=config["PIDS"]))
+
+for provider in config["PHONE_WIFI_CONNECTED"]["PROVIDERS"].keys():
+    if config["PHONE_WIFI_CONNECTED"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_wifi_connected_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_wifi_connected_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_wifi_connected_features/phone_wifi_connected_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_WIFI_CONNECTED"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_wifi_connected.csv", pid=config["PIDS"]))
 
 if config["HEARTRATE"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["HEARTRATE"]["DB_TABLE"]))
@@ -151,31 +139,27 @@ if config["SLEEP"]["COMPUTE"]:
     files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["intraday", "summary"]))
     files_to_compute.extend(expand("data/processed/{pid}/fitbit_sleep_{day_segment}.csv", pid = config["PIDS"], day_segment = config["SLEEP"]["DAY_SEGMENTS"]))
 
-for provider in config["CONVERSATION"]["PROVIDERS"].keys():    
-    if config["CONVERSATION"]["PROVIDERS"][provider]["COMPUTE"]:
-        pids_android = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "android", config["PIDS"]))
-        pids_ios = list(filter(lambda pid: infer_participant_platform("data/external/" + pid) == "ios", config["PIDS"]))
-        for pids,table in zip([pids_android, pids_ios], [config["CONVERSATION"]["DB_TABLE"]["ANDROID"], config["CONVERSATION"]["DB_TABLE"]["IOS"]]):
-            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=pids, sensor=table))
-            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=pids, sensor=table))
-            files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime_unified.csv", pid=pids, sensor=table))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["CONVERSATION"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="CONVERSATION".lower()))
-        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="CONVERSATION".lower()))
+for provider in config["PHONE_CONVERSATION"]["PROVIDERS"].keys():    
+    if config["PHONE_CONVERSATION"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_conversation_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_conversation_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_conversation_with_datetime_unified.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_conversation_features/phone_conversation_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_CONVERSATION"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_conversation.csv", pid=config["PIDS"]))
 
-for provider in config["LOCATIONS"]["PROVIDERS"].keys():
-    if config["LOCATIONS"]["PROVIDERS"][provider]["COMPUTE"]:
-        if config["LOCATIONS"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
-            if config["LOCATIONS"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"]:
+for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
+    if config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["COMPUTE"]:
+        if config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
+            if config["PHONE_LOCATIONS"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"]:
                 files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
             else:
                 raise ValueError("Error: Add your locations table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][DB_TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")
-            
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["LOCATIONS"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=config["LOCATIONS"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor}_processed_{locations_to_use}.csv", pid=config["PIDS"], sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor}_processed_{locations_to_use}_with_datetime.csv", pid=config["PIDS"], sensor=config["LOCATIONS"]["DB_TABLE"], locations_to_use=config["LOCATIONS"]["LOCATIONS_TO_USE"]))
-        files_to_compute.extend(expand("data/interim/{pid}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["LOCATIONS"]["PROVIDERS"][provider]["SRC_LANGUAGE"], provider_key=provider, sensor_key="LOCATIONS".lower()))
-        files_to_compute.extend(expand("data/processed/features/{pid}/{sensor_key}.csv", pid=config["PIDS"], sensor_key="LOCATIONS".lower()))
+
+        files_to_compute.extend(expand("data/raw/{pid}/phone_locations_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_locations_features/phone_locations_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_locations.csv", pid=config["PIDS"]))
 
 # visualization for data exploration
 if config["HEATMAP_FEATURES_CORRELATIONS"]["PLOT"]:
