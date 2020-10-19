@@ -6,12 +6,46 @@ PIDS: [test03, test04,test05, test06]
 DAY_SEGMENTS: &day_segments
   TYPE: FREQUENCY # FREQUENCY, PERIODIC, EVENT
   FILE: "data/external/daysegments_frequency.csv"
+  INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, if set to TRUE we consider day segments back enough in the past as to include the first day of data
+
+# Global timezone
+# Use codes from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+# Double check your code, for example EST is not US Eastern Time.
+TIMEZONE: &timezone
+  America/New_York
+
+DATABASE_GROUP: &database_group
+  MY_GROUP
+
+DOWNLOAD_PARTICIPANTS:
+  IGNORED_DEVICE_IDS: [] # for example "5a1dd68c-6cd1-48fe-ae1e-14344ac5215f"
+  GROUP: *database_group
+
+# Download data config
+DOWNLOAD_DATASET:
+  GROUP: *database_group
+
+# Readable datetime config
+READABLE_DATETIME:
+  FIXED_TIMEZONE: *timezone
 
 PHONE_VALID_SENSED_BINS:
-  DB_TABLES: [bluetooth]
+  COMPUTE: False # This flag is automatically ignored (set to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features
+  BIN_SIZE: &bin_size 5 # (in minutes)
+  # Add as many PHONE sensors as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
+  # If you are extracting screen or Barnett/Doryab location features, PHONE_SCREEN and PHONE_LOCATIONS tables are mandatory.
+  # You can choose any of the keys shown below, just make sure its DB_TABLE exists in your database!
+  # PHONE_MESSAGES, PHONE_CALLS, PHONE_LOCATIONS, PHONE_BLUETOOTH, PHONE_ACTIVITY_RECOGNITION, PHONE_BATTERY, PHONE_SCREEN, PHONE_LIGHT,
+  # PHONE_ACCELEROMETER, PHONE_APPLICATIONS_FOREGROUND, PHONE_WIFI_VISIBLE, PHONE_WIFI_CONNECTED, PHONE_CONVERSATION
+  PHONE_SENSORS: []
+
+PHONE_VALID_SENSED_DAYS:
+  COMPUTE: False
+  MIN_VALID_HOURS_PER_DAY: &min_valid_hours_per_day [16] # (out of 24) MIN_HOURS_PER_DAY
+  MIN_VALID_BINS_PER_HOUR: &min_valid_bins_per_hour [6] # (out of 60min/BIN_SIZE bins)
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
-MESSAGES:
+PHONE_MESSAGES:
   DB_TABLE: messages
   PROVIDERS:
     RAPIDS:
@@ -21,68 +55,163 @@ MESSAGES:
         received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
         sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
       SRC_LANGUAGE: "r"
-      SRC_FOLDER: "rapids" # inside src/features/messages
+      SRC_FOLDER: "rapids" # inside src/features/phone_messages
 
 # Communication call features config, TYPES and FEATURES keys need to match
-CALLS:
+PHONE_CALLS:
   DB_TABLE: calls
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       CALL_TYPES: [missed, incoming, outgoing]
       FEATURES:
         missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
         incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
         outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
       SRC_LANGUAGE: "r"
-      SRC_FOLDER: "rapids" # inside src/features/calls
+      SRC_FOLDER: "rapids" # inside src/features/phone_calls
 
-BLUETOOTH:
+PHONE_LOCATIONS:
+  DB_TABLE: locations
+  LOCATIONS_TO_USE: FUSED_RESAMPLED # ALL, GPS OR FUSED_RESAMPLED  
+  FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
+  FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION: 720 # minutes, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
+  PROVIDERS:
+    DORYAB:
+      COMPUTE: False
+      FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
+      DBSCAN_EPS: 10 # meters
+      DBSCAN_MINSAMPLES: 5
+      THRESHOLD_STATIC : 1 # km/h
+      MAXIMUM_GAP_ALLOWED: 300
+      MINUTES_DATA_USED: False
+      SAMPLING_FREQUENCY: 0
+      SRC_FOLDER: "doryab" # inside src/features/phone_locations
+      SRC_LANGUAGE: "python"
+
+    BARNETT:
+      COMPUTE: False
+      FEATURES: ["hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","circdnrtn","wkenddayrtn"]
+      ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
+      TIMEZONE: *timezone
+      MINUTES_DATA_USED: False # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
+      SRC_FOLDER: "barnett" # inside src/features/phone_locations
+      SRC_LANGUAGE: "r"
+
+PHONE_BLUETOOTH:
   DB_TABLE: bluetooth
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
-      SRC_FOLDER: "rapids" # inside src/features/bluetooth
+      SRC_FOLDER: "rapids" # inside src/features/phone_bluetooth
       SRC_LANGUAGE: "r"
 
-LIGHT:
+
+PHONE_ACTIVITY_RECOGNITION:
+  DB_TABLE: 
+    ANDROID: plugin_google_activity_recognition
+    IOS: plugin_ios_activity_recognition
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["count", "mostcommonactivity", "countuniqueactivities", "durationstationary", "durationmobile", "durationvehicle"]
+      ACTIVITY_CLASSES:
+        STATIONARY: ["still", "tilting"]
+        MOBILE: ["on_foot", "walking", "running", "on_bicycle"]
+        VEHICLE: ["in_vehicle"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_activity_recognition
+      SRC_LANGUAGE: "python"
+
+PHONE_BATTERY:
+  DB_TABLE: battery
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_battery
+      SRC_LANGUAGE: "python"
+
+PHONE_SCREEN:
+  DB_TABLE: screen
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      REFERENCE_HOUR_FIRST_USE: 0
+      IGNORE_EPISODES_SHORTER_THAN: 0 # in minutes, set to 0 to disable
+      IGNORE_EPISODES_LONGER_THAN: 0 # in minutes, set to 0 to disable
+      FEATURES: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"] # "episodepersensedminutes" needs to be added later
+      EPISODE_TYPES: ["unlock"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_screen
+      SRC_LANGUAGE: "python"
+
+PHONE_LIGHT:
   DB_TABLE: light
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
-      SRC_FOLDER: "rapids" # inside src/features/light
+      SRC_FOLDER: "rapids" # inside src/features/phone_light
       SRC_LANGUAGE: "python"
 
-WIFI:
-  DB_TABLE: 
-    VISIBLE_ACCESS_POINTS: "wifi" # if you only have a CONNECTED_ACCESS_POINTS table, set this value to ""
-    CONNECTED_ACCESS_POINTS: "sensor_wifi" # if you only have a VISIBLE_ACCESS_POINTS table, set this value to ""
+PHONE_ACCELEROMETER:
+  DB_TABLE: accelerometer
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
-      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
-      SRC_FOLDER: "rapids" # inside src/features/bluetooth
-      SRC_LANGUAGE: "r"
+      COMPUTE: False
+      FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_accelerometer
+      SRC_LANGUAGE: "python"
+    
+    PANDA:
+      COMPUTE: False
+      VALID_SENSED_MINUTES: False
+      FEATURES:
+        exertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
+        nonexertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
+      SRC_FOLDER: "panda" # inside src/features/phone_accelerometer
+      SRC_LANGUAGE: "python"
 
-APPLICATIONS_FOREGROUND:
+PHONE_APPLICATIONS_FOREGROUND:
   DB_TABLE: applications_foreground
+  APPLICATION_CATEGORIES:
+    CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
+    CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
+    UPDATE_CATALOGUE_FILE: False # if CATALOGUE_SOURCE is equal to FILE, whether or not to update CATALOGUE_FILE, if CATALOGUE_SOURCE is equal to GOOGLE all scraped genres will be saved to CATALOGUE_FILE
+    SCRAPE_MISSING_CATEGORIES: False # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       SINGLE_CATEGORIES: ["all", "email"]
       MULTIPLE_CATEGORIES:
         social: ["socialnetworks", "socialmediatools"]
-        entertainment: ["entertainment", "gamingstrategy"]
-      SINGLE_APPS: ["top1global", "com.facebook.moments"] # There's no entropy for single apps
-      EXCLUDED_CATEGORIES: ["systemapp", "tvvideoapps"]
+        entertainment: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
+      SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
+      EXCLUDED_CATEGORIES: []
       EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
       FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
-      SRC_FOLDER: "rapids" # inside src/features/applications_foreground
+      SRC_FOLDER: "rapids" # inside src/features/phone_applications_foreground
       SRC_LANGUAGE: "python"
 
-CONVERSATION:
+PHONE_WIFI_VISIBLE:
+  DB_TABLE: "wifi"
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_wifi_visible
+      SRC_LANGUAGE: "r"
+
+PHONE_WIFI_CONNECTED:
+  DB_TABLE: "sensor_wifi"
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_wifi_connected
+      SRC_LANGUAGE: "r"
+
+PHONE_CONVERSATION:
   DB_TABLE: 
     ANDROID: plugin_studentlife_audio_android
     IOS: plugin_studentlife_audio
@@ -90,12 +219,79 @@ CONVERSATION:
     RAPIDS:
       COMPUTE: False
       FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
-        "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
-        "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
-        "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
+        "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
+        "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
         "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
         "unknownexpectedfraction","countconversation"]
       RECORDING_MINUTES: 1
       PAUSED_MINUTES : 3
-      SRC_FOLDER: "rapids" # inside src/features/conversation
+      SRC_FOLDER: "rapids" # inside src/features/phone_conversation
       SRC_LANGUAGE: "python"
+
+
+HEARTRATE:
+  COMPUTE: False
+  DB_TABLE: fitbit_data
+  DAY_SEGMENTS: *day_segments
+  SUMMARY_FEATURES: ["restinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. heigh, weight) use with care: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
+  INTRADAY_FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
+
+STEP:
+  COMPUTE: False
+  DB_TABLE: fitbit_data
+  DAY_SEGMENTS: *day_segments
+  EXCLUDE_SLEEP:
+    EXCLUDE: False
+    TYPE: FIXED # FIXED OR FITBIT_BASED (CONFIGURE FITBIT's SLEEP DB_TABLE)
+    FIXED:
+      START: "23:00"
+      END: "07:00"
+  FEATURES:
+    ALL_STEPS: ["sumallsteps", "maxallsteps", "minallsteps", "avgallsteps", "stdallsteps"]
+    SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+    ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+  THRESHOLD_ACTIVE_BOUT: 10 # steps
+  INCLUDE_ZERO_STEP_ROWS: False
+
+SLEEP:
+  COMPUTE: False
+  DB_TABLE: fitbit_data
+  DAY_SEGMENTS: *day_segments
+  SLEEP_TYPES: ["main", "nap", "all"]
+  SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
+
+### Visualizations ################################################################
+HEATMAP_FEATURES_CORRELATIONS:
+  PLOT: False
+  MIN_ROWS_RATIO: 0.5
+  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
+  FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
+  CORR_THRESHOLD: 0.1
+  CORR_METHOD: "pearson" # choose from {"pearson", "kendall", "spearman"}
+
+HISTOGRAM_VALID_SENSED_HOURS:
+  PLOT: False
+  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+
+HEATMAP_DAYS_BY_SENSORS:
+  PLOT: False
+  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+  EXPECTED_NUM_OF_DAYS: -1
+  DB_TABLES: [accelerometer, applications_foreground, battery, bluetooth, calls, light, locations, messages, screen, wifi, sensor_wifi, plugin_google_activity_recognition, plugin_ios_activity_recognition, plugin_studentlife_audio_android, plugin_studentlife_audio]
+
+HEATMAP_SENSED_BINS:
+  PLOT: False
+  BIN_SIZE: *bin_size
+
+OVERALL_COMPLIANCE_HEATMAP:
+  PLOT: False
+  ONLY_SHOW_VALID_DAYS: False
+  EXPECTED_NUM_OF_DAYS: -1
+  BIN_SIZE: *bin_size
+  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+
