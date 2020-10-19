@@ -35,7 +35,7 @@ def chunk_episodes(sensor_episodes):
     sensor_episodes = sensor_episodes.copy()
 
     # Unix timestamp for current segment in milliseconds
-    sensor_episodes[["segment_start_timestamp", "segment_end_timestamp"]] = sensor_episodes["timestamps_segment"].str.split(",", expand=True)
+    sensor_episodes[["segment_start_timestamp", "segment_end_timestamp"]] = sensor_episodes["timestamps_segment"].str.split(",", expand=True).astype(int)
 
     # Compute chunked timestamp
     sensor_episodes["chunked_start_timestamp"] = sensor_episodes[["start_timestamp", "segment_start_timestamp"]].max(axis=1)
