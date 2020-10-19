@@ -102,7 +102,7 @@ PHONE_BLUETOOTH:
   DB_TABLE: bluetooth
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/phone_bluetooth
       SRC_LANGUAGE: "r"
@@ -149,7 +149,7 @@ PHONE_LIGHT:
   DB_TABLE: light
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
       SRC_FOLDER: "rapids" # inside src/features/phone_light
       SRC_LANGUAGE: "python"
