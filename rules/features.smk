@@ -6,28 +6,6 @@ rule join_features_from_providers:
     script:
         "../src/features/join_features_from_providers.R"
 
-rule resample_episodes:
-    input:
-        "data/interim/{pid}/{sensor}_episodes.csv"
-    output:
-        "data/interim/{pid}/{sensor}_episodes_resampled.csv"
-    script:
-        "../src/features/utils/resample_episodes.R"
-
-rule resample_episodes_with_datetime:
-    input:
-        sensor_input = "data/interim/{pid}/{sensor}_episodes_resampled.csv",
-        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
-    params:
-        timezones = None,
-        fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
-        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
-        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
-    output:
-        "data/interim/{pid}/{sensor}_episodes_resampled_with_datetime.csv"
-    script:
-        "../src/data/readable_datetime.R"
-
 rule phone_accelerometer_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_accelerometer_with_datetime.csv",
@@ -234,48 +212,48 @@ rule phone_wifi_visible_r_features:
     script:
         "../src/features/entry.R"
 
-rule fitbit_heartrate_features:
-    input:
-        heartrate_summary_data = "data/raw/{pid}/fitbit_heartrate_summary_with_datetime.csv",
-        heartrate_intraday_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv"
-    params:
-        day_segment = "{day_segment}",
-        summary_features = config["HEARTRATE"]["SUMMARY_FEATURES"],
-        intraday_features = config["HEARTRATE"]["INTRADAY_FEATURES"]
-    output:
-        "data/processed/{pid}/fitbit_heartrate_{day_segment}.csv"
-    script:
-        "../src/features/fitbit_heartrate_features.py"
+# rule fitbit_heartrate_features:
+#     input:
+#         heartrate_summary_data = "data/raw/{pid}/fitbit_heartrate_summary_with_datetime.csv",
+#         heartrate_intraday_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv"
+#     params:
+#         day_segment = "{day_segment}",
+#         summary_features = config["HEARTRATE"]["SUMMARY_FEATURES"],
+#         intraday_features = config["HEARTRATE"]["INTRADAY_FEATURES"]
+#     output:
+#         "data/processed/{pid}/fitbit_heartrate_{day_segment}.csv"
+#     script:
+#         "../src/features/fitbit_heartrate_features.py"
 
-rule fitbit_step_features:
-    input:
-        step_data = "data/raw/{pid}/fitbit_step_intraday_with_datetime.csv",
-        sleep_data = optional_steps_sleep_input
-    params:
-        day_segment = "{day_segment}",
-        features_all_steps = config["STEP"]["FEATURES"]["ALL_STEPS"],
-        features_sedentary_bout = config["STEP"]["FEATURES"]["SEDENTARY_BOUT"],
-        features_active_bout = config["STEP"]["FEATURES"]["ACTIVE_BOUT"],
-        threshold_active_bout = config["STEP"]["THRESHOLD_ACTIVE_BOUT"],
-        include_zero_step_rows = config["STEP"]["INCLUDE_ZERO_STEP_ROWS"],
-        exclude_sleep = config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"],
-        exclude_sleep_type = config["STEP"]["EXCLUDE_SLEEP"]["TYPE"],
-        exclude_sleep_fixed_start = config["STEP"]["EXCLUDE_SLEEP"]["FIXED"]["START"],
-        exclude_sleep_fixed_end = config["STEP"]["EXCLUDE_SLEEP"]["FIXED"]["END"],
-    output:
-        "data/processed/{pid}/fitbit_step_{day_segment}.csv"
-    script:
-        "../src/features/fitbit_step_features.py"
+# rule fitbit_step_features:
+#     input:
+#         step_data = "data/raw/{pid}/fitbit_step_intraday_with_datetime.csv",
+#         sleep_data = optional_steps_sleep_input
+#     params:
+#         day_segment = "{day_segment}",
+#         features_all_steps = config["STEP"]["FEATURES"]["ALL_STEPS"],
+#         features_sedentary_bout = config["STEP"]["FEATURES"]["SEDENTARY_BOUT"],
+#         features_active_bout = config["STEP"]["FEATURES"]["ACTIVE_BOUT"],
+#         threshold_active_bout = config["STEP"]["THRESHOLD_ACTIVE_BOUT"],
+#         include_zero_step_rows = config["STEP"]["INCLUDE_ZERO_STEP_ROWS"],
+#         exclude_sleep = config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"],
+#         exclude_sleep_type = config["STEP"]["EXCLUDE_SLEEP"]["TYPE"],
+#         exclude_sleep_fixed_start = config["STEP"]["EXCLUDE_SLEEP"]["FIXED"]["START"],
+#         exclude_sleep_fixed_end = config["STEP"]["EXCLUDE_SLEEP"]["FIXED"]["END"],
+#     output:
+#         "data/processed/{pid}/fitbit_step_{day_segment}.csv"
+#     script:
+#         "../src/features/fitbit_step_features.py"
 
-rule fitbit_sleep_features:
-    input:
-        sleep_summary_data = "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv",
-        sleep_intraday_data = "data/raw/{pid}/fitbit_sleep_intraday_with_datetime.csv"
-    params:
-        day_segment = "{day_segment}",
-        summary_features = config["SLEEP"]["SUMMARY_FEATURES"],
-        sleep_types = config["SLEEP"]["SLEEP_TYPES"]
-    output:
-        "data/processed/{pid}/fitbit_sleep_{day_segment}.csv"
-    script:
-        "../src/features/fitbit_sleep_features.py"
+# rule fitbit_sleep_features:
+#     input:
+#         sleep_summary_data = "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv",
+#         sleep_intraday_data = "data/raw/{pid}/fitbit_sleep_intraday_with_datetime.csv"
+#     params:
+#         day_segment = "{day_segment}",
+#         summary_features = config["SLEEP"]["SUMMARY_FEATURES"],
+#         sleep_types = config["SLEEP"]["SLEEP_TYPES"]
+#     output:
+#         "data/processed/{pid}/fitbit_sleep_{day_segment}.csv"
+#     script:
+#         "../src/features/fitbit_sleep_features.py"

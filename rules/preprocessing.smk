@@ -3,7 +3,7 @@ rule restore_sql_file:
         sql_file = "data/external/rapids_example.sql",
         db_credentials = ".env"
     params:
-        group = config["DOWNLOAD_PARTICIPANTS"]["GROUP"]
+        group = config["DATABASE_GROUP"]
     output:
         touch("data/interim/restore_sql_file.done")
     script:
@@ -15,28 +15,40 @@ rule create_example_participant_files:
     shell:
         "echo 'a748ee1a-1d0b-4ae9-9074-279a2b6ba524\nandroid\ntest01\n2020/04/23,2020/05/04\n' >> ./data/external/example01 && echo '13dbc8a3-dae3-4834-823a-4bc96a7d459d\nios\ntest02\n2020/04/23,2020/05/04\n' >> ./data/external/example02"
 
-rule download_participants:
-    params:
-        group = config["DOWNLOAD_PARTICIPANTS"]["GROUP"],
-        ignored_device_ids = config["DOWNLOAD_PARTICIPANTS"]["IGNORED_DEVICE_IDS"],
-        timezone = config["TIMEZONE"]
-    priority: 1
-    script:
-        "../src/data/download_participants.R"
+# rule download_participants:
+#     params:
+#         group = config["DOWNLOAD_PARTICIPANTS"]["GROUP"],
+#         ignored_device_ids = config["DOWNLOAD_PARTICIPANTS"]["IGNORED_DEVICE_IDS"],
+#         timezone = config["TIMEZONE"]
+#     priority: 1
+#     script:
+#         "../src/data/download_participants.R"
 
-rule download_dataset:
+rule download_phone_data:
     input:
-        "data/external/{pid}"
+        "data/external/participant_files/{pid}.yaml"
     params:
-        group = config["DOWNLOAD_DATASET"]["GROUP"],
-        sensor = "{sensor}",
-        table = lambda wildcards: config[str(wildcards.sensor).upper()]["DB_TABLE"],
+        source = config["SENSOR_DATA"]["PHONE"]["SOURCE"],
+        sensor = "phone_" + "{sensor}",
+        table = lambda wildcards: config["PHONE_" + str(wildcards.sensor).upper()]["TABLE"],
         timezone = config["TIMEZONE"],
-        aware_multiplatform_tables = config["PHONE_ACTIVITY_RECOGNITION"]["DB_TABLE"]["ANDROID"] + "," + config["PHONE_ACTIVITY_RECOGNITION"]["DB_TABLE"]["IOS"] + "," + config["PHONE_CONVERSATION"]["DB_TABLE"]["ANDROID"] + "," + config["PHONE_CONVERSATION"]["DB_TABLE"]["IOS"],
+        aware_multiplatform_tables = config["PHONE_ACTIVITY_RECOGNITION"]["TABLE"]["ANDROID"] + "," + config["PHONE_ACTIVITY_RECOGNITION"]["TABLE"]["IOS"] + "," + config["PHONE_CONVERSATION"]["TABLE"]["ANDROID"] + "," + config["PHONE_CONVERSATION"]["TABLE"]["IOS"],
     output:
-        "data/raw/{pid}/{sensor}_raw.csv"
+        "data/raw/{pid}/phone_{sensor}_raw.csv"
     script:
-        "../src/data/download_dataset.R"
+        "../src/data/download_phone_data.R"
+
+rule download_fitbit_data:
+    input:
+        "data/external/participant_files/{pid}.yaml"
+    params:
+        source = config["SENSOR_DATA"]["FITBIT"]["SOURCE"],
+        sensor = "fitbit_" + "{sensor}",
+        table = lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"],
+    output:
+        "data/raw/{pid}/fitbit_{sensor}_raw.csv"
+    script:
+        "../src/data/download_fitbit_data.R"
 
 rule compute_day_segments:
     input: 
@@ -55,8 +67,8 @@ rule phone_readable_datetime:
         sensor_input = "data/raw/{pid}/phone_{sensor}_raw.csv",
         day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
-        timezones = None,
-        fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
+        timezones = config["SENSOR_DATA"]["PHONE"]["TIMEZONE"]["TYPE"],
+        fixed_timezone = config["SENSOR_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
         day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
@@ -97,7 +109,7 @@ rule phone_valid_sensed_days:
 rule unify_ios_android:
     input:
         sensor_data = "data/raw/{pid}/{sensor}_with_datetime.csv",
-        participant_info = "data/external/{pid}"
+        participant_info = "data/external/participant_files/{pid}.yaml"
     params:
         sensor = "{sensor}",
     output:
@@ -105,7 +117,7 @@ rule unify_ios_android:
     script:
         "../src/data/unify_ios_android.R"
 
-rule process_phone_location_types:
+rule process_phone_locations_types:
     input:
         locations = "data/raw/{pid}/phone_locations_raw.csv",
         phone_sensed_timestamps = "data/interim/{pid}/phone_sensed_timestamps.csv",
@@ -118,17 +130,39 @@ rule process_phone_location_types:
     script:
         "../src/data/process_location_types.R"
 
-rule readable_datetime_location_processed:
+rule phone_locations_processed_with_datetime:
     input:
         sensor_input = "data/interim/{pid}/phone_locations_processed.csv",
         day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
-        timezones = None,
-        fixed_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
+        timezones = config["SENSOR_DATA"]["PHONE"]["TIMEZONE"]["TYPE"],
+        fixed_timezone = config["SENSOR_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
         day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/interim/{pid}/phone_locations_processed_with_datetime.csv"
+    script:
+        "../src/data/readable_datetime.R"
+
+rule resample_episodes:
+    input:
+        "data/interim/{pid}/{sensor}_episodes.csv"
+    output:
+        "data/interim/{pid}/{sensor}_episodes_resampled.csv"
+    script:
+        "../src/features/utils/resample_episodes.R"
+
+rule resample_episodes_with_datetime:
+    input:
+        sensor_input = "data/interim/{pid}/{sensor}_episodes_resampled.csv",
+        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
+    params:
+        timezones = config["SENSOR_DATA"]["PHONE"]["TIMEZONE"]["TYPE"],
+        fixed_timezone = config["SENSOR_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
+        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+    output:
+        "data/interim/{pid}/{sensor}_episodes_resampled_with_datetime.csv"
     script:
         "../src/data/readable_datetime.R"
 
@@ -145,37 +179,37 @@ rule phone_application_categories:
     script:
         "../src/data/application_categories.R"
 
-rule fitbit_heartrate_with_datetime:
-    input:
-        expand("data/raw/{{pid}}/{fitbit_table}_raw.csv", fitbit_table=config["HEARTRATE"]["DB_TABLE"])
-    params:
-        local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
-        fitbit_sensor = "heartrate"
-    output:
-        summary_data = "data/raw/{pid}/fitbit_heartrate_summary_with_datetime.csv",
-        intraday_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv"
-    script:
-        "../src/data/fitbit_readable_datetime.py"
+# rule fitbit_heartrate_with_datetime:
+#     input:
+#         expand("data/raw/{{pid}}/{fitbit_table}_raw.csv", fitbit_table=config["HEARTRATE"]["TABLE"])
+#     params:
+#         local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
+#         fitbit_sensor = "heartrate"
+#     output:
+#         summary_data = "data/raw/{pid}/fitbit_heartrate_summary_with_datetime.csv",
+#         intraday_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv"
+#     script:
+#         "../src/data/fitbit_readable_datetime.py"
 
-rule fitbit_step_with_datetime:
-    input:
-        expand("data/raw/{{pid}}/{fitbit_table}_raw.csv", fitbit_table=config["STEP"]["DB_TABLE"])
-    params:
-        local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
-        fitbit_sensor = "steps"
-    output:
-        intraday_data = "data/raw/{pid}/fitbit_step_intraday_with_datetime.csv"
-    script:
-        "../src/data/fitbit_readable_datetime.py"
+# rule fitbit_step_with_datetime:
+#     input:
+#         expand("data/raw/{{pid}}/{fitbit_table}_raw.csv", fitbit_table=config["STEP"]["TABLE"])
+#     params:
+#         local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
+#         fitbit_sensor = "steps"
+#     output:
+#         intraday_data = "data/raw/{pid}/fitbit_step_intraday_with_datetime.csv"
+#     script:
+#         "../src/data/fitbit_readable_datetime.py"
 
-rule fitbit_sleep_with_datetime:
-    input:
-        expand("data/raw/{{pid}}/{fitbit_table}_raw.csv", fitbit_table=config["SLEEP"]["DB_TABLE"])
-    params:
-        local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
-        fitbit_sensor = "sleep"
-    output:
-        summary_data = "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv",
-        intraday_data = "data/raw/{pid}/fitbit_sleep_intraday_with_datetime.csv"
-    script:
-        "../src/data/fitbit_readable_datetime.py"
+# rule fitbit_sleep_with_datetime:
+#     input:
+#         expand("data/raw/{{pid}}/{fitbit_table}_raw.csv", fitbit_table=config["SLEEP"]["TABLE"])
+#     params:
+#         local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
+#         fitbit_sensor = "sleep"
+#     output:
+#         summary_data = "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv",
+#         intraday_data = "data/raw/{pid}/fitbit_sleep_intraday_with_datetime.csv"
+#     script:
+#         "../src/data/fitbit_readable_datetime.py"

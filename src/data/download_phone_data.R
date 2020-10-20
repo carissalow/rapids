@@ -4,6 +4,9 @@ library(RMySQL)
 library(stringr)
 library(dplyr)
 library(readr)
+library(yaml)
+library(lubridate)
+options(scipen=999)
 
 validate_deviceid_platforms <- function(device_ids, platforms){
   if(length(device_ids) == 1){
@@ -37,38 +40,57 @@ is_multiplaform_participant <- function(dbEngine, device_ids, platforms){
   return(FALSE)
 }
 
-participant <- snakemake@input[[1]]
-group <- snakemake@params[["group"]]
+get_timestamp_filter <- function(device_ids, participant, timezone){
+    # Read start and end date from the participant file to filter data within that range
+    start_date <- ymd_hms(paste(participant$PHONE$START_DATE,"00:00:00"), tz=timezone, quiet=TRUE)
+    end_date <- ymd_hms(paste(participant$PHONE$END_DATE, "23:59:59"), tz=timezone, quiet=TRUE)
+    start_timestamp = as.numeric(start_date) * 1000
+    end_timestamp = as.numeric(end_date) * 1000
+    if(is.na(start_timestamp)){
+      message(paste("PHONE[START_DATE] was not provided or failed to parse (", participant$PHONE$START_DATE,"), all data for", paste0(device_ids, collapse=","),"is returned"))
+      return("")
+    }else if(is.na(end_timestamp)){
+      message(paste("PHONE[END_DATE] was not provided or failed to parse (", participant$PHONE$END_DATE,"), all data for", paste0(device_ids, collapse=","),"is returned"))
+      return("")
+    } else if(start_timestamp > end_timestamp){
+      stop(paste("Start date has to be before end date in PHONE[TIME_SPAN] (",start_date,",", date(end_date),"), all data for", paste0(device_ids, collapse=","),"is returned"))
+      return("")
+    } else {
+      message(paste("Filtering data between", start_date, "and", end_date, "in", timezone, "for",paste0(device_ids, collapse=",")))
+      return(paste0("AND timestamp BETWEEN ", start_timestamp, " AND ", end_timestamp))
+    }
+}
+
+participant_file <- snakemake@input[[1]]
+source <- snakemake@params[["source"]]
+group <- source$DATABASE_GROUP
 table <- snakemake@params[["table"]]
 sensor <- snakemake@params[["sensor"]]
 timezone <- snakemake@params[["timezone"]]
 aware_multiplatform_tables <- str_split(snakemake@params[["aware_multiplatform_tables"]], ",")[[1]]
 sensor_file <- snakemake@output[[1]]
 
-device_ids <- strsplit(readLines(participant, n=1), ",")[[1]]
+participant <- read_yaml(participant_file)
+if(! "PHONE" %in% names(participant)){
+  stop(paste("The following participant file does not have a PHONE section, create one manually or automatically (see the docs):", participant_file))
+}
+device_ids <- participant$PHONE$DEVICE_IDS
 unified_device_id <- tail(device_ids, 1)
-platforms <- strsplit(readLines(participant, n=2)[[2]], ",")[[1]]
+platforms <- participant$PHONE$PLATFORMS
 validate_deviceid_platforms(device_ids, platforms)
-
-# Read start and end date from the participant file to filter data within that range
-start_date <- strsplit(readLines(participant, n=4)[4], ",")[[1]][1]
-end_date <- strsplit(readLines(participant, n=4)[4], ",")[[1]][2]
-start_datetime_utc = format(as.POSIXct(paste0(start_date, " 00:00:00"),format="%Y/%m/%d %H:%M:%S",origin="1970-01-01",tz=timezone), tz="UTC")
-end_datetime_utc = format(as.POSIXct(paste0(end_date, " 23:59:59"),format="%Y/%m/%d %H:%M:%S",origin="1970-01-01",tz=timezone), tz="UTC")
+timestamp_filter <- get_timestamp_filter(device_ids, participant, timezone)
 
 dbEngine <- dbConnect(MySQL(), default.file = "./.env", group = group)
 
 if(is_multiplaform_participant(dbEngine, device_ids, platforms)){
-  sensor_data <- unify_raw_data(dbEngine, table, sensor, start_datetime_utc, end_datetime_utc, aware_multiplatform_tables, device_ids, platforms)
+  sensor_data <- unify_raw_data(dbEngine, table, sensor, timestamp_filter, aware_multiplatform_tables, device_ids, platforms)
 }else {
   # table has two elements for conversation and activity recognition (they store data on a different table for ios and android)
-  if(length(table) > 1){
+  if(length(table) > 1)
     table <- table[[toupper(platforms[1])]]
-  }
-  query <- paste0("SELECT * FROM ", table, " WHERE device_id IN ('", paste0(device_ids, collapse = "','"), "')")
-  if(!(is.na(start_datetime_utc)) && !(is.na(end_datetime_utc)) && start_datetime_utc < end_datetime_utc)
-    query <- paste0(query, "AND timestamp BETWEEN 1000*UNIX_TIMESTAMP('", start_datetime_utc, "') AND 1000*UNIX_TIMESTAMP('", end_datetime_utc, "')")
-  sensor_data <- dbGetQuery(dbEngine, query)
+  query <- paste0("SELECT * FROM ", table, " WHERE ",source$DEVICE_ID_COLUMN," IN ('", paste0(device_ids, collapse = "','"), "')", timestamp_filter)
+  sensor_data <- dbGetQuery(dbEngine, query) %>%
+    rename(device_id = source$DEVICE_ID_COLUMN)
 }
 
 sensor_data <- sensor_data %>% arrange(timestamp)

@@ -36,9 +36,9 @@ for provider in config["PHONE_MESSAGES"]["PROVIDERS"].keys():
 
 for provider in config["PHONE_CALLS"]["PROVIDERS"].keys():
     if config["PHONE_CALLS"]["PROVIDERS"][provider]["COMPUTE"]:
-        files_to_compute.extend(expand("data/raw/{pid}/phone_calls_raw.csv", pid=config["PIDS"], sensor=config["PHONE_CALLS"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/phone_calls_with_datetime.csv", pid=config["PIDS"], sensor=config["PHONE_CALLS"]["DB_TABLE"]))
-        files_to_compute.extend(expand("data/raw/{pid}/phone_calls_with_datetime_unified.csv", pid=config["PIDS"], sensor=config["PHONE_CALLS"]["DB_TABLE"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_calls_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_calls_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_calls_with_datetime_unified.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_calls_features/phone_calls_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_CALLS"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_calls.csv", pid=config["PIDS"]))
 
@@ -122,23 +122,6 @@ for provider in config["PHONE_WIFI_CONNECTED"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/interim/{pid}/phone_wifi_connected_features/phone_wifi_connected_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_WIFI_CONNECTED"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_wifi_connected.csv", pid=config["PIDS"]))
 
-if config["HEARTRATE"]["COMPUTE"]:
-    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["HEARTRATE"]["DB_TABLE"]))
-    files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
-    files_to_compute.extend(expand("data/processed/{pid}/fitbit_heartrate_{day_segment}.csv", pid = config["PIDS"], day_segment = config["HEARTRATE"]["DAY_SEGMENTS"]))
-
-if config["STEP"]["COMPUTE"]:
-    if config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"] == True and config["STEP"]["EXCLUDE_SLEEP"]["TYPE"] == "FITBIT_BASED":
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary"]))
-    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["STEP"]["DB_TABLE"]))
-    files_to_compute.extend(expand("data/raw/{pid}/fitbit_step_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["intraday"]))
-    files_to_compute.extend(expand("data/processed/{pid}/fitbit_step_{day_segment}.csv", pid = config["PIDS"], day_segment = config["STEP"]["DAY_SEGMENTS"]))
-
-if config["SLEEP"]["COMPUTE"]:
-    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["SLEEP"]["DB_TABLE"]))
-    files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["intraday", "summary"]))
-    files_to_compute.extend(expand("data/processed/{pid}/fitbit_sleep_{day_segment}.csv", pid = config["PIDS"], day_segment = config["SLEEP"]["DAY_SEGMENTS"]))
-
 for provider in config["PHONE_CONVERSATION"]["PROVIDERS"].keys():    
     if config["PHONE_CONVERSATION"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/phone_conversation_raw.csv", pid=config["PIDS"]))
@@ -150,16 +133,40 @@ for provider in config["PHONE_CONVERSATION"]["PROVIDERS"].keys():
 for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
     if config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["COMPUTE"]:
         if config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
-            if config["PHONE_LOCATIONS"]["DB_TABLE"] in config["PHONE_VALID_SENSED_BINS"]["DB_TABLES"]:
+            if "PHONE_LOCATIONS" in config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"]:
                 files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
             else:
-                raise ValueError("Error: Add your locations table (and as many sensor tables as you have) to [PHONE_VALID_SENSED_BINS][DB_TABLES] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")
+                raise ValueError("Error: Add PHONE_LOCATIONS (and as many PHONE_SENSORS as you have) to [PHONE_VALID_SENSED_BINS][PHONE_SENSORS] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")
 
         files_to_compute.extend(expand("data/raw/{pid}/phone_locations_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_features/phone_locations_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_locations.csv", pid=config["PIDS"]))
+
+
+for provider in config["FITBIT_HEARTRATE"]["PROVIDERS"].keys():
+    if config["FITBIT_HEARTRATE"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_raw.csv", pid=config["PIDS"]))
+    # files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
+    # files_to_compute.extend(expand("data/processed/{pid}/fitbit_heartrate_{day_segment}.csv", pid = config["PIDS"], day_segment = config["HEARTRATE"]["DAY_SEGMENTS"]))
+
+for provider in config["FITBIT_STEPS"]["PROVIDERS"].keys():
+    if config["FITBIT_STEPS"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_raw.csv", pid=config["PIDS"]))
+# if config["STEP"]["COMPUTE"]:
+#     if config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"] == True and config["STEP"]["EXCLUDE_SLEEP"]["TYPE"] == "FITBIT_BASED":
+#         files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary"]))
+#     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["STEP"]["TABLE"]))
+#     files_to_compute.extend(expand("data/raw/{pid}/fitbit_step_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["intraday"]))
+#     files_to_compute.extend(expand("data/processed/{pid}/fitbit_step_{day_segment}.csv", pid = config["PIDS"], day_segment = config["STEP"]["DAY_SEGMENTS"]))
+
+for provider in config["FITBIT_SLEEP"]["PROVIDERS"].keys():
+    if config["FITBIT_SLEEP"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_raw.csv", pid=config["PIDS"]))
+#     files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["intraday", "summary"]))
+#     files_to_compute.extend(expand("data/processed/{pid}/fitbit_sleep_{day_segment}.csv", pid = config["PIDS"], day_segment = config["SLEEP"]["DAY_SEGMENTS"]))
+
 
 # visualization for data exploration
 if config["HEATMAP_FEATURES_CORRELATIONS"]["PLOT"]:

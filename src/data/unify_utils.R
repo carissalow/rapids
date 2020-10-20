@@ -138,7 +138,7 @@ unify_ios_conversation <- function(conversation){
 }
 
 # This function is used in download_dataset.R
-unify_raw_data <- function(dbEngine, sensor_table, sensor, start_datetime_utc, end_datetime_utc, aware_multiplatform_tables, device_ids, platforms){
+unify_raw_data <- function(dbEngine, sensor_table, sensor, timestamp_filter, aware_multiplatform_tables, device_ids, platforms){
   # If platforms is 'multiple', fetch each device_id's platform from aware_device, otherwise, use those given by the user
   if(length(platforms) == 1 && platforms == "multiple")
       devices_platforms <- dbGetQuery(dbEngine, paste0("SELECT device_id,brand FROM aware_device WHERE device_id IN ('", paste0(device_ids, collapse = "','"), "')")) %>% 
@@ -169,10 +169,7 @@ unify_raw_data <- function(dbEngine, sensor_table, sensor, start_datetime_utc, e
       table <- conversation_tables[[platform]]
 
     if(table %in% available_tables_in_db){
-      query <- paste0("SELECT * FROM ", table, " WHERE device_id IN ('", device_id, "')")
-      if(!(is.na(start_datetime_utc)) && !(is.na(end_datetime_utc)) && start_datetime_utc < end_datetime_utc){
-        query <- paste0(query, "AND timestamp BETWEEN 1000*UNIX_TIMESTAMP('", start_datetime_utc, "') AND 1000*UNIX_TIMESTAMP('", end_datetime_utc, "')")
-      }
+      query <- paste0("SELECT * FROM ", table, " WHERE device_id IN ('", device_id, "')", timestamp_filter)
       sensor_data <- unify_data(dbGetQuery(dbEngine, query), sensor, platform)
       participants_sensordata <- append(participants_sensordata, list(sensor_data))
     }else{
