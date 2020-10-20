@@ -181,13 +181,13 @@ PHONE_APPLICATIONS_FOREGROUND:
     SCRAPE_MISSING_CATEGORIES: False # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       SINGLE_CATEGORIES: ["all", "email"]
       MULTIPLE_CATEGORIES:
         social: ["socialnetworks", "socialmediatools"]
-        entertainment: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
-      SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
-      EXCLUDED_CATEGORIES: []
+        entertainment: ["entertainment", "gamingstrategy"]
+      SINGLE_APPS: ["top1global", "com.facebook.moments"] # There's no entropy for single apps
+      EXCLUDED_CATEGORIES: ["systemapp", "tvvideoapps"]
       EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
       FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
       SRC_FOLDER: "rapids" # inside src/features/phone_applications_foreground
@@ -197,7 +197,7 @@ PHONE_WIFI_VISIBLE:
   DB_TABLE: "wifi"
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/phone_wifi_visible
       SRC_LANGUAGE: "r"
@@ -206,7 +206,7 @@ PHONE_WIFI_CONNECTED:
   DB_TABLE: "sensor_wifi"
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/phone_wifi_connected
       SRC_LANGUAGE: "r"
