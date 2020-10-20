@@ -85,7 +85,7 @@ def generate_sensor_file_lists(configs):
     exp_str = "tests/data/processed/features/"+segment+"/{pid}/{sensor_key}.csv"
 
     # List of available sensors that can be tested by the testing suite
-    TESTABLE_SENSORS = ['MESSAGES', 'CALLS', 'SCREEN', 'BATTERY', 'BLUETOOTH', 'WIFI', 'LIGHT', 'APPLICATIONS_FOREGROUND', 'ACTIVITY_RECOGNITION', 'CONVERSATION']
+    TESTABLE_SENSORS = ['PHONE_MESSAGES', 'PHONE_CALLS', 'PHONE_SCREEN', 'PHONE_BATTERY', 'PHONE_BLUETOOTH', 'PHONE_WIFI_VISIBLE', 'PHONE_WIFI_CONNECTED', 'PHONE_LIGHT', 'PHONE_APPLICATIONS_FOREGROUND', 'PHONE_ACTIVITY_RECOGNITION', 'PHONE_CONVERSATION']
 
     # Build list of sensors to be tested. 
     sensors = []
