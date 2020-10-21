@@ -64,7 +64,7 @@ cp -r tests/data/raw/* data/raw
 cp -r tests/data/external/* data/external
 
 echo Disabling downloading of dataset...
-sed -e '27,39 s/^/#/' -e  's/rules.download_dataset.output/"data\/raw\/\{pid\}\/\{sensor\}_raw\.csv"/' rules/preprocessing.smk > tmp
+sed -e '27,51 s/^/#/' -e  's/rules.download_dataset.output/"data\/raw\/\{pid\}\/\{sensor\}_raw\.csv"/' rules/preprocessing.smk > tmp
 mv tmp rules/preprocessing.smk
 
 if [ $# -eq 1 ]

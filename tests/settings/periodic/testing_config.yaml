@@ -17,7 +17,7 @@ DATABASE_GROUP: &database_group
 
 PARTICIPANT_FILES: # run snakemake -j1 -R parse_participant_files
   PHONE_SECTION:
-    INCLUDE: TRUE
+    INCLUDE: FALSE
     PARSED_FROM: AWARE_DEVICE_TABLE #AWARE_DEVICE_TABLE or CSV_FILE
     PARSED_SOURCE: *database_group # DB credentials group or CSV file path. If CSV file, it should have: device_id, pid (optional), label (optional), start_date (optional), end_date (optional)
     IGNORED_DEVICE_IDS: []
