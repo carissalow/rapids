@@ -61,7 +61,7 @@ display_usage() {
 
 echo Copying files... 
 cp -r tests/data/raw/* data/raw
-cp tests/data/external/* data/external
+cp -r tests/data/external/* data/external
 
 echo Disabling downloading of dataset...
 sed -e '27,39 s/^/#/' -e  's/rules.download_dataset.output/"data\/raw\/\{pid\}\/\{sensor\}_raw\.csv"/' rules/preprocessing.smk > tmp

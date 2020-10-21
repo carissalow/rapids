@@ -8,33 +8,46 @@ DAY_SEGMENTS: &day_segments
   FILE: "data/external/daysegments_frequency.csv"
   INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, if set to TRUE we consider day segments back enough in the past as to include the first day of data
 
-# Global timezone
-# Use codes from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-# Double check your code, for example EST is not US Eastern Time.
+# Use tz codes from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones. Double check your code, for example EST is not US Eastern Time.
 TIMEZONE: &timezone
   America/New_York
 
 DATABASE_GROUP: &database_group
   MY_GROUP
 
-DOWNLOAD_PARTICIPANTS:
-  IGNORED_DEVICE_IDS: [] # for example "5a1dd68c-6cd1-48fe-ae1e-14344ac5215f"
-  GROUP: *database_group
+PARTICIPANT_FILES: # run snakemake -j1 -R parse_participant_files
+  PHONE_SECTION:
+    INCLUDE: TRUE
+    PARSED_FROM: AWARE_DEVICE_TABLE #AWARE_DEVICE_TABLE or CSV_FILE
+    PARSED_SOURCE: *database_group # DB credentials group or CSV file path. If CSV file, it should have: device_id, pid (optional), label (optional), start_date (optional), end_date (optional)
+    IGNORED_DEVICE_IDS: []
+  FITBIT_SECTION:
+    INCLUDE: FALSE
+    SAME_AS_PHONE: FALSE # If TRUE, all config below is ignored
+    PARSED_FROM: CSV_FILE
+    PARSED_SOURCE: "external/my_fitbit_participants.csv" # CSV file should have: device_id, pid (optional), label (optional), start_date (optional), end_date (optional)
 
-# Download data config
-DOWNLOAD_DATASET:
-  GROUP: *database_group
-
-# Readable datetime config
-READABLE_DATETIME:
-  FIXED_TIMEZONE: *timezone
+SENSOR_DATA:
+  PHONE:
+    SOURCE: 
+      TYPE: DATABASE
+      DATABASE_GROUP: *database_group
+      DEVICE_ID_COLUMN: device_id # column name
+    TIMEZONE: 
+      TYPE: SINGLE # SINGLE or MULTIPLE
+      VALUE: *timezone # IF TYPE=SINGLE, timezone code (e.g. America/New_York, see attribute TIMEZONE above). If TYPE=MULTIPLE, a table in your database with two columns (timestamp, timezone) where timestamp is a unix timestamp and timezone is one of https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  FITBIT:
+    SOURCE: 
+      TYPE: DATABASE # DATABASE or CSV_FILES (set each FITBIT_SENSOR TABLE attribute accordingly)
+      DATABASE_GROUP: *database_group
+      DEVICE_ID_COLUMN: device_id # column name
 
 PHONE_VALID_SENSED_BINS:
   COMPUTE: False # This flag is automatically ignored (set to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features
   BIN_SIZE: &bin_size 5 # (in minutes)
   # Add as many PHONE sensors as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
   # If you are extracting screen or Barnett/Doryab location features, PHONE_SCREEN and PHONE_LOCATIONS tables are mandatory.
-  # You can choose any of the keys shown below, just make sure its DB_TABLE exists in your database!
+  # You can choose any of the keys shown below, just make sure its TABLE exists in your database!
   # PHONE_MESSAGES, PHONE_CALLS, PHONE_LOCATIONS, PHONE_BLUETOOTH, PHONE_ACTIVITY_RECOGNITION, PHONE_BATTERY, PHONE_SCREEN, PHONE_LIGHT,
   # PHONE_ACCELEROMETER, PHONE_APPLICATIONS_FOREGROUND, PHONE_WIFI_VISIBLE, PHONE_WIFI_CONNECTED, PHONE_CONVERSATION
   PHONE_SENSORS: []
@@ -46,7 +59,7 @@ PHONE_VALID_SENSED_DAYS:
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 PHONE_MESSAGES:
-  DB_TABLE: messages
+  TABLE: messages
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -59,7 +72,7 @@ PHONE_MESSAGES:
 
 # Communication call features config, TYPES and FEATURES keys need to match
 PHONE_CALLS:
-  DB_TABLE: calls
+  TABLE: calls
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -72,7 +85,7 @@ PHONE_CALLS:
       SRC_FOLDER: "rapids" # inside src/features/phone_calls
 
 PHONE_LOCATIONS:
-  DB_TABLE: locations
+  TABLE: locations
   LOCATIONS_TO_USE: FUSED_RESAMPLED # ALL, GPS OR FUSED_RESAMPLED  
   FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
   FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION: 720 # minutes, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
@@ -99,7 +112,7 @@ PHONE_LOCATIONS:
       SRC_LANGUAGE: "r"
 
 PHONE_BLUETOOTH:
-  DB_TABLE: bluetooth
+  TABLE: bluetooth
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -109,7 +122,7 @@ PHONE_BLUETOOTH:
 
 
 PHONE_ACTIVITY_RECOGNITION:
-  DB_TABLE: 
+  TABLE: 
     ANDROID: plugin_google_activity_recognition
     IOS: plugin_ios_activity_recognition
   PROVIDERS:
@@ -124,7 +137,7 @@ PHONE_ACTIVITY_RECOGNITION:
       SRC_LANGUAGE: "python"
 
 PHONE_BATTERY:
-  DB_TABLE: battery
+  TABLE: battery
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -133,7 +146,7 @@ PHONE_BATTERY:
       SRC_LANGUAGE: "python"
 
 PHONE_SCREEN:
-  DB_TABLE: screen
+  TABLE: screen
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -146,7 +159,7 @@ PHONE_SCREEN:
       SRC_LANGUAGE: "python"
 
 PHONE_LIGHT:
-  DB_TABLE: light
+  TABLE: light
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -155,7 +168,7 @@ PHONE_LIGHT:
       SRC_LANGUAGE: "python"
 
 PHONE_ACCELEROMETER:
-  DB_TABLE: accelerometer
+  TABLE: accelerometer
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -173,7 +186,7 @@ PHONE_ACCELEROMETER:
       SRC_LANGUAGE: "python"
 
 PHONE_APPLICATIONS_FOREGROUND:
-  DB_TABLE: applications_foreground
+  TABLE: applications_foreground
   APPLICATION_CATEGORIES:
     CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
     CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
@@ -190,11 +203,11 @@ PHONE_APPLICATIONS_FOREGROUND:
       EXCLUDED_CATEGORIES: ["systemapp", "tvvideoapps"]
       EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
       FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_applications_foreground
+      SRC_FOLDER: "rapids" # inside src/features/applications_foreground
       SRC_LANGUAGE: "python"
 
 PHONE_WIFI_VISIBLE:
-  DB_TABLE: "wifi"
+  TABLE: "wifi"
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -203,7 +216,7 @@ PHONE_WIFI_VISIBLE:
       SRC_LANGUAGE: "r"
 
 PHONE_WIFI_CONNECTED:
-  DB_TABLE: "sensor_wifi"
+  TABLE: "sensor_wifi"
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -212,7 +225,7 @@ PHONE_WIFI_CONNECTED:
       SRC_LANGUAGE: "r"
 
 PHONE_CONVERSATION:
-  DB_TABLE: 
+  TABLE: 
     ANDROID: plugin_studentlife_audio_android
     IOS: plugin_studentlife_audio
   PROVIDERS:
@@ -229,36 +242,42 @@ PHONE_CONVERSATION:
       SRC_LANGUAGE: "python"
 
 
-HEARTRATE:
-  COMPUTE: False
-  DB_TABLE: fitbit_data
-  DAY_SEGMENTS: *day_segments
-  SUMMARY_FEATURES: ["restinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. heigh, weight) use with care: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
-  INTRADAY_FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
+FITBIT_HEARTRATE:
+  TABLE: "fitbit_data"
+  PARSE_JSON: TRUE
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      SUMMARY_FEATURES: ["restinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. height, weight) use these with care: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
+      INTRADAY_FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
 
-STEP:
-  COMPUTE: False
-  DB_TABLE: fitbit_data
-  DAY_SEGMENTS: *day_segments
+FITBIT_STEPS:
+  TABLE: fitbit_data
+  PARSE_JSON: TRUE
   EXCLUDE_SLEEP:
     EXCLUDE: False
-    TYPE: FIXED # FIXED OR FITBIT_BASED (CONFIGURE FITBIT's SLEEP DB_TABLE)
+    TYPE: FIXED # FIXED OR FITBIT_BASED (configure FITBIT_SLEEP section)
     FIXED:
       START: "23:00"
       END: "07:00"
-  FEATURES:
-    ALL_STEPS: ["sumallsteps", "maxallsteps", "minallsteps", "avgallsteps", "stdallsteps"]
-    SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
-    ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
-  THRESHOLD_ACTIVE_BOUT: 10 # steps
-  INCLUDE_ZERO_STEP_ROWS: False
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: TRUE
+      FEATURES:
+        ALL_STEPS: ["sumallsteps", "maxallsteps", "minallsteps", "avgallsteps", "stdallsteps"]
+        SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+        ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+      THRESHOLD_ACTIVE_BOUT: 10 # steps
+      INCLUDE_ZERO_STEP_ROWS: False
 
-SLEEP:
-  COMPUTE: False
-  DB_TABLE: fitbit_data
-  DAY_SEGMENTS: *day_segments
-  SLEEP_TYPES: ["main", "nap", "all"]
-  SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
+FITBIT_SLEEP:
+  TABLE: fitbit_data
+  PARSE_JSON: TRUE
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: TRUE
+      SLEEP_TYPES: ["main", "nap", "all"]
+      SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
 
 ### Visualizations ################################################################
 HEATMAP_FEATURES_CORRELATIONS:
