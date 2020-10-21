@@ -244,7 +244,7 @@ PHONE_CONVERSATION:
 
 FITBIT_HEARTRATE:
   TABLE: "fitbit_data"
-  PARSE_JSON: TRUE
+  PARSE_JSON: False
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -253,7 +253,7 @@ FITBIT_HEARTRATE:
 
 FITBIT_STEPS:
   TABLE: fitbit_data
-  PARSE_JSON: TRUE
+  PARSE_JSON: False
   EXCLUDE_SLEEP:
     EXCLUDE: False
     TYPE: FIXED # FIXED OR FITBIT_BASED (configure FITBIT_SLEEP section)
@@ -262,7 +262,7 @@ FITBIT_STEPS:
       END: "07:00"
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE
+      COMPUTE: False
       FEATURES:
         ALL_STEPS: ["sumallsteps", "maxallsteps", "minallsteps", "avgallsteps", "stdallsteps"]
         SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
@@ -272,10 +272,10 @@ FITBIT_STEPS:
 
 FITBIT_SLEEP:
   TABLE: fitbit_data
-  PARSE_JSON: TRUE
+  PARSE_JSON: False
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE
+      COMPUTE: False
       SLEEP_TYPES: ["main", "nap", "all"]
       SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
 
