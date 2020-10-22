@@ -59,7 +59,7 @@ assign_rows_to_segments_frequency <- function(nested_data, nested_timezone, day_
 
 assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, include_past_periodic_segments){
   
-  if(nrow(sensor_data) == 0)
+  if(nrow(sensor_data) == 0 || nrow(day_segments) == 0)
     return(sensor_data %>% mutate(assigned_segments = NA))
   
   if(day_segments_type == "FREQUENCY"){
@@ -134,7 +134,7 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, 
       arrange(timestamp)
 
   } else if ( day_segments_type == "EVENT"){
-    
+
     sensor_data <- sensor_data %>% 
       group_by(local_timezone) %>% 
       nest() %>% 

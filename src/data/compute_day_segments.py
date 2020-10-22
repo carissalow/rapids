@@ -1,4 +1,5 @@
 import pandas as pd
+import warnings
 
 def is_valid_frequency_segments(day_segments, day_segments_file):
     """
@@ -200,5 +201,9 @@ def parse_day_segments(day_segments_file, segments_type, pid):
     return day_segments
 
 final_day_segments = parse_day_segments(snakemake.input[0], snakemake.params["day_segments_type"], snakemake.params["pid"])
+
+if snakemake.params["day_segments_type"] == "EVENT" and final_day_segments.shape[0] == 0:
+    warnings.warn("There are no event day segments for {}. Check your day segment file {}".format(snakemake.params["pid"], snakemake.input[0]))
+
 final_day_segments.to_csv(snakemake.output["segments_file"], index=False)
 pd.DataFrame({"label" : final_day_segments["label"].unique()}).to_csv(snakemake.output["segments_labels_file"], index=False)
