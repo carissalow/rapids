@@ -1,4 +1,5 @@
 import json
+import numpy as np
 import pandas as pd
 from datetime import datetime
 
@@ -28,9 +29,10 @@ def parseCaloriesData(calories_data):
 
             records_intraday.append(row_intraday)
 
-    return pd.DataFrame(data=[], columns=["local_date_time"]), pd.DataFrame(data=records_intraday, columns=CALORIES_INTRADAY_COLUMNS)
+    return pd.DataFrame(data=[], columns=["local_date_time", "timestamp"]), pd.DataFrame(data=records_intraday, columns=CALORIES_INTRADAY_COLUMNS)
 
 table_format = snakemake.params["table_format"]
+timezone = snakemake.params["timezone"]
 
 if table_format == "JSON":
     json_raw = pd.read_csv(snakemake.input[0])
@@ -39,8 +41,10 @@ elif table_format == "CSV":
     summary = pd.read_csv(snakemake.input[0])
     intraday = pd.read_csv(snakemake.input[1])
 
-summary["timestamp"] = (summary["local_date_time"] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s') * 1000
-intraday["timestamp"] = (intraday["local_date_time"] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s') * 1000
+if summary.shape[0] > 0:
+    summary["timestamp"] = summary["local_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
+if intraday.shape[0] > 0:
+    intraday["timestamp"] = intraday["local_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
 
 summary.to_csv(snakemake.output["summary_data"], index=False)
 intraday.to_csv(snakemake.output["intraday_data"], index=False)

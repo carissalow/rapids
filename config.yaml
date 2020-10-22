@@ -42,6 +42,9 @@ SENSOR_DATA:
       TYPE: DATABASE # DATABASE or CSV_FILES (set each FITBIT_SENSOR TABLE attribute accordingly)
       DATABASE_GROUP: *database_group
       DEVICE_ID_COLUMN: device_id # column name
+    TIMEZONE: 
+      TYPE: SINGLE # Fitbit only supports SINGLE timezones
+      VALUE: *timezone # timezone code (e.g. America/New_York, see attribute TIMEZONE above and https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 
 PHONE_VALID_SENSED_BINS:
   COMPUTE: False # This flag is automatically ignored (set to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features
@@ -76,7 +79,7 @@ PHONE_CALLS:
   TABLE: calls
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       CALL_TYPES: [missed, incoming, outgoing]
       FEATURES:
         missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
@@ -128,7 +131,7 @@ PHONE_ACTIVITY_RECOGNITION:
     IOS: plugin_ios_activity_recognition
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["count", "mostcommonactivity", "countuniqueactivities", "durationstationary", "durationmobile", "durationvehicle"]
       ACTIVITY_CLASSES:
         STATIONARY: ["still", "tilting"]
@@ -231,7 +234,7 @@ PHONE_CONVERSATION:
     IOS: plugin_studentlife_audio
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
         "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
         "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
