@@ -44,9 +44,10 @@ rule download_fitbit_data:
     params:
         source = config["SENSOR_DATA"]["FITBIT"]["SOURCE"],
         sensor = "fitbit_" + "{sensor}",
+        type = "{fitbit_data_type}",
         table = lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"],
     output:
-        "data/raw/{pid}/fitbit_{sensor}_raw.csv"
+        "data/raw/{pid}/fitbit_{sensor}_{fitbit_data_type}_raw.csv"
     script:
         "../src/data/download_fitbit_data.R"
 
@@ -179,37 +180,63 @@ rule phone_application_categories:
     script:
         "../src/data/application_categories.R"
 
-# rule fitbit_heartrate_with_datetime:
-#     input:
-#         expand("data/raw/{{pid}}/{fitbit_table}_raw.csv", fitbit_table=config["HEARTRATE"]["TABLE"])
-#     params:
-#         local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
-#         fitbit_sensor = "heartrate"
-#     output:
-#         summary_data = "data/raw/{pid}/fitbit_heartrate_summary_with_datetime.csv",
-#         intraday_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv"
-#     script:
-#         "../src/data/fitbit_readable_datetime.py"
+rule fitbit_parse_heartrate:
+    input:
+        data = expand("data/raw/{{pid}}/fitbit_heartrate_{fitbit_data_type}_raw.csv", fitbit_data_type = (["json"] if config["FITBIT_HEARTRATE"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"]))
+    params:
+        table = config["FITBIT_HEARTRATE"]["TABLE"],
+        table_format = config["FITBIT_HEARTRATE"]["TABLE_FORMAT"]
+    output:
+        summary_data = "data/raw/{pid}/fitbit_heartrate_summary_parsed.csv",
+        intraday_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed.csv"
+    script:
+        "../src/data/fitbit_parse_heartrate.py"
 
-# rule fitbit_step_with_datetime:
-#     input:
-#         expand("data/raw/{{pid}}/{fitbit_table}_raw.csv", fitbit_table=config["STEP"]["TABLE"])
-#     params:
-#         local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
-#         fitbit_sensor = "steps"
-#     output:
-#         intraday_data = "data/raw/{pid}/fitbit_step_intraday_with_datetime.csv"
-#     script:
-#         "../src/data/fitbit_readable_datetime.py"
+rule fitbit_parse_steps:
+    input:
+        data = expand("data/raw/{{pid}}/fitbit_steps_{fitbit_data_type}_raw.csv", fitbit_data_type = (["json"] if config["FITBIT_STEPS"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"]))
+    params:
+        table = config["FITBIT_STEPS"]["TABLE"],
+        table_format = config["FITBIT_STEPS"]["TABLE_FORMAT"]
+    output:
+        summary_data = "data/raw/{pid}/fitbit_steps_summary_parsed.csv",
+        intraday_data = "data/raw/{pid}/fitbit_steps_intraday_parsed.csv"
+    script:
+        "../src/data/fitbit_parse_steps.py"
 
-# rule fitbit_sleep_with_datetime:
-#     input:
-#         expand("data/raw/{{pid}}/{fitbit_table}_raw.csv", fitbit_table=config["SLEEP"]["TABLE"])
-#     params:
-#         local_timezone = config["READABLE_DATETIME"]["FIXED_TIMEZONE"],
-#         fitbit_sensor = "sleep"
-#     output:
-#         summary_data = "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv",
-#         intraday_data = "data/raw/{pid}/fitbit_sleep_intraday_with_datetime.csv"
-#     script:
-#         "../src/data/fitbit_readable_datetime.py"
+rule fitbit_parse_calories:
+    input:
+        data = expand("data/raw/{{pid}}/fitbit_calories_{fitbit_data_type}_raw.csv", fitbit_data_type = (["json"] if config["FITBIT_CALORIES"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"]))
+    params:
+        table = config["FITBIT_CALORIES"]["TABLE"],
+        table_format = config["FITBIT_CALORIES"]["TABLE_FORMAT"]
+    output:
+        summary_data = "data/raw/{pid}/fitbit_calories_summary_parsed.csv",
+        intraday_data = "data/raw/{pid}/fitbit_calories_intraday_parsed.csv"
+    script:
+        "../src/data/fitbit_parse_calories.py"
+
+rule fitbit_parse_sleep:
+    input:
+        data = expand("data/raw/{{pid}}/fitbit_sleep_{fitbit_data_type}_raw.csv", fitbit_data_type = (["json"] if config["FITBIT_SLEEP"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"]))
+    params:
+        table = config["FITBIT_SLEEP"]["TABLE"],
+        table_format = config["FITBIT_SLEEP"]["TABLE_FORMAT"]
+    output:
+        summary_data = "data/raw/{pid}/fitbit_sleep_summary_parsed_episodes.csv",
+        intraday_data = "data/raw/{pid}/fitbit_sleep_intraday_parsed.csv"
+    script:
+        "../src/data/fitbit_parse_sleep.py"
+
+rule fitbit_readable_datetime:
+    input:
+        sensor_input = "data/raw/{pid}/fitbit_{sensor}_{fitbit_data_type}_parsed.csv",
+        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
+    params:
+        fixed_timezone = "UTC",
+        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+    output:
+        "data/raw/{pid}/fitbit_{sensor}_{fitbit_data_type}_parsed_with_datetime.csv"
+    script:
+        "../src/data/readable_datetime.R"

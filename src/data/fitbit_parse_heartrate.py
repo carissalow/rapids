@@ -1,10 +1,12 @@
-import json
+import json, sys
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone
+from math import trunc
 
 
 HR_SUMMARY_COLUMNS = ("device_id",
-                        "local_date",
+                        "local_date_time",
+                        "timestamp",
                         "heartrate_daily_restinghr",
                         "heartrate_daily_caloriesoutofrange",
                         "heartrate_daily_caloriesfatburn",
@@ -12,10 +14,10 @@ HR_SUMMARY_COLUMNS = ("device_id",
                         "heartrate_daily_caloriespeak")
 
 HR_INTRADAY_COLUMNS = ("device_id",
-                        "heartrate", "heartrate_zone",
-                        "local_date_time", "local_date", "local_month", "local_day",
-                        "local_day_of_week", "local_time", "local_hour", "local_minute", 
-                        "local_day_segment")
+                        "heartrate", 
+                        "heartrate_zone",
+                        "local_date_time",
+                        "timestamp")
 
 def parseHeartrateZones(heartrate_data):
     # Get the range of heartrate zones: outofrange, fatburn, cardio, peak
@@ -58,6 +60,7 @@ def parseHeartrateSummaryData(record_summary, device_id, curr_date):
     
     row_summary = (device_id,
                     curr_date,
+                    0,
                     d_resting_heartrate,
                     d_calories_outofrange,
                     d_calories_fatburn,
@@ -68,7 +71,7 @@ def parseHeartrateSummaryData(record_summary, device_id, curr_date):
 
 
 
-def parseHeartrateIntradayData(records_intraday, dataset, device_id, curr_date, heartrate_zones_range, HOUR2EPOCH):
+def parseHeartrateIntradayData(records_intraday, dataset, device_id, curr_date, heartrate_zones_range):
     for data in dataset:
         d_time = datetime.strptime(data["time"], '%H:%M:%S').time()
         d_datetime = datetime.combine(curr_date, d_time)
@@ -83,15 +86,16 @@ def parseHeartrateIntradayData(records_intraday, dataset, device_id, curr_date, 
 
         row_intraday = (device_id,
                         d_hr, d_hrzone,
-                        d_datetime, d_datetime.date(), d_datetime.month, d_datetime.day,
-                        d_datetime.weekday(), d_datetime.time(), d_datetime.hour, d_datetime.minute,
-                        HOUR2EPOCH[d_datetime.hour])
+                        d_datetime,
+                        0)
 
         records_intraday.append(row_intraday)
     return records_intraday
 
+# def append_timestamp(data):
 
-def parseHeartrateData(heartrate_data, HOUR2EPOCH):
+
+def parseHeartrateData(heartrate_data):
     if heartrate_data.empty:
         return pd.DataFrame(columns=HR_SUMMARY_COLUMNS), pd.DataFrame(columns=HR_INTRADAY_COLUMNS)
     device_id = heartrate_data["device_id"].iloc[0]
@@ -109,6 +113,21 @@ def parseHeartrateData(heartrate_data, HOUR2EPOCH):
         records_summary.append(row_summary)
 
         dataset = record["activities-heart-intraday"]["dataset"]
-        records_intraday = parseHeartrateIntradayData(records_intraday, dataset, device_id, curr_date, heartrate_zones_range, HOUR2EPOCH)
+        records_intraday = parseHeartrateIntradayData(records_intraday, dataset, device_id, curr_date, heartrate_zones_range)
 
     return pd.DataFrame(data=records_summary, columns=HR_SUMMARY_COLUMNS), pd.DataFrame(data=records_intraday, columns=HR_INTRADAY_COLUMNS)
+
+table_format = snakemake.params["table_format"]
+
+if table_format == "JSON":
+    json_raw = pd.read_csv(snakemake.input[0])
+    summary, intraday = parseHeartrateData(json_raw)
+elif table_format == "CSV":
+    summary = pd.read_csv(snakemake.input[0])
+    intraday = pd.read_csv(snakemake.input[1])
+
+summary["timestamp"] = (summary["local_date_time"] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s') * 1000
+intraday["timestamp"] = (intraday["local_date_time"] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s') * 1000
+
+summary.to_csv(snakemake.output["summary_data"], index=False)
+intraday.to_csv(snakemake.output["intraday_data"], index=False)

@@ -5,11 +5,9 @@ from datetime import datetime
 
 CALORIES_INTRADAY_COLUMNS = ("device_id",
                                 "level", "mets", "value",
-                                "local_date_time", "local_date", "local_month", "local_day",
-                                "local_day_of_week", "local_time", "local_hour", "local_minute",
-                                "local_day_segment")
+                                "local_date_time", "timestamp")
 
-def parseCaloriesData(calories_data, HOUR2EPOCH):
+def parseCaloriesData(calories_data):
     if calories_data.empty:
         return pd.DataFrame(), pd.DataFrame(columns=CALORIES_INTRADAY_COLUMNS)
     device_id = calories_data["device_id"].iloc[0]
@@ -26,10 +24,23 @@ def parseCaloriesData(calories_data, HOUR2EPOCH):
 
             row_intraday = (device_id,
                             data["level"], data["mets"], data["value"],
-                            d_datetime, d_datetime.date(), d_datetime.month, d_datetime.day,
-                            d_datetime.weekday(), d_datetime.time(), d_datetime.hour, d_datetime.minute,
-                            HOUR2EPOCH[d_datetime.hour])
+                            d_datetime, 0)
 
             records_intraday.append(row_intraday)
 
-    return pd.DataFrame(), pd.DataFrame(data=records_intraday, columns=CALORIES_INTRADAY_COLUMNS)
+    return pd.DataFrame(data=[], columns=["local_date_time"]), pd.DataFrame(data=records_intraday, columns=CALORIES_INTRADAY_COLUMNS)
+
+table_format = snakemake.params["table_format"]
+
+if table_format == "JSON":
+    json_raw = pd.read_csv(snakemake.input[0])
+    summary, intraday = parseCaloriesData(json_raw)
+elif table_format == "CSV":
+    summary = pd.read_csv(snakemake.input[0])
+    intraday = pd.read_csv(snakemake.input[1])
+
+summary["timestamp"] = (summary["local_date_time"] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s') * 1000
+intraday["timestamp"] = (intraday["local_date_time"] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s') * 1000
+
+summary.to_csv(snakemake.output["summary_data"], index=False)
+intraday.to_csv(snakemake.output["intraday_data"], index=False)

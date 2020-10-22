@@ -12,14 +12,13 @@ SLEEP_SUMMARY_COLUMNS_V1_2 = ("device_id", "efficiency",
                                 "minutes_after_wakeup", "minutes_asleep", "minutes_awake", "minutes_to_fall_asleep", "minutes_in_bed",
                                 "is_main_sleep", "type",
                                 "local_start_date_time", "local_end_date_time",
-                                "local_start_date", "local_end_date",
-                                "local_start_day_segment", "local_end_day_segment")
+                                "start_timestamp", "end_timestamp")
 SLEEP_SUMMARY_COLUMNS_V1 = SLEEP_SUMMARY_COLUMNS_V1_2 + ("count_awake", "duration_awake", "count_awakenings", "count_restless", "duration_restless")
 
 SLEEP_INTRADAY_COLUMNS = ("device_id",
                             # For "classic" type, original_level is one of {"awake", "restless", "asleep"}
                             # For "stages" type, original_level is one of {"wake", "deep", "light", "rem"}
-                            "original_level",
+                            "level",
                             # For "classic" type, unified_level is one of {0, 1} where 0: awake {"awake" + "restless"}, 1: asleep {"asleep"}
                             # For "stages" type, unified_level is one of {0, 1} where 0: awake {"wake"}, 1: asleep {"deep" + "light" + "rem"}
                             "unified_level",
@@ -27,9 +26,8 @@ SLEEP_INTRADAY_COLUMNS = ("device_id",
                             "is_main_sleep", 
                             # one of {"classic", "stages"}
                             "type",
-                            "local_date_time", "local_date", "local_month", "local_day",
-                            "local_day_of_week", "local_time", "local_hour", "local_minute",
-                            "local_day_segment")
+                            "local_date_time",
+                            "timestamp")
 
 def mergeLongAndShortData(data_summary):
     longData = pd.DataFrame(columns=['dateTime', 'level', 'seconds'])
@@ -76,7 +74,7 @@ def classicData1min(data_summary):
     # print(dataList)
     return dataList
 # Parse one record for sleep API version 1
-def parseOneRecordForV1(record, device_id, d_is_main_sleep, records_summary, records_intraday, HOUR2EPOCH):
+def parseOneRecordForV1(record, device_id, d_is_main_sleep, records_summary, records_intraday):
 
     # Summary data
     sleep_record_type = "classic"
@@ -89,7 +87,7 @@ def parseOneRecordForV1(record, device_id, d_is_main_sleep, records_summary, rec
                     d_is_main_sleep, sleep_record_type,
                     d_start_datetime, d_end_datetime,
                     d_start_datetime.date(), d_end_datetime.date(),
-                    HOUR2EPOCH[d_start_datetime.hour], HOUR2EPOCH[d_end_datetime.hour],
+                    0,0,
                     record["awakeCount"], record["awakeDuration"], record["awakeningsCount"],
                     record["restlessCount"], record["restlessDuration"])
     
@@ -111,23 +109,17 @@ def parseOneRecordForV1(record, device_id, d_is_main_sleep, records_summary, rec
         # (1: "asleep", 2: "restless", 3: "awake")
         d_original_level = SLEEP_CODE2LEVEL[int(data["value"])-1]
 
-        # unified_level summarises original_level (we came up with this classification)
-        # 0 is awake, 1 is asleep
-        # {"awake" + "restless"} are set to 0 and {"asleep"} is set to 1
-        d_unified_level = 0 if d_original_level == "awake" or d_original_level == "restless" else 1
 
         row_intraday = (device_id,
-                        d_original_level, d_unified_level, d_is_main_sleep, sleep_record_type,
-                        d_datetime, d_datetime.date(), d_datetime.month, d_datetime.day,
-                        d_datetime.weekday(), d_datetime.time(), d_datetime.hour, d_datetime.minute,
-                        HOUR2EPOCH[d_datetime.hour])
+                        d_original_level, -1, d_is_main_sleep, sleep_record_type,
+                        d_datetime, 0)
 
         records_intraday.append(row_intraday)
 
     return records_summary, records_intraday
 
 # Parse one record for sleep API version 1.2
-def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, records_intraday, HOUR2EPOCH):
+def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, records_intraday):
     
     # Summary data
     sleep_record_type = record['type']
@@ -139,8 +131,7 @@ def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, re
                     record["minutesAfterWakeup"], record["minutesAsleep"], record["minutesAwake"], record["minutesToFallAsleep"], record["timeInBed"],
                     d_is_main_sleep, sleep_record_type,
                     d_start_datetime, d_end_datetime,
-                    d_start_datetime.date(), d_end_datetime.date(),
-                    HOUR2EPOCH[d_start_datetime.hour], HOUR2EPOCH[d_end_datetime.hour])
+                    0,0)
     
     records_summary.append(row_summary)
     if sleep_record_type == 'classic':
@@ -160,13 +151,9 @@ def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, re
 
                 d_original_level = data["level"]
 
-                d_unified_level = 0 if d_original_level == "awake" or d_original_level == "restless" else 1
-
                 row_intraday = (device_id,
-                    d_original_level, d_unified_level, d_is_main_sleep, sleep_record_type,
-                    d_datetime, d_datetime.date(), d_datetime.month, d_datetime.day,
-                    d_datetime.weekday(), d_datetime.time(), d_datetime.hour, d_datetime.minute,
-                    HOUR2EPOCH[d_datetime.hour])
+                    d_original_level, -1, d_is_main_sleep, sleep_record_type,
+                    d_datetime, 0)
                 records_intraday.append(row_intraday)
     else:
             ## for sleep type "stages"
@@ -185,13 +172,9 @@ def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, re
 
                 d_original_level = data[1]
 
-                d_unified_level = 1 if d_original_level == "deep" or d_original_level == "light" or d_original_level == "rem" else 0
-
                 row_intraday = (device_id,
-                    d_original_level, d_unified_level, d_is_main_sleep, sleep_record_type,
-                    d_datetime, d_datetime.date(), d_datetime.month, d_datetime.day,
-                    d_datetime.weekday(), d_datetime.time(), d_datetime.hour, d_datetime.minute,
-                    HOUR2EPOCH[d_datetime.hour])
+                    d_original_level, -1, d_is_main_sleep, sleep_record_type,
+                    d_datetime, 0)
 
                 records_intraday.append(row_intraday)
     
@@ -199,7 +182,7 @@ def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, re
     
 
 
-def parseSleepData(sleep_data, HOUR2EPOCH):
+def parseSleepData(sleep_data):
     SLEEP_SUMMARY_COLUMNS = SLEEP_SUMMARY_COLUMNS_V1_2
     if sleep_data.empty:
         return pd.DataFrame(columns=SLEEP_SUMMARY_COLUMNS), pd.DataFrame(columns=SLEEP_INTRADAY_COLUMNS)
@@ -214,10 +197,29 @@ def parseSleepData(sleep_data, HOUR2EPOCH):
             # For sleep API version 1
             if "awakeCount" in record:
                 SLEEP_SUMMARY_COLUMNS = SLEEP_SUMMARY_COLUMNS_V1
-                records_summary, records_intraday = parseOneRecordForV1(record, device_id, d_is_main_sleep, records_summary, records_intraday, HOUR2EPOCH)
+                records_summary, records_intraday = parseOneRecordForV1(record, device_id, d_is_main_sleep, records_summary, records_intraday)
             # For sleep API version 1.2
             else:
                 SLEEP_SUMMARY_COLUMNS = SLEEP_SUMMARY_COLUMNS_V1_2
-                records_summary, records_intraday = parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, records_intraday, HOUR2EPOCH)
+                records_summary, records_intraday = parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, records_intraday)
 
     return pd.DataFrame(data=records_summary, columns=SLEEP_SUMMARY_COLUMNS), pd.DataFrame(data=records_intraday, columns=SLEEP_INTRADAY_COLUMNS)
+
+table_format = snakemake.params["table_format"]
+
+if table_format == "JSON":
+    json_raw = pd.read_csv(snakemake.input[0])
+    summary, intraday = parseSleepData(json_raw)
+elif table_format == "CSV":
+    summary = pd.read_csv(snakemake.input[0])
+    intraday = pd.read_csv(snakemake.input[1])
+
+summary["start_timestamp"] = (summary["local_start_date_time"] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s') * 1000
+summary["end_timestamp"] = (summary["local_end_date_time"] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s') * 1000
+intraday["timestamp"] = (intraday["local_date_time"] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s') * 1000
+
+# Unifying level
+intraday["unified_level"] = np.where(intraday["level"].isin(["awake", "wake", "restless"]), 0, 1)
+
+summary.to_csv(snakemake.output["summary_data"], index=False)
+intraday.to_csv(snakemake.output["intraday_data"], index=False)

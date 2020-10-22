@@ -15,14 +15,15 @@ TIMEZONE: &timezone
 DATABASE_GROUP: &database_group
   MY_GROUP
 
+# config section for the script that creates participant files automatically
 PARTICIPANT_FILES: # run snakemake -j1 -R parse_participant_files
   PHONE_SECTION:
-    INCLUDE: TRUE
+    ADD: TRUE
     PARSED_FROM: AWARE_DEVICE_TABLE #AWARE_DEVICE_TABLE or CSV_FILE
     PARSED_SOURCE: *database_group # DB credentials group or CSV file path. If CSV file, it should have: device_id, pid (optional), label (optional), start_date (optional), end_date (optional)
     IGNORED_DEVICE_IDS: []
   FITBIT_SECTION:
-    INCLUDE: FALSE
+    ADD: FALSE
     SAME_AS_PHONE: FALSE # If TRUE, all config below is ignored
     PARSED_FROM: CSV_FILE
     PARSED_SOURCE: "external/my_fitbit_participants.csv" # CSV file should have: device_id, pid (optional), label (optional), start_date (optional), end_date (optional)
@@ -241,28 +242,40 @@ PHONE_CONVERSATION:
       SRC_FOLDER: "rapids" # inside src/features/phone_conversation
       SRC_LANGUAGE: "python"
 
+############## FITBIT ##########################################################
+################################################################################
 
 FITBIT_HEARTRATE:
-  TABLE: "fitbit_data"
-  PARSE_JSON: TRUE
+  TABLE_FORMAT: JSON # JSON or CSV
+  TABLE:
+    JSON: fitbit_heartrate
+    CSV:
+      SUMMARY: heartrate_summary.csv
+      INTRADAY: heartrate_intraday.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       SUMMARY_FEATURES: ["restinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. height, weight) use these with care: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
       INTRADAY_FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
 
+
 FITBIT_STEPS:
-  TABLE: fitbit_data
-  PARSE_JSON: TRUE
-  EXCLUDE_SLEEP:
+  TABLE_FORMAT: JSON # JSON or CSV
+  TABLE:
+    JSON: fitbit_steps
+    CSV:
+      SUMMARY: steps_summary.csv
+      INTRADAY: steps_intraday.csv
+  EXCLUDE_SLEEP: # you can exclude sleep periods from the step features computation
     EXCLUDE: False
     TYPE: FIXED # FIXED OR FITBIT_BASED (configure FITBIT_SLEEP section)
     FIXED:
       START: "23:00"
       END: "07:00"
+
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE
+      COMPUTE: False
       FEATURES:
         ALL_STEPS: ["sumallsteps", "maxallsteps", "minallsteps", "avgallsteps", "stdallsteps"]
         SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
@@ -271,15 +284,33 @@ FITBIT_STEPS:
       INCLUDE_ZERO_STEP_ROWS: False
 
 FITBIT_SLEEP:
-  TABLE: fitbit_data
-  PARSE_JSON: TRUE
+  TABLE_FORMAT: JSON # JSON or CSV
+  TABLE:
+    JSON: fitbit_sleep
+    CSV:
+      SUMMARY: sleep_summary.csv
+      INTRADAY: sleep_intraday.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE
+      COMPUTE: False
       SLEEP_TYPES: ["main", "nap", "all"]
       SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
 
-### Visualizations ################################################################
+FITBIT_CALORIES:
+  TABLE_FORMAT: JSON # JSON or CSV
+  TABLE:
+    JSON: fitbit_calories
+    CSV:
+      SUMMARY: calories_summary.csv
+      INTRADAY: calories_intraday.csv
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: []
+
+### Visualizations #############################################################
+################################################################################
+
 HEATMAP_FEATURES_CORRELATIONS:
   PLOT: False
   MIN_ROWS_RATIO: 0.5
