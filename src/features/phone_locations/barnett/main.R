@@ -1,5 +1,5 @@
 source("renv/activate.R")
-library("dplyr")
+library("dplyr", warn.conflicts = F)
 library("stringr")
 
 # Load Ian Barnett's code. Taken from https://scholar.harvard.edu/ibarnett/software/gpsmobility

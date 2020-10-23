@@ -1,7 +1,7 @@
 source("renv/activate.R")
 
 library(tidyr)
-library(dplyr)
+library("dplyr", warn.conflicts = F)
 library(stringr)
 library("rvest")
 

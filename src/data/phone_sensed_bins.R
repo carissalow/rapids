@@ -1,6 +1,6 @@
 source("renv/activate.R")
 
-library(dplyr)
+library("dplyr", warn.conflicts = F)
 library(tidyr)
 
 all_sensors <- snakemake@input[["all_sensors"]]

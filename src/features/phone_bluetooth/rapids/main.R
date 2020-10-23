@@ -1,4 +1,4 @@
-library(dplyr)
+library("dplyr", warn.conflicts = F)
 library(tidyr)
 
 compute_bluetooth_feature <- function(data, feature, day_segment){

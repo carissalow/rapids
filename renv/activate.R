@@ -1,6 +1,8 @@
 
 local({
 
+  options(tidyverse.quiet = TRUE)
+
   # the requested version of renv
   version <- "0.10.0"
 
@@ -302,7 +304,7 @@ local({
     renv_bootstrap_validate_version(version)
   
     # load the project
-    renv::load(project)
+    renv::load(project, quiet = TRUE)
   
     TRUE
   

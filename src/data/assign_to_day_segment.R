@@ -1,5 +1,5 @@
 library("tidyverse")
-library("lubridate")
+library("lubridate", warn.conflicts = F)
 options(scipen=999)
 
 day_type_delay <- function(day_type, include_past_periodic_segments){

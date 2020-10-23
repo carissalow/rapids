@@ -1,4 +1,4 @@
-library(dplyr)
+library("dplyr", warn.conflicts = F)
 library(stringr)
 
 unify_ios_screen <- function(ios_screen){

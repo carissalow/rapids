@@ -2,7 +2,7 @@ source("renv/activate.R")
 
 library(tidyr)
 library(purrr)
-library(dplyr)
+library("dplyr", warn.conflicts = F)
 library(stringr)
 
 feature_files  <- snakemake@input[["feature_files"]]

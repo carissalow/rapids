@@ -1,6 +1,6 @@
 source("renv/activate.R")
 library(tidyr)
-library(dplyr)
+library("dplyr", warn.conflicts = F)
 
 filter_participant_without_enough_days <- function(clean_features, days_before_threshold, days_after_threshold){
   clean_features$day_type <- ifelse(clean_features$day_idx < 0, -1, ifelse(clean_features$day_idx > 0, 1, 0))

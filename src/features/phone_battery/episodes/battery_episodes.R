@@ -1,5 +1,5 @@
 source("renv/activate.R")
-library("dplyr")
+library("dplyr", warn.conflicts = F)
 
 battery <- read.csv(snakemake@input[[1]])
 

@@ -1,5 +1,5 @@
 source("renv/activate.R")
-library("dplyr")
+library("dplyr", warn.conflicts = F)
 library("tidyr")
 
 phone_sensed_bins <- read.csv(snakemake@input[["phone_sensed_bins"]])

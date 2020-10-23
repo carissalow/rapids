@@ -1,4 +1,4 @@
-library(dplyr)
+library("dplyr", warn.conflicts = F)
 
 compute_wifi_feature <- function(data, feature, day_segment){
   data <- data %>% filter_data_by_segment(day_segment)

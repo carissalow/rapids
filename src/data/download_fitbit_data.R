@@ -1,6 +1,6 @@
 source("renv/activate.R")
 library(RMySQL)
-library(dplyr)
+library("dplyr", warn.conflicts = F)
 library(readr)
 library(stringr)
 library(yaml)

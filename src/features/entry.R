@@ -1,6 +1,6 @@
 source("renv/activate.R")
 source("src/features/utils/utils.R")
-library("dplyr")
+library("dplyr",warn.conflicts = F)
 library("tidyr")
 
 sensor_data_files <- snakemake@input
