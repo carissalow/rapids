@@ -53,7 +53,8 @@ rule download_fitbit_data:
 
 rule compute_day_segments:
     input: 
-        config["DAY_SEGMENTS"]["FILE"]
+        config["DAY_SEGMENTS"]["FILE"],
+        "data/external/participant_files/{pid}.yaml"
     params:
         day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
         pid = "{pid}"

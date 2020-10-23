@@ -138,22 +138,33 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, 
     sensor_data <- sensor_data %>% 
       group_by(local_timezone) %>% 
       nest() %>% 
-      mutate(inferred_day_segments = map(local_timezone, ~ day_segments %>% 
+      mutate(inferred_day_segments = map(local_timezone, function(tz){ 
+                                         inferred <- day_segments %>% 
                                            mutate(shift = ifelse(shift == "0", "0seconds", shift),
                                                   segment_start_ts = event_timestamp + (as.integer(seconds(lubridate::duration(shift))) * ifelse(shift_direction >= 0, 1, -1) * 1000),
                                                   segment_end_ts = segment_start_ts + (as.integer(seconds(lubridate::duration(length))) * 1000),
                                                   # these start and end datetime objects are for labeling only
-                                                  segment_id_start = lubridate::as_datetime(segment_start_ts/1000, tz = .x), 
-                                                  segment_id_end = lubridate::as_datetime(segment_end_ts/1000, tz = .x),
+                                                  segment_id_start = lubridate::as_datetime(segment_start_ts/1000, tz = tz), 
+                                                  segment_id_end = lubridate::as_datetime(segment_end_ts/1000, tz = tz),
                                                   segment_end_ts = segment_end_ts + 999,
                                                   segment_id = paste0("[",
                                                                       paste0(label,"#",
                                                                              paste0(lubridate::date(segment_id_start), " ",
-                                                                             paste(str_pad(hour(segment_id_start),2, pad="0"), str_pad(minute(segment_id_start),2, pad="0"), str_pad(second(segment_id_start),2, pad="0"),sep =":"), ",",
-                                                                             lubridate::date(segment_id_end), " ",
-                                                                             paste(str_pad(hour(segment_id_end),2, pad="0"), str_pad(minute(segment_id_end),2, pad="0"), str_pad(second(segment_id_end),2, pad="0"),sep =":")),";",
+                                                                                    paste(str_pad(hour(segment_id_start),2, pad="0"), str_pad(minute(segment_id_start),2, pad="0"), str_pad(second(segment_id_start),2, pad="0"),sep =":"), ",",
+                                                                                    lubridate::date(segment_id_end), " ",
+                                                                                    paste(str_pad(hour(segment_id_end),2, pad="0"), str_pad(minute(segment_id_end),2, pad="0"), str_pad(second(segment_id_end),2, pad="0"),sep =":")),";",
                                                                              paste0(segment_start_ts, ",", segment_end_ts)),
-                                                                     "]"))),
+                                                                      "]"))
+                                         # Check that for overlapping segments (not allowed because our resampling episode algorithm would have to have a second instead of minute granularity that increases storage and computation time)
+                                         overlapping <-  inferred  %>% group_by(label) %>% arrange(segment_start_ts) %>% 
+                                           mutate(overlaps = if_else(segment_start_ts <= lag(segment_end_ts), TRUE, FALSE),
+                                                  overlapping_segments = paste(paste(lag(label), lag(event_timestamp), lag(length), lag(shift), lag(shift_direction), lag(device_id), sep = ","),"and",
+                                                                                paste(label, event_timestamp, length, shift, shift_direction, device_id, sep = ",")))
+                                         if(any(overlapping$overlaps, na.rm = TRUE)){
+                                           stop(paste0("\n\nOne or more event day segments overlap for ",overlapping$device_id[[1]],", modify their lengths so they don't:\n", paste0(overlapping %>% filter(overlaps == TRUE) %>% pull(overlapping_segments), collapse = "\n"), "\n\n"))
+                                         } else{
+                                           return(inferred)
+                                         }}),
              data = map2(data, inferred_day_segments, assign_rows_to_segments)) %>% 
       select(-inferred_day_segments) %>% 
       unnest(data) %>% 

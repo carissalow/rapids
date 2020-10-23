@@ -1,5 +1,6 @@
 import pandas as pd
 import warnings
+import yaml
 
 def is_valid_frequency_segments(day_segments, day_segments_file):
     """
@@ -107,9 +108,9 @@ def is_valid_periodic_segments(day_segments, day_segments_file):
 def is_valid_event_segments(day_segments, day_segments_file):
     day_segments = day_segments.copy(deep=True)
 
-    valid_columns = ["label", "event_timestamp", "length", "shift", "shift_direction", "pid"]
+    valid_columns = ["label", "event_timestamp", "length", "shift", "shift_direction", "device_id"]
     if len(list(set(day_segments.columns) - set(valid_columns))) > 0:
-        error_message = 'The EVENT day segments file in [DAY_SEGMENTS][FILE] must have six columns: label, event_timestamp, length, shift, shift_direction and pid ' \
+        error_message = 'The EVENT day segments file in [DAY_SEGMENTS][FILE] must have six columns: label, event_timestamp, length, shift, shift_direction and device_id ' \
                   'but instead we found {}. Modify {}'.format(list(day_segments.columns), day_segments_file)
         raise ValueError(error_message)
 
@@ -167,10 +168,10 @@ def parse_periodic_segments(day_segments):
     day_segments.loc[day_segments["repeats_on"] == "every_day", "repeats_value"] = 0
     return day_segments
 
-def parse_event_segments(day_segments, pid):
-    return day_segments.query("pid == @pid")
+def parse_event_segments(day_segments, device_id):
+    return day_segments.query("device_id == @device_id")
 
-def parse_day_segments(day_segments_file, segments_type, pid):
+def parse_day_segments(day_segments_file, segments_type, device_id):
     # Add code to validate and parse frequencies, intervals, and events
     # Expected formats:
     # Frequency: label, length columns (e.g. my_prefix, 5) length has to be in minutes (int)
@@ -195,12 +196,15 @@ def parse_day_segments(day_segments_file, segments_type, pid):
     elif(segments_type == "PERIODIC" and is_valid_periodic_segments(day_segments, day_segments_file)):
         day_segments = parse_periodic_segments(day_segments)
     elif(segments_type == "EVENT" and is_valid_event_segments(day_segments, day_segments_file)):
-        day_segments = parse_event_segments(day_segments, pid)
+        day_segments = parse_event_segments(day_segments, device_id)
     else:
         raise ValueError("{} does not have a format compatible with frequency, periodic or event day segments. Please refer to [LINK]".format(day_segments_file))
     return day_segments
 
-final_day_segments = parse_day_segments(snakemake.input[0], snakemake.params["day_segments_type"], snakemake.params["pid"])
+participant_file = yaml.load(open(snakemake.input[1], 'r'), Loader=yaml.FullLoader)
+device_id = participant_file["PHONE"]["DEVICE_IDS"]
+device_id = device_id[len(device_id) -1 ]
+final_day_segments = parse_day_segments(snakemake.input[0], snakemake.params["day_segments_type"], device_id)
 
 if snakemake.params["day_segments_type"] == "EVENT" and final_day_segments.shape[0] == 0:
     warnings.warn("There are no event day segments for {}. Check your day segment file {}".format(snakemake.params["pid"], snakemake.input[0]))
