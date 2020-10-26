@@ -15,14 +15,15 @@ TIMEZONE: &timezone
 DATABASE_GROUP: &database_group
   MY_GROUP
 
+# config section for the script that creates participant files automatically
 PARTICIPANT_FILES: # run snakemake -j1 -R parse_participant_files
   PHONE_SECTION:
-    INCLUDE: FALSE
+    ADD: FALSE
     PARSED_FROM: AWARE_DEVICE_TABLE #AWARE_DEVICE_TABLE or CSV_FILE
     PARSED_SOURCE: *database_group # DB credentials group or CSV file path. If CSV file, it should have: device_id, pid (optional), label (optional), start_date (optional), end_date (optional)
     IGNORED_DEVICE_IDS: []
   FITBIT_SECTION:
-    INCLUDE: FALSE
+    ADD: FALSE
     SAME_AS_PHONE: FALSE # If TRUE, all config below is ignored
     PARSED_FROM: CSV_FILE
     PARSED_SOURCE: "external/my_fitbit_participants.csv" # CSV file should have: device_id, pid (optional), label (optional), start_date (optional), end_date (optional)
@@ -30,7 +31,7 @@ PARTICIPANT_FILES: # run snakemake -j1 -R parse_participant_files
 SENSOR_DATA:
   PHONE:
     SOURCE: 
-      TYPE: DATABASE
+      TYPE: DATABASE # Phone only supports DATABASE for now
       DATABASE_GROUP: *database_group
       DEVICE_ID_COLUMN: device_id # column name
     TIMEZONE: 
@@ -38,9 +39,12 @@ SENSOR_DATA:
       VALUE: *timezone # IF TYPE=SINGLE, timezone code (e.g. America/New_York, see attribute TIMEZONE above). If TYPE=MULTIPLE, a table in your database with two columns (timestamp, timezone) where timestamp is a unix timestamp and timezone is one of https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   FITBIT:
     SOURCE: 
-      TYPE: DATABASE # DATABASE or CSV_FILES (set each FITBIT_SENSOR TABLE attribute accordingly)
+      TYPE: DATABASE # DATABASE or FILES (set each FITBIT_SENSOR TABLE attribute accordingly with a table name or a file path)
       DATABASE_GROUP: *database_group
       DEVICE_ID_COLUMN: device_id # column name
+    TIMEZONE: 
+      TYPE: SINGLE # Fitbit only supports SINGLE timezones
+      VALUE: *timezone # timezone code (e.g. America/New_York, see attribute TIMEZONE above and https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 
 PHONE_VALID_SENSED_BINS:
   COMPUTE: False # This flag is automatically ignored (set to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features
@@ -125,6 +129,7 @@ PHONE_ACTIVITY_RECOGNITION:
   TABLE: 
     ANDROID: plugin_google_activity_recognition
     IOS: plugin_ios_activity_recognition
+  EPISODE_THRESHOLD_BETWEEN_ROWS: 5 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -138,6 +143,7 @@ PHONE_ACTIVITY_RECOGNITION:
 
 PHONE_BATTERY:
   TABLE: battery
+  EPISODE_THRESHOLD_BETWEEN_ROWS: 30 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -203,7 +209,7 @@ PHONE_APPLICATIONS_FOREGROUND:
       EXCLUDED_CATEGORIES: ["systemapp", "tvvideoapps"]
       EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
       FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
-      SRC_FOLDER: "rapids" # inside src/features/applications_foreground
+      SRC_FOLDER: "rapids" # inside src/features/phone_applications_foreground
       SRC_LANGUAGE: "python"
 
 PHONE_WIFI_VISIBLE:
@@ -241,25 +247,37 @@ PHONE_CONVERSATION:
       SRC_FOLDER: "rapids" # inside src/features/phone_conversation
       SRC_LANGUAGE: "python"
 
+############## FITBIT ##########################################################
+################################################################################
 
 FITBIT_HEARTRATE:
-  TABLE: "fitbit_data"
-  PARSE_JSON: False
+  TABLE_FORMAT: JSON # JSON or CSV
+  TABLE:
+    JSON: fitbit_heartrate
+    CSV:
+      SUMMARY: heartrate_summary.csv
+      INTRADAY: heartrate_intraday.csv
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
       SUMMARY_FEATURES: ["restinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. height, weight) use these with care: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
       INTRADAY_FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
 
+
 FITBIT_STEPS:
-  TABLE: fitbit_data
-  PARSE_JSON: False
-  EXCLUDE_SLEEP:
+  TABLE_FORMAT: JSON # JSON or CSV
+  TABLE:
+    JSON: fitbit_steps
+    CSV:
+      SUMMARY: steps_summary.csv
+      INTRADAY: steps_intraday.csv
+  EXCLUDE_SLEEP: # you can exclude sleep periods from the step features computation
     EXCLUDE: False
     TYPE: FIXED # FIXED OR FITBIT_BASED (configure FITBIT_SLEEP section)
     FIXED:
       START: "23:00"
       END: "07:00"
+
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -271,15 +289,33 @@ FITBIT_STEPS:
       INCLUDE_ZERO_STEP_ROWS: False
 
 FITBIT_SLEEP:
-  TABLE: fitbit_data
-  PARSE_JSON: False
+  TABLE_FORMAT: JSON # JSON or CSV
+  TABLE:
+    JSON: fitbit_sleep
+    CSV:
+      SUMMARY: sleep_summary.csv
+      INTRADAY: sleep_intraday.csv
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
       SLEEP_TYPES: ["main", "nap", "all"]
       SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
 
-### Visualizations ################################################################
+FITBIT_CALORIES:
+  TABLE_FORMAT: JSON # JSON or CSV
+  TABLE:
+    JSON: fitbit_calories
+    CSV:
+      SUMMARY: calories_summary.csv
+      INTRADAY: calories_intraday.csv
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: []
+
+### Visualizations #############################################################
+################################################################################
+
 HEATMAP_FEATURES_CORRELATIONS:
   PLOT: False
   MIN_ROWS_RATIO: 0.5

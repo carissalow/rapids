@@ -144,29 +144,42 @@ for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_features/phone_locations_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_locations.csv", pid=config["PIDS"]))
 
+if config["FITBIT_HEARTRATE"]["TABLE_FORMAT"] not in ["JSON", "CSV"]:
+    raise ValueError("config['FITBIT_HEARTRATE']['TABLE_FORMAT'] should be JSON or CSV but you typed" + config["FITBIT_HEARTRATE"]["TABLE_FORMAT"])
+
+if config["FITBIT_STEPS"]["TABLE_FORMAT"] not in ["JSON", "CSV"]:
+    raise ValueError("config['FITBIT_STEPS']['TABLE_FORMAT'] should be JSON or CSV but you typed" + config["FITBIT_STEPS"]["TABLE_FORMAT"])
+
+if config["FITBIT_CALORIES"]["TABLE_FORMAT"] not in ["JSON", "CSV"]:
+    raise ValueError("config['FITBIT_CALORIES']['TABLE_FORMAT'] should be JSON or CSV but you typed" + config["FITBIT_CALORIES"]["TABLE_FORMAT"])
+
+if config["FITBIT_SLEEP"]["TABLE_FORMAT"] not in ["JSON", "CSV"]:
+    raise ValueError("config['FITBIT_SLEEP']['TABLE_FORMAT'] should be JSON or CSV but you typed" + config["FITBIT_SLEEP"]["TABLE_FORMAT"])
 
 for provider in config["FITBIT_HEARTRATE"]["PROVIDERS"].keys():
     if config["FITBIT_HEARTRATE"]["PROVIDERS"][provider]["COMPUTE"]:
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_raw.csv", pid=config["PIDS"]))
-    # files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
-    # files_to_compute.extend(expand("data/processed/{pid}/fitbit_heartrate_{day_segment}.csv", pid = config["PIDS"], day_segment = config["HEARTRATE"]["DAY_SEGMENTS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_raw.csv", pid=config["PIDS"], fitbit_data_type=(["json"] if config["FITBIT_HEARTRATE"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"])))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_parsed.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_parsed_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
 
 for provider in config["FITBIT_STEPS"]["PROVIDERS"].keys():
     if config["FITBIT_STEPS"]["PROVIDERS"][provider]["COMPUTE"]:
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_raw.csv", pid=config["PIDS"]))
-# if config["STEP"]["COMPUTE"]:
-#     if config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"] == True and config["STEP"]["EXCLUDE_SLEEP"]["TYPE"] == "FITBIT_BASED":
-#         files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary"]))
-#     files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=config["STEP"]["TABLE"]))
-#     files_to_compute.extend(expand("data/raw/{pid}/fitbit_step_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["intraday"]))
-#     files_to_compute.extend(expand("data/processed/{pid}/fitbit_step_{day_segment}.csv", pid = config["PIDS"], day_segment = config["STEP"]["DAY_SEGMENTS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_{fitbit_data_type}_raw.csv", pid=config["PIDS"], fitbit_data_type=(["json"] if config["FITBIT_STEPS"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"])))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_{fitbit_data_type}_parsed.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_{fitbit_data_type}_parsed_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
+
+for provider in config["FITBIT_CALORIES"]["PROVIDERS"].keys():
+    if config["FITBIT_CALORIES"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_raw.csv", pid=config["PIDS"], fitbit_data_type=(["json"] if config["FITBIT_CALORIES"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"])))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_parsed.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_parsed_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
 
 for provider in config["FITBIT_SLEEP"]["PROVIDERS"].keys():
     if config["FITBIT_SLEEP"]["PROVIDERS"][provider]["COMPUTE"]:
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_raw.csv", pid=config["PIDS"]))
-#     files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["intraday", "summary"]))
-#     files_to_compute.extend(expand("data/processed/{pid}/fitbit_sleep_{day_segment}.csv", pid = config["PIDS"], day_segment = config["SLEEP"]["DAY_SEGMENTS"]))
-
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_raw.csv", pid=config["PIDS"], fitbit_data_type=(["json"] if config["FITBIT_SLEEP"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"])))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_parsed_episodes.csv", pid=config["PIDS"], fitbit_data_type=["summary"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_parsed.csv", pid=config["PIDS"], fitbit_data_type=["intraday"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_parsed_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["intraday"]))
 
 # visualization for data exploration
 if config["HEATMAP_FEATURES_CORRELATIONS"]["PLOT"]:
