@@ -212,8 +212,8 @@ if table_format == "JSON":
     json_raw = pd.read_csv(snakemake.input[0])
     summary, intraday = parseSleepData(json_raw)
 elif table_format == "CSV":
-    summary = pd.read_csv(snakemake.input[0])
-    intraday = pd.read_csv(snakemake.input[1])
+    summary = pd.read_csv(snakemake.input[0], parse_dates=["local_start_date_time", "local_end_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
+    intraday = pd.read_csv(snakemake.input[1], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
 
 if summary.shape[0] > 0:
     summary["start_timestamp"] = summary["local_start_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6

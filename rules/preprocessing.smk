@@ -40,7 +40,8 @@ rule download_phone_data:
 
 rule download_fitbit_data:
     input:
-        "data/external/participant_files/{pid}.yaml"
+        participant_file = "data/external/participant_files/{pid}.yaml",
+        input_file = "" if config["SENSOR_DATA"]["FITBIT"]["SOURCE"] == "DATABASE" else lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"]["CSV"][str(wildcards.fitbit_data_type).upper()] 
     params:
         source = config["SENSOR_DATA"]["FITBIT"]["SOURCE"],
         sensor = "fitbit_" + "{sensor}",

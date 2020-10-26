@@ -31,7 +31,7 @@ PARTICIPANT_FILES: # run snakemake -j1 -R parse_participant_files
 SENSOR_DATA:
   PHONE:
     SOURCE: 
-      TYPE: DATABASE
+      TYPE: DATABASE # Phone only supports DATABASE for now
       DATABASE_GROUP: *database_group
       DEVICE_ID_COLUMN: device_id # column name
     TIMEZONE: 
@@ -39,7 +39,7 @@ SENSOR_DATA:
       VALUE: *timezone # IF TYPE=SINGLE, timezone code (e.g. America/New_York, see attribute TIMEZONE above). If TYPE=MULTIPLE, a table in your database with two columns (timestamp, timezone) where timestamp is a unix timestamp and timezone is one of https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   FITBIT:
     SOURCE: 
-      TYPE: DATABASE # DATABASE or CSV_FILES (set each FITBIT_SENSOR TABLE attribute accordingly)
+      TYPE: DATABASE # DATABASE or FILES (set each FITBIT_SENSOR TABLE attribute accordingly with a table name or a file path)
       DATABASE_GROUP: *database_group
       DEVICE_ID_COLUMN: device_id # column name
     TIMEZONE: 
