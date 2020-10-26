@@ -129,6 +129,7 @@ PHONE_ACTIVITY_RECOGNITION:
   TABLE: 
     ANDROID: plugin_google_activity_recognition
     IOS: plugin_ios_activity_recognition
+  EPISODE_THRESHOLD_BETWEEN_ROWS: 5 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -142,6 +143,7 @@ PHONE_ACTIVITY_RECOGNITION:
 
 PHONE_BATTERY:
   TABLE: battery
+  EPISODE_THRESHOLD_BETWEEN_ROWS: 30 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
