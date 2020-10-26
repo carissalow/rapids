@@ -15,31 +15,32 @@ filter_data_by_segment <- function(data, day_segment){
 }
 
 chunk_episodes <- function(sensor_episodes){
-  columns_to_drop <- c("timestamp", "duration", "utc_date_time", "local_date_time", "local_date", "local_time", "local_hour", "local_minute", "segment_start", "segment_end", 'timestamp_plus_duration' )
-  
-  chunked_episodes <- sensor_episodes %>% separate(col = local_segment, 
-                                                   into = c("local_segment_label", "local_start_date", "local_start_time", "local_end_date", "local_end_time"),
-                                                   sep = "#", 
-                                                   remove = FALSE) %>% 
-    unite(col = "segment_start", "local_start_date", "local_start_time", sep = " ",remove = TRUE) %>% 
-    unite(col = "segment_end", "local_end_date", "local_end_time", sep = " ",remove = TRUE) %>% 
-    mutate(local_segment_label = NULL,
-           timestamp_plus_duration = timestamp + (duration * 1000 * 60)) %>% 
+  columns_to_drop <- c("^timestamp$", "utc_date_time", "local_date_time", "local_date", "local_time", "local_hour", "local_minute", "segment_start", "segment_end" )
+
+  chunked_episodes <- sensor_episodes %>% 
+    separate(col = timestamps_segment,
+             into = c("segment_start_timestamp", "segment_end_timestamp"),
+             sep = ",", convert = TRUE, remove = TRUE) %>% 
     group_by(local_timezone) %>% 
     nest() %>% 
-    mutate(
-      data = map(data, ~.x %>% mutate(segment_start = as.numeric(lubridate::ymd_hms(segment_start, tz = local_timezone)) * 1000,
-                             segment_end = as.numeric(lubridate::ymd_hms(segment_end, tz = local_timezone)) * 1000)),
-      # We group by episode_id and those variables from the original episodes we want to keep once we summarise
-      data = map(data, ~.x %>% group_by_at(vars(c("episode_id", setdiff(colnames(.x), columns_to_drop)  ))) %>%
-                   summarize(chunked_start = max(first(timestamp), first(segment_start)), 
-                             chunked_end = min(last(timestamp_plus_duration), last(segment_end)),
-                             duration = (chunked_end - chunked_start) / (1000 * 60 ),
-                             chunked_start = format(lubridate::as_datetime(chunked_start / 1000, tz = local_timezone),  "%Y-%m-%d %H:%M:%S"), 
-                             chunked_end = format(lubridate::as_datetime(chunked_end  / 1000, tz = local_timezone),  "%Y-%m-%d %H:%M:%S")))
-        ) %>%
-    unnest(data)
-    
+    mutate(data = map(data, ~.x %>% 
+                   distinct(start_timestamp, end_timestamp, local_segment, .keep_all = TRUE) %>% 
+                   mutate(start_timestamp = pmax(start_timestamp, segment_start_timestamp),
+                          end_timestamp = pmin(end_timestamp, segment_end_timestamp),
+                          duration = (end_timestamp - start_timestamp) / (1000 * 60)) %>% 
+                   select(-matches(columns_to_drop)) %>% 
+                   group_by_at(vars(setdiff(colnames(.), c("start_timestamp", "end_timestamp", "duration")))) %>%
+                   summarize(start_timestamp = first(start_timestamp),
+                             end_timestamp = last(end_timestamp),
+                             duration = sum(duration)) %>% 
+                   mutate(local_start_date_time = format(lubridate::as_datetime(start_timestamp / 1000, tz = local_timezone),  "%Y-%m-%d %H:%M:%S"),
+                          local_end_date_time = format(lubridate::as_datetime(end_timestamp  / 1000, tz = local_timezone),  "%Y-%m-%d %H:%M:%S")) %>% 
+                   ungroup())
+           ) %>%
+    unnest(data) %>% 
+    ungroup() %>% 
+    select(-local_timezone)
+  
   return(chunked_episodes)
 }
 
