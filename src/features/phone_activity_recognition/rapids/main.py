@@ -37,9 +37,9 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
                 if "duration" + column.lower() in features_to_compute:
                     filtered_data = ar_episodes[ar_episodes["activity_name"].isin(pd.Series(activity_labels))]
                     if not filtered_data.empty:
-                        ar_features["ar_rapids_duration_" + column] = ar_episodes[ar_episodes["activity_name"].isin(pd.Series(activity_labels))].groupby(["local_segment"])["duration"].sum().fillna(0)
+                        ar_features["ar_rapids_duration" + column.lower()] = ar_episodes[ar_episodes["activity_name"].isin(pd.Series(activity_labels))].groupby(["local_segment"])["duration"].sum().fillna(0)
                     else:
-                        ar_features["ar_rapids_duration_" + column] = 0
+                        ar_features["ar_rapids_duration" + column.lower()] = 0
 
             ar_features.index.names = ["local_segment"]
             ar_features = ar_features.reset_index()
