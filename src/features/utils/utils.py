@@ -44,15 +44,8 @@ def chunk_episodes(sensor_episodes):
     # Compute duration: intersection of current row and segment
     sensor_episodes["duration"] = (sensor_episodes["chunked_end_timestamp"] - sensor_episodes["chunked_start_timestamp"]) / (1000 * 60)
 
-    # Compute chunked datetime
-    sensor_episodes["chunked_start_datetime"] = pd.to_datetime(sensor_episodes["chunked_start_timestamp"], unit="ms", utc=True)
-    sensor_episodes["chunked_start_datetime"] = pd.concat([data["chunked_start_datetime"].dt.tz_convert(tz) for tz, data in sensor_episodes.groupby("local_timezone")])
-
-    sensor_episodes["chunked_end_datetime"] = pd.to_datetime(sensor_episodes["chunked_end_timestamp"], unit="ms", utc=True)
-    sensor_episodes["chunked_end_datetime"] = pd.concat([data["chunked_end_datetime"].dt.tz_convert(tz) for tz, data in sensor_episodes.groupby("local_timezone")])
-
     # Merge episodes
-    cols_for_groupby = [col for col in sensor_episodes.columns if col not in ["local_timezone", "timestamps_segment", "timestamp", "assigned_segments", "start_datetime", "end_datetime", "start_timestamp", "end_timestamp", "duration", "segment_start_timestamp", "segment_end_timestamp", "chunked_start_timestamp", "chunked_end_timestamp", "chunked_start_datetime", "chunked_end_datetime"]]
+    cols_for_groupby = [col for col in sensor_episodes.columns if col not in ["timestamps_segment", "timestamp", "assigned_segments", "start_datetime", "end_datetime", "start_timestamp", "end_timestamp", "duration", "segment_start_timestamp", "segment_end_timestamp", "chunked_start_timestamp", "chunked_end_timestamp"]]
 
     sensor_episodes_grouped = sensor_episodes.groupby(by=cols_for_groupby)
     merged_sensor_episodes = sensor_episodes_grouped[["duration"]].sum()
@@ -60,10 +53,14 @@ def chunk_episodes(sensor_episodes):
     merged_sensor_episodes["start_timestamp"] = sensor_episodes_grouped["chunked_start_timestamp"].first()
     merged_sensor_episodes["end_timestamp"] = sensor_episodes_grouped["chunked_end_timestamp"].last()
 
-    merged_sensor_episodes["local_start_date_time"] = sensor_episodes_grouped["chunked_start_datetime"].first().dt.tz_localize(None).apply(lambda x: x.replace(microsecond=0))
-    merged_sensor_episodes["local_end_date_time"] = sensor_episodes_grouped["chunked_end_datetime"].last().dt.tz_localize(None).apply(lambda x: x.replace(microsecond=0))
-
     merged_sensor_episodes.reset_index(inplace=True)
+
+    # Compute datetime
+    merged_sensor_episodes["local_start_date_time"] = pd.to_datetime(merged_sensor_episodes["start_timestamp"], unit="ms", utc=True)
+    merged_sensor_episodes["local_start_date_time"] = pd.concat([data["local_start_date_time"].dt.tz_convert(tz) for tz, data in merged_sensor_episodes.groupby("local_timezone")]).dt.tz_localize(None).apply(lambda x: x.replace(microsecond=0))
+
+    merged_sensor_episodes["local_end_date_time"] = pd.to_datetime(merged_sensor_episodes["end_timestamp"], unit="ms", utc=True)
+    merged_sensor_episodes["local_end_date_time"] = pd.concat([data["local_end_date_time"].dt.tz_convert(tz) for tz, data in merged_sensor_episodes.groupby("local_timezone")]).dt.tz_localize(None).apply(lambda x: x.replace(microsecond=0))
 
     return merged_sensor_episodes
 
