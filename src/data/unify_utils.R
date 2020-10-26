@@ -112,11 +112,13 @@ unify_ios_activity_recognition <- function(ios_gar){
     ios_gar  <-  ios_gar %>% 
         mutate(activity_name = case_when(activities == "automotive" ~ "in_vehicle",
                                          activities == "cycling" ~ "on_bicycle",
-                                         activities == "walking" | activities == "running" ~ "on_foot",
+                                         activities == "walking" ~ "walking",
+                                         activities == "running" ~ "running",
                                          activities == "stationary" ~ "still"),
                activity_type = case_when(activities == "automotive" ~ 0,
                                          activities == "cycling" ~ 1,
-                                         activities == "walking" | activities == "running" ~ 2,
+                                         activities == "walking" ~ 7,
+                                         activities == "running" ~ 8,
                                          activities == "stationary" ~ 3,
                                          activities == "unknown" ~ 4))
     
