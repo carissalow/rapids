@@ -15,14 +15,13 @@ rule create_example_participant_files:
     shell:
         "echo 'a748ee1a-1d0b-4ae9-9074-279a2b6ba524\nandroid\ntest01\n2020/04/23,2020/05/04\n' >> ./data/external/example01 && echo '13dbc8a3-dae3-4834-823a-4bc96a7d459d\nios\ntest02\n2020/04/23,2020/05/04\n' >> ./data/external/example02"
 
-# rule download_participants:
-#     params:
-#         group = config["DOWNLOAD_PARTICIPANTS"]["GROUP"],
-#         ignored_device_ids = config["DOWNLOAD_PARTICIPANTS"]["IGNORED_DEVICE_IDS"],
-#         timezone = config["TIMEZONE"]
-#     priority: 1
-#     script:
-#         "../src/data/download_participants.R"
+rule create_participants_files:
+    input:
+        participants_file = [] if config["CREATE_PARTICIPANT_FILES"]["SOURCE"]["TYPE"] == "AWARE_DEVICE_TABLE" else config["CREATE_PARTICIPANT_FILES"]["SOURCE"]["CSV_FILE_PATH"] 
+    params:
+        config = config["CREATE_PARTICIPANT_FILES"]
+    script:
+        "../src/data/create_participants_files.R"
 
 rule download_phone_data:
     input:

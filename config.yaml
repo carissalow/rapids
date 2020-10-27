@@ -2,12 +2,6 @@
 # You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
 PIDS: [test01]
 
-# Global var with common day segments
-DAY_SEGMENTS: &day_segments
-  TYPE: PERIODIC # FREQUENCY, PERIODIC, EVENT
-  FILE: "data/external/daysegments_periodic.csv"
-  INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, if set to TRUE we consider day segments back enough in the past as to include the first day of data
-
 # Use tz codes from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones. Double check your code, for example EST is not US Eastern Time.
 TIMEZONE: &timezone
   America/New_York
@@ -15,23 +9,31 @@ TIMEZONE: &timezone
 DATABASE_GROUP: &database_group
   MY_GROUP
 
-# config section for the script that creates participant files automatically
-PARTICIPANT_FILES: # run snakemake -j1 -R parse_participant_files
+# run 'snakemake -j1 create_participants_files'
+CREATE_PARTICIPANT_FILES:
+  SOURCE:
+    TYPE: AWARE_DEVICE_TABLE #AWARE_DEVICE_TABLE or CSV_FILE
+    DATABASE_GROUP: *database_group
+    CSV_FILE_PATH: "data/external/example_participants.csv" # must have columns: PHONE DEVICE_ID_COLUMN, FITBIT DEVICE_ID_COLUMN, pid , label, start_date, end_date
+    TIMEZONE: *timezone # only used for AWARE_DEVICE_TABLE
   PHONE_SECTION:
     ADD: TRUE
-    PARSED_FROM: AWARE_DEVICE_TABLE #AWARE_DEVICE_TABLE or CSV_FILE
-    PARSED_SOURCE: *database_group # DB credentials group or CSV file path. If CSV file, it should have: device_id, pid (optional), label (optional), start_date (optional), end_date (optional)
+    DEVICE_ID_COLUMN: device_id # column name
     IGNORED_DEVICE_IDS: []
   FITBIT_SECTION:
-    ADD: FALSE
-    SAME_AS_PHONE: FALSE # If TRUE, all config below is ignored
-    PARSED_FROM: CSV_FILE
-    PARSED_SOURCE: "external/my_fitbit_participants.csv" # CSV file should have: device_id, pid (optional), label (optional), start_date (optional), end_date (optional)
+    ADD: TRUE
+    DEVICE_ID_COLUMN: device_id # column name
+    IGNORED_DEVICE_IDS: []
+
+DAY_SEGMENTS: &day_segments
+  TYPE: PERIODIC # FREQUENCY, PERIODIC, EVENT
+  FILE: "data/external/daysegments_periodic.csv"
+  INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, if set to TRUE we consider day segments back enough in the past as to include the first day of data
 
 SENSOR_DATA:
   PHONE:
     SOURCE: 
-      TYPE: DATABASE # Phone only supports DATABASE for now
+      TYPE: DATABASE
       DATABASE_GROUP: *database_group
       DEVICE_ID_COLUMN: device_id # column name
     TIMEZONE: 
@@ -45,6 +47,9 @@ SENSOR_DATA:
     TIMEZONE: 
       TYPE: SINGLE # Fitbit only supports SINGLE timezones
       VALUE: *timezone # timezone code (e.g. America/New_York, see attribute TIMEZONE above and https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+
+############## PHONE ###########################################################
+################################################################################
 
 PHONE_VALID_SENSED_BINS:
   COMPUTE: False # This flag is automatically ignored (set to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features
