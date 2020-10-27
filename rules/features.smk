@@ -216,6 +216,19 @@ rule phone_wifi_visible_r_features:
     script:
         "../src/features/entry.R"
 
+rule fitbit_heartrate_python_features:
+    input:
+        sensor_data = expand("data/raw/{{pid}}/fitbit_heartrate_{fitbit_data_type}_parsed_with_datetime.csv", fitbit_data_type=["summary", "intraday"]),
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_HEARTRATE"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_heartrate"
+    output:
+        "data/interim/{pid}/fitbit_heartrate_features/fitbit_heartrate_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
 # rule fitbit_heartrate_features:
 #     input:
 #         heartrate_summary_data = "data/raw/{pid}/fitbit_heartrate_summary_with_datetime.csv",

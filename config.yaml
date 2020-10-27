@@ -265,8 +265,11 @@ FITBIT_HEARTRATE:
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
-      SUMMARY_FEATURES: ["restinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. height, weight) use these with care: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
-      INTRADAY_FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
+      FEATURES:
+        SUMMARY: ["restinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. height, weight) use these with care: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
+        INTRADAY: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_heartrate
+      SRC_LANGUAGE: "python"
 
 
 FITBIT_STEPS:
