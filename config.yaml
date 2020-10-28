@@ -1,5 +1,5 @@
 # Participants to include in the analysis
-# You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
+# You must create a participant file per person manually or automatically (see PARTICIPANT_FILES below)
 PIDS: [test01]
 
 # Use tz codes from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones. Double check your code, for example EST is not US Eastern Time.
@@ -9,7 +9,7 @@ TIMEZONE: &timezone
 DATABASE_GROUP: &database_group
   MY_GROUP
 
-# run 'snakemake -j1 create_participants_files'
+# To create your participant files from the aware_device table or a csv file change config below and run 'snakemake -j1 create_participants_files'
 CREATE_PARTICIPANT_FILES:
   SOURCE:
     TYPE: AWARE_DEVICE_TABLE #AWARE_DEVICE_TABLE or CSV_FILE
@@ -256,12 +256,12 @@ PHONE_CONVERSATION:
 ################################################################################
 
 FITBIT_HEARTRATE:
-  TABLE_FORMAT: JSON # JSON or CSV
+  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [SENSOR_DATA][FITBIT][SOURCE][TYPE] to FILES
   TABLE:
     JSON: fitbit_heartrate
     CSV:
-      SUMMARY: heartrate_summary.csv
-      INTRADAY: heartrate_intraday.csv
+      SUMMARY: heartrate_summary
+      INTRADAY: heartrate_intraday
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -273,12 +273,12 @@ FITBIT_HEARTRATE:
 
 
 FITBIT_STEPS:
-  TABLE_FORMAT: JSON # JSON or CSV
+  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [SENSOR_DATA][FITBIT][SOURCE][TYPE] to FILES
   TABLE:
     JSON: fitbit_steps
     CSV:
-      SUMMARY: steps_summary.csv
-      INTRADAY: steps_intraday.csv
+      SUMMARY: steps_summary
+      INTRADAY: steps_intraday
   EXCLUDE_SLEEP: # you can exclude sleep periods from the step features computation
     EXCLUDE: False
     TYPE: FIXED # FIXED OR FITBIT_BASED (configure FITBIT_SLEEP section)
@@ -297,12 +297,12 @@ FITBIT_STEPS:
       INCLUDE_ZERO_STEP_ROWS: False
 
 FITBIT_SLEEP:
-  TABLE_FORMAT: JSON # JSON or CSV
+  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [SENSOR_DATA][FITBIT][SOURCE][TYPE] to FILES
   TABLE:
     JSON: fitbit_sleep
     CSV:
-      SUMMARY: sleep_summary.csv
-      INTRADAY: sleep_intraday.csv
+      SUMMARY: sleep_summary
+      INTRADAY: sleep_intraday
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -310,12 +310,12 @@ FITBIT_SLEEP:
       SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
 
 FITBIT_CALORIES:
-  TABLE_FORMAT: JSON # JSON or CSV
+  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [SENSOR_DATA][FITBIT][SOURCE][TYPE] to FILES
   TABLE:
     JSON: fitbit_calories
     CSV:
-      SUMMARY: calories_summary.csv
-      INTRADAY: calories_intraday.csv
+      SUMMARY: calories_summary
+      INTRADAY: calories_intraday
   PROVIDERS:
     RAPIDS:
       COMPUTE: False

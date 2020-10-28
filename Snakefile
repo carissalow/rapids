@@ -132,7 +132,7 @@ for provider in config["PHONE_CONVERSATION"]["PROVIDERS"].keys():
 
 for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
     if config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["COMPUTE"]:
-        if config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"] == "RESAMPLE_FUSED":
+        if config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"] == "FUSED_RESAMPLED":
             if "PHONE_LOCATIONS" in config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"]:
                 files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
             else:
