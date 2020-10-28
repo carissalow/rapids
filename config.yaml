@@ -15,7 +15,7 @@ CREATE_PARTICIPANT_FILES:
     TYPE: AWARE_DEVICE_TABLE #AWARE_DEVICE_TABLE or CSV_FILE
     DATABASE_GROUP: *database_group
     CSV_FILE_PATH: "data/external/example_participants.csv" # must have columns: PHONE DEVICE_ID_COLUMN, FITBIT DEVICE_ID_COLUMN, pid , label, start_date, end_date
-    TIMEZONE: *timezone # only used for AWARE_DEVICE_TABLE
+    TIMEZONE: *timezone
   PHONE_SECTION:
     ADD: TRUE
     DEVICE_ID_COLUMN: device_id # column name
