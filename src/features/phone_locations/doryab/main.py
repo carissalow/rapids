@@ -46,6 +46,11 @@ def doryab_features(sensor_data_files, day_segment, provider, filter_data_by_seg
             
             location_data = location_data[(location_data['double_latitude']!=0.0) & (location_data['double_longitude']!=0.0)]
 
+            if location_data.empty:
+                location_features = pd.DataFrame(columns=["local_date"] + ["location_" + day_segment + "_" + x for x in features_to_compute])
+                location_features = location_features.reset_index(drop=True)
+                return location_features
+
             if "locationvariance" in features_to_compute:
                 location_features["locations_doryab_locationvariance"] = location_data.groupby(['local_segment'])['double_latitude'].var() + location_data.groupby(['local_segment'])['double_longitude'].var()
             
@@ -351,8 +356,10 @@ def radius_of_gyration(locationData,sampling_frequency):
         
         time_in_cluster = locationData[locationData["location_label"]==labels].shape[0]* sampling_frequency
         rog = rog + (time_in_cluster * distance)
-        
+    
     time_all_clusters = valid_clusters.shape[0] * sampling_frequency
+    if time_all_clusters == 0:
+        return 0
     final_rog = (1/time_all_clusters) * rog
 
     return np.sqrt(final_rog)

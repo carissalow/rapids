@@ -1,6 +1,7 @@
 services:
 - mysql
 - docker
+sudo: required
 language: python
 jobs:
   include:
@@ -39,7 +40,6 @@ jobs:
       - "$TRAVIS_BUILD_DIR/renv/library"
     script:
     - bash tests/scripts/run_tests.sh all test 
-    # - bash tests/scripts/run_tests.sh periodic test && tests/scripts/run_tests.sh frequency test 
   - name: Python 3.7 on macOS
     os: osx
     osx_image: xcode11.3
@@ -71,7 +71,6 @@ jobs:
       - "$TRAVIS_BUILD_DIR/renv/library"
     script:
     - bash tests/scripts/run_tests.sh all test 
-    # - bash tests/scripts/run_tests.sh periodic test # && tests/scripts/run_tests.sh frequency test 
   - stage: deploy
     name: Python 3.7 on Xenial Linux Docker
     os: linux
@@ -81,13 +80,16 @@ jobs:
     - docker login -u "agamk" -p $DOCKERPWD
     - docker tag rapids agamk/rapids:travislatest
     - docker push agamk/rapids:travislatest
-#branches:
-#  only:
-#  - master
-#  - day_segment
+branches:
+  only:
+  - master
+  - day_segment
+
 stages:
   - name: deploy
-    if: branch = master AND type = push
+    if: branch = master AND \
+        type = push
+
 notifications:
   email: false
   slack:

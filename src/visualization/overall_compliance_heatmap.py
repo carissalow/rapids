@@ -40,16 +40,18 @@ def getOverallComplianceHeatmap(sensors_with_data, valid_sensed_hours, last_cert
                                        x=[date.replace("-", "/") for date in last_certain_dates] if expected_num_of_days != -1 else last_certain_dates,
                                        y=[pid + "." + label for pid, label in zip(sensors_with_data["pid"].to_list(), sensors_with_data["label"].to_list())],
                                        text=sensors_with_data[last_certain_dates].values,
-                                       hovertemplate="Date: %{x}<br>Participant: %{y}<br>Valid sensed hours: %{z}<br>Number of sensors with data: %{text}<extra></extra>" if expected_num_of_days != -1 else "Date_idx: %{x}<br>Participant: %{y}<br>Valid sensed hours: %{z}<br>Number of sensors with data: %{text}<extra></extra>",
+                                       hovertemplate="Date: %{x}<br>Participant: %{y}<br>Valid sensed hours: %{z}<br>Number of sensors with data: %{text}<extra></extra>" if expected_num_of_days != -1 else "Day index: %{x}<br>Participant: %{y}<br>Valid sensed hours: %{z}<br>Number of sensors with data: %{text}<extra></extra>",
                                        colorscale="Viridis",
                                        colorbar={"tick0": 0,"dtick": 1},
                                        showscale=True))
     if expected_num_of_days != -1:
-        plot.update_layout(title="Overall compliance heatmap for last " + str(expected_num_of_days) + " days.<br>Bin's color shows valid sensed hours for that day.<br>A valid hour has at least one row of any sensor in "+ str(min_bins_per_hour) +" out of " + str(int(60 / bin_size)) + " bins of " + str(bin_size) + " minutes")
+        plot.update_layout(title="Overall compliance heatmap for last " + str(expected_num_of_days) + " days.<br>Bin's color shows valid sensed hours for that day.<br>A valid hour has at least one row of any sensor in "+ str(min_bins_per_hour) +" out of " + str(int(60 / bin_size)) + " bins of " + str(bin_size) + " minutes.<br>You can hover over every day to see the number of sensors with data in that day.")
     else:
-        plot.update_layout(title="Overall compliance heatmap for all days.<br>Bin's color shows valid sensed hours for that day.<br>A valid hour has at least one row of any sensor in "+ str(min_bins_per_hour) +" out of " + str(int(60 / bin_size)) + " bins of " + str(bin_size) + " minutes")
+        plot.update_layout(title="Overall compliance heatmap for all days.<br>Bin's color shows valid sensed hours for that day.<br>A valid hour has at least one row of any sensor in "+ str(min_bins_per_hour) +" out of " + str(int(60 / bin_size)) + " bins of " + str(bin_size) + " minutes.<br>You can hover over every day to see the number of sensors with data in that day.")
     
     plot["layout"]["xaxis"].update(side="bottom")
+    plot["layout"].update(xaxis_title="Day indexes")
+    plot["layout"].update(margin=dict(t=160))
     pio.write_html(plot, file=output_path, auto_open=False, include_plotlyjs="cdn")
 
 

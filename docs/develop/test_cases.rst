@@ -100,7 +100,7 @@ Activity Recognition
 Conversation
 """""""""""""
 
-    - The raw conversation data file contains data for 1 day. 
+    - The raw conversation data file contains data for 2 day. 
     - The raw conversation data contains records with a sample of both ``datatypes`` (i.e. ``voice/noise`` = ``0``, and ``conversation`` = ``2`` ) as well as rows with for samples of each of the ``inference`` values (i.e. ``silence`` = ``0``, ``noise`` = ``1``, ``voice`` = ``2``, and ``unknown`` = ``3``) for each ``epoch``. The different ``datatype`` and ``inference`` records are randomly distributed throughout the ``epoch``. 
     - Additionally there are 2 - 5 records for conversations (``datatype`` = 2, and ``inference`` = -1) in each ``epoch`` and for each ``epoch`` except night, there is a conversation record that has a ``double_convo_start`` ``timestamp`` that is from the previous ``epoch``. This is to test the calculations of features across ``epochs``.
     - There is a raw conversation data file for both android and iOS platforms (``plugin_studentlife_audio_android_raw.csv`` and ``plugin_studentlife_audio_raw.csv`` respectively).
