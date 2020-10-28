@@ -146,6 +146,33 @@ This is a bug in Ubuntu 20.04 when trying to connect to an old MySQL server with
 
 If you can't update your server, the quickest solution would be to import your database to another server or to a local environment. Alternatively, you could replace ``mysql-client`` and ``libmysqlclient-dev`` with ``mariadb-client`` and ``libmariadbclient-dev`` and reinstall renv. More info about this issue here https://bugs.launchpad.net/ubuntu/+source/mysql-8.0/+bug/1872541
 
+11. ``DB_TABLES`` key not found
+""""""""""""""""""""""""""""""""
+
+If you get the following error ``KeyError in line 43 of preprocessing.smk: 'DB_TABLES'``, means that the indentation of the key ``DB_TABLES`` is not matching the other child elements of ``PHONE_VALID_SENSED_BINS`` and you need to add or remove any leading whitespaces as needed.
+
+::
+
+    PHONE_VALID_SENSED_BINS:
+        COMPUTE: False # This flag is automatically ignored (set to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features
+        BIN_SIZE: &bin_size 5 # (in minutes)
+        # Add as many sensor tables as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
+        # If you are extracting screen or Barnett's location features, screen and locations tables are mandatory.
+        DB_TABLES: []
+
+12. Error while updating your conda environment in Ubuntu
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+If you get the following error try reinstalling conda.
+
+::
+
+    CondaMultiError: CondaVerificationError: The package for tk located at /home/ubuntu/miniconda2/pkgs/tk-8.6.9-hed695b0_1003
+        appears to be corrupted. The path 'include/mysqlStubs.h'
+        specified in the package manifest cannot be found.
+    ClobberError: This transaction has incompatible packages due to a shared path.
+        packages: conda-forge/linux-64::llvm-openmp-10.0.0-hc9558a2_0, anaconda/linux-64::intel-openmp-2019.4-243
+        path: 'lib/libiomp5.so'
 
 
 .. ------------------------ Links --------------------------- ..

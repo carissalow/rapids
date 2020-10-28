@@ -6,7 +6,9 @@
 RAPIDS
 ======
 
-**R**\ eproducible **A**\ nalysis **Pi**\ pline for **D**\ ata **S**\ treams
+**R**\ eproducible **A**\ nalysis **Pi**\ peline for **D**\ ata **S**\ treams
+
+Do you want to keep up to date with new functionality or have a question? Join the #rapids channel in AWARE Framework's slack_
 
 Contents:
 
@@ -29,11 +31,20 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
+   :caption: Visualization
+
+   visualization/data_exploration
+
+.. toctree::
+   :maxdepth: 2
    :caption: Developers
 
+   develop/remotesupport
    develop/documentation
    develop/features
    develop/environments
    develop/contributors
    develop/testing
    develop/test_cases
+   
+.. _slack: http://awareframework.com:3000/
