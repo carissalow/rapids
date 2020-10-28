@@ -236,10 +236,11 @@ PHONE_CONVERSATION:
     IOS: plugin_studentlife_audio
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: TRUE
       FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
-        "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","sumenergy",
-        "avgenergy","sdenergy","minenergy","maxenergy","silencesensedfraction","noisesensedfraction",
+        "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
+        "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
+        "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
         "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
         "unknownexpectedfraction","countconversation"]
       RECORDING_MINUTES: 1
