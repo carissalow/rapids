@@ -4,15 +4,7 @@ import numpy as np
 from datetime import datetime, timezone
 from math import trunc
 
-STEPS_SUMMARY_COLUMNS = ("device_id",
-                            "steps_rapids_intradaycountallsteps",
-                            "local_date_time",
-                            "timestamp")
-
-STEPS_INTRADAY_COLUMNS = ("device_id",
-                            "steps",
-                            "local_date_time",
-                            "timestamp")
+STEPS_COLUMNS = ("device_id", "steps", "local_date_time", "timestamp")
 
 
 def parseStepsData(steps_data):
@@ -48,7 +40,7 @@ def parseStepsData(steps_data):
 
             records_intraday.append(row_intraday)
 
-    return pd.DataFrame(data=records_summary, columns=STEPS_SUMMARY_COLUMNS), pd.DataFrame(data=records_intraday, columns=STEPS_INTRADAY_COLUMNS)
+    return pd.DataFrame(data=records_summary, columns=STEPS_COLUMNS), pd.DataFrame(data=records_intraday, columns=STEPS_COLUMNS)
 
 table_format = snakemake.params["table_format"]
 timezone = snakemake.params["timezone"]

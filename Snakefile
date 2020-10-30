@@ -169,6 +169,8 @@ for provider in config["FITBIT_STEPS"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_{fitbit_data_type}_raw.csv", pid=config["PIDS"], fitbit_data_type=(["json"] if config["FITBIT_STEPS"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"])))
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_{fitbit_data_type}_parsed.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_{fitbit_data_type}_parsed_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
+        files_to_compute.extend(expand("data/interim/{pid}/fitbit_steps_features/fitbit_steps_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["FITBIT_STEPS"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/fitbit_steps.csv", pid=config["PIDS"]))
 
 for provider in config["FITBIT_CALORIES"]["PROVIDERS"].keys():
     if config["FITBIT_CALORIES"]["PROVIDERS"][provider]["COMPUTE"]:
