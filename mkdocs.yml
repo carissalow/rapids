@@ -53,3 +53,4 @@ pages:
     - Execution: setup/execution.md
   - Example Workflows:
     - Minimal: workflow-examples/minimal.md
+  - Frequently Asked Questions: faq.md
