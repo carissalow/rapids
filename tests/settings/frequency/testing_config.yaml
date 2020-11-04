@@ -28,7 +28,7 @@ PARTICIPANT_FILES: # run snakemake -j1 -R parse_participant_files
     PARSED_FROM: CSV_FILE
     PARSED_SOURCE: "external/my_fitbit_participants.csv" # CSV file should have: device_id, pid (optional), label (optional), start_date (optional), end_date (optional)
 
-SENSOR_DATA:
+DEVICE_DATA:
   PHONE:
     SOURCE: 
       TYPE: DATABASE # Phone only supports DATABASE for now

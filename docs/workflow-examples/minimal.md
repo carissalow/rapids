@@ -20,7 +20,7 @@ This is a quick guide for creating and running a simple pipeline to extract miss
              night,00:00:00,5H 59M 59S,every_day,0
              ```
 
-         5\. If you collected data with AWARE you won't need to modify the attributes of `[SENSOR_DATA][PHONE]`
+         5\. If you collected data with AWARE you won't need to modify the attributes of `[DEVICE_DATA][PHONE]`
 
          6\. Set `[PHONE_CALLS][PROVIDERS][RAPIDS][COMPUTE]` to `True`
 
@@ -43,7 +43,7 @@ This is a quick guide for creating and running a simple pipeline to extract miss
             INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE
 
         # No need to change this if you collected AWARE data on a database and your credentials are grouped under `MY_GROUP` in `.env`
-        SENSOR_DATA:
+        DEVICE_DATA:
             PHONE:
                 SOURCE: 
                     TYPE: DATABASE

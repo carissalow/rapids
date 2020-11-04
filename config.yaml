@@ -32,7 +32,7 @@ DAY_SEGMENTS: &day_segments
   INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, see docs
 
 # See https://www.rapids.science/setup/configuration/#device-data-source-configuration
-SENSOR_DATA:
+DEVICE_DATA:
   PHONE:
     SOURCE: 
       TYPE: DATABASE
@@ -259,7 +259,7 @@ PHONE_CONVERSATION:
 ################################################################################
 
 FITBIT_HEARTRATE:
-  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [SENSOR_DATA][FITBIT][SOURCE][TYPE] to FILES
+  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [DEVICE_DATA][FITBIT][SOURCE][TYPE] to FILES
   TABLE:
     JSON: fitbit_heartrate
     CSV:
@@ -275,7 +275,7 @@ FITBIT_HEARTRATE:
       SRC_LANGUAGE: "python"
 
 FITBIT_STEPS:
-  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [SENSOR_DATA][FITBIT][SOURCE][TYPE] to FILES
+  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [DEVICE_DATA][FITBIT][SOURCE][TYPE] to FILES
   TABLE:
     JSON: fitbit_steps
     CSV:
@@ -302,7 +302,7 @@ FITBIT_STEPS:
       SRC_LANGUAGE: "python"
 
 FITBIT_SLEEP:
-  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [SENSOR_DATA][FITBIT][SOURCE][TYPE] to FILES
+  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [DEVICE_DATA][FITBIT][SOURCE][TYPE] to FILES
   TABLE:
     JSON: fitbit_sleep
     CSV:
@@ -315,7 +315,7 @@ FITBIT_SLEEP:
       SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
 
 FITBIT_CALORIES:
-  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [SENSOR_DATA][FITBIT][SOURCE][TYPE] to FILES
+  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [DEVICE_DATA][FITBIT][SOURCE][TYPE] to FILES
   TABLE:
     JSON: fitbit_calories
     CSV:

@@ -66,7 +66,7 @@ rule overall_compliance_heatmap:
         pid_files = expand("data/external/{pid}", pid=config["PIDS"])
     params:
         only_show_valid_days = config["OVERALL_COMPLIANCE_HEATMAP"]["ONLY_SHOW_VALID_DAYS"],
-        local_timezone = config["SENSOR_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
+        local_timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
         expected_num_of_days = config["OVERALL_COMPLIANCE_HEATMAP"]["EXPECTED_NUM_OF_DAYS"],
         bin_size = config["OVERALL_COMPLIANCE_HEATMAP"]["BIN_SIZE"],
         min_bins_per_hour = "{min_valid_bins_per_hour}"

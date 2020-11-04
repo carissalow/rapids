@@ -319,12 +319,12 @@ Day segments (or epochs) are the time windows on which you want to extract behav
 You might need to modify the following config keys in your `config.yaml` depending on what devices your participants used and where you are storing your data.
 
 !!! hint
-    You can ignore `[SENSOR_DATA][PHONE]` or `[SENSOR_DATA][FITBIT]` if you are not working with either devices.
+    You can ignore `[DEVICE_DATA][PHONE]` or `[DEVICE_DATA][FITBIT]` if you are not working with either devices.
 
 The relevant `config.yaml` section looks as follows by default:
 
 ```yaml
-SENSOR_DATA:
+DEVICE_DATA:
   PHONE:
     SOURCE: 
       TYPE: DATABASE
@@ -344,7 +344,7 @@ SENSOR_DATA:
 
 ```
 
-**For `[SENSOR_DATA][PHONE]`**
+**For `[DEVICE_DATA][PHONE]`**
 
 | Key                  | Description                                                                                                                |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------|
@@ -354,7 +354,7 @@ SENSOR_DATA:
 | `[TIMEZONE] [TYPE]`             | Only `SINGLE` is supported                                                                                                 |
 | `[TIMEZONE] [VALUE]`            | `*timezone`  points to the value defined before in  [Timezone of your study](#timezone-of-your-study)          |
 
-**For `[SENSOR_DATA][FITBIT]`**
+**For `[DEVICE_DATA][FITBIT]`**
 
 | Key                         | Description                                                                                                                                                       |
 |------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
