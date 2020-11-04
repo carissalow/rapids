@@ -272,7 +272,6 @@ FITBIT_HEARTRATE:
       SRC_FOLDER: "rapids" # inside src/features/fitbit_heartrate
       SRC_LANGUAGE: "python"
 
-
 FITBIT_STEPS:
   TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [SENSOR_DATA][FITBIT][SOURCE][TYPE] to FILES
   TABLE:
@@ -286,16 +285,19 @@ FITBIT_STEPS:
     FIXED:
       START: "23:00"
       END: "07:00"
-
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
       FEATURES:
-        ALL_STEPS: ["sumallsteps", "maxallsteps", "minallsteps", "avgallsteps", "stdallsteps"]
-        SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
-        ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+        SUMMARY: ["maxsumsteps", "minsumsteps", "avgsumsteps", "mediansumsteps", "stdsumsteps"]
+        INTRADAY:
+          STEPS: ["sum", "max", "min", "avg", "std"]
+          SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+          ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
       THRESHOLD_ACTIVE_BOUT: 10 # steps
       INCLUDE_ZERO_STEP_ROWS: False
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_steps
+      SRC_LANGUAGE: "python"
 
 FITBIT_SLEEP:
   TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [SENSOR_DATA][FITBIT][SOURCE][TYPE] to FILES
