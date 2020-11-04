@@ -49,3 +49,6 @@ pages:
   - Setup:
     - Installation: 'setup/installation.md'
     - Initial Configuration: setup/configuration.md
+    - Execution: setup/execution.md
+  - Example Workflows:
+    - Minimal: workflow-examples/minimal.md

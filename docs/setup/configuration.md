@@ -7,10 +7,10 @@ You need to follow these steps to configure your RAPIDS deployment before you ca
 2. Choose the [timezone of your study](#timezone-of-your-study)
 3. Create your [participants files](#participant-files)
 4. Select what [day segments](#day-segments) you want to extract features on
-5. Modify your [device data configuration](#device-data-configuration)
+5. Modify your [device data source configuration](#device-data-source-configuration)
 6. Select what [sensors and features](#sensor-and-features-to-process) you want to process
 
-When you are done with this initial configuration, go to [executing RAPIDS]().
+When you are done with this initial configuration, go to [executing RAPIDS](/setup/execution).
 
 !!! hint
     Every time you see `config["KEY"]` or `[KEY]` in these docs we are referring to the corresponding key in the `config.yaml` file.
@@ -61,23 +61,16 @@ Support coming soon.
 
 ## Participant files
 
-Participant files link together multiple devices (smartphones and wearables) to specific participants and identify them throughout RAPIDS. You can create these files manually or [automatically](#automatic-creation-of-participant-files). Participant files are stored in `data/external/participant_files/pxx.yaml` and follow a unified structure: 
+Participant files link together multiple devices (smartphones and wearables) to specific participants and identify them throughout RAPIDS. You can create these files manually or [automatically](#automatic-creation-of-participant-files). Participant files are stored in `data/external/participant_files/pxx.yaml` and follow a unified [structure](#structure-of-participants-files).
 
-```yaml
-# This is the content of a participant file (data/external/participant_files/pxx.yaml)
-PHONE:
-  DEVICE_IDS: [a748ee1a-1d0b-4ae9-9074-279a2b6ba524, dsadas-2324-fgsf-sdwr-gdfgs4rfsdf43]
-  PLATFORMS: [android,ios]
-  LABEL: test01
-  START_DATE: 2020-04-23
-  END_DATE: 2020-10-28
-FITBIT:
-  DEVICE_IDS: [fitbit1]
-  LABEL: test01
-  START_DATE: 2020-04-23
-  END_DATE: 2020-10-28
+!!! note
+    The list `PIDS` in `config.yaml` needs to have the participant file names of the people you want to process. For example, if you created `p01.yaml`, `p02.yaml` and `p03.yaml` files in `/data/external/participant_files/ `, then `PIDS` should be:
+    ```yaml
+    PIDS: [p01, p02, p03] 
+    ```
 
-```
+!!! tip
+    Attribute *values* of the `[PHONE]` and `[FITBIT]` sections in every participant file are optional which allows you to analyze data from participants that only carried smartphones, only Fitbit devices, or both.
 
 ??? hint "Optional: Migrating participants files with the old format"
     If you were using the pre-release version of RAPIDS with participant files in plain text (as opposed to yaml), you can run the following command and your old files will be converted into yaml files stored in `data/external/participant_files/`
@@ -85,15 +78,30 @@ FITBIT:
     ```bash
     python tools/update_format_participant_files.py
     ```
-  
-!!! tip
-    Attributes of the `[PHONE]` and `[FITBIT]` sections are optional which allows you to analyze data from participants that only carried smartphones, only Fitbit devices, or both.
 
 ### Structure of participants files
 
+!!! example "Example of the structure of a participant file"
+
+    In this example, the participant used an android phone, an ios phone, and a fitbit device throughout the study between Apr 23rd 2020 and Oct 28th 2020
+
+    ```yaml
+    PHONE:
+      DEVICE_IDS: [a748ee1a-1d0b-4ae9-9074-279a2b6ba524, dsadas-2324-fgsf-sdwr-gdfgs4rfsdf43]
+      PLATFORMS: [android,ios]
+      LABEL: test01
+      START_DATE: 2020-04-23
+      END_DATE: 2020-10-28
+    FITBIT:
+      DEVICE_IDS: [fitbit1]
+      LABEL: test01
+      START_DATE: 2020-04-23
+      END_DATE: 2020-10-28
+    ```
+
 **For `[PHONE]`**
 
-| Key            | Description                                                                                                                                                                                                                                                                                                                                |
+| Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description                                                                                                                                                                                                                                                                                                                                |
 |-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `[DEVICE_IDS]` | An array of the strings that uniquely identify each smartphone, you can have more than one for when participants changed phones in the middle of the study, in this case, data from all their devices will be joined and relabeled with the last 1 on this list.                                                                           |
 | `[PLATFORMS]`  | An array that specifies the OS of each smartphone in  `[DEVICE_IDS]` , use a combination of  `android`  or  `ios`  (we support participants that changed platforms in the middle of your study!). If you have an  `aware_device`  table in your database you can set  `[PLATFORMS]: [multiple]`  and RAPIDS will infer them automatically. |
@@ -103,7 +111,7 @@ FITBIT:
 
 **For `[FITBIT]`**
 
-| Key              | Description                                                                                               |
+| Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              | Description                                                                                               |
 |------------------|-----------------------------------------------------------------------------------------------------------|
 | `[DEVICE_IDS]`   | An array of the strings that uniquely identify each Fitbit, you can have more than one in case the participant changed devices in the middle of the study, in this case, data from all devices will be joined and relabeled with the last  `device_id`  on this list. |
 | `[LABEL]`        | A string that is used in reports and visualizations.                                                                                                                                                                                                                  |
@@ -306,12 +314,14 @@ Day segments (or epochs) are the time windows on which you want to extract behav
 ### Segment Examples
 
 --- 
-## Device Data Configuration
+## Device Data Source Configuration
 
 You might need to modify the following config keys in your `config.yaml` depending on what devices your participants used and where you are storing your data.
 
 !!! hint
     You can ignore `[SENSOR_DATA][PHONE]` or `[SENSOR_DATA][FITBIT]` if you are not working with either devices.
+
+The relevant `config.yaml` section looks as follows by default:
 
 ```yaml
 SENSOR_DATA:
@@ -377,7 +387,7 @@ PHONE_MESSAGES:
       SRC_FOLDER: "rapids" # inside src/features/phone_messages
 ```
 
-| Key                           | Description                                                                                                                                                                                                                                                                                                                     |
+| Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                           | Description                                                                                                                                                                                                                                                                                                                     |
 |-------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `[TABLE]`                     | The name of the table in your database that stores this sensor data.                                                                                                                                                                                                                                                            |
 | `[PROVIDERS]`                 | A collection of  `providers` . A provider is an author or group of authors that created specific features for the sensor at hand. The provider for all the features implemented by our team is called  `RAPIDS`  but we have also included contributions from other researchers (for example  `DORYAB`  for location features). |

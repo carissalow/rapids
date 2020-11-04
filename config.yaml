@@ -1,20 +1,20 @@
-# Participants to include in the analysis
-# You must create a participant file per person manually or automatically (see PARTICIPANT_FILES below)
-PIDS: [test01]
-
-# Use tz codes from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones. Double check your code, for example EST is not US Eastern Time.
-TIMEZONE: &timezone
-  America/New_York
-
+# See https://www.rapids.science/setup/configuration/#database-credentials
 DATABASE_GROUP: &database_group
   MY_GROUP
 
-# To create your participant files from the aware_device table or a csv file change config below and run 'snakemake -j1 create_participants_files'
+# See https://www.rapids.science/setup/configuration/#timezone-of-your-study
+TIMEZONE: &timezone
+  America/New_York
+
+# See https://www.rapids.science/setup/configuration/#participant-files
+PIDS: [j01]
+
+# See https://www.rapids.science/setup/configuration/#automatic-creation-of-participant-files
 CREATE_PARTICIPANT_FILES:
   SOURCE:
     TYPE: AWARE_DEVICE_TABLE #AWARE_DEVICE_TABLE or CSV_FILE
     DATABASE_GROUP: *database_group
-    CSV_FILE_PATH: "data/external/example_participants.csv" # must have columns: PHONE DEVICE_ID_COLUMN, FITBIT DEVICE_ID_COLUMN, pid , label, start_date, end_date
+    CSV_FILE_PATH: "data/external/example_participants.csv" # see docs for required format
     TIMEZONE: *timezone
   PHONE_SECTION:
     ADD: TRUE
@@ -25,11 +25,13 @@ CREATE_PARTICIPANT_FILES:
     DEVICE_ID_COLUMN: device_id # column name
     IGNORED_DEVICE_IDS: []
 
+# See https://www.rapids.science/setup/configuration/#day-segments
 DAY_SEGMENTS: &day_segments
-  TYPE: PERIODIC # FREQUENCY, PERIODIC, EVENT
-  FILE: "data/external/daysegments_periodic.csv"
-  INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, if set to TRUE we consider day segments back enough in the past as to include the first day of data
+  TYPE: EVENT # FREQUENCY, PERIODIC, EVENT
+  FILE: "data/external/daysegments_event.csv"
+  INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, see docs
 
+# See https://www.rapids.science/setup/configuration/#device-data-source-configuration
 SENSOR_DATA:
   PHONE:
     SOURCE: 
@@ -38,7 +40,7 @@ SENSOR_DATA:
       DEVICE_ID_COLUMN: device_id # column name
     TIMEZONE: 
       TYPE: SINGLE # SINGLE or MULTIPLE
-      VALUE: *timezone # IF TYPE=SINGLE, timezone code (e.g. America/New_York, see attribute TIMEZONE above). If TYPE=MULTIPLE, a table in your database with two columns (timestamp, timezone) where timestamp is a unix timestamp and timezone is one of https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+      VALUE: *timezone # IF TYPE=SINGLE, see docs
   FITBIT:
     SOURCE: 
       TYPE: DATABASE # DATABASE or FILES (set each FITBIT_SENSOR TABLE attribute accordingly with a table name or a file path)
@@ -46,7 +48,7 @@ SENSOR_DATA:
       DEVICE_ID_COLUMN: device_id # column name
     TIMEZONE: 
       TYPE: SINGLE # Fitbit only supports SINGLE timezones
-      VALUE: *timezone # timezone code (e.g. America/New_York, see attribute TIMEZONE above and https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+      VALUE: *timezone # see docs
 
 ############## PHONE ###########################################################
 ################################################################################
@@ -71,7 +73,7 @@ PHONE_MESSAGES:
   TABLE: messages
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       MESSAGES_TYPES : [received, sent]
       FEATURES: 
         received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
