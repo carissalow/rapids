@@ -10,6 +10,8 @@ RAPIDS is open source, documented, modular, tested, and reproducible. At the mom
 
 :fontawesome-solid-tasks: Join our discussions on our algorithms and assumptions for feature [processing](https://github.com/carissalow/rapids/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion).
 
+:fontawesome-solid-play: Ready to start? Go to [Installation](https://www.rapids.science/setup/installation/) and then to [Initial Configuration](https://www.rapids.science/setup/configuration/)
+
 ## How does it work?
 
 RAPIDS is formed by R and Python scripts orchestrated by [Snakemake](https://snakemake.readthedocs.io/en/stable/). We suggest you read Snakemake's docs but in short: every link in the analysis chain is atomic and has files as input and output. Behavioral features are processed per sensor and per participant.
@@ -26,15 +28,6 @@ RAPIDS is formed by R and Python scripts orchestrated by [Snakemake](https://sna
 8. **Reproducible code**. You can be sure your code will run in other computers as intended thanks to R and Python virtual environments. You can share your analysis code along your publications without any overhead.
 9. **Private**. All your data is processed locally.
 
-
-
-
 ## How is it organized?
 
-The `config.yaml` file is the only file that you will have to modify. It includes parameters to manage participants, data sources, sensor data, visualizations and more.
-
-All data is saved in `data/`. The `data/external/` folder stores any data imported by the user, `data/raw/` stores sensor data as imported from your database, `data/interim/` has intermediate files necessary to compute behavioral features from raw data, and `data/processed/` has all the final files with the behavioral features per sensor and participant.
-
-All the source code is saved in `src/`. The `src/data/` folder stores scripts to download, clean and pre-process sensor data, `src/features` has scripts to extract behavioral features organized in their respective subfolders , `src/models/` can host any script to create models or statistical analyses with the behavioral features you extract, and `src/visualization/` has scripts to create plots of the raw and processed data.
-
-There are other important files and folders but only relevant if you are interested in extending RAPIDS (e.g. virtual env files, docs, tests, Dockerfile, the Snakefile, etc.).
+In broad terms the `config.yaml`, `.env` files, participant files, and day segment files are the only ones that you will have to modify. All data is stored in `data/` and all scripts are stored in `src/`. For more information see RAPIDS' [File Structure](file-structure.md).

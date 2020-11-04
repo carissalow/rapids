@@ -46,6 +46,7 @@ theme:
     
 pages:
   - Home: 'index.md'
+  - File Structure: file-structure.md
   - Setup:
     - Installation: 'setup/installation.md'
     - Initial Configuration: setup/configuration.md

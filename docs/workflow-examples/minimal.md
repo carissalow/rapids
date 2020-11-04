@@ -9,11 +9,11 @@ This is a quick guide for creating and running a simple pipeline to extract miss
     !!! info "Things to change on each configuration step"
         1\. Setup your database connection credentials in `.env`. We assume your credentials group is called `MY_GROUP`.
 
-        2\. Set `America/New_York` as the timezone
+        2\. `America/New_York` should be the default timezone
 
         3\. Create a participant file `p01.yaml` based on one of your participants and add `p01` to `[PIDS]` in `config.yaml`
         
-        4\. Set `[DAY_SEGMENTS][TYPE]` to `PERIODIC` and `FILE` to a file containing the following lines:
+        4\. `[DAY_SEGMENTS][TYPE]` should be the default `PERIODIC`. Change `[DAY_SEGMENTS][FILE]` with the path of a file containing the following lines:
              ```csv
              label,start_time,length,repeats_on,repeats_value
              daily,00:00:00,23H 59M 59S,every_day,0
