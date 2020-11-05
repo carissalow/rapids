@@ -371,7 +371,7 @@ DEVICE_DATA:
 Finally, you need to modify the `config.yaml` of the sensors you want to process. All sensors follow the same naming nomenclature `DEVICE_SENSOR` and have the following basic attributes (we will use `PHONE_MESSAGES` as an example). 
 
 !!! hint
-    Every time you change any sensor parameter, all the necessary files will be updated as soon as you execute RAPIDS. Some sensors will have specific attributes (like `MESSAGES_TYPES`) so refer to each sensor documentation.
+    Every time you change any sensor parameters, all the necessary files will be updated as soon as you execute RAPIDS. Some sensors will have specific attributes (like `MESSAGES_TYPES`) so refer to each sensor documentation.
 
 ```yaml
 PHONE_MESSAGES:

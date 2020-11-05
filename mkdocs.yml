@@ -43,8 +43,10 @@ theme:
     primary: blue
   icon:
     logo: material/air-filter
+  features:
+    - navigation.sections
     
-pages:
+nav:
   - Home: 'index.md'
   - File Structure: file-structure.md
   - Setup:
@@ -53,4 +55,13 @@ pages:
     - Execution: setup/execution.md
   - Example Workflows:
     - Minimal: workflow-examples/minimal.md
+  - Behavioral Features:
+      - Introduction: features/feature-introduction.md
+      - Phone:
+        - Phone Data Quality: features/phone-data-quality.md
+        - Phone Messages: features/phone-messages.md
+        - Phone Calls: features/phone-calls.md
+        - Phone Bluetooth: features/phone-bluetooth.md
+        - Phone WiFI Visible: features/phone-wifi-visible.md
+        - Phone WiFI Connected: features/phone-wifi-connected.md
   - Frequently Asked Questions: faq.md

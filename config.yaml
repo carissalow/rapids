@@ -65,8 +65,8 @@ PHONE_VALID_SENSED_BINS:
 
 PHONE_VALID_SENSED_DAYS:
   COMPUTE: False
-  MIN_VALID_HOURS_PER_DAY: &min_valid_hours_per_day [16] # (out of 24) MIN_HOURS_PER_DAY
   MIN_VALID_BINS_PER_HOUR: &min_valid_bins_per_hour [6] # (out of 60min/BIN_SIZE bins)
+  MIN_VALID_HOURS_PER_DAY: &min_valid_hours_per_day [16] # (out of 24) MIN_HOURS_PER_DAY
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 PHONE_MESSAGES:
