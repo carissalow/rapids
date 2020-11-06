@@ -30,6 +30,7 @@ markdown_extensions:
         custom_checkbox: True
     - pymdownx.tilde
     - attr_list
+    - pymdownx.keys
 site_favicon: material/air-filter
 extra:
   social:
@@ -79,4 +80,8 @@ nav:
         - Phone WiFI Connected: features/phone-wifi-connected.md
         - Phone WiFI Visible: features/phone-wifi-visible.md
   - Frequently Asked Questions: faq.md
+  - Developers:
+    - Remote Support: developers/remote-support.md
+    - Virtual Environments: developers/virtual-environments.md
+  - Team: team.md
   - Citation: citation.md
