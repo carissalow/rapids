@@ -65,14 +65,15 @@ nav:
       - Introduction: features/feature-introduction.md
       - Phone:
         - Phone Data Quality: features/phone-data-quality.md
-        - Phone Messages: features/phone-messages.md
-        - Phone Calls: features/phone-calls.md
-        - Phone Bluetooth: features/phone-bluetooth.md
-        - Phone WiFI Visible: features/phone-wifi-visible.md
-        - Phone WiFI Connected: features/phone-wifi-connected.md
         - Phone Accelerometer: features/phone-accelerometer.md
+        - Phone Activity Recognition: features/phone-activity-recognition.md
         - Phone Applications Foreground: features/phone-applications-foreground.md
         - Phone Battery: features/phone-battery.md
-        - Phone Activity Recognition: features/phone-activity-recognition.md
+        - Phone Bluetooth: features/phone-bluetooth.md
+        - Phone Calls: features/phone-calls.md
+        - Phone Light: features/phone-light.md
+        - Phone Messages: features/phone-messages.md
+        - Phone WiFI Connected: features/phone-wifi-connected.md
+        - Phone WiFI Visible: features/phone-wifi-visible.md
   - Frequently Asked Questions: faq.md
   - Citation: citation.md
