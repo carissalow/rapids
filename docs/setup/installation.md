@@ -24,11 +24,16 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         git pull
         ```
     
-    5.  Check that RAPIDS is working
+    5. Make RAPIDS script executable
+        ```bash
+        chmod +x rapids
+        ```
+    
+    6.  Check that RAPIDS is working
         ``` bash
         ./rapids -j1
         ```
-    6.  *Optional*. You can edit RAPIDS files with vim but we recommend using Visual Studio Code and its Remote Containers extension
+    7.  *Optional*. You can edit RAPIDS files with vim but we recommend using Visual Studio Code and its Remote Containers extension
 
         ??? info "How to configure Remote Containers extension"
 
@@ -91,6 +96,11 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         !!! note
             This step could take several minutes to complete, especially if you have less than 3Gb of RAM or packages need to be compiled from source. Please be patient and let it run until completion.
     
+    5. Make RAPIDS script executable
+        ```bash
+        chmod +x rapids
+        ```
+
     8.  Check that RAPIDS is working
         ``` bash
         ./rapids -j1
@@ -181,6 +191,11 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
 
         !!! note
             This step could take several minutes to complete, especially if you have less than 3Gb of RAM or packages need to be compiled from source. Please be patient and let it run until completion.
+
+    5. Make RAPIDS script executable
+        ```bash
+        chmod +x rapids
+        ```
 
     8.  Check that RAPIDS is working
         ``` bash

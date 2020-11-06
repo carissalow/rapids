@@ -1,5 +1,8 @@
 # File Structure
 
+!!! tip
+    Read this page if you want to learn more about how RAPIDS is structured. If you want to start using it go to [Installation](https://www.rapids.science/setup/installation/) and then to [Initial Configuration](https://www.rapids.science/setup/configuration/)
+
 All paths mentioned in this page are relative to RAPIDS' root folder.
 
 If you want to extract the behavioral features that RAPIDS offers, you will only have to create or modify the [`.env` file](https://www.rapids.science/setup/configuration/#database-credentials), [participants files](https://www.rapids.science/setup/configuration/#participant-files), [day segment files](https://www.rapids.science/setup/configuration/#day-segments), and the `config.yaml` file. The `config.yaml` file is the heart of RAPIDS and includes parameters to manage participants, data sources, sensor data, visualizations and more.
