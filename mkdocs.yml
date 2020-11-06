@@ -72,6 +72,7 @@ nav:
         - Phone Bluetooth: features/phone-bluetooth.md
         - Phone Calls: features/phone-calls.md
         - Phone Light: features/phone-light.md
+        - Phone Locations: features/phone-locations.md
         - Phone Messages: features/phone-messages.md
         - Phone WiFI Connected: features/phone-wifi-connected.md
         - Phone WiFI Visible: features/phone-wifi-visible.md

@@ -27,3 +27,23 @@ If you computed applications foreground features using the app category (genre) 
 
 !!! cite "Stachl et al. citation"
     Clemens Stachl, Quay Au, Ramona Schoedel, Samuel D. Gosling, Gabriella M. Harari, Daniel Buschek, Sarah Theres Völkel, Tobias Schuwerk, Michelle Oldemeier, Theresa Ullmann, Heinrich Hussmann, Bernd Bischl, Markus Bühner. Proceedings of the National Academy of Sciences Jul 2020, 117 (30) 17680-17687; DOI: 10.1073/pnas.1920484117 
+
+## Barnett (locations)
+
+If you computed locations features using the provider `[PHONE_LOCATIONS][BARNETT]` cite [this paper](https://doi.org/10.1093/biostatistics/kxy059) and [this paper](https://doi.org/10.1145/2750858.2805845) in addition to RAPIDS.
+
+!!! cite "Barnett et al. citation"
+    Ian Barnett, Jukka-Pekka Onnela, Inferring mobility measures from GPS traces with missing data, Biostatistics, Volume 21, Issue 2, April 2020, Pages e98–e112, https://doi.org/10.1093/biostatistics/kxy059
+
+!!! cite "Canzian et al. citation"
+    Luca Canzian and Mirco Musolesi. 2015. Trajectories of depression: unobtrusive monitoring of depressive states by means of smartphone mobility traces analysis. In Proceedings of the 2015 ACM International Joint Conference on Pervasive and Ubiquitous Computing (UbiComp '15). Association for Computing Machinery, New York, NY, USA, 1293–1304. DOI:https://doi.org/10.1145/2750858.2805845
+
+## Doryab (locations)
+
+If you computed locations features using the provider `[PHONE_LOCATIONS][DORYAB]` cite [this paper](https://arxiv.org/abs/1812.10394) and [this paper](https://doi.org/10.1145/2750858.2805845) in addition to RAPIDS.
+
+!!! cite "Doryab et al. citation"
+    Doryab, A., Chikarsel, P., Liu, X., & Dey, A. K. (2019). Extraction of Behavioral Features from Smartphone and Wearable Data. ArXiv:1812.10394 [Cs, Stat]. http://arxiv.org/abs/1812.10394
+
+!!! cite "Canzian et al. citation"
+    Luca Canzian and Mirco Musolesi. 2015. Trajectories of depression: unobtrusive monitoring of depressive states by means of smartphone mobility traces analysis. In Proceedings of the 2015 ACM International Joint Conference on Pervasive and Ubiquitous Computing (UbiComp '15). Association for Computing Machinery, New York, NY, USA, 1293–1304. DOI:https://doi.org/10.1145/2750858.2805845
