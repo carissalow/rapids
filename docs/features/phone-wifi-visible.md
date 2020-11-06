@@ -1,5 +1,11 @@
 # Phone WiFi Visible
 
+Sensor parameters description for `[PHONE_WIFI_VISIBLE]`:
+
+|Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
+|----------------|-----------------------------------------------------------------------------------------------------------------------------------
+|`[TABLE]`| Database table where the wifi (visible) data is stored
+
 ## RAPIDS provider
 
 !!! info "Available day segments and platforms"

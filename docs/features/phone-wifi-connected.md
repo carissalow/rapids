@@ -1,5 +1,11 @@
 # Phone WiFi Connected
 
+Sensor parameters description for `[PHONE_WIFI_CONNECTED]`:
+
+|Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
+|----------------|-----------------------------------------------------------------------------------------------------------------------------------
+|`[TABLE]`| Database table where the wifi (connected) data is stored
+
 ## RAPIDS provider
 
 !!! info "Available day segments and platforms"

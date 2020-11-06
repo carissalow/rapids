@@ -1,5 +1,11 @@
 # Phone Bluetooth
 
+Sensor parameters description for `[PHONE_BLUETOOTH]`:
+
+|Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
+|----------------|-----------------------------------------------------------------------------------------------------------------------------------
+|`[TABLE]`| Database table where the bluetooth data is stored
+
 ## RAPIDS provider
 
 !!! info "Available day segments and platforms"

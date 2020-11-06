@@ -1,5 +1,11 @@
 # Phone Messages
 
+Sensor parameters description for `[PHONE_MESSAGES]`:
+
+|Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
+|----------------|-----------------------------------------------------------------------------------------------------------------------------------
+|`[TABLE]`| Database table where the messages data is stored
+
 ## RAPIDS provider
 
 !!! info "Available day segments and platforms"

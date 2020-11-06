@@ -1,5 +1,11 @@
 # Phone Calls
 
+Sensor parameters description for `[PHONE_CALLS]`:
+
+|Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
+|----------------|-----------------------------------------------------------------------------------------------------------------------------------
+|`[TABLE]`| Database table where the calls data is stored
+
 ## RAPIDS Provider
 
 !!! info "Available day segments and platforms"
