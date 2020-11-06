@@ -10,7 +10,7 @@ RAPIDS is open source, documented, modular, tested, and reproducible. At the mom
 
 :fontawesome-solid-tasks: Join our discussions on our algorithms and assumptions for feature [processing](https://github.com/carissalow/rapids/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion).
 
-:fontawesome-solid-play: Ready to start? Go to [Installation](https://www.rapids.science/setup/installation/) and then to [Initial Configuration](https://www.rapids.science/setup/configuration/)
+:fontawesome-solid-play: Ready to start? Go to [Installation](/setup/installation/) and then to [Initial Configuration](/setup/configuration/)
 
 ## How does it work?
 
