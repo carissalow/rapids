@@ -31,3 +31,6 @@ After you have [installed](/setup/installation) and [configured](/setup/configur
     ```bash
     ./rapids -j1 -R clean
     ```
+
+!!! done "Ready to extract behavioral features"
+    If you are ready to extract features head over to the [Behavioral Features Introduction](/features/feature-introduction/)
