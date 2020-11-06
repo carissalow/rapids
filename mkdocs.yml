@@ -72,5 +72,7 @@ nav:
         - Phone WiFI Connected: features/phone-wifi-connected.md
         - Phone Accelerometer: features/phone-accelerometer.md
         - Phone Applications Foreground: features/phone-applications-foreground.md
+        - Phone Battery: features/phone-battery.md
+        - Phone Activity Recognition: features/phone-activity-recognition.md
   - Frequently Asked Questions: faq.md
   - Citation: citation.md
