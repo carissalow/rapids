@@ -33,7 +33,7 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         ``` bash
         ./rapids -j1
         ```
-    7.  *Optional*. You can edit RAPIDS files with vim but we recommend using Visual Studio Code and its Remote Containers extension
+    7.  *Optional*. You can edit RAPIDS files with `vim` but we recommend using `Visual Studio Code` and its `Remote Containers` extension
 
         ??? info "How to configure Remote Containers extension"
 
