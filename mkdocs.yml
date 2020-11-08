@@ -1,5 +1,4 @@
 site_name: RAPIDS
-# theme: 'material'
 markdown_extensions:
     - toc:
         permalink: True
@@ -31,11 +30,12 @@ markdown_extensions:
     - pymdownx.tilde
     - attr_list
     - pymdownx.keys
-site_favicon: material/air-filter
 extra:
   social:
     - icon: fontawesome/brands/twitter
       link: 'https://twitter.com/julio_ui'
+  version:
+    method: mike
 extra_javascript:
   - javascripts/config.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
@@ -46,13 +46,27 @@ repo_url: 'https://github.com/carissalow/rapids'
 copyright: 'Released under AGPL'
 theme:
   name: material
-  palette:
-    primary: blue
   icon:
     logo: material/air-filter
+  palette:
+    - scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+    - scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
   features:
     - navigation.sections
-    
+    - search.suggest
+    - search.highlight
+extra_css:
+    - stylesheets/extra.css
 nav:
   - Home: 'index.md'
   - Setup:
@@ -86,6 +100,7 @@ nav:
     - Documentation: developers/documentation.md
     - Testing: developers/testing.md
     - Test cases: developers/test-cases.md
-  - Frequently Asked Questions: faq.md
-  - Team: team.md
-  - Citation: citation.md
+  - Others:
+    - Frequently Asked Questions: faq.md
+    - Team: team.md
+    - Citation: citation.md
