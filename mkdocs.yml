@@ -31,11 +31,11 @@ markdown_extensions:
     - attr_list
     - pymdownx.keys
 extra:
+  version:
+    method: mike
   social:
     - icon: fontawesome/brands/twitter
       link: 'https://twitter.com/julio_ui'
-  version:
-    method: mike
 extra_javascript:
   - javascripts/config.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
