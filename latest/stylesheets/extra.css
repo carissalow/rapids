@@ -1,0 +1,14 @@
+@media screen and (min-width: 76.25em) {
+    .md-nav__item--section {
+        display: block;
+        margin: 1.75em 0;
+    }
+
+    .md-nav :not(.md-nav--primary) > .md-nav__list {
+        padding-left: 7px;
+    }
+}
+.md-nav__item .md-nav__link--active {
+    color: var(--md-typeset-a-color);
+    background-color: var(--md-code-bg-color);
+}
