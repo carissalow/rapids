@@ -11,13 +11,13 @@ Sensor parameters description for `[PHONE_LOCATIONS]`:
 
 !!! note "Assumptions/Observations"
     **Types of location data to use**
-    AWARE Android and iOS clients can collect location coordinates through the phone\'s GPS, the network cellular towers around the phone or Google\'s fused location API. If you want to use only the GPS provider set `[LOCATIONS_TO_USE]` to `GPS`, if you want to use all providers (not recommended due to the difference in accuracy) set `[LOCATIONS_TO_USE]` to `ALL`, if your AWARE client was configured to use fused location only or want to focus only on this provider, set `[LOCATIONS_TO_USE]` to `RESAMPLE_FUSED`. `RESAMPLE_FUSED` takes the original fused location coordinates and replicates each pair forward in time as long as the phone was sensing data as indicated by [`PHONE_VALID_SENSED_BINS`](/features/phone-data-quality/#phone-valid-sensed-bins), this is done because Google\'s API only logs a new location coordinate pair when it is sufficiently different in time or space from the previous one.
+    AWARE Android and iOS clients can collect location coordinates through the phone\'s GPS, the network cellular towers around the phone or Google\'s fused location API. If you want to use only the GPS provider set `[LOCATIONS_TO_USE]` to `GPS`, if you want to use all providers (not recommended due to the difference in accuracy) set `[LOCATIONS_TO_USE]` to `ALL`, if your AWARE client was configured to use fused location only or want to focus only on this provider, set `[LOCATIONS_TO_USE]` to `RESAMPLE_FUSED`. `RESAMPLE_FUSED` takes the original fused location coordinates and replicates each pair forward in time as long as the phone was sensing data as indicated by [`PHONE_VALID_SENSED_BINS`](../phone-data-quality/#phone-valid-sensed-bins), this is done because Google\'s API only logs a new location coordinate pair when it is sufficiently different in time or space from the previous one.
 
     There are two parameters associated with resampling fused location. `FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD` (in minutes, default 30) controls the maximum gap between any two coordinate pairs to replicate the last known pair (for example, participant A\'s phone did not collect data between 10.30am and 10:50am and between 11:05am and 11:40am, the last known coordinate pair will be replicated during the first period but not the second, in other words, we assume that we cannot longer guarantee the participant stayed at the last known location if the phone did not sense data for more than 30 minutes). `FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION` (in minutes, default 720 or 12 hours) stops the last known fused location from being replicated longer that this threshold even if the phone was sensing data continuously (for example, participant A went home at 9pm and their phone was sensing data without gaps until 11am the next morning, the last known location will only be replicated until 9am). If you have suggestions to modify or improve this resampling, let us know.
 
 ## BARNETT provider
 
-These features are based on the original open-source implementation by [Barnett et al](/citation#barnett-locations) and some features created by [Canzian et al](/citation#barnett-locations).
+These features are based on the original open-source implementation by [Barnett et al](../../citation#barnett-locations) and some features created by [Canzian et al](../../citation#barnett-locations).
 
 
 !!! info "Available day segments and platforms"
@@ -41,7 +41,7 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][BARNETT]`:
 |`[COMPUTE]`| Set to `True` to extract `PHONE_LOCATIONS` features from the `BARNETT` provider|
 |`[FEATURES]` |         Features to be computed, see table below
 |`[ACCURACY_LIMIT]` |   An integer in meters, any location rows with an accuracy higher than this will be dropped. This number means there's a 68% probability the true location is within this radius
-|`[TIMEZONE]` |    Timezone where the location data was collected. By default points to the one defined in the [Initial configuration](/setup/configuration#timezone-of-your-study)
+|`[TIMEZONE]` |    Timezone where the location data was collected. By default points to the one defined in the [Initial configuration](../../setup/configuration#timezone-of-your-study)
 |`[MINUTES_DATA_USED]` |    Set to `True` to include an extra column in the final location feature file containing the number of minutes used to compute the features on each day segment. Use this for quality control purposes, the more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
 
 
@@ -67,17 +67,17 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][BARNETT]` adapted from [B
 
 !!! note "Assumptions/Observations"
     **Barnett\'s et al features**
-    These features are based on a Pause-Flight model. A pause is defined as a mobiity trace (location pings) within a certain duration and distance (by default 300 seconds and 60 meters). A flight is any mobility trace between two pauses. Data is resampled and imputed before the features are computed. See [Barnett et al](/citation#barnett-locations) for more information. In RAPIDS we only expose two parameters for these features (timezone and accuracy limit). You can change other parameters in `src/features/phone_locations/barnett/library/MobilityFeatures.R`.
+    These features are based on a Pause-Flight model. A pause is defined as a mobiity trace (location pings) within a certain duration and distance (by default 300 seconds and 60 meters). A flight is any mobility trace between two pauses. Data is resampled and imputed before the features are computed. See [Barnett et al](../../citation#barnett-locations) for more information. In RAPIDS we only expose two parameters for these features (timezone and accuracy limit). You can change other parameters in `src/features/phone_locations/barnett/library/MobilityFeatures.R`.
 
     **Significant Locations**
-    Significant locations are determined using K-means clustering on pauses longer than 10 minutes. The number of clusters (K) is increased until no two clusters are within 400 meters from each other. After this, pauses within a certain range of a cluster (200 meters by default) will count as a visit to that significant location. This description was adapted from the Supplementary Materials of [Barnett et al](/citation#barnett-locations).
+    Significant locations are determined using K-means clustering on pauses longer than 10 minutes. The number of clusters (K) is increased until no two clusters are within 400 meters from each other. After this, pauses within a certain range of a cluster (200 meters by default) will count as a visit to that significant location. This description was adapted from the Supplementary Materials of [Barnett et al](../../citation#barnett-locations).
 
     **The Circadian Calculation**
-    For a detailed description of how this is calculated, see [Canzian et al](/citation#barnett-locations).
+    For a detailed description of how this is calculated, see [Canzian et al](../../citation#barnett-locations).
 
 ## DORYAB provider
 
-These features are based on the original implementation by [Doryab et al.](/citation#doryab-locations).
+These features are based on the original implementation by [Doryab et al.](../../citation#doryab-locations).
 
 
 !!! info "Available day segments and platforms"
@@ -117,7 +117,7 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][BARNETT]`:
 |totaldistance                                                |meters        |Total distance travelled in a day segment using the haversine formula.
 |averagespeed                                                 |km/hr         |Average speed in a day segment considering only the instances labeled as Moving.
 |varspeed                                                      |km/hr         |Speed variance in a day segment considering only the instances labeled as Moving. 
-|circadianmovement                                              |-             | \"It encodes the extent to which a person's location patterns follow a 24-hour circadian cycle.\" [Doryab et al.](/citation#doryab-locations).
+|circadianmovement                                              |-             | \"It encodes the extent to which a person's location patterns follow a 24-hour circadian cycle.\" [Doryab et al.](../../citation#doryab-locations).
 |numberofsignificantplaces                                    |places        |Number of significant locations visited. It is calculated using the DBSCAN clustering algorithm which takes in EPS and MIN_SAMPLES as parameters to identify clusters. Each cluster is a significant place.
 |numberlocationtransitions                                    |transitions   |Number of movements between any two clusters in a day segment.
 |radiusgyration                                               |meters        |Quantifies the area covered by a participant
@@ -139,4 +139,4 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][BARNETT]`:
     Significant locations are determined using DBSCAN clustering on locations that a patient visit over the course of the period of data collection.
 
     **The Circadian Calculation**
-    For a detailed description of how this is calculated, see [Canzian et al](/citation#doryab-locations).
+    For a detailed description of how this is calculated, see [Canzian et al](../../citation#doryab-locations).

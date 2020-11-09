@@ -2,7 +2,7 @@
 
 Reproducible Analysis Pipeline for Data Streams (RAPIDS) allows you to process smartphone and wearable data to extract **behavioral features** (a.k.a. digital biomarkers/phenotypes).
 
-RAPIDS is open source, documented, modular, tested, and reproducible. At the moment we support smartphone data collected with [AWARE](awareframework.com/) and wearable data from Fitbit devices.
+RAPIDS is open source, documented, modular, tested, and reproducible. At the moment we support smartphone data collected with [AWARE](https://awareframework.com/) and wearable data from Fitbit devices.
 
 :material-slack: Questions or feedback can be posted on \#rapids in AWARE Framework\'s [slack](http://awareframework.com:3000/). 
 
@@ -10,7 +10,7 @@ RAPIDS is open source, documented, modular, tested, and reproducible. At the mom
 
 :fontawesome-solid-tasks: Join our discussions on our algorithms and assumptions for feature [processing](https://github.com/carissalow/rapids/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion).
 
-:fontawesome-solid-play: Ready to start? Go to [Installation](/setup/installation/) and then to [Initial Configuration](/setup/configuration/)
+:fontawesome-solid-play: Ready to start? Go to [Installation](setup/installation/) and then to [Initial Configuration](setup/configuration/)
 
 ## How does it work?
 

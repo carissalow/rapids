@@ -1,7 +1,7 @@
 # Add New Features
 
 !!! hint
-    We recommend reading the [Behavioral Features Introduction](/features/feature-introduction) before reading this page
+    We recommend reading the [Behavioral Features Introduction](../feature-introduction/) before reading this page
 
 !!! hint
     You won't have to deal with time zones, dates, times, data cleaning or preprocessing. The data that RAPIDS pipes to your feature extraction code is ready to process.
@@ -116,9 +116,9 @@ The code to extract your behavioral features should be implemented in your provi
     acc_data = filter_data_by_segment(acc_data, day_segment)
     ```
 
-    You should use the `filter_data_by_segment()` function to process and group those rows that belong to each of the [day segments RAPIDS could be configured with](/setup/configuration/#day-segments).
+    You should use the `filter_data_by_segment()` function to process and group those rows that belong to each of the [day segments RAPIDS could be configured with](../../setup/configuration/#day-segments).
 
-    Let's understand the `filter_data_by_segment()` function with an example. A RAPIDS user can extract features on any arbitrary [day segment](/setup/configuration/#day-segments). A day segment is a period of time that has a label and one or more instances. For example, the user (or you) could have requested features on a daily, weekly, and week-end basis for `p01`. The labels are arbritrary and the instances depend on the days a participant was monitored for: 
+    Let's understand the `filter_data_by_segment()` function with an example. A RAPIDS user can extract features on any arbitrary [day segment](../../setup/configuration/#day-segments). A day segment is a period of time that has a label and one or more instances. For example, the user (or you) could have requested features on a daily, weekly, and week-end basis for `p01`. The labels are arbritrary and the instances depend on the days a participant was monitored for: 
 
      - the daily segment could be named `my_days` and if `p01` was monitored for 14 days, it would have 14 instances
      - the weekly segment could be named `my_weeks` and if `p01` was monitored for 14 days, it would have 2 instances.
@@ -182,4 +182,4 @@ The code to extract your behavioral features should be implemented in your provi
 
 ## New Features for Non-Existing Sensors
 
-If you want to add features for a device or a sensor that we do not support at the moment (those that do not appear in the `"Existing Sensors"` list above), [contact us](/team) or request it on [Slack](/) and we can add the necessary code so you can follow the instructions above.
+If you want to add features for a device or a sensor that we do not support at the moment (those that do not appear in the `"Existing Sensors"` list above), [contact us](../../team) or request it on [Slack](http://awareframework.com:3000/) and we can add the necessary code so you can follow the instructions above.

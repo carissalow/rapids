@@ -44,7 +44,7 @@ Features description for `[PHONE_ACCELEROMETER][PROVIDERS][RAPIDS]`:
 
 ## PANDA provider
 
-These features are based on the work by [Panda et al](/citation#panda-accelerometer).
+These features are based on the work by [Panda et al](../../citation#panda-accelerometer).
 
 !!! info "Available day segments and platforms"
     - Available for all day segments
@@ -80,4 +80,4 @@ Features description for `[PHONE_ACCELEROMETER][PROVIDERS][PANDA]`:
 
 !!! note "Assumptions/Observations"
     1. Analyzing accelerometer data is a memory intensive task. If RAPIDS crashes is likely because the accelerometer dataset for a participant is to big to fit in memory. We are considering different alternatives to overcome this problem.
-    2. See [Panda et al](/citation#panda-accelerometer) for a definition of exertional and non-exertional activity episodes
+    2. See [Panda et al](../../citation#panda-accelerometer) for a definition of exertional and non-exertional activity episodes

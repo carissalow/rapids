@@ -1,6 +1,6 @@
 # Execution
 
-After you have [installed](/setup/installation) and [configured](/setup/configuration) RAPIDS, use the following command to execute it.
+After you have [installed](../installation) and [configured](../configuration) RAPIDS, use the following command to execute it.
 
 ```bash
 ./rapids -j1
@@ -33,4 +33,4 @@ After you have [installed](/setup/installation) and [configured](/setup/configur
     ```
 
 !!! done "Ready to extract behavioral features"
-    If you are ready to extract features head over to the [Behavioral Features Introduction](/features/feature-introduction/)
+    If you are ready to extract features head over to the [Behavioral Features Introduction](../../features/feature-introduction/)

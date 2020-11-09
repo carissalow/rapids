@@ -38,7 +38,7 @@ Every phone or Fitbit sensor has a corresponding config section in `config.yaml`
     ```
 
 ## Sensor Parameters
-Each sensor configuration section has a `Parameters` subsection (see `#2` in the example). These are parameters that affect different aspects of how the raw data is download, and processed. The `TABLE` parameter exists for every sensor, but some sensors will have extra para meters like [`[PHONE_LOCATIONS]`](/features/phone-locations/). We explain these parameters in a table at the top of each sensor documentation page.
+Each sensor configuration section has a `Parameters` subsection (see `#2` in the example). These are parameters that affect different aspects of how the raw data is download, and processed. The `TABLE` parameter exists for every sensor, but some sensors will have extra para meters like [`[PHONE_LOCATIONS]`](../phone-locations/). We explain these parameters in a table at the top of each sensor documentation page.
 
 ## Sensor Providers
 Each sensor configuration section can have zero, one or more behavioral feature **providers** (see `#2` in the example). A provider is a script created by the core RAPIDS team or other researchers that extracts behavioral features for that sensor. For this accelerometer example we have two providers RAPIDS (see `#4`) and PANDA (see `#5`).

@@ -12,6 +12,7 @@ jobs:
         with:
           python-version: 3.x
       - run: pip install git+https://${GH_TOKEN}@github.com/carissalow/mkdocs-material-insiders.git
-      - run: mkdocs gh-deploy --force
+      - run: pip install mike
+      - run: mike deploy --push --update-aliases 0.1 latest
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}

@@ -61,4 +61,4 @@ Features description for `[PHONE_ACTIVITY_RECOGNITION][PROVIDERS][RAPIDS]`:
         |`stationary`|  `still` |  `3`
         |`unknown`|  `unknown` |  `4`
 
-    2. In AWARE, Activity Recognition data for Android and iOS are stored in two different database tables, RAPIDS automatically infers what platform each participant belongs to based on their [participant file](/setup/configuration/#participant-files).
+    2. In AWARE, Activity Recognition data for Android and iOS are stored in two different database tables, RAPIDS automatically infers what platform each participant belongs to based on their [participant file](../../setup/configuration/#participant-files).
