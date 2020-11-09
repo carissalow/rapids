@@ -907,7 +907,7 @@
                 <h1 id="add-new-features">Add New Features<a class="headerlink" href="#add-new-features" title="Permanent link">&para;</a></h1>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
-<p>We recommend reading the <a href="features/feature-introduction">Behavioral Features Introduction</a> before reading this page</p>
+<p>We recommend reading the <a href="../feature-introduction/">Behavioral Features Introduction</a> before reading this page</p>
 </div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
@@ -1051,8 +1051,8 @@
 <details class="info"><summary>2. Filter your data to process only those rows that belong to <code>day_segment</code></summary><p>This step is only one line of code, but to undersand why we need it, keep reading.
 <div class="highlight"><pre><span></span><code><span class="n">acc_data</span> <span class="o">=</span> <span class="n">filter_data_by_segment</span><span class="p">(</span><span class="n">acc_data</span><span class="p">,</span> <span class="n">day_segment</span><span class="p">)</span>
 </code></pre></div></p>
-<p>You should use the <code>filter_data_by_segment()</code> function to process and group those rows that belong to each of the <a href="setup/configuration/#day-segments">day segments RAPIDS could be configured with</a>.</p>
-<p>Let&rsquo;s understand the <code>filter_data_by_segment()</code> function with an example. A RAPIDS user can extract features on any arbitrary <a href="setup/configuration/#day-segments">day segment</a>. A day segment is a period of time that has a label and one or more instances. For example, the user (or you) could have requested features on a daily, weekly, and week-end basis for <code>p01</code>. The labels are arbritrary and the instances depend on the days a participant was monitored for: </p>
+<p>You should use the <code>filter_data_by_segment()</code> function to process and group those rows that belong to each of the <a href="../../setup/configuration/#day-segments">day segments RAPIDS could be configured with</a>.</p>
+<p>Let&rsquo;s understand the <code>filter_data_by_segment()</code> function with an example. A RAPIDS user can extract features on any arbitrary <a href="../../setup/configuration/#day-segments">day segment</a>. A day segment is a period of time that has a label and one or more instances. For example, the user (or you) could have requested features on a daily, weekly, and week-end basis for <code>p01</code>. The labels are arbritrary and the instances depend on the days a participant was monitored for: </p>
 <ul>
 <li>the daily segment could be named <code>my_days</code> and if <code>p01</code> was monitored for 14 days, it would have 14 instances</li>
 <li>the weekly segment could be named <code>my_weeks</code> and if <code>p01</code> was monitored for 14 days, it would have 2 instances.</li>
@@ -1108,7 +1108,7 @@
 </code></pre></div>
 </details>
 <h2 id="new-features-for-non-existing-sensors">New Features for Non-Existing Sensors<a class="headerlink" href="#new-features-for-non-existing-sensors" title="Permanent link">&para;</a></h2>
-<p>If you want to add features for a device or a sensor that we do not support at the moment (those that do not appear in the <code>"Existing Sensors"</code> list above), <a href="team">contact us</a> or request it on <a href="">Slack</a> and we can add the necessary code so you can follow the instructions above.</p>
+<p>If you want to add features for a device or a sensor that we do not support at the moment (those that do not appear in the <code>"Existing Sensors"</code> list above), <a href="../../team">contact us</a> or request it on <a href="http://awareframework.com:3000/">Slack</a> and we can add the necessary code so you can follow the instructions above.</p>
                 
               
               

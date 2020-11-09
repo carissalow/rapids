@@ -883,11 +883,11 @@
 <div class="admonition note">
 <p class="admonition-title">Assumptions/Observations</p>
 <p><strong>Types of location data to use</strong>
-AWARE Android and iOS clients can collect location coordinates through the phone's GPS, the network cellular towers around the phone or Google's fused location API. If you want to use only the GPS provider set <code>[LOCATIONS_TO_USE]</code> to <code>GPS</code>, if you want to use all providers (not recommended due to the difference in accuracy) set <code>[LOCATIONS_TO_USE]</code> to <code>ALL</code>, if your AWARE client was configured to use fused location only or want to focus only on this provider, set <code>[LOCATIONS_TO_USE]</code> to <code>RESAMPLE_FUSED</code>. <code>RESAMPLE_FUSED</code> takes the original fused location coordinates and replicates each pair forward in time as long as the phone was sensing data as indicated by <a href="features/phone-data-quality/#phone-valid-sensed-bins"><code>PHONE_VALID_SENSED_BINS</code></a>, this is done because Google's API only logs a new location coordinate pair when it is sufficiently different in time or space from the previous one.</p>
+AWARE Android and iOS clients can collect location coordinates through the phone's GPS, the network cellular towers around the phone or Google's fused location API. If you want to use only the GPS provider set <code>[LOCATIONS_TO_USE]</code> to <code>GPS</code>, if you want to use all providers (not recommended due to the difference in accuracy) set <code>[LOCATIONS_TO_USE]</code> to <code>ALL</code>, if your AWARE client was configured to use fused location only or want to focus only on this provider, set <code>[LOCATIONS_TO_USE]</code> to <code>RESAMPLE_FUSED</code>. <code>RESAMPLE_FUSED</code> takes the original fused location coordinates and replicates each pair forward in time as long as the phone was sensing data as indicated by <a href="../phone-data-quality/#phone-valid-sensed-bins"><code>PHONE_VALID_SENSED_BINS</code></a>, this is done because Google's API only logs a new location coordinate pair when it is sufficiently different in time or space from the previous one.</p>
 <p>There are two parameters associated with resampling fused location. <code>FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD</code> (in minutes, default 30) controls the maximum gap between any two coordinate pairs to replicate the last known pair (for example, participant A's phone did not collect data between 10.30am and 10:50am and between 11:05am and 11:40am, the last known coordinate pair will be replicated during the first period but not the second, in other words, we assume that we cannot longer guarantee the participant stayed at the last known location if the phone did not sense data for more than 30 minutes). <code>FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION</code> (in minutes, default 720 or 12 hours) stops the last known fused location from being replicated longer that this threshold even if the phone was sensing data continuously (for example, participant A went home at 9pm and their phone was sensing data without gaps until 11am the next morning, the last known location will only be replicated until 9am). If you have suggestions to modify or improve this resampling, let us know.</p>
 </div>
 <h2 id="barnett-provider">BARNETT provider<a class="headerlink" href="#barnett-provider" title="Permanent link">&para;</a></h2>
-<p>These features are based on the original open-source implementation by <a href="citation#barnett-locations">Barnett et al</a> and some features created by <a href="citation#barnett-locations">Canzian et al</a>.</p>
+<p>These features are based on the original open-source implementation by <a href="../../citation#barnett-locations">Barnett et al</a> and some features created by <a href="../../citation#barnett-locations">Canzian et al</a>.</p>
 <div class="admonition info">
 <p class="admonition-title">Available day segments and platforms</p>
 <ul>
@@ -927,7 +927,7 @@ AWARE Android and iOS clients can collect location coordinates through the phone
 </tr>
 <tr>
 <td><code>[TIMEZONE]</code></td>
-<td>Timezone where the location data was collected. By default points to the one defined in the <a href="setup/configuration#timezone-of-your-study">Initial configuration</a></td>
+<td>Timezone where the location data was collected. By default points to the one defined in the <a href="../../setup/configuration#timezone-of-your-study">Initial configuration</a></td>
 </tr>
 <tr>
 <td><code>[MINUTES_DATA_USED]</code></td>
@@ -1020,14 +1020,14 @@ AWARE Android and iOS clients can collect location coordinates through the phone
 <div class="admonition note">
 <p class="admonition-title">Assumptions/Observations</p>
 <p><strong>Barnett's et al features</strong>
-These features are based on a Pause-Flight model. A pause is defined as a mobiity trace (location pings) within a certain duration and distance (by default 300 seconds and 60 meters). A flight is any mobility trace between two pauses. Data is resampled and imputed before the features are computed. See <a href="citation#barnett-locations">Barnett et al</a> for more information. In RAPIDS we only expose two parameters for these features (timezone and accuracy limit). You can change other parameters in <code>src/features/phone_locations/barnett/library/MobilityFeatures.R</code>.</p>
+These features are based on a Pause-Flight model. A pause is defined as a mobiity trace (location pings) within a certain duration and distance (by default 300 seconds and 60 meters). A flight is any mobility trace between two pauses. Data is resampled and imputed before the features are computed. See <a href="../../citation#barnett-locations">Barnett et al</a> for more information. In RAPIDS we only expose two parameters for these features (timezone and accuracy limit). You can change other parameters in <code>src/features/phone_locations/barnett/library/MobilityFeatures.R</code>.</p>
 <p><strong>Significant Locations</strong>
-Significant locations are determined using K-means clustering on pauses longer than 10 minutes. The number of clusters (K) is increased until no two clusters are within 400 meters from each other. After this, pauses within a certain range of a cluster (200 meters by default) will count as a visit to that significant location. This description was adapted from the Supplementary Materials of <a href="citation#barnett-locations">Barnett et al</a>.</p>
+Significant locations are determined using K-means clustering on pauses longer than 10 minutes. The number of clusters (K) is increased until no two clusters are within 400 meters from each other. After this, pauses within a certain range of a cluster (200 meters by default) will count as a visit to that significant location. This description was adapted from the Supplementary Materials of <a href="../../citation#barnett-locations">Barnett et al</a>.</p>
 <p><strong>The Circadian Calculation</strong>
-For a detailed description of how this is calculated, see <a href="citation#barnett-locations">Canzian et al</a>.</p>
+For a detailed description of how this is calculated, see <a href="../../citation#barnett-locations">Canzian et al</a>.</p>
 </div>
 <h2 id="doryab-provider">DORYAB provider<a class="headerlink" href="#doryab-provider" title="Permanent link">&para;</a></h2>
-<p>These features are based on the original implementation by <a href="citation#doryab-locations">Doryab et al.</a>.</p>
+<p>These features are based on the original implementation by <a href="../../citation#doryab-locations">Doryab et al.</a>.</p>
 <div class="admonition info">
 <p class="admonition-title">Available day segments and platforms</p>
 <ul>
@@ -1125,7 +1125,7 @@ For a detailed description of how this is calculated, see <a href="citation#barn
 <tr>
 <td>circadianmovement</td>
 <td>-</td>
-<td>"It encodes the extent to which a person&rsquo;s location patterns follow a 24-hour circadian cycle." <a href="citation#doryab-locations">Doryab et al.</a>.</td>
+<td>"It encodes the extent to which a person&rsquo;s location patterns follow a 24-hour circadian cycle." <a href="../../citation#doryab-locations">Doryab et al.</a>.</td>
 </tr>
 <tr>
 <td>numberofsignificantplaces</td>
@@ -1204,7 +1204,7 @@ For a detailed description of how this is calculated, see <a href="citation#barn
 <p><strong>Significant Locations Identified</strong>
 Significant locations are determined using DBSCAN clustering on locations that a patient visit over the course of the period of data collection.</p>
 <p><strong>The Circadian Calculation</strong>
-For a detailed description of how this is calculated, see <a href="citation#doryab-locations">Canzian et al</a>.</p>
+For a detailed description of how this is calculated, see <a href="../../citation#doryab-locations">Canzian et al</a>.</p>
 </div>
                 
               
