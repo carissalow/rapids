@@ -24,6 +24,12 @@ The documentation config file is `/mkdocs.yml`, if you are adding new `.md` file
 
 Check this [page](https://squidfunk.github.io/mkdocs-material/reference/abbreviations/) to get familiar with the different visual elements we can use in the docs (admonitions, code blocks, tables, etc.) You can also refer to `/docs/setup/installation.md` and `/docs/setup/configuration.md` to see practical examples of these elements.
 
+!!! hint
+    Any links to internal pages should be relative to the current page. For example, any link from this page (documentation) which is inside `./developers` should begin with `../` to go one folder level up like:
+    ```md
+    [mylink](../setup/installation.md)
+    ```
+
 ## Extras
 
 You can insert [emojis](https://facelessuser.github.io/pymdown-extensions/extensions/emoji/) using this syntax `:[SOURCE]-[ICON_NAME]` from the following sources:
