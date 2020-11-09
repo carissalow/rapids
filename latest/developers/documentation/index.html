@@ -908,6 +908,12 @@
 <p>The documentation config file is <code>/mkdocs.yml</code>, if you are adding new <code>.md</code> files to the docs modify the <code>nav</code> attribute at the bottom of that file. You can use the hierarchy there to find all the files that appear in the documentation.</p>
 <h2 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">&para;</a></h2>
 <p>Check this <a href="https://squidfunk.github.io/mkdocs-material/reference/abbreviations/">page</a> to get familiar with the different visual elements we can use in the docs (admonitions, code blocks, tables, etc.) You can also refer to <code>/docs/setup/installation.md</code> and <code>/docs/setup/configuration.md</code> to see practical examples of these elements.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Any links to internal pages should be relative to the current page. For example, any link from this page (documentation) which is inside <code>./developers</code> should begin with <code>../</code> to go one folder level up like:
+<div class="highlight"><pre><span></span><code>[<span class="nt">mylink</span>](<span class="na">../setup/installation.md</span>)
+</code></pre></div></p>
+</div>
 <h2 id="extras">Extras<a class="headerlink" href="#extras" title="Permanent link">&para;</a></h2>
 <p>You can insert <a href="https://facelessuser.github.io/pymdown-extensions/extensions/emoji/">emojis</a> using this syntax <code>:[SOURCE]-[ICON_NAME]</code> from the following sources:</p>
 <ul>
