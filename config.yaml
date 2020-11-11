@@ -44,6 +44,7 @@ DEVICE_DATA:
   FITBIT:
     SOURCE: 
       TYPE: DATABASE # DATABASE or FILES (set each FITBIT_SENSOR TABLE attribute accordingly with a table name or a file path)
+      COLUMN_FORMAT: JSON # JSON or PLAIN_TEXT
       DATABASE_GROUP: *database_group
       DEVICE_ID_COLUMN: device_id # column name
     TIMEZONE: 
@@ -258,20 +259,22 @@ PHONE_CONVERSATION:
 ############## FITBIT ##########################################################
 ################################################################################
 
-FITBIT_HEARTRATE:
-  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [DEVICE_DATA][FITBIT][SOURCE][TYPE] to FILES
-  TABLE:
-    JSON: fitbit_heartrate
-    CSV:
-      SUMMARY: heartrate_summary
-      INTRADAY: heartrate_intraday
+FITBIT_HEARTRATE_SUMMARY:
+  TABLE: heartrate_summary
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
-      FEATURES:
-        SUMMARY: ["maxrestinghr", "minrestinghr", "avgrestinghr", "medianrestinghr", "moderestinghr", "stdrestinghr", "diffmaxmoderestinghr", "diffminmoderestinghr", "entropyrestinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. height, weight) use these with care: ["sumcaloriesoutofrange", "maxcaloriesoutofrange", "mincaloriesoutofrange", "avgcaloriesoutofrange", "mediancaloriesoutofrange", "stdcaloriesoutofrange", "entropycaloriesoutofrange", "sumcaloriesfatburn", "maxcaloriesfatburn", "mincaloriesfatburn", "avgcaloriesfatburn", "mediancaloriesfatburn", "stdcaloriesfatburn", "entropycaloriesfatburn", "sumcaloriescardio", "maxcaloriescardio", "mincaloriescardio", "avgcaloriescardio", "mediancaloriescardio", "stdcaloriescardio", "entropycaloriescardio", "sumcaloriespeak", "maxcaloriespeak", "mincaloriespeak", "avgcaloriespeak", "mediancaloriespeak", "stdcaloriespeak", "entropycaloriespeak"]
-        INTRADAY: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
-      SRC_FOLDER: "rapids" # inside src/features/fitbit_heartrate
+      FEATURES: ["maxrestinghr", "minrestinghr", "avgrestinghr", "medianrestinghr", "moderestinghr", "stdrestinghr", "diffmaxmoderestinghr", "diffminmoderestinghr", "entropyrestinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. height, weight) use these with care: ["sumcaloriesoutofrange", "maxcaloriesoutofrange", "mincaloriesoutofrange", "avgcaloriesoutofrange", "mediancaloriesoutofrange", "stdcaloriesoutofrange", "entropycaloriesoutofrange", "sumcaloriesfatburn", "maxcaloriesfatburn", "mincaloriesfatburn", "avgcaloriesfatburn", "mediancaloriesfatburn", "stdcaloriesfatburn", "entropycaloriesfatburn", "sumcaloriescardio", "maxcaloriescardio", "mincaloriescardio", "avgcaloriescardio", "mediancaloriescardio", "stdcaloriescardio", "entropycaloriescardio", "sumcaloriespeak", "maxcaloriespeak", "mincaloriespeak", "avgcaloriespeak", "mediancaloriespeak", "stdcaloriespeak", "entropycaloriespeak"]
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_heartrate_summary
+      SRC_LANGUAGE: "python"
+
+FITBIT_HEARTRATE_INTRADAY:
+  TABLE: heartrate_intraday
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_heartrate_intraday
       SRC_LANGUAGE: "python"
 
 FITBIT_STEPS:

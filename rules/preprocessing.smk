@@ -40,14 +40,13 @@ rule download_phone_data:
 rule download_fitbit_data:
     input:
         participant_file = "data/external/participant_files/{pid}.yaml",
-        input_file = [] if config["DEVICE_DATA"]["FITBIT"]["SOURCE"]["TYPE"] == "DATABASE" else lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"]["CSV"][str(wildcards.fitbit_data_type).upper()] 
+        input_file = [] if config["DEVICE_DATA"]["FITBIT"]["SOURCE"]["TYPE"] == "DATABASE" else lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"]
     params:
         source = config["DEVICE_DATA"]["FITBIT"]["SOURCE"],
         sensor = "fitbit_" + "{sensor}",
-        fitbit_data_type = "{fitbit_data_type}",
         table = lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"],
     output:
-        "data/raw/{pid}/fitbit_{sensor}_{fitbit_data_type}_raw.csv"
+        "data/raw/{pid}/fitbit_{sensor}_raw.csv"
     script:
         "../src/data/download_fitbit_data.R"
 
@@ -183,14 +182,14 @@ rule phone_application_categories:
 
 rule fitbit_parse_heartrate:
     input:
-        data = expand("data/raw/{{pid}}/fitbit_heartrate_{fitbit_data_type}_raw.csv", fitbit_data_type = (["json"] if config["FITBIT_HEARTRATE"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"]))
+        "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_raw.csv"
     params:
         timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
         table = config["FITBIT_HEARTRATE"]["TABLE"],
-        table_format = config["FITBIT_HEARTRATE"]["TABLE_FORMAT"]
+        column_format = config["DEVICE_DATA"]["FITBIT"]["SOURCE"]["COLUMN_FORMAT"],
+        fitbit_data_type = "{fitbit_data_type}"
     output:
-        summary_data = "data/raw/{pid}/fitbit_heartrate_summary_parsed.csv",
-        intraday_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed.csv"
+        "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_parsed.csv"
     script:
         "../src/data/fitbit_parse_heartrate.py"
 

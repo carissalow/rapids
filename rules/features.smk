@@ -372,29 +372,55 @@ rule phone_wifi_visible_r_features:
     script:
         "../src/features/entry.R"
 
-rule fitbit_heartrate_python_features:
+rule fitbit_heartrate_summary_python_features:
     input:
-        sensor_data = expand("data/raw/{{pid}}/fitbit_heartrate_{fitbit_data_type}_parsed_with_datetime.csv", fitbit_data_type=["summary", "intraday"]),
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_summary_parsed_with_datetime.csv",
         day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
-        provider = lambda wildcards: config["FITBIT_HEARTRATE"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider = lambda wildcards: config["FITBIT_HEARTRATE_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
-        sensor_key = "fitbit_heartrate"
+        sensor_key = "fitbit_heartrate_summary"
     output:
-        "data/interim/{pid}/fitbit_heartrate_features/fitbit_heartrate_python_{provider_key}.csv"
+        "data/interim/{pid}/fitbit_heartrate_summary_features/fitbit_heartrate_summary_python_{provider_key}.csv"
     script:
         "../src/features/entry.py"
 
-rule fitbit_heartrate_r_features:
+rule fitbit_heartrate_summary_r_features:
     input:
-        sensor_data = expand("data/raw/{{pid}}/fitbit_heartrate_{fitbit_data_type}_parsed_with_datetime.csv", fitbit_data_type=["summary", "intraday"]),
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_summary_parsed_with_datetime.csv",
         day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
-        provider = lambda wildcards: config["FITBIT_HEARTRATE"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider = lambda wildcards: config["FITBIT_HEARTRATE_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
-        sensor_key = "fitbit_heartrate"
+        sensor_key = "fitbit_heartrate_summary"
     output:
-        "data/interim/{pid}/fitbit_heartrate_features/fitbit_heartrate_r_{provider_key}.csv"
+        "data/interim/{pid}/fitbit_heartrate_summary_features/fitbit_heartrate_summary_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
+rule fitbit_heartrate_intraday_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_heartrate_intraday"
+    output:
+        "data/interim/{pid}/fitbit_heartrate_intraday_features/fitbit_heartrate_intraday_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule fitbit_heartrate_intraday_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_heartrate_intraday"
+    output:
+        "data/interim/{pid}/fitbit_heartrate_intraday_features/fitbit_heartrate_intraday_r_{provider_key}.csv"
     script:
         "../src/features/entry.R"
 
@@ -423,19 +449,6 @@ rule fitbit_steps_r_features:
         "data/interim/{pid}/fitbit_steps_features/fitbit_steps_r_{provider_key}.csv"
     script:
         "../src/features/entry.R"
-
-# rule fitbit_heartrate_features:
-#     input:
-#         heartrate_summary_data = "data/raw/{pid}/fitbit_heartrate_summary_with_datetime.csv",
-#         heartrate_intraday_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv"
-#     params:
-#         day_segment = "{day_segment}",
-#         summary_features = config["HEARTRATE"]["SUMMARY_FEATURES"],
-#         intraday_features = config["HEARTRATE"]["INTRADAY_FEATURES"]
-#     output:
-#         "data/processed/{pid}/fitbit_heartrate_{day_segment}.csv"
-#     script:
-#         "../src/features/fitbit_heartrate_features.py"
 
 # rule fitbit_step_features:
 #     input:

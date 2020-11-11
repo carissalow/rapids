@@ -96,7 +96,7 @@ def parseHeartrateIntradayData(records_intraday, dataset, device_id, curr_date, 
 # def append_timestamp(data):
 
 
-def parseHeartrateData(heartrate_data):
+def parseHeartrateData(heartrate_data, fitbit_data_type):
     if heartrate_data.empty:
         return pd.DataFrame(columns=HR_SUMMARY_COLUMNS), pd.DataFrame(columns=HR_INTRADAY_COLUMNS)
     device_id = heartrate_data["device_id"].iloc[0]
@@ -109,29 +109,36 @@ def parseHeartrateData(heartrate_data):
         record = json.loads(record)  # Parse text into JSON
         curr_date = datetime.strptime(record["activities-heart"][0]["dateTime"], "%Y-%m-%d")
 
-        record_summary = record["activities-heart"][0]
-        row_summary = parseHeartrateSummaryData(record_summary, device_id, curr_date)
-        records_summary.append(row_summary)
+        if fitbit_data_type == "summary":
+            record_summary = record["activities-heart"][0]
+            row_summary = parseHeartrateSummaryData(record_summary, device_id, curr_date)
+            records_summary.append(row_summary)
 
-        dataset = record["activities-heart-intraday"]["dataset"]
-        records_intraday = parseHeartrateIntradayData(records_intraday, dataset, device_id, curr_date, heartrate_zones_range)
+        if fitbit_data_type == "intraday":
+            dataset = record["activities-heart-intraday"]["dataset"]
+            records_intraday = parseHeartrateIntradayData(records_intraday, dataset, device_id, curr_date, heartrate_zones_range)
+    
+    if fitbit_data_type == "summary":
+        parsed_data = pd.DataFrame(data=records_summary, columns=HR_SUMMARY_COLUMNS)
+    elif fitbit_data_type == "intraday":
+        parsed_data = pd.DataFrame(data=records_intraday, columns=HR_INTRADAY_COLUMNS)
+    else:
+        raise ValueError("fitbit_data_type can only be one of ['summary', 'intraday'].")
+    return parsed_data
+    
 
-    return pd.DataFrame(data=records_summary, columns=HR_SUMMARY_COLUMNS), pd.DataFrame(data=records_intraday, columns=HR_INTRADAY_COLUMNS)
 
-table_format = snakemake.params["table_format"]
 timezone = snakemake.params["timezone"]
+column_format = snakemake.params["column_format"]
+fitbit_data_type = snakemake.params["fitbit_data_type"]
 
-if table_format == "JSON":
+if column_format == "JSON":
     json_raw = pd.read_csv(snakemake.input[0])
-    summary, intraday = parseHeartrateData(json_raw)
-elif table_format == "CSV":
-    summary = pd.read_csv(snakemake.input[0], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
-    intraday = pd.read_csv(snakemake.input[1], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
+    parsed_data = parseHeartrateData(json_raw, fitbit_data_type)
+elif column_format == "PLAIN_TEXT":
+    parsed_data = pd.read_csv(snakemake.input[0], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
 
-if summary.shape[0] > 0:
-    summary["timestamp"] = summary["local_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
-if intraday.shape[0] > 0:
-    intraday["timestamp"] = intraday["local_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
+if parsed_data.shape[0] > 0:
+    parsed_data["timestamp"] = parsed_data["local_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
 
-summary.to_csv(snakemake.output["summary_data"], index=False)
-intraday.to_csv(snakemake.output["intraday_data"], index=False)
+parsed_data.to_csv(snakemake.output[0], index=False)
