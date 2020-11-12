@@ -277,31 +277,27 @@ FITBIT_HEARTRATE_INTRADAY:
       SRC_FOLDER: "rapids" # inside src/features/fitbit_heartrate_intraday
       SRC_LANGUAGE: "python"
 
-FITBIT_STEPS:
-  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [DEVICE_DATA][FITBIT][SOURCE][TYPE] to FILES
-  TABLE:
-    JSON: fitbit_steps
-    CSV:
-      SUMMARY: steps_summary
-      INTRADAY: steps_intraday
-  EXCLUDE_SLEEP: # you can exclude sleep periods from the step features computation
-    EXCLUDE: False
-    TYPE: FIXED # FIXED OR FITBIT_BASED (configure FITBIT_SLEEP section)
-    FIXED:
-      START: "23:00"
-      END: "07:00"
+FITBIT_STEPS_SUMMARY:
+  TABLE: steps_summary
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["maxsumsteps", "minsumsteps", "avgsumsteps", "mediansumsteps", "stdsumsteps"]
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_steps_summary
+      SRC_LANGUAGE: "python"
+
+FITBIT_STEPS_INTRADAY:
+  TABLE: steps_intraday
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
       FEATURES:
-        SUMMARY: ["maxsumsteps", "minsumsteps", "avgsumsteps", "mediansumsteps", "stdsumsteps"]
-        INTRADAY:
-          STEPS: ["sum", "max", "min", "avg", "std"]
-          SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
-          ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+        STEPS: ["sum", "max", "min", "avg", "std"]
+        SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+        ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
       THRESHOLD_ACTIVE_BOUT: 10 # steps
       INCLUDE_ZERO_STEP_ROWS: False
-      SRC_FOLDER: "rapids" # inside src/features/fitbit_steps
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_steps_intraday
       SRC_LANGUAGE: "python"
 
 FITBIT_SLEEP:

@@ -195,14 +195,14 @@ rule fitbit_parse_heartrate:
 
 rule fitbit_parse_steps:
     input:
-        data = expand("data/raw/{{pid}}/fitbit_steps_{fitbit_data_type}_raw.csv", fitbit_data_type = (["json"] if config["FITBIT_STEPS"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"]))
+        "data/raw/{pid}/fitbit_steps_{fitbit_data_type}_raw.csv"
     params:
         timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
-        table = config["FITBIT_STEPS"]["TABLE"],
-        table_format = config["FITBIT_STEPS"]["TABLE_FORMAT"]
+        table = lambda wildcards: config["FITBIT_STEPS_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
+        column_format = config["DEVICE_DATA"]["FITBIT"]["SOURCE"]["COLUMN_FORMAT"],
+        fitbit_data_type = "{fitbit_data_type}"
     output:
-        summary_data = "data/raw/{pid}/fitbit_steps_summary_parsed.csv",
-        intraday_data = "data/raw/{pid}/fitbit_steps_intraday_parsed.csv"
+        "data/raw/{pid}/fitbit_steps_{fitbit_data_type}_parsed.csv"
     script:
         "../src/data/fitbit_parse_steps.py"
 

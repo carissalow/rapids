@@ -424,51 +424,57 @@ rule fitbit_heartrate_intraday_r_features:
     script:
         "../src/features/entry.R"
 
-rule fitbit_steps_python_features:
+rule fitbit_steps_summary_python_features:
     input:
-        sensor_data = expand("data/raw/{{pid}}/fitbit_steps_{fitbit_data_type}_parsed_with_datetime.csv", fitbit_data_type=["summary", "intraday"]),
+        sensor_data = "data/raw/{pid}/fitbit_steps_summary_parsed_with_datetime.csv",
         day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
-        provider = lambda wildcards: config["FITBIT_STEPS"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider = lambda wildcards: config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
-        sensor_key = "fitbit_steps"
+        sensor_key = "fitbit_steps_summary"
     output:
-        "data/interim/{pid}/fitbit_steps_features/fitbit_steps_python_{provider_key}.csv"
+        "data/interim/{pid}/fitbit_steps_summary_features/fitbit_steps_summary_python_{provider_key}.csv"
     script:
         "../src/features/entry.py"
 
-rule fitbit_steps_r_features:
+rule fitbit_steps_summary_r_features:
     input:
-        sensor_data = expand("data/raw/{{pid}}/fitbit_steps_{fitbit_data_type}_parsed_with_datetime.csv", fitbit_data_type=["summary", "intraday"]),
+        sensor_data = "data/raw/{pid}/fitbit_steps_summary_parsed_with_datetime.csv",
         day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     params:
-        provider = lambda wildcards: config["FITBIT_STEPS"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider = lambda wildcards: config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
-        sensor_key = "fitbit_steps"
+        sensor_key = "fitbit_steps_summary"
     output:
-        "data/interim/{pid}/fitbit_steps_features/fitbit_steps_r_{provider_key}.csv"
+        "data/interim/{pid}/fitbit_steps_summary_features/fitbit_steps_summary_r_{provider_key}.csv"
     script:
         "../src/features/entry.R"
 
-# rule fitbit_step_features:
-#     input:
-#         step_data = "data/raw/{pid}/fitbit_step_intraday_with_datetime.csv",
-#         sleep_data = optional_steps_sleep_input
-#     params:
-#         day_segment = "{day_segment}",
-#         features_all_steps = config["STEP"]["FEATURES"]["ALL_STEPS"],
-#         features_sedentary_bout = config["STEP"]["FEATURES"]["SEDENTARY_BOUT"],
-#         features_active_bout = config["STEP"]["FEATURES"]["ACTIVE_BOUT"],
-#         threshold_active_bout = config["STEP"]["THRESHOLD_ACTIVE_BOUT"],
-#         include_zero_step_rows = config["STEP"]["INCLUDE_ZERO_STEP_ROWS"],
-#         exclude_sleep = config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"],
-#         exclude_sleep_type = config["STEP"]["EXCLUDE_SLEEP"]["TYPE"],
-#         exclude_sleep_fixed_start = config["STEP"]["EXCLUDE_SLEEP"]["FIXED"]["START"],
-#         exclude_sleep_fixed_end = config["STEP"]["EXCLUDE_SLEEP"]["FIXED"]["END"],
-#     output:
-#         "data/processed/{pid}/fitbit_step_{day_segment}.csv"
-#     script:
-#         "../src/features/fitbit_step_features.py"
+rule fitbit_steps_intraday_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_steps_intraday_parsed_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_steps_intraday"
+    output:
+        "data/interim/{pid}/fitbit_steps_intraday_features/fitbit_steps_intraday_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule fitbit_steps_intraday_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_steps_intraday_parsed_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_steps_intraday"
+    output:
+        "data/interim/{pid}/fitbit_steps_intraday_features/fitbit_steps_intraday_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
 
 # rule fitbit_sleep_features:
 #     input:
