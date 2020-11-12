@@ -1356,23 +1356,27 @@ night,00:00:00,5H 59M 59S,every_day,0
 <tbody>
 <tr>
 <td>label</td>
-<td>A string that is used as a prefix in the name of your day segments. If labels are unique is segment is completely independent, if two segments have the same label their data will be considered together when computing features like the <code>most frequent contact</code> for calls (the most frequent contact will be computed across these segments)</td>
+<td>A string that is used as a prefix in the name of your day segments. If labels are unique, every segment is independent; if two or more segments have the same label, their data will be grouped when computing features like the <code>most frequent contact</code> for calls (the most frequent contact will be computed across all these segments)</td>
 </tr>
 <tr>
-<td>start_time</td>
-<td>A string with format HH:MM:SS representing the starting time of this segment</td>
+<td>event_timestamp</td>
+<td>A UNIX timestamp that represents the moment an event of interest happened (clinical relapse, survey, readmission, etc.). The corresponding day segment will be computed around this moment using <code>length</code>, <code>shift</code>, and <code>shift_direction</code></td>
 </tr>
 <tr>
 <td>length</td>
-<td>A string representing the length of this segment.It can have one or more of the following <code>XXD XXH XXM XXS</code> to represent days, hours, minutes and seconds. For example `7D 23H 59M 59S</td>
+<td>A string representing the length of this segment. It can have one or more of the following keys <code>XXD XXH XXM XXS</code> to represent a number of days, hours, minutes, and seconds. For example <code>7D 23H 59M 59S</code></td>
 </tr>
 <tr>
-<td>repeats_on</td>
-<td>One of the follow options <code>every_day</code>, <code>wday</code>, <code>qday</code>, <code>mday</code>, and <code>yday</code>. The last four represent a week, quarter, month and year day</td>
+<td>shift</td>
+<td>A string representing the time shift from <code>event_timestamp</code>. It can have one or more of the following keys <code>XXD XXH XXM XXS</code> to represent a number of days, hours, minutes and seconds. For example <code>7D 23H 59M 59S</code>. Use this value to  change the start of a segment with respect to its <code>event_timestamp</code>. For example, set this variable to <code>1H</code> to create a segment that starts 1 hour from an event of interest (<code>shift_direction</code> determines if it&rsquo;s before or after).</td>
 </tr>
 <tr>
-<td>repeats_value</td>
-<td>An integer complementing <code>repeats_on</code>. If <code>every_day</code> set this to 0, otherwise 1-7 represent a <code>wday</code> starting from Mondays, 1-31 represent a <code>mday</code>, 1-91 represent a <code>qday</code>, and <code>1-366</code> represent a <code>yday</code></td>
+<td>shift_direction</td>
+<td>An integer representing whether the <code>shift</code> is before (<code>-1</code>) or after (<code>1</code>) an <code>event_timestamp</code></td>
+</tr>
+<tr>
+<td>device_id</td>
+<td>The device id (smartphone or fitbit) to whom this segment belongs to. You have to create a line in the event segment file for each event of a participant that you want to analyse</td>
 </tr>
 </tbody>
 </table>
