@@ -185,7 +185,7 @@ rule fitbit_parse_heartrate:
         "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_raw.csv"
     params:
         timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
-        table = config["FITBIT_HEARTRATE"]["TABLE"],
+        table = lambda wildcards: config["FITBIT_HEARTRATE_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
         column_format = config["DEVICE_DATA"]["FITBIT"]["SOURCE"]["COLUMN_FORMAT"],
         fitbit_data_type = "{fitbit_data_type}"
     output:
