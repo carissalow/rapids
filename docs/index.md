@@ -1,5 +1,8 @@
 # Welcome to RAPIDS documentation
 
+!!! warning 
+    The functionality outlined in these docs is implemented in the branch `day_segments` which we will merge to `master` soon as release `0.1`. The previous (first) release of RAPIDS along with the old [docs](https://rapidspitt.readthedocs.io/en/latest/) will be labeled `beta`. If you landed on this page feel free to look around, just have in mind that we are polishing the last rough patches before we advertise `0.1` (Nov 16, 2020)
+
 Reproducible Analysis Pipeline for Data Streams (RAPIDS) allows you to process smartphone and wearable data to extract **behavioral features** (a.k.a. digital biomarkers/phenotypes).
 
 RAPIDS is open source, documented, modular, tested, and reproducible. At the moment we support smartphone data collected with [AWARE](https://awareframework.com/) and wearable data from Fitbit devices.
