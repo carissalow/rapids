@@ -47,6 +47,8 @@ if(config$SOURCE$TYPE == "AWARE_DEVICE_TABLE"){
          !!fitbit_device_id_column := if_else(!!rlang::sym(fitbit_device_id_column) %in% fitbit_ignored, NA_character_, !!rlang::sym(fitbit_device_id_column)))
 }
 
+dir.create(file.path("./data/external/participant_files/"))
+
 participants %>%
   pwalk(function(add_phone_section, add_fitbit_section, phone_device_id_column, fitbit_device_id_column, ...) {
     empty_phone <- c("PHONE:", "  DEVICE_IDS:", "  PLATFORMS:","  LABEL:", "  START_DATE:", "  END_DATE:")

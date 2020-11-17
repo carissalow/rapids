@@ -4,14 +4,22 @@ Minimal Working Example
 This is a quick guide for creating and running a simple pipeline to extract missing, outgoing, and incoming call features for `daily` and `night` epochs of one participant monitored on the US East coast.
 
 1. Install RAPIDS and make sure your `conda` environment is active (see [Installation](../../setup/installation))
-2. For the [Initial Configuration](../../setup/configuration) steps do the following and use the example as a guide:
+2. Make the changes listed below for the corresponding [Initial Configuration](../../setup/configuration) step (we provide an example of what the relevant sections in your `config.yml` will look like after you are done)
     
     !!! info "Things to change on each configuration step"
         1\. Setup your database connection credentials in `.env`. We assume your credentials group is called `MY_GROUP`.
 
         2\. `America/New_York` should be the default timezone
 
-        3\. Create a participant file `p01.yaml` based on one of your participants and add `p01` to `[PIDS]` in `config.yaml`
+        3\. Create a participant file `p01.yaml` based on one of your participants and add `p01` to `[PIDS]` in `config.yaml`. The following would be the content of your `p01.yaml` participant file:
+            ```yaml
+            PHONE:
+                DEVICE_IDS: [aaaaaaaa-1111-bbbb-2222-cccccccccccc] # your participant's AWARE device id
+                PLATFORMS: [android] # or ios
+                LABEL: MyTestP01 # any string
+                START_DATE: 2020-01-01 # this can also be empty
+                END_DATE: 2021-01-01 # this can also be empty
+            ```
         
         4\. `[DAY_SEGMENTS][TYPE]` should be the default `PERIODIC`. Change `[DAY_SEGMENTS][FILE]` with the path of a file containing the following lines:
              ```csv
@@ -57,7 +65,7 @@ This is a quick guide for creating and running a simple pipeline to extract miss
         ############## PHONE ###########################################################
         ################################################################################
 
-        ....
+        # ... other irrelevant sections
 
         # Communication call features config, TYPES and FEATURES keys need to match
         PHONE_CALLS:
