@@ -916,10 +916,10 @@
 
         <span class="c1"># 5) PANDA provider</span>
         <span class="nt">PANDA</span><span class="p">:</span>
-            <span class="c1"># 5.1) Parameters of RAPIDS provider of PHONE_ACCELEROMETER</span>
+            <span class="c1"># 5.1) Parameters of PANDA provider of PHONE_ACCELEROMETER</span>
             <span class="nt">COMPUTE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
             <span class="nt">VALID_SENSED_MINUTES</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
-            <span class="c1"># 5.2) Features of RAPIDS provider of PHONE_ACCELEROMETER</span>
+            <span class="c1"># 5.2) Features of PANDA provider of PHONE_ACCELEROMETER</span>
             <span class="nt">FEATURES</span><span class="p">:</span>
                 <span class="nt">exertional_activity_episode</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;sumduration&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;maxduration&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;minduration&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;avgduration&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;medianduration&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;stdduration&quot;</span><span class="p p-Indicator">]</span>
                 <span class="nt">nonexertional_activity_episode</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;sumduration&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;maxduration&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;minduration&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;avgduration&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;medianduration&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;stdduration&quot;</span><span class="p p-Indicator">]</span>
@@ -928,12 +928,12 @@
 </code></pre></div>
 </div>
 <h2 id="sensor-parameters">Sensor Parameters<a class="headerlink" href="#sensor-parameters" title="Permanent link">&para;</a></h2>
-<p>Each sensor configuration section has a <code>Parameters</code> subsection (see <code>#2</code> in the example). These are parameters that affect different aspects of how the raw data is download, and processed. The <code>TABLE</code> parameter exists for every sensor, but some sensors will have extra para meters like <a href="../phone-locations/"><code>[PHONE_LOCATIONS]</code></a>. We explain these parameters in a table at the top of each sensor documentation page.</p>
+<p>Each sensor configuration section has a <code>Parameters</code> subsection (see <code>#2</code> in the example). These are parameters that affect different aspects of how the raw data is downloaded, and processed. The <code>TABLE</code> parameter exists for every sensor, but some sensors will have extra parameters like <a href="../phone-locations/"><code>[PHONE_LOCATIONS]</code></a>. We explain these parameters in a table at the top of each sensor documentation page.</p>
 <h2 id="sensor-providers">Sensor Providers<a class="headerlink" href="#sensor-providers" title="Permanent link">&para;</a></h2>
-<p>Each sensor configuration section can have zero, one or more behavioral feature <strong>providers</strong> (see <code>#2</code> in the example). A provider is a script created by the core RAPIDS team or other researchers that extracts behavioral features for that sensor. For this accelerometer example we have two providers RAPIDS (see <code>#4</code>) and PANDA (see <code>#5</code>).</p>
+<p>Each sensor configuration section can have zero, one or more behavioral feature <strong>providers</strong> (see <code>#3</code> in the example). A provider is a script created by the core RAPIDS team or other researchers that extracts behavioral features for that sensor. In this example, accelerometer has two providers: RAPIDS (see <code>#4</code>) and PANDA (see <code>#5</code>).</p>
 <h3 id="provider-parameters">Provider Parameters<a class="headerlink" href="#provider-parameters" title="Permanent link">&para;</a></h3>
 <p>Each provider has parameters that affect the computation of the behavioral features it offers (see <code>#4.1</code> or <code>#5.1</code> in the example). These parameters will include at least a <code>[COMPUTE]</code> flag that you switch to <code>True</code> to extract a provider&rsquo;s behavioral features. </p>
-<p>We explain each provider parameter in a table under the <code>Parameters description</code> heading on each provider documentation page.</p>
+<p>We explain every provider&rsquo;s parameter in a table under the <code>Parameters description</code> heading on each provider documentation page.</p>
 <h3 id="provider-features">Provider Features<a class="headerlink" href="#provider-features" title="Permanent link">&para;</a></h3>
 <p>Each provider offers a set of behavioral features (see <code>#4.2</code> or <code>#5.2</code> in the example). For some providers these features are grouped in an array (like those for <code>RAPIDS</code> provider in <code>#4.2</code>) but for others they are grouped in a collection of arrays (like those for <code>PANDAS</code> provider in <code>#5.2</code>) depending on the meaning and purpose of those features. In either case you can delete the features you are not interested in and they will not be included in the sensor&rsquo;s output feature file. </p>
 <p>We explain each behavioral feature in a table under the <code>Features description</code> heading on each provider documentation page.</p>
