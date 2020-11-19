@@ -12,3 +12,16 @@
     color: var(--md-typeset-a-color);
     background-color: var(--md-code-bg-color);
 }
+
+div[data-md-component=announce] {
+    background-color: rgba(255,145,0,.1);
+    padding: 15px;
+    text-align: center;
+    font-size: .8rem;
+    color: var(--md-admonition-fg-color);
+}
+
+div[data-md-component=announce]>a{
+    color: var(--md-typeset-a-color);
+    text-decoration: underline;
+}
