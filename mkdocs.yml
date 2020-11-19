@@ -93,6 +93,11 @@ nav:
         - Phone Screen: features/phone-screen.md
         - Phone WiFI Connected: features/phone-wifi-connected.md
         - Phone WiFI Visible: features/phone-wifi-visible.md
+      - Fitbit:
+        - Fitbit Heart Rate Summary: features/fitbit-heartrate-summary.md
+        - Fitbit Heart Rate Intraday: features/fitbit-heartrate-intraday.md
+        - Fitbit Steps Summary: features/fitbit-steps-summary.md
+        - Fitbit Steps Intraday: features/fitbit-steps-intraday.md
       - Add New Features: features/add-new-features.md
   - Developers:
     - Remote Support: developers/remote-support.md

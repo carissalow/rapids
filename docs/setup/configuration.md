@@ -337,6 +337,7 @@ DEVICE_DATA:
   FITBIT:
     SOURCE: 
       TYPE: DATABASE # DATABASE or FILES (set each FITBIT_SENSOR TABLE attribute accordingly with a table name or a file path)
+      COLUMN_FORMAT: JSON # JSON or PLAIN_TEXT
       DATABASE_GROUP: *database_group
       DEVICE_ID_COLUMN: fitbit_id # column name
     TIMEZONE: 
@@ -360,6 +361,7 @@ DEVICE_DATA:
 | Key                         | Description                                                                                                                                                       |
 |------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `[SOURCE]` `[TYPE]`             | `DATABASE` or `FILES`  (set each `[FITBIT_SENSOR]` `[TABLE]` attribute accordingly with a table name or a file path)                                                                                         |
+| `[SOURCE]` `[COLUMN_FORMAT]`    | `JSON` or `PLAIN_TEXT`. Column format of the source data.                                    |
 | `[SOURCE]` `[DATABASE_GROUP]`   | `*database_group`  points to the value defined before in  [Database credentials](#database-credentials). Only used if  `[TYPE]`  is  `DATABASE` . |
 | `[SOURCE]` `[DEVICE_ID_COLUMN]` | The column that has strings that uniquely identify Fitbit devices.                                                                                                |
 | `[TIMEZONE]` `[TYPE]`             | Only `SINGLE` is supported  (Fitbit devices always store data in local time).                                                                                 |
