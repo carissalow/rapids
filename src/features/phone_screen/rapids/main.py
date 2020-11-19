@@ -34,7 +34,6 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
     requested_episode_types = provider["EPISODE_TYPES"]
     ignore_episodes_shorter_than = provider["IGNORE_EPISODES_SHORTER_THAN"]
     ignore_episodes_longer_than = provider["IGNORE_EPISODES_LONGER_THAN"]
-    chunk_episodes = kwargs["chunk_episodes"]
 
     # name of the features this function can compute
     base_features_episodes = ["countepisode", "episodepersensedminutes", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"]
@@ -50,10 +49,8 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
     if not screen_data.empty:
 
         screen_data = filter_data_by_segment(screen_data, day_segment)
+        
         if not screen_data.empty:
-            # chunk_episodes
-            screen_data = chunk_episodes(screen_data)
-
             if ignore_episodes_shorter_than > 0:
                 screen_data = screen_data.query('@ignore_episodes_shorter_than <= duration')
             if ignore_episodes_longer_than > 0:

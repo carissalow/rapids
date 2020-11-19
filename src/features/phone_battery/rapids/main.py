@@ -4,7 +4,6 @@ from datetime import datetime, timedelta, time
 def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
     
     battery_data = pd.read_csv(sensor_data_files["sensor_episodes"])
-    chunk_episodes = kwargs["chunk_episodes"]
 
     # name of the features this function can compute
     base_features_names = ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
@@ -15,10 +14,6 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
     battery_features = pd.DataFrame(columns=["local_segment"] + ["battery_rapids_" + x for x in features_to_compute])
     if not battery_data.empty:
         battery_data = filter_data_by_segment(battery_data, day_segment)
-
-        if not battery_data.empty:
-            # chunk_episodes
-            battery_data = chunk_episodes(battery_data)
 
         if not battery_data.empty:
         

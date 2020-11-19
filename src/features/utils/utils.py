@@ -11,7 +11,12 @@ def filter_data_by_segment(data, day_segment):
         data["timestamps_segment"] = None
     else:
         data[["local_segment","timestamps_segment"]] = data["local_segment"].str.split(pat =";",n=1, expand=True)
-    return(data)
+    
+    # chunk episodes
+    if (not data.empty) and ("start_timestamp" in data.columns) and ("end_timestamp" in data.columns):
+        data = chunk_episodes(data)
+    
+    return data
 
 # Each minute could fall into two segments.
 # Firstly, we generate two rows for each resampled minute via resample_episodes rule:
