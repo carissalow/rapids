@@ -708,6 +708,82 @@
           
 
 
+  
+  <li class="md-nav__item md-nav__item--nested">
+    
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-3" type="checkbox" id="nav-4-3" >
+    
+    <label class="md-nav__link" for="nav-4-3">
+      Fitbit
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Fitbit" data-md-level="2">
+      <label class="md-nav__title" for="nav-4-3">
+        <span class="md-nav__icon md-icon"></span>
+        Fitbit
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../features/fitbit-heartrate-summary/" class="md-nav__link">
+      Fitbit Heart Rate Summary
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../features/fitbit-heartrate-intraday/" class="md-nav__link">
+      Fitbit Heart Rate Intraday
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../features/fitbit-steps-summary/" class="md-nav__link">
+      Fitbit Steps Summary
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../features/fitbit-steps-intraday/" class="md-nav__link">
+      Fitbit Steps Intraday
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
   <li class="md-nav__item">
     <a href="../../features/add-new-features/" class="md-nav__link">
       Add New Features
@@ -1418,6 +1494,7 @@ mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
   <span class="nt">FITBIT</span><span class="p">:</span>
     <span class="nt">SOURCE</span><span class="p">:</span> 
       <span class="nt">TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DATABASE</span> <span class="c1"># DATABASE or FILES (set each FITBIT_SENSOR TABLE attribute accordingly with a table name or a file path)</span>
+      <span class="nt">COLUMN_FORMAT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">JSON</span> <span class="c1"># JSON or PLAIN_TEXT</span>
       <span class="nt">DATABASE_GROUP</span><span class="p">:</span> <span class="nv">*database_group</span>
       <span class="nt">DEVICE_ID_COLUMN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">fitbit_id</span> <span class="c1"># column name</span>
     <span class="nt">TIMEZONE</span><span class="p">:</span> 
@@ -1467,6 +1544,10 @@ mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 <tr>
 <td><code>[SOURCE]</code> <code>[TYPE]</code></td>
 <td><code>DATABASE</code> or <code>FILES</code>  (set each <code>[FITBIT_SENSOR]</code> <code>[TABLE]</code> attribute accordingly with a table name or a file path)</td>
+</tr>
+<tr>
+<td><code>[SOURCE]</code> <code>[COLUMN_FORMAT]</code></td>
+<td><code>JSON</code> or <code>PLAIN_TEXT</code>. Column format of the source data.</td>
 </tr>
 <tr>
 <td><code>[SOURCE]</code> <code>[DATABASE_GROUP]</code></td>
