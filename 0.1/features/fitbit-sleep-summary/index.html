@@ -14,7 +14,7 @@
     
     
       
-        <title>Phone Messages - RAPIDS</title>
+        <title>Fitbit Sleep Summary - RAPIDS</title>
       
     
     
@@ -63,7 +63,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#phone-messages" class="md-skip">
+        <a href="#fitbit-sleep-summary" class="md-skip">
           Skip to content
         </a>
       
@@ -95,7 +95,7 @@
         <div class="md-header-nav__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Phone Messages
+              Fitbit Sleep Summary
             
           </span>
         </div>
@@ -385,14 +385,12 @@
           
           
 
-  
-
 
   
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-2" type="checkbox" id="nav-4-2" checked>
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-2" type="checkbox" id="nav-4-2" >
     
     <label class="md-nav__link" for="nav-4-2">
       Phone
@@ -530,49 +528,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Phone Messages
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-    
-    <a href="./" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../phone-messages/" class="md-nav__link">
       Phone Messages
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#rapids-provider" class="md-nav__link">
-    RAPIDS provider
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -621,12 +581,14 @@
           
           
 
+  
+
 
   
-  <li class="md-nav__item md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-3" type="checkbox" id="nav-4-3" >
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-3" type="checkbox" id="nav-4-3" checked>
     
     <label class="md-nav__link" for="nav-4-3">
       Fitbit
@@ -668,11 +630,49 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../fitbit-sleep-summary/" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Fitbit Sleep Summary
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
       Fitbit Sleep Summary
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#rapids-provider" class="md-nav__link">
+    RAPIDS provider
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -921,13 +921,13 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/carissalow/rapids/edit/master/docs/features/phone-messages.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/carissalow/rapids/edit/master/docs/features/fitbit-sleep-summary.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="phone-messages">Phone Messages<a class="headerlink" href="#phone-messages" title="Permanent link">&para;</a></h1>
-<p>Sensor parameters description for <code>[PHONE_MESSAGES]</code>:</p>
+                <h1 id="fitbit-sleep-summary">Fitbit Sleep Summary<a class="headerlink" href="#fitbit-sleep-summary" title="Permanent link">&para;</a></h1>
+<p>Sensor parameters description for <code>[FITBIT_SLEEP_SUMMARY]</code>:</p>
 <table>
 <thead>
 <tr>
@@ -938,27 +938,251 @@
 <tbody>
 <tr>
 <td><code>[TABLE]</code></td>
-<td>Database table where the messages data is stored</td>
+<td>Database table name or file path where the sleep summary data is stored. Source data type and column format are defined in <a href="../../setup/configuration/#device-data-source-configuration">Device Data Source Configuration</a>.</td>
 </tr>
 </tbody>
 </table>
+<p>Column format could be <code>JSON</code> or <code>PLAIN_TEXT</code>. Data with <code>JSON</code> column format is obtained from Fitbit API directly. Summary data and intraday data come together in <code>JSON</code> format. Each row doesn&rsquo;t have to contain the data for a single day as it depends on the way Fitbit API is queried. Examples of the source data with two formats are as follows. Data with <code>JSON</code> format is chunked.</p>
+<details class="example"><summary>Example of the structure of source data with Fitbit’s sleep API Version 1</summary><div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">JSON</label><div class="tabbed-content">
+<table>
+<thead>
+<tr>
+<th>device_id</th>
+<th>fitbit_data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>{&ldquo;sleep&rdquo;: [{&ldquo;awakeCount&rdquo;: 2, &ldquo;awakeDuration&rdquo;: 3, &ldquo;awakeningsCount&rdquo;: 10, &ldquo;dateOfSleep&rdquo;: &ldquo;2020-10-07&rdquo;, &ldquo;duration&rdquo;: 8100000, &ldquo;efficiency&rdquo;: 91, &ldquo;endTime&rdquo;: &ldquo;2020-10-07T18:10:00.000&rdquo;, &ldquo;isMainSleep&rdquo;: true, &ldquo;logId&rdquo;: 14147921940, &ldquo;minuteData&rdquo;: [{&ldquo;dateTime&rdquo;: &ldquo;15:55:00&rdquo;, &ldquo;value&rdquo;: &ldquo;3&rdquo;}, {&ldquo;dateTime&rdquo;: &ldquo;15:56:00&rdquo;, &ldquo;value&rdquo;: &ldquo;3&rdquo;}, {&ldquo;dateTime&rdquo;: &ldquo;15:57:00&rdquo;, &ldquo;value&rdquo;: &ldquo;2&rdquo;},&hellip;], &ldquo;minutesAfterWakeup&rdquo;: 0, &ldquo;minutesAsleep&rdquo;: 123, &ldquo;minutesAwake&rdquo;: 12, &ldquo;minutesToFallAsleep&rdquo;: 0, &ldquo;restlessCount&rdquo;: 8, &ldquo;restlessDuration&rdquo;: 9, &ldquo;startTime&rdquo;: &ldquo;2020-10-07T15:55:00.000&rdquo;, &ldquo;timeInBed&rdquo;: 135}, {&ldquo;awakeCount&rdquo;: 0, &ldquo;awakeDuration&rdquo;: 0, &ldquo;awakeningsCount&rdquo;: 1, &ldquo;dateOfSleep&rdquo;: &ldquo;2020-10-07&rdquo;, &ldquo;duration&rdquo;: 3780000, &ldquo;efficiency&rdquo;: 100, &ldquo;endTime&rdquo;: &ldquo;2020-10-07T10:52:30.000&rdquo;, &ldquo;isMainSleep&rdquo;: false, &ldquo;logId&rdquo;: 14144903977, &ldquo;minuteData&rdquo;: [{&ldquo;dateTime&rdquo;: &ldquo;09:49:00&rdquo;, &ldquo;value&rdquo;: &ldquo;1&rdquo;}, {&ldquo;dateTime&rdquo;: &ldquo;09:50:00&rdquo;, &ldquo;value&rdquo;: &ldquo;1&rdquo;}, {&ldquo;dateTime&rdquo;: &ldquo;09:51:00&rdquo;, &ldquo;value&rdquo;: &ldquo;1&rdquo;},&hellip;], &ldquo;minutesAfterWakeup&rdquo;: 1, &ldquo;minutesAsleep&rdquo;: 62, &ldquo;minutesAwake&rdquo;: 0, &ldquo;minutesToFallAsleep&rdquo;: 0, &ldquo;restlessCount&rdquo;: 1, &ldquo;restlessDuration&rdquo;: 1, &ldquo;startTime&rdquo;: &ldquo;2020-10-07T09:49:00.000&rdquo;, &ldquo;timeInBed&rdquo;: 63}], &ldquo;summary&rdquo;: {&ldquo;totalMinutesAsleep&rdquo;: 185, &ldquo;totalSleepRecords&rdquo;: 2, &ldquo;totalTimeInBed&rdquo;: 198}}</td>
+</tr>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>{&ldquo;sleep&rdquo;: [{&ldquo;awakeCount&rdquo;: 3, &ldquo;awakeDuration&rdquo;: 21, &ldquo;awakeningsCount&rdquo;: 16, &ldquo;dateOfSleep&rdquo;: &ldquo;2020-10-08&rdquo;, &ldquo;duration&rdquo;: 19260000, &ldquo;efficiency&rdquo;: 89, &ldquo;endTime&rdquo;: &ldquo;2020-10-08T06:01:30.000&rdquo;, &ldquo;isMainSleep&rdquo;: true, &ldquo;logId&rdquo;: 14150613895, &ldquo;minuteData&rdquo;: [{&ldquo;dateTime&rdquo;: &ldquo;00:40:00&rdquo;, &ldquo;value&rdquo;: &ldquo;3&rdquo;}, {&ldquo;dateTime&rdquo;: &ldquo;00:41:00&rdquo;, &ldquo;value&rdquo;: &ldquo;3&rdquo;}, {&ldquo;dateTime&rdquo;: &ldquo;00:42:00&rdquo;, &ldquo;value&rdquo;: &ldquo;3&rdquo;},&hellip;], &ldquo;minutesAfterWakeup&rdquo;: 0, &ldquo;minutesAsleep&rdquo;: 275, &ldquo;minutesAwake&rdquo;: 33, &ldquo;minutesToFallAsleep&rdquo;: 0, &ldquo;restlessCount&rdquo;: 13, &ldquo;restlessDuration&rdquo;: 25, &ldquo;startTime&rdquo;: &ldquo;2020-10-08T00:40:00.000&rdquo;, &ldquo;timeInBed&rdquo;: 321}], &ldquo;summary&rdquo;: {&ldquo;totalMinutesAsleep&rdquo;: 275, &ldquo;totalSleepRecords&rdquo;: 1, &ldquo;totalTimeInBed&rdquo;: 321}}</td>
+</tr>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>{&ldquo;sleep&rdquo;: [{&ldquo;awakeCount&rdquo;: 1, &ldquo;awakeDuration&rdquo;: 3, &ldquo;awakeningsCount&rdquo;: 8, &ldquo;dateOfSleep&rdquo;: &ldquo;2020-10-09&rdquo;, &ldquo;duration&rdquo;: 19320000, &ldquo;efficiency&rdquo;: 96, &ldquo;endTime&rdquo;: &ldquo;2020-10-09T05:57:30.000&rdquo;, &ldquo;isMainSleep&rdquo;: true, &ldquo;logId&rdquo;: 14161136803, &ldquo;minuteData&rdquo;: [{&ldquo;dateTime&rdquo;: &ldquo;00:35:30&rdquo;, &ldquo;value&rdquo;: &ldquo;2&rdquo;}, {&ldquo;dateTime&rdquo;: &ldquo;00:36:30&rdquo;, &ldquo;value&rdquo;: &ldquo;1&rdquo;}, {&ldquo;dateTime&rdquo;: &ldquo;00:37:30&rdquo;, &ldquo;value&rdquo;: &ldquo;1&rdquo;},&hellip;], &ldquo;minutesAfterWakeup&rdquo;: 0, &ldquo;minutesAsleep&rdquo;: 309, &ldquo;minutesAwake&rdquo;: 13, &ldquo;minutesToFallAsleep&rdquo;: 0, &ldquo;restlessCount&rdquo;: 7, &ldquo;restlessDuration&rdquo;: 10, &ldquo;startTime&rdquo;: &ldquo;2020-10-09T00:35:30.000&rdquo;, &ldquo;timeInBed&rdquo;: 322}], &ldquo;summary&rdquo;: {&ldquo;totalMinutesAsleep&rdquo;: 309, &ldquo;totalSleepRecords&rdquo;: 1, &ldquo;totalTimeInBed&rdquo;: 322}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">PLAIN_TEXT</label><div class="tabbed-content">
+<table>
+<thead>
+<tr>
+<th>device_id</th>
+<th>local_start_date_time</th>
+<th>local_end_date_time</th>
+<th>efficiency</th>
+<th>minutes_after_wakeup</th>
+<th>minutes_asleep</th>
+<th>minutes_awake</th>
+<th>minutes_to_fall_asleep</th>
+<th>minutes_in_bed</th>
+<th>is_main_sleep</th>
+<th>type</th>
+<th>count_awake</th>
+<th>duration_awake</th>
+<th>count_awakenings</th>
+<th>count_restless</th>
+<th>duration_restless</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>2020-10-07 15:55:00</td>
+<td>2020-10-07 18:10:00</td>
+<td>91</td>
+<td>0</td>
+<td>123</td>
+<td>12</td>
+<td>0</td>
+<td>135</td>
+<td>1</td>
+<td>classic</td>
+<td>2</td>
+<td>3</td>
+<td>10</td>
+<td>8</td>
+<td>9</td>
+</tr>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>2020-10-07 09:49:00</td>
+<td>2020-10-07 10:52:30</td>
+<td>100</td>
+<td>1</td>
+<td>62</td>
+<td>0</td>
+<td>0</td>
+<td>63</td>
+<td>0</td>
+<td>classic</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>2020-10-08 00:40:00</td>
+<td>2020-10-08 06:01:30</td>
+<td>89</td>
+<td>0</td>
+<td>275</td>
+<td>33</td>
+<td>0</td>
+<td>321</td>
+<td>1</td>
+<td>classic</td>
+<td>3</td>
+<td>21</td>
+<td>16</td>
+<td>13</td>
+<td>25</td>
+</tr>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>2020-10-09 00:35:30</td>
+<td>2020-10-09 05:57:30</td>
+<td>96</td>
+<td>0</td>
+<td>309</td>
+<td>13</td>
+<td>0</td>
+<td>322</td>
+<td>1</td>
+<td>classic</td>
+<td>1</td>
+<td>3</td>
+<td>8</td>
+<td>7</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</details>
+<details class="example"><summary>Example of the structure of source data with Fitbit’s sleep API Version 1.2</summary><div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">JSON</label><div class="tabbed-content">
+<table>
+<thead>
+<tr>
+<th>device_id</th>
+<th>fitbit_data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>{&ldquo;sleep&rdquo;:[{&ldquo;dateOfSleep&rdquo;:&rdquo;2020-10-10&rdquo;,&rdquo;duration&rdquo;:3600000,&rdquo;efficiency&rdquo;:92,&rdquo;endTime&rdquo;:&rdquo;2020-10-10T16:37:00.000&rdquo;,&rdquo;infoCode&rdquo;:2,&rdquo;isMainSleep&rdquo;:false,&rdquo;levels&rdquo;:{&ldquo;data&rdquo;:[{&ldquo;dateTime&rdquo;:&rdquo;2020-10-10T15:36:30.000&rdquo;,&rdquo;level&rdquo;:&rdquo;restless&rdquo;,&rdquo;seconds&rdquo;:60},{&ldquo;dateTime&rdquo;:&rdquo;2020-10-10T15:37:30.000&rdquo;,&rdquo;level&rdquo;:&rdquo;asleep&rdquo;,&rdquo;seconds&rdquo;:660},{&ldquo;dateTime&rdquo;:&rdquo;2020-10-10T15:48:30.000&rdquo;,&rdquo;level&rdquo;:&rdquo;restless&rdquo;,&rdquo;seconds&rdquo;:60},&hellip;], &ldquo;summary&rdquo;:{&ldquo;asleep&rdquo;:{&ldquo;count&rdquo;:0,&rdquo;minutes&rdquo;:56},&rdquo;awake&rdquo;:{&ldquo;count&rdquo;:0,&rdquo;minutes&rdquo;:0},&rdquo;restless&rdquo;:{&ldquo;count&rdquo;:3,&rdquo;minutes&rdquo;:4}}},&rdquo;logId&rdquo;:26315914306,&rdquo;minutesAfterWakeup&rdquo;:0,&rdquo;minutesAsleep&rdquo;:55,&rdquo;minutesAwake&rdquo;:5,&rdquo;minutesToFallAsleep&rdquo;:0,&rdquo;startTime&rdquo;:&rdquo;2020-10-10T15:36:30.000&rdquo;,&rdquo;timeInBed&rdquo;:60,&rdquo;type&rdquo;:&rdquo;classic&rdquo;},{&ldquo;dateOfSleep&rdquo;:&rdquo;2020-10-10&rdquo;,&rdquo;duration&rdquo;:22980000,&rdquo;efficiency&rdquo;:88,&rdquo;endTime&rdquo;:&rdquo;2020-10-10T08:10:00.000&rdquo;,&rdquo;infoCode&rdquo;:0,&rdquo;isMainSleep&rdquo;:true,&rdquo;levels&rdquo;:{&ldquo;data&rdquo;:[{&ldquo;dateTime&rdquo;:&rdquo;2020-10-10T01:46:30.000&rdquo;,&rdquo;level&rdquo;:&rdquo;light&rdquo;,&rdquo;seconds&rdquo;:420},{&ldquo;dateTime&rdquo;:&rdquo;2020-10-10T01:53:30.000&rdquo;,&rdquo;level&rdquo;:&rdquo;deep&rdquo;,&rdquo;seconds&rdquo;:1230},{&ldquo;dateTime&rdquo;:&rdquo;2020-10-10T02:14:00.000&rdquo;,&rdquo;level&rdquo;:&rdquo;light&rdquo;,&rdquo;seconds&rdquo;:360},&hellip;], &ldquo;summary&rdquo;:{&ldquo;deep&rdquo;:{&ldquo;count&rdquo;:3,&rdquo;minutes&rdquo;:92,&rdquo;thirtyDayAvgMinutes&rdquo;:0},&rdquo;light&rdquo;:{&ldquo;count&rdquo;:29,&rdquo;minutes&rdquo;:193,&rdquo;thirtyDayAvgMinutes&rdquo;:0},&rdquo;rem&rdquo;:{&ldquo;count&rdquo;:4,&rdquo;minutes&rdquo;:33,&rdquo;thirtyDayAvgMinutes&rdquo;:0},&rdquo;wake&rdquo;:{&ldquo;count&rdquo;:28,&rdquo;minutes&rdquo;:65,&rdquo;thirtyDayAvgMinutes&rdquo;:0}}},&rdquo;logId&rdquo;:26311786557,&rdquo;minutesAfterWakeup&rdquo;:0,&rdquo;minutesAsleep&rdquo;:318,&rdquo;minutesAwake&rdquo;:65,&rdquo;minutesToFallAsleep&rdquo;:0,&rdquo;startTime&rdquo;:&rdquo;2020-10-10T01:46:30.000&rdquo;,&rdquo;timeInBed&rdquo;:383,&rdquo;type&rdquo;:&rdquo;stages&rdquo;}],&rdquo;summary&rdquo;:{&ldquo;stages&rdquo;:{&ldquo;deep&rdquo;:92,&rdquo;light&rdquo;:193,&rdquo;rem&rdquo;:33,&rdquo;wake&rdquo;:65},&rdquo;totalMinutesAsleep&rdquo;:373,&rdquo;totalSleepRecords&rdquo;:2,&rdquo;totalTimeInBed&rdquo;:443}}</td>
+</tr>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>{&ldquo;sleep&rdquo;:[{&ldquo;dateOfSleep&rdquo;:&rdquo;2020-10-11&rdquo;,&rdquo;duration&rdquo;:41640000,&rdquo;efficiency&rdquo;:89,&rdquo;endTime&rdquo;:&rdquo;2020-10-11T11:47:00.000&rdquo;,&rdquo;infoCode&rdquo;:0,&rdquo;isMainSleep&rdquo;:true,&rdquo;levels&rdquo;:{&ldquo;data&rdquo;:[{&ldquo;dateTime&rdquo;:&rdquo;2020-10-11T00:12:30.000&rdquo;,&rdquo;level&rdquo;:&rdquo;wake&rdquo;,&rdquo;seconds&rdquo;:450},{&ldquo;dateTime&rdquo;:&rdquo;2020-10-11T00:20:00.000&rdquo;,&rdquo;level&rdquo;:&rdquo;light&rdquo;,&rdquo;seconds&rdquo;:870},{&ldquo;dateTime&rdquo;:&rdquo;2020-10-11T00:34:30.000&rdquo;,&rdquo;level&rdquo;:&rdquo;wake&rdquo;,&rdquo;seconds&rdquo;:780},&hellip;], &ldquo;summary&rdquo;:{&ldquo;deep&rdquo;:{&ldquo;count&rdquo;:4,&rdquo;minutes&rdquo;:52,&rdquo;thirtyDayAvgMinutes&rdquo;:62},&rdquo;light&rdquo;:{&ldquo;count&rdquo;:32,&rdquo;minutes&rdquo;:442,&rdquo;thirtyDayAvgMinutes&rdquo;:364},&rdquo;rem&rdquo;:{&ldquo;count&rdquo;:6,&rdquo;minutes&rdquo;:68,&rdquo;thirtyDayAvgMinutes&rdquo;:58},&rdquo;wake&rdquo;:{&ldquo;count&rdquo;:29,&rdquo;minutes&rdquo;:132,&rdquo;thirtyDayAvgMinutes&rdquo;:94}}},&rdquo;logId&rdquo;:26589710670,&rdquo;minutesAfterWakeup&rdquo;:1,&rdquo;minutesAsleep&rdquo;:562,&rdquo;minutesAwake&rdquo;:132,&rdquo;minutesToFallAsleep&rdquo;:0,&rdquo;startTime&rdquo;:&rdquo;2020-10-11T00:12:30.000&rdquo;,&rdquo;timeInBed&rdquo;:694,&rdquo;type&rdquo;:&rdquo;stages&rdquo;}],&rdquo;summary&rdquo;:{&ldquo;stages&rdquo;:{&ldquo;deep&rdquo;:52,&rdquo;light&rdquo;:442,&rdquo;rem&rdquo;:68,&rdquo;wake&rdquo;:132},&rdquo;totalMinutesAsleep&rdquo;:562,&rdquo;totalSleepRecords&rdquo;:1,&rdquo;totalTimeInBed&rdquo;:694}}</td>
+</tr>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>{&ldquo;sleep&rdquo;:[{&ldquo;dateOfSleep&rdquo;:&rdquo;2020-10-12&rdquo;,&rdquo;duration&rdquo;:28980000,&rdquo;efficiency&rdquo;:93,&rdquo;endTime&rdquo;:&rdquo;2020-10-12T09:34:30.000&rdquo;,&rdquo;infoCode&rdquo;:0,&rdquo;isMainSleep&rdquo;:true,&rdquo;levels&rdquo;:{&ldquo;data&rdquo;:[{&ldquo;dateTime&rdquo;:&rdquo;2020-10-12T01:31:00.000&rdquo;,&rdquo;level&rdquo;:&rdquo;wake&rdquo;,&rdquo;seconds&rdquo;:600},{&ldquo;dateTime&rdquo;:&rdquo;2020-10-12T01:41:00.000&rdquo;,&rdquo;level&rdquo;:&rdquo;light&rdquo;,&rdquo;seconds&rdquo;:60},{&ldquo;dateTime&rdquo;:&rdquo;2020-10-12T01:42:00.000&rdquo;,&rdquo;level&rdquo;:&rdquo;deep&rdquo;,&rdquo;seconds&rdquo;:2340},&hellip;], &ldquo;summary&rdquo;:{&ldquo;deep&rdquo;:{&ldquo;count&rdquo;:4,&rdquo;minutes&rdquo;:63,&rdquo;thirtyDayAvgMinutes&rdquo;:59},&rdquo;light&rdquo;:{&ldquo;count&rdquo;:27,&rdquo;minutes&rdquo;:257,&rdquo;thirtyDayAvgMinutes&rdquo;:364},&rdquo;rem&rdquo;:{&ldquo;count&rdquo;:5,&rdquo;minutes&rdquo;:94,&rdquo;thirtyDayAvgMinutes&rdquo;:58},&rdquo;wake&rdquo;:{&ldquo;count&rdquo;:24,&rdquo;minutes&rdquo;:69,&rdquo;thirtyDayAvgMinutes&rdquo;:95}}},&rdquo;logId&rdquo;:26589710673,&rdquo;minutesAfterWakeup&rdquo;:0,&rdquo;minutesAsleep&rdquo;:415,&rdquo;minutesAwake&rdquo;:68,&rdquo;minutesToFallAsleep&rdquo;:0,&rdquo;startTime&rdquo;:&rdquo;2020-10-12T01:31:00.000&rdquo;,&rdquo;timeInBed&rdquo;:483,&rdquo;type&rdquo;:&rdquo;stages&rdquo;}],&rdquo;summary&rdquo;:{&ldquo;stages&rdquo;:{&ldquo;deep&rdquo;:63,&rdquo;light&rdquo;:257,&rdquo;rem&rdquo;:94,&rdquo;wake&rdquo;:69},&rdquo;totalMinutesAsleep&rdquo;:415,&rdquo;totalSleepRecords&rdquo;:1,&rdquo;totalTimeInBed&rdquo;:483}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">PLAIN_TEXT</label><div class="tabbed-content">
+<table>
+<thead>
+<tr>
+<th>device_id</th>
+<th>local_start_date_time</th>
+<th>local_end_date_time</th>
+<th>efficiency</th>
+<th>minutes_after_wakeup</th>
+<th>minutes_asleep</th>
+<th>minutes_awake</th>
+<th>minutes_to_fall_asleep</th>
+<th>minutes_in_bed</th>
+<th>is_main_sleep</th>
+<th>type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>2020-10-10 15:36:30</td>
+<td>2020-10-10 16:37:00</td>
+<td>92</td>
+<td>0</td>
+<td>55</td>
+<td>5</td>
+<td>0</td>
+<td>60</td>
+<td>0</td>
+<td>classic</td>
+</tr>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>2020-10-10 01:46:30</td>
+<td>2020-10-10 08:10:00</td>
+<td>88</td>
+<td>0</td>
+<td>318</td>
+<td>65</td>
+<td>0</td>
+<td>383</td>
+<td>1</td>
+<td>stages</td>
+</tr>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>2020-10-11 00:12:30</td>
+<td>2020-10-11 11:47:00</td>
+<td>89</td>
+<td>1</td>
+<td>562</td>
+<td>132</td>
+<td>0</td>
+<td>694</td>
+<td>1</td>
+<td>stages</td>
+</tr>
+<tr>
+<td>a748ee1a-1d0b-4ae9-9074-279a2b6ba524</td>
+<td>2020-10-12 01:31:00</td>
+<td>2020-10-12 09:34:30</td>
+<td>93</td>
+<td>0</td>
+<td>415</td>
+<td>68</td>
+<td>0</td>
+<td>483</td>
+<td>1</td>
+<td>stages</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</details>
 <h2 id="rapids-provider">RAPIDS provider<a class="headerlink" href="#rapids-provider" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
-<p class="admonition-title">Available day segments and platforms</p>
+<p class="admonition-title">Available day segments</p>
 <ul>
-<li>Available for all day segments</li>
-<li>Available for Android only</li>
+<li>Only available for segments that span 1 or more complete days (e.g. Jan 1<sup>st</sup> 00:00 to Jan 3<sup>rd</sup> 23:59)</li>
 </ul>
 </div>
 <div class="admonition info">
 <p class="admonition-title">File Sequence</p>
-<div class="highlight"><pre><span></span><code>- data/raw/<span class="o">{</span>pid<span class="o">}</span>/phone_messages_raw.csv
-- data/raw/<span class="o">{</span>pid<span class="o">}</span>/phone_messages_with_datetime.csv
-- data/interim/<span class="o">{</span>pid<span class="o">}</span>/phone_messages_features/phone_messages_<span class="o">{</span>language<span class="o">}</span>_<span class="o">{</span>provider_key<span class="o">}</span>.csv
-- data/processed/features/<span class="o">{</span>pid<span class="o">}</span>/phone_messages.csv
+<div class="highlight"><pre><span></span><code>- data/raw/<span class="o">{</span>pid<span class="o">}</span>/fitbit_sleep_summary_raw.csv
+- data/raw/<span class="o">{</span>pid<span class="o">}</span>/fitbit_sleep_summary_parsed.csv
+- data/raw/<span class="o">{</span>pid<span class="o">}</span>/fitbit_sleep_summary_parsed_with_datetime.csv
+- data/interim/<span class="o">{</span>pid<span class="o">}</span>/fitbit_sleep_summary_features/fitbit_sleep_summary_<span class="o">{</span>language<span class="o">}</span>_<span class="o">{</span>provider_key<span class="o">}</span>.csv
+- data/processed/features/<span class="o">{</span>pid<span class="o">}</span>/fitbit_sleep_summary.csv
 </code></pre></div>
 </div>
-<p>Parameters description for <code>[PHONE_MESSAGES][PROVIDERS][RAPIDS]</code>:</p>
+<p>Parameters description for <code>[FITBIT_SLEEP_SUMMARY][PROVIDERS][RAPIDS]</code>:</p>
 <table>
 <thead>
 <tr>
@@ -969,19 +1193,19 @@
 <tbody>
 <tr>
 <td><code>[COMPUTE]</code></td>
-<td>Set to <code>True</code> to extract <code>PHONE_MESSAGES</code> features from the <code>RAPIDS</code> provider</td>
+<td>Set to <code>True</code> to extract <code>FITBIT_SLEEP_SUMMARY</code> features from the <code>RAPIDS</code> provider</td>
 </tr>
 <tr>
-<td><code>[MESSAGES_TYPES]</code></td>
-<td>The <code>messages_type</code> that will be analyzed. The options for this parameter are <code>received</code> or <code>sent</code>.</td>
+<td><code>[SLEEP_TYPES]</code></td>
+<td>Types of sleep to be included in the feature extraction computation. Fitbit provides 3 types of sleep: <code>main</code>, <code>nap</code>, <code>all</code>.</td>
 </tr>
 <tr>
 <td><code>[FEATURES]</code></td>
-<td>Features to be computed, see table below for <code>[MESSAGES_TYPES]</code> <code>received</code> and <code>sent</code></td>
+<td>Features to be computed from sleep summary data, see table below</td>
 </tr>
 </tbody>
 </table>
-<p>Features description for <code>[PHONE_MESSAGES][PROVIDERS][RAPIDS]</code>:</p>
+<p>Features description for <code>[FITBIT_SLEEP_SUMMARY][PROVIDERS][RAPIDS]</code>:</p>
 <table>
 <thead>
 <tr>
@@ -992,36 +1216,80 @@
 </thead>
 <tbody>
 <tr>
-<td>count</td>
-<td>messages</td>
-<td>Number of messages of type <code>messages_type</code> that occurred during a particular <code>day_segment</code>.</td>
+<td>countepisodeTYPE</td>
+<td>episodes</td>
+<td>Number of sleep episodes for a certain sleep type during a day segment.</td>
 </tr>
 <tr>
-<td>distinctcontacts</td>
-<td>contacts</td>
-<td>Number of distinct contacts that are associated with a particular <code>messages_type</code> during a particular <code>day_segment</code>.</td>
+<td>avgefficiencyTYPE</td>
+<td>scores</td>
+<td>Average sleep efficiency for a certain sleep type during a day segment.</td>
 </tr>
 <tr>
-<td>timefirstmessages</td>
+<td>sumdurationafterwakeupTYPE</td>
 <td>minutes</td>
-<td>Number of minutes between 12:00am (midnight) and the first <code>message</code> of a particular <code>messages_type</code> during a particular <code>day_segment</code>.</td>
+<td>Total duration the user stayed in bed after waking up for a certain sleep type during a day segment.</td>
 </tr>
 <tr>
-<td>timelastmessages</td>
+<td>sumdurationasleepTYPE</td>
 <td>minutes</td>
-<td>Number of minutes between 12:00am (midnight) and the last <code>message</code> of a particular <code>messages_type</code> during a particular <code>day_segment</code>.</td>
+<td>Total sleep duration for a certain sleep type during a day segment.</td>
 </tr>
 <tr>
-<td>countmostfrequentcontact</td>
-<td>messages</td>
-<td>Number of messages from the contact with the most messages of <code>messages_type</code> during a <code>day_segment</code> throughout the whole dataset of each participant.</td>
+<td>sumdurationawakeTYPE</td>
+<td>minutes</td>
+<td>Total duration the user stayed awake but still in bed for a certain sleep type during a day segment.</td>
+</tr>
+<tr>
+<td>sumdurationtofallasleepTYPE</td>
+<td>minutes</td>
+<td>Total duration the user spent to fall asleep for a certain sleep type during a day segment.</td>
+</tr>
+<tr>
+<td>sumdurationinbedTYPE</td>
+<td>minutes</td>
+<td>Total duration the user stayed in bed (sumdurationtofallasleep + sumdurationawake + sumdurationasleep + sumdurationafterwakeup) for a certain sleep type during a day segment.</td>
+</tr>
+<tr>
+<td>avgdurationafterwakeupTYPE</td>
+<td>minutes</td>
+<td>Average duration the user stayed in bed after waking up for a certain sleep type during a day segment.</td>
+</tr>
+<tr>
+<td>avgdurationasleepTYPE</td>
+<td>minutes</td>
+<td>Average sleep duration for a certain sleep type during a day segment.</td>
+</tr>
+<tr>
+<td>avgdurationawakeTYPE</td>
+<td>minutes</td>
+<td>Average duration the user stayed awake but still in bed for a certain sleep type during a day segment.</td>
+</tr>
+<tr>
+<td>avgdurationtofallasleepTYPE</td>
+<td>minutes</td>
+<td>Average duration the user spent to fall asleep for a certain sleep type during a day segment.</td>
+</tr>
+<tr>
+<td>avgdurationinbedTYPE</td>
+<td>minutes</td>
+<td>Average duration the user stayed in bed (sumdurationtofallasleep + sumdurationawake + sumdurationasleep + sumdurationafterwakeup) for a certain sleep type during a day segment.</td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="admonition-title">Assumptions/Observations</p>
 <ol>
-<li><code>[MESSAGES_TYPES]</code> and <code>[FEATURES]</code> keys in <code>config.yaml</code> need to match. For example, <code>[MESSAGES_TYPES]</code> <code>sent</code> matches the <code>[FEATURES]</code> key <code>sent</code></li>
+<li>
+<p>There are three sleep types (TYPE): <code>main</code>, <code>nap</code>, <code>all</code>. The <code>all</code> type contains both main sleep and naps.</p>
+</li>
+<li>
+<p>There are two versions of Fitbit’s sleep API (<a href="https://dev.fitbit.com/build/reference/web-api/sleep-v1/">version 1</a> and <a href="https://dev.fitbit.com/build/reference/web-api/sleep/">version 1.2</a>), and each provides raw sleep data in a different format:</p>
+<ul>
+<li><em>Count &amp; duration summaries</em>. <code>v1</code> contains <code>count_awake</code>, <code>duration_awake</code>, <code>count_awakenings</code>, <code>count_restless</code>, and <code>duration_restless</code> fields for every sleep record but <code>v1.2</code> does not.</li>
+<li><em>API columns</em>. Features are computed based on the values provided by Fitbit’s API: <code>efficiency</code>, <code>minutes_after_wakeup</code>, <code>minutes_asleep</code>, <code>minutes_awake</code>, <code>minutes_to_fall_asleep</code>, <code>minutes_in_bed</code>, <code>is_main_sleep</code> and <code>type</code>.</li>
+</ul>
+</li>
 </ol>
 </div>
                 
@@ -1042,7 +1310,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../phone-locations/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../fitbit-heartrate-intraday/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -1051,19 +1319,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Phone Locations
+                Fitbit Heart Rate Intraday
               </div>
             </div>
           </a>
         
         
-          <a href="../phone-screen/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../fitbit-steps-summary/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Phone Screen
+                Fitbit Steps Summary
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">
