@@ -96,4 +96,5 @@ Features description for `[FITBIT_SLEEP_SUMMARY][PROVIDERS][RAPIDS]`:
 
     2. There are two versions of Fitbit’s sleep API ([version 1](https://dev.fitbit.com/build/reference/web-api/sleep-v1/) and [version 1.2](https://dev.fitbit.com/build/reference/web-api/sleep/)), and each provides raw sleep data in a different format:
         - _Count & duration summaries_. `v1` contains `count_awake`, `duration_awake`, `count_awakenings`, `count_restless`, and `duration_restless` fields for every sleep record but `v1.2` does not.
-        - _API columns_. Features are computed based on the values provided by Fitbit’s API: `efficiency`, `minutes_after_wakeup`, `minutes_asleep`, `minutes_awake`, `minutes_to_fall_asleep`, `minutes_in_bed`, `is_main_sleep` and `type`.
+    
+    3. _API columns_. Features are computed based on the values provided by Fitbit’s API: `efficiency`, `minutes_after_wakeup`, `minutes_asleep`, `minutes_awake`, `minutes_to_fall_asleep`, `minutes_in_bed`, `is_main_sleep` and `type`.
