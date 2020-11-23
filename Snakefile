@@ -147,10 +147,6 @@ for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
 if config["FITBIT_CALORIES"]["TABLE_FORMAT"] not in ["JSON", "CSV"]:
     raise ValueError("config['FITBIT_CALORIES']['TABLE_FORMAT'] should be JSON or CSV but you typed" + config["FITBIT_CALORIES"]["TABLE_FORMAT"])
 
-if config["FITBIT_SLEEP"]["TABLE_FORMAT"] not in ["JSON", "CSV"]:
-    raise ValueError("config['FITBIT_SLEEP']['TABLE_FORMAT'] should be JSON or CSV but you typed" + config["FITBIT_SLEEP"]["TABLE_FORMAT"])
-
-
 for provider in config["FITBIT_HEARTRATE_SUMMARY"]["PROVIDERS"].keys():
     if config["FITBIT_HEARTRATE_SUMMARY"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_summary_raw.csv", pid=config["PIDS"]))
@@ -166,6 +162,20 @@ for provider in config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_heartrate_intraday_features/fitbit_heartrate_intraday_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/fitbit_heartrate_intraday.csv", pid=config["PIDS"]))
+
+for provider in config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"].keys():
+    if config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_summary_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_summary_parsed.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_summary_parsed_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/fitbit_sleep_summary_features/fitbit_sleep_summary_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/fitbit_sleep_summary.csv", pid=config["PIDS"]))
+
+# for provider in config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"].keys():
+#     if config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"][provider]["COMPUTE"]:
+#         files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_intraday_raw.csv", pid=config["PIDS"]))
+#         files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_intraday_parsed.csv", pid=config["PIDS"]))
+#         files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_intraday_parsed_with_datetime.csv", pid=config["PIDS"]))
 
 for provider in config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"].keys():
     if config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -188,13 +198,6 @@ for provider in config["FITBIT_CALORIES"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_raw.csv", pid=config["PIDS"], fitbit_data_type=(["json"] if config["FITBIT_CALORIES"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"])))
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_parsed.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_parsed_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
-
-for provider in config["FITBIT_SLEEP"]["PROVIDERS"].keys():
-    if config["FITBIT_SLEEP"]["PROVIDERS"][provider]["COMPUTE"]:
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_raw.csv", pid=config["PIDS"], fitbit_data_type=(["json"] if config["FITBIT_SLEEP"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"])))
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_parsed_episodes.csv", pid=config["PIDS"], fitbit_data_type=["summary"]))
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_parsed.csv", pid=config["PIDS"], fitbit_data_type=["intraday"]))
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_parsed_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["intraday"]))
 
 # visualization for data exploration
 if config["HEATMAP_FEATURES_CORRELATIONS"]["PLOT"]:

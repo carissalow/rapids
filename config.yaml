@@ -300,18 +300,16 @@ FITBIT_STEPS_INTRADAY:
       SRC_FOLDER: "rapids" # inside src/features/fitbit_steps_intraday
       SRC_LANGUAGE: "python"
 
-FITBIT_SLEEP:
-  TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [DEVICE_DATA][FITBIT][SOURCE][TYPE] to FILES
-  TABLE:
-    JSON: fitbit_sleep
-    CSV:
-      SUMMARY: sleep_summary
-      INTRADAY: sleep_intraday
+FITBIT_SLEEP_SUMMARY:
+  TABLE: sleep_summary
+  SLEEP_EPISODE_TIMESTAMP: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
+      FEATURES: ["countepisode", "avgefficiency", "sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgdurationafterwakeup", "avgdurationasleep", "avgdurationawake", "avgdurationtofallasleep", "avgdurationinbed"]
       SLEEP_TYPES: ["main", "nap", "all"]
-      SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_sleep_summary
+      SRC_LANGUAGE: "python"
 
 FITBIT_CALORIES:
   TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [DEVICE_DATA][FITBIT][SOURCE][TYPE] to FILES

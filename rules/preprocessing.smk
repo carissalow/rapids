@@ -206,6 +206,20 @@ rule fitbit_parse_steps:
     script:
         "../src/data/fitbit_parse_steps.py"
 
+rule fitbit_parse_sleep:
+    input:
+        "data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_raw.csv"
+    params:
+        timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
+        table = lambda wildcards: config["FITBIT_SLEEP_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
+        column_format = config["DEVICE_DATA"]["FITBIT"]["SOURCE"]["COLUMN_FORMAT"],
+        fitbit_data_type = "{fitbit_data_type}",
+        sleep_episode_timestamp = config["FITBIT_SLEEP_SUMMARY"]["SLEEP_EPISODE_TIMESTAMP"]
+    output:
+        "data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_parsed.csv"
+    script:
+        "../src/data/fitbit_parse_sleep.py"
+
 rule fitbit_parse_calories:
     input:
         data = expand("data/raw/{{pid}}/fitbit_calories_{fitbit_data_type}_raw.csv", fitbit_data_type = (["json"] if config["FITBIT_CALORIES"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"]))
@@ -218,19 +232,6 @@ rule fitbit_parse_calories:
         intraday_data = "data/raw/{pid}/fitbit_calories_intraday_parsed.csv"
     script:
         "../src/data/fitbit_parse_calories.py"
-
-rule fitbit_parse_sleep:
-    input:
-        data = expand("data/raw/{{pid}}/fitbit_sleep_{fitbit_data_type}_raw.csv", fitbit_data_type = (["json"] if config["FITBIT_SLEEP"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"]))
-    params:
-        timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
-        table = config["FITBIT_SLEEP"]["TABLE"],
-        table_format = config["FITBIT_SLEEP"]["TABLE_FORMAT"]
-    output:
-        summary_data = "data/raw/{pid}/fitbit_sleep_summary_parsed_episodes.csv",
-        intraday_data = "data/raw/{pid}/fitbit_sleep_intraday_parsed.csv"
-    script:
-        "../src/data/fitbit_parse_sleep.py"
 
 rule fitbit_readable_datetime:
     input:

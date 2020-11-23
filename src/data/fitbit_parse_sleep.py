@@ -1,9 +1,8 @@
 import json
 import pandas as pd
-from datetime import datetime
 import numpy as np
+from datetime import datetime, timedelta
 import dateutil.parser
-from datetime import timedelta
 
 SLEEP_CODE2LEVEL = ["asleep", "restless", "awake"]
 
@@ -12,7 +11,7 @@ SLEEP_SUMMARY_COLUMNS_V1_2 = ("device_id", "efficiency",
                                 "minutes_after_wakeup", "minutes_asleep", "minutes_awake", "minutes_to_fall_asleep", "minutes_in_bed",
                                 "is_main_sleep", "type",
                                 "local_start_date_time", "local_end_date_time",
-                                "start_timestamp", "end_timestamp")
+                                "timestamp")
 SLEEP_SUMMARY_COLUMNS_V1 = SLEEP_SUMMARY_COLUMNS_V1_2 + ("count_awake", "duration_awake", "count_awakenings", "count_restless", "duration_restless")
 
 SLEEP_INTRADAY_COLUMNS = ("device_id",
@@ -71,71 +70,75 @@ def classicData1min(data_summary):
             newRow = {'dateTime':dateutil.parser.parse(origEntry['dateTime'])+timedelta(seconds=counter*timeDuration),'level':origEntry['level'],'seconds':timeDuration}
             dataList.append(newRow)
             counter = counter + 1
-    # print(dataList)
     return dataList
-# Parse one record for sleep API version 1
-def parseOneRecordForV1(record, device_id, d_is_main_sleep, records_summary, records_intraday):
 
-    # Summary data
+# Parse one record for sleep API version 1
+def parseOneRecordForV1(record, device_id, d_is_main_sleep, records_summary, records_intraday, fitbit_data_type):
+
     sleep_record_type = "classic"
 
     d_start_datetime = datetime.strptime(record["startTime"][:18], "%Y-%m-%dT%H:%M:%S")
     d_end_datetime = datetime.strptime(record["endTime"][:18], "%Y-%m-%dT%H:%M:%S")
 
-    row_summary = (device_id, record["efficiency"],
-                    record["minutesAfterWakeup"], record["minutesAsleep"], record["minutesAwake"], record["minutesToFallAsleep"], record["timeInBed"],
-                    d_is_main_sleep, sleep_record_type,
-                    d_start_datetime, d_end_datetime,
-                    d_start_datetime.date(), d_end_datetime.date(),
-                    0,0,
-                    record["awakeCount"], record["awakeDuration"], record["awakeningsCount"],
-                    record["restlessCount"], record["restlessDuration"])
-    
-    records_summary.append(row_summary)
+    # Summary data
+    if fitbit_data_type == "summary":
+        row_summary = (device_id, record["efficiency"],
+                        record["minutesAfterWakeup"], record["minutesAsleep"], record["minutesAwake"], record["minutesToFallAsleep"], record["timeInBed"],
+                        d_is_main_sleep, sleep_record_type,
+                        d_start_datetime, d_end_datetime,
+                        0,
+                        record["awakeCount"], record["awakeDuration"], record["awakeningsCount"],
+                        record["restlessCount"], record["restlessDuration"])
+        
+        records_summary.append(row_summary)
 
     # Intraday data
-    start_date = d_start_datetime.date()
-    end_date = d_end_datetime.date()
-    is_before_midnight = True
-    curr_date = start_date
-    for data in record["minuteData"]:
-        # For overnight episodes, use end_date once we are over midnight
-        d_time = datetime.strptime(data["dateTime"], '%H:%M:%S').time()
-        if is_before_midnight and d_time.hour == 0:
-            curr_date = end_date
-        d_datetime = datetime.combine(curr_date, d_time)
+    if fitbit_data_type == "intraday":
+        start_date = d_start_datetime.date()
+        end_date = d_end_datetime.date()
+        is_before_midnight = True
+        curr_date = start_date
+        for data in record["minuteData"]:
+            # For overnight episodes, use end_date once we are over midnight
+            d_time = datetime.strptime(data["dateTime"], '%H:%M:%S').time()
+            if is_before_midnight and d_time.hour == 0:
+                curr_date = end_date
+            d_datetime = datetime.combine(curr_date, d_time)
 
-        # API 1.2 stores original_level as strings, so we convert original_levels of API 1 to strings too
-        # (1: "asleep", 2: "restless", 3: "awake")
-        d_original_level = SLEEP_CODE2LEVEL[int(data["value"])-1]
+            # API 1.2 stores original_level as strings, so we convert original_levels of API 1 to strings too
+            # (1: "asleep", 2: "restless", 3: "awake")
+            d_original_level = SLEEP_CODE2LEVEL[int(data["value"])-1]
 
 
-        row_intraday = (device_id,
-                        d_original_level, -1, d_is_main_sleep, sleep_record_type,
-                        d_datetime, 0)
+            row_intraday = (device_id,
+                            d_original_level, -1, d_is_main_sleep, sleep_record_type,
+                            d_datetime, 0)
 
-        records_intraday.append(row_intraday)
+            records_intraday.append(row_intraday)
 
     return records_summary, records_intraday
 
 # Parse one record for sleep API version 1.2
-def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, records_intraday):
+def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, records_intraday, fitbit_data_type):
     
-    # Summary data
     sleep_record_type = record['type']
 
     d_start_datetime = datetime.strptime(record["startTime"][:18], "%Y-%m-%dT%H:%M:%S")
     d_end_datetime = datetime.strptime(record["endTime"][:18], "%Y-%m-%dT%H:%M:%S")
 
-    row_summary = (device_id, record["efficiency"],
-                    record["minutesAfterWakeup"], record["minutesAsleep"], record["minutesAwake"], record["minutesToFallAsleep"], record["timeInBed"],
-                    d_is_main_sleep, sleep_record_type,
-                    d_start_datetime, d_end_datetime,
-                    0,0)
+    # Summary data
+    if fitbit_data_type == "summary":
+        row_summary = (device_id, record["efficiency"],
+                        record["minutesAfterWakeup"], record["minutesAsleep"], record["minutesAwake"], record["minutesToFallAsleep"], record["timeInBed"],
+                        d_is_main_sleep, sleep_record_type,
+                        d_start_datetime, d_end_datetime,
+                        0,0)
+        
+        records_summary.append(row_summary)
     
-    records_summary.append(row_summary)
-    if sleep_record_type == 'classic':
-            # Intraday data
+    # Intraday data
+    if fitbit_data_type == "intraday":
+        if sleep_record_type == 'classic':
             start_date = d_start_datetime.date()
             end_date = d_end_datetime.date()
             is_before_midnight = True
@@ -155,8 +158,8 @@ def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, re
                     d_original_level, -1, d_is_main_sleep, sleep_record_type,
                     d_datetime, 0)
                 records_intraday.append(row_intraday)
-    else:
-            ## for sleep type "stages"
+        else:
+            # For sleep type "stages"
             start_date = d_start_datetime.date()
             end_date = d_end_datetime.date()
             is_before_midnight = True
@@ -182,7 +185,7 @@ def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, re
     
 
 
-def parseSleepData(sleep_data):
+def parseSleepData(sleep_data, fitbit_data_type):
     SLEEP_SUMMARY_COLUMNS = SLEEP_SUMMARY_COLUMNS_V1_2
     if sleep_data.empty:
         return pd.DataFrame(columns=SLEEP_SUMMARY_COLUMNS), pd.DataFrame(columns=SLEEP_INTRADAY_COLUMNS)
@@ -197,32 +200,54 @@ def parseSleepData(sleep_data):
             # For sleep API version 1
             if "awakeCount" in record:
                 SLEEP_SUMMARY_COLUMNS = SLEEP_SUMMARY_COLUMNS_V1
-                records_summary, records_intraday = parseOneRecordForV1(record, device_id, d_is_main_sleep, records_summary, records_intraday)
+                records_summary, records_intraday = parseOneRecordForV1(record, device_id, d_is_main_sleep, records_summary, records_intraday, fitbit_data_type)
             # For sleep API version 1.2
             else:
                 SLEEP_SUMMARY_COLUMNS = SLEEP_SUMMARY_COLUMNS_V1_2
-                records_summary, records_intraday = parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, records_intraday)
+                records_summary, records_intraday = parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, records_intraday, fitbit_data_type)
 
-    return pd.DataFrame(data=records_summary, columns=SLEEP_SUMMARY_COLUMNS), pd.DataFrame(data=records_intraday, columns=SLEEP_INTRADAY_COLUMNS)
+    if fitbit_data_type == "summary":
+        parsed_data = pd.DataFrame(data=records_summary, columns=SLEEP_SUMMARY_COLUMNS)
+    elif fitbit_data_type == "intraday":
+        parsed_data = pd.DataFrame(data=records_intraday, columns=SLEEP_INTRADAY_COLUMNS)
+    else:
+        raise ValueError("fitbit_data_type can only be one of ['summary', 'intraday'].")
 
-table_format = snakemake.params["table_format"]
+    return parsed_data
+
+
+
 timezone = snakemake.params["timezone"]
+column_format = snakemake.params["column_format"]
+fitbit_data_type = snakemake.params["fitbit_data_type"]
+sleep_episode_timestamp = snakemake.params["sleep_episode_timestamp"]
 
-if table_format == "JSON":
+if column_format == "JSON":
     json_raw = pd.read_csv(snakemake.input[0])
-    summary, intraday = parseSleepData(json_raw)
-elif table_format == "CSV":
-    summary = pd.read_csv(snakemake.input[0], parse_dates=["local_start_date_time", "local_end_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
-    intraday = pd.read_csv(snakemake.input[1], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
+    parsed_data = parseSleepData(json_raw, fitbit_data_type)
+elif column_format == "PLAIN_TEXT":
+    if fitbit_data_type == "summary":
+        parsed_data = pd.read_csv(snakemake.input[0], parse_dates=["local_start_date_time", "local_end_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
+    elif fitbit_data_type == "intraday":
+        parsed_data = pd.read_csv(snakemake.input[1], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
+    else:
+        raise ValueError("fitbit_data_type can only be one of ['summary', 'intraday'].")
+else:
+    raise ValueError("column_format can only be one of ['JSON', 'PLAIN_TEXT'].")
 
-if summary.shape[0] > 0:
-    summary["start_timestamp"] = summary["local_start_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
-    summary["end_timestamp"] = summary["local_end_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
-if intraday.shape[0] > 0:
-    intraday["timestamp"] = intraday["local_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
+if parsed_data.shape[0] > 0 and fitbit_data_type == "summary":
+    if sleep_episode_timestamp == "start":
+        parsed_data["timestamp"] = parsed_data["local_start_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
+    elif sleep_episode_timestamp == "end":
+        parsed_data["timestamp"] = parsed_data["local_end_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
+    else:
+        raise ValueError("SLEEP_EPISODE_TIMESTAMP can only be one of ['start', 'end'].")
+    # Drop useless columns: local_start_date_time and local_end_date_time
+    parsed_data.drop(["local_start_date_time", "local_end_date_time"], axis = 1, inplace=True)
 
-# Unifying level
-intraday["unified_level"] = np.where(intraday["level"].isin(["awake", "wake", "restless"]), 0, 1)
+if parsed_data.shape[0] > 0 and fitbit_data_type == "intraday":
+    parsed_data["timestamp"] = parsed_data["local_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
+    # Unifying level
+    parsed_data["unified_level"] = np.where(parsed_data["level"].isin(["awake", "wake", "restless"]), 0, 1)
 
-summary.to_csv(snakemake.output["summary_data"], index=False)
-intraday.to_csv(snakemake.output["intraday_data"], index=False)
+parsed_data.to_csv(snakemake.output[0], index=False)

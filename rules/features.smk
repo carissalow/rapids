@@ -476,6 +476,32 @@ rule fitbit_steps_intraday_r_features:
     script:
         "../src/features/entry.R"
 
+rule fitbit_sleep_summary_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_sleep_summary_parsed_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_sleep_summary"
+    output:
+        "data/interim/{pid}/fitbit_sleep_summary_features/fitbit_sleep_summary_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule fitbit_sleep_summary_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_sleep_summary_parsed_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_sleep_summary"
+    output:
+        "data/interim/{pid}/fitbit_sleep_summary_features/fitbit_sleep_summary_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
 # rule fitbit_sleep_features:
 #     input:
 #         sleep_summary_data = "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv",
