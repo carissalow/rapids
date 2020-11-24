@@ -9,7 +9,7 @@ def is_valid_frequency_segments(day_segments, day_segments_file):
     """
     
     valid_columns = ["label", "length"]
-    if len(list(set(day_segments.columns) - set(valid_columns))) > 0:
+    if set(day_segments.columns) != set(valid_columns):
         error_message = 'The FREQUENCY day segments file in [DAY_SEGMENTS][FILE] must have two columns: label, and length ' \
                   'but instead we found {}. Modify {}'.format(list(day_segments.columns), day_segments_file)
         raise ValueError(error_message)
@@ -39,7 +39,7 @@ def is_valid_periodic_segments(day_segments, day_segments_file):
     day_segments = day_segments.copy(deep=True)
 
     valid_columns = ["label", "start_time", "length", "repeats_on", "repeats_value"]
-    if len(list(set(day_segments.columns) - set(valid_columns))) > 0:
+    if set(day_segments.columns) != set(valid_columns):
         error_message = 'The PERIODIC day segments file in [DAY_SEGMENTS][FILE] must have five columns: label, start_time, length, repeats_on, repeats_value ' \
                   'but instead we found {}. Modify {}'.format(list(day_segments.columns), day_segments_file)
         raise ValueError(error_message)
@@ -109,7 +109,7 @@ def is_valid_event_segments(day_segments, day_segments_file):
     day_segments = day_segments.copy(deep=True)
 
     valid_columns = ["label", "event_timestamp", "length", "shift", "shift_direction", "device_id"]
-    if len(list(set(day_segments.columns) - set(valid_columns))) > 0:
+    if set(day_segments.columns) != set(valid_columns):
         error_message = 'The EVENT day segments file in [DAY_SEGMENTS][FILE] must have six columns: label, event_timestamp, length, shift, shift_direction and device_id ' \
                   'but instead we found {}. Modify {}'.format(list(day_segments.columns), day_segments_file)
         raise ValueError(error_message)
