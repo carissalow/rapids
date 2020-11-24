@@ -132,7 +132,7 @@ def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, re
                         record["minutesAfterWakeup"], record["minutesAsleep"], record["minutesAwake"], record["minutesToFallAsleep"], record["timeInBed"],
                         d_is_main_sleep, sleep_record_type,
                         d_start_datetime, d_end_datetime,
-                        0,0)
+                        0)
         
         records_summary.append(row_summary)
     

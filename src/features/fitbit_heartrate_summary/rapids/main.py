@@ -29,13 +29,13 @@ def statsFeatures(heartrate_data, features, features_type, heartrate_features):
     if "summarymedian" + features_type in features:
         heartrate_features["heartrate_rapids_summarymedian" + features_type] = heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].median()
     if "summarymode" + features_type in features:
-        heartrate_features["heartrate_rapids_summarymode" + features_type] = heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].agg(lambda x: pd.Series.mode(x)[0])
+        heartrate_features["heartrate_rapids_summarymode" + features_type] = heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].agg(lambda x: None if len(pd.Series.mode(x)) == 0 else pd.Series.mode(x)[0])
     if "summarystd" + features_type in features:
         heartrate_features["heartrate_rapids_summarystd" + features_type] = heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].std()
     if "summarydiffmaxmode" + features_type in features:
-        heartrate_features["heartrate_rapids_summarydiffmaxmode" + features_type] = heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].max() - heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].agg(lambda x: pd.Series.mode(x)[0])
+        heartrate_features["heartrate_rapids_summarydiffmaxmode" + features_type] = heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].max() - heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].agg(lambda x: None if len(pd.Series.mode(x)) == 0 else pd.Series.mode(x)[0])
     if "summarydiffminmode" + features_type in features:
-        heartrate_features["heartrate_rapids_summarydiffminmode" + features_type] = heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].agg(lambda x: pd.Series.mode(x)[0]) - heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].min()
+        heartrate_features["heartrate_rapids_summarydiffminmode" + features_type] = heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].agg(lambda x: None if len(pd.Series.mode(x)) == 0 else pd.Series.mode(x)[0]) - heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].min()
     if "summaryentropy" + features_type in features:
         heartrate_features["heartrate_rapids_summaryentropy" + features_type] = heartrate_data[["local_segment", col_name]].groupby(["local_segment"])[col_name].agg(entropy)
     
