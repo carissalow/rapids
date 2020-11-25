@@ -1,10 +1,12 @@
 rule join_features_from_providers:
     input:
-        location_features = find_features_files
+        sensor_features = find_features_files
+    wildcard_constraints:
+        sensor_key = '(phone|fitbit).*'
     output:
         "data/processed/features/{pid}/{sensor_key}.csv"
     script:
-        "../src/features/join_features_from_providers.R"
+        "../src/features/utils/join_features_from_providers.R"
 
 rule phone_data_yield_python_features:
     input:
@@ -528,15 +530,18 @@ rule fitbit_sleep_summary_r_features:
     script:
         "../src/features/entry.R"
 
-# rule fitbit_sleep_features:
-#     input:
-#         sleep_summary_data = "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv",
-#         sleep_intraday_data = "data/raw/{pid}/fitbit_sleep_intraday_with_datetime.csv"
-#     params:
-#         day_segment = "{day_segment}",
-#         summary_features = config["SLEEP"]["SUMMARY_FEATURES"],
-#         sleep_types = config["SLEEP"]["SLEEP_TYPES"]
-#     output:
-#         "data/processed/{pid}/fitbit_sleep_{day_segment}.csv"
-#     script:
-#         "../src/features/fitbit_sleep_features.py"
+rule merge_sensor_features_for_individual_participants:
+    input:
+        feature_files = input_merge_sensor_features_for_individual_participants
+    output:
+        "data/processed/features/{pid}/all_sensor_features.csv"
+    script:
+        "../src/features/utils/merge_sensor_features_for_individual_participants.R"
+
+rule merge_sensor_features_for_all_participants:
+    input:
+        feature_files = expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"])
+    output:
+        "data/processed/features/all_participants/all_sensor_features.csv"
+    script:
+        "../src/features/utils/merge_sensor_features_for_all_participants.R"

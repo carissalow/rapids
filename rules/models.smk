@@ -1,174 +1,174 @@
-ruleorder: nan_cells_ratio_of_cleaned_features > merge_features_and_targets
-
-rule days_to_analyse:
+rule download_demographic_data:
     input:
-        participant_info = "data/raw/{pid}/" + config["PARAMS_FOR_ANALYSIS"]["GROUNDTRUTH_TABLE"] + "_raw.csv"
+        participant_file = "data/external/participant_files/{pid}.yaml"
     params:
-        days_before_surgery = "{days_before_surgery}",
-        days_in_hospital = "{days_in_hospital}",
-        days_after_discharge= "{days_after_discharge}"
+        source = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["SOURCE"],
+        table = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["TABLE"],
     output:
-        "data/interim/{pid}/days_to_analyse_{days_before_surgery}_{days_in_hospital}_{days_after_discharge}.csv"
+        "data/raw/{pid}/participant_info_raw.csv"
     script:
-        "../src/models/select_days_to_analyse.py"
-
-rule targets:
-    input:
-        participant_info = "data/raw/{pid}/" + config["PARAMS_FOR_ANALYSIS"]["TARGET_TABLE"] + "_raw.csv"
-    params:
-        pid = "{pid}",
-        summarised = "{summarised}"
-    output:
-        "data/processed/{pid}/targets_{summarised}.csv"
-    script:
-        "../src/models/targets.py"
+        "../src/data/workflow_example/download_demographic_data.R"
 
 rule demographic_features:
     input:
-        participant_info = "data/raw/{pid}/" + config["PARAMS_FOR_ANALYSIS"]["GROUNDTRUTH_TABLE"] + "_raw.csv"
+        participant_info = "data/raw/{pid}/participant_info_raw.csv"
     params:
         pid = "{pid}",
-        features = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC_FEATURES"]
+        features = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["FEATURES"]
     output:
-        "data/processed/{pid}/demographic_features.csv"
+        "data/processed/features/{pid}/demographic_features.csv"
     script:
-        "../src/features/demographic_features.py"
+        "../src/features/workflow_example/demographic_features.py"
 
-rule merge_features_for_individual_model:
+rule download_target_data:
     input:
-        feature_files = input_merge_features_of_single_participant,
-        phone_valid_sensed_days = optional_input_valid_sensed_days,
-        days_to_include = optional_input_days_to_include
+        participant_file = "data/external/participant_files/{pid}.yaml"
     params:
-        source = "{source}"
+        source = config["PARAMS_FOR_ANALYSIS"]["TARGET"]["SOURCE"],
+        table = config["PARAMS_FOR_ANALYSIS"]["TARGET"]["TABLE"],
     output:
-        "data/processed/{pid}/data_for_individual_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{source}_{day_segment}_original.csv"
+        "data/raw/{pid}/participant_target_raw.csv"
     script:
-        "../src/models/merge_features_for_individual_model.R"
+        "../src/data/workflow_example/download_target_data.R"
 
-rule merge_features_for_population_model:
+rule target_readable_datetime:
     input:
-        feature_files = expand("data/processed/{pid}/data_for_individual_model/{{min_valid_hours_per_day}}hours_{{min_valid_bins_per_hour}}bins/{{source}}_{{day_segment}}_original.csv", pid=config["PIDS"])
-    output:
-        "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{source}_{day_segment}_original.csv"
-    script:
-        "../src/models/merge_features_for_population_model.R"
-
-rule merge_demographicfeatures_for_population_model:
-    input:
-        data_files = expand("data/processed/{pid}/demographic_features.csv", pid=config["PIDS"])
-    output:
-        "data/processed/data_for_population_model/demographic_features.csv"
-    script:
-        "../src/models/merge_data_for_population_model.py"
-
-rule merge_targets_for_population_model:
-    input:
-        data_files = expand("data/processed/{pid}/targets_{{summarised}}.csv", pid=config["PIDS"])
-    output:
-        "data/processed/data_for_population_model/targets_{summarised}.csv"
-    script:
-        "../src/models/merge_data_for_population_model.py"
-
-rule clean_features_for_individual_model:
-    input:
-        rules.merge_features_for_individual_model.output
+        sensor_input = "data/raw/{pid}/participant_target_raw.csv",
+        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
-        features_exclude_day_idx = config["PARAMS_FOR_ANALYSIS"]["FEATURES_EXCLUDE_DAY_IDX"],
-        cols_nan_threshold = "{cols_nan_threshold}",
-        cols_var_threshold = "{cols_var_threshold}",
-        days_before_threshold = "{days_before_threshold}",
-        days_after_threshold = "{days_after_threshold}",
-        rows_nan_threshold = "{rows_nan_threshold}",
+        fixed_timezone = config["PARAMS_FOR_ANALYSIS"]["TARGET"]["SOURCE"]["TIMEZONE"],
+        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
-        "data/processed/{pid}/data_for_individual_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv"
+        "data/raw/{pid}/participant_target_with_datetime.csv"
     script:
-        "../src/models/clean_features_for_model.R"
+        "../src/data/readable_datetime.R"
 
-rule clean_features_for_population_model:
+rule parse_targets:
     input:
-        rules.merge_features_for_population_model.output
-    params:
-        features_exclude_day_idx = config["PARAMS_FOR_ANALYSIS"]["FEATURES_EXCLUDE_DAY_IDX"],
-        cols_nan_threshold = "{cols_nan_threshold}",
-        cols_var_threshold = "{cols_var_threshold}",
-        days_before_threshold = "{days_before_threshold}",
-        days_after_threshold = "{days_after_threshold}",
-        rows_nan_threshold = "{rows_nan_threshold}",
+        targets = "data/raw/{pid}/participant_target_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
     output:
-        "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv"
+        "data/processed/targets/{pid}/parsed_targets.csv"
     script:
-        "../src/models/clean_features_for_model.R"
+        "../src/models/workflow_example/parse_targets.py"
 
-rule nan_cells_ratio_of_cleaned_features:
+rule clean_sensor_features_for_individual_participants:
     input:
-        cleaned_features = "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv"
-    output:
-        "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_nancellsratio.csv"
-    script:
-        "../src/models/nan_cells_ratio_of_cleaned_features.py"
- 
-rule merge_features_and_targets:
-    input:
-        cleaned_features = "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_clean.csv",
-        demographic_features = "data/processed/data_for_population_model/demographic_features.csv",
-        targets = "data/processed/data_for_population_model/targets_{summarised}.csv",
+        rules.merge_sensor_features_for_individual_participants.output
     params:
-        summarised = "{summarised}",
-        cols_var_threshold = "{cols_var_threshold}",
-        numerical_operators = config["PARAMS_FOR_ANALYSIS"]["NUMERICAL_OPERATORS"],
-        categorical_operators = config["PARAMS_FOR_ANALYSIS"]["CATEGORICAL_OPERATORS"],
-        features_exclude_day_idx = config["PARAMS_FOR_ANALYSIS"]["FEATURES_EXCLUDE_DAY_IDX"],
+        cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"],
+        cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
+        rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
+        data_yielded_hours_ratio_threshold = config["PARAMS_FOR_ANALYSIS"]["DATA_YIELDED_HOURS_RATIO_THRESHOLD"],
     output:
-        "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_{summarised}.csv"
+        "data/processed/features/{pid}/all_sensor_features_cleaned.csv"
     script:
-        "../src/models/merge_features_and_targets.py"
- 
-rule baseline:
+        "../src/models/workflow_example/clean_sensor_features.R"
+
+rule clean_sensor_features_for_all_participants:
     input:
-        "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_{summarised}.csv"
+        rules.merge_sensor_features_for_all_participants.output
+    params:
+        cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"],
+        cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
+        rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
+        data_yielded_hours_ratio_threshold = config["PARAMS_FOR_ANALYSIS"]["DATA_YIELDED_HOURS_RATIO_THRESHOLD"],
+    output:
+        "data/processed/features/all_participants/all_sensor_features_cleaned.csv"
+    script:
+        "../src/models/workflow_example/clean_sensor_features.R"
+
+
+
+
+
+
+
+
+
+
+rule merge_features_and_targets_for_individual_model:
+    input:
+        cleaned_sensor_features = "data/processed/features/{pid}/all_sensor_features_cleaned.csv",
+        targets = "data/processed/targets/{pid}/parsed_targets.csv",
+    output:
+        "data/processed/models/individual_model/{pid}/input.csv"
+    script:
+        "../src/models/workflow_example/merge_features_and_targets_for_individual_model.py"
+
+rule merge_features_and_targets_for_population_model:
+    input:
+        cleaned_sensor_features = "data/processed/features/all_participants/all_sensor_features_cleaned.csv",
+        demographic_features = expand("data/processed/features/{pid}/demographic_features.csv", pid=config["PIDS"]),
+        targets = expand("data/processed/targets/{pid}/parsed_targets.csv", pid=config["PIDS"]),
+    output:
+        "data/processed/models/population_model/input.csv"
+    script:
+        "../src/models/workflow_example/merge_features_and_targets_for_population_model.py"
+
+rule baselines_for_individual_model:
+    input:
+        "data/processed/models/individual_model/{pid}/input.csv"
     params:
         cv_method = "{cv_method}",
-        rowsnan_colsnan_days_colsvar_threshold = "{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}",
-        demographic_features = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC_FEATURES"]
+        colnames_demographic_features = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["FEATURES"],
     output:
-        "data/processed/output_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/baseline/{cv_method}/{source}_{day_segment}_{summarised}.csv"
+        "data/processed/models/individual_model/{pid}/output_{cv_method}/baselines.csv"
     log:
-        "data/processed/output_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/baseline/{cv_method}/{source}_{day_segment}_{summarised}_notes.log"
+        "data/processed/models/individual_model/{pid}/output_{cv_method}/baselines_notes.log"
     script:
-        "../src/models/baseline.py"
- 
- 
-rule modeling:
+        "../src/models/workflow_example/baselines.py"
+
+rule baselines_for_population_model:
     input:
-        data = "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_{summarised}.csv"
+        "data/processed/models/population_model/input.csv"
+    params:
+        cv_method = "{cv_method}",
+        colnames_demographic_features = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["FEATURES"],
+    output:
+        "data/processed/models/population_model/output_{cv_method}/baselines.csv"
+    log:
+        "data/processed/models/population_model/output_{cv_method}/baselines_notes.log"
+    script:
+        "../src/models/workflow_example/baselines.py"
+
+rule modeling_for_individual_participants:
+    input:
+        data = "data/processed/models/individual_model/{pid}/input.csv"
     params:
         model = "{model}",
         cv_method = "{cv_method}",
-        source = "{source}",
-        day_segment = "{day_segment}",
-        summarised = "{summarised}",
         scaler = "{scaler}",
         categorical_operators = config["PARAMS_FOR_ANALYSIS"]["CATEGORICAL_OPERATORS"],
-        categorical_demographic_features = config["PARAMS_FOR_ANALYSIS"]["CATEGORICAL_DEMOGRAPHIC_FEATURES"],
+        categorical_demographic_features = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["CATEGORICAL_FEATURES"],
         model_hyperparams = config["PARAMS_FOR_ANALYSIS"]["MODEL_HYPERPARAMS"],
-        rowsnan_colsnan_days_colsvar_threshold = "{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}"
     output:
-        fold_predictions = "data/processed/output_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/fold_predictions.csv",
-        fold_metrics = "data/processed/output_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/fold_metrics.csv",
-        overall_results = "data/processed/output_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/overall_results.csv",
-        fold_feature_importances = "data/processed/output_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/fold_feature_importances.csv"
+        fold_predictions = "data/processed/models/individual_model/{pid}/output_{cv_method}/{model}/{scaler}/fold_predictions.csv",
+        fold_metrics = "data/processed/models/individual_model/{pid}/output_{cv_method}/{model}/{scaler}/fold_metrics.csv",
+        overall_results = "data/processed/models/individual_model/{pid}/output_{cv_method}/{model}/{scaler}/overall_results.csv",
+        fold_feature_importances = "data/processed/models/individual_model/{pid}/output_{cv_method}/{model}/{scaler}/fold_feature_importances.csv"
     log:
-        "data/processed/output_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/notes.log"
+        "data/processed/models/individual_model/{pid}/output_{cv_method}/{model}/{scaler}/notes.log"
     script:
-        "../src/models/modeling.py"
+        "../src/models/workflow_example/modeling.py"
 
-rule merge_population_model_results:
+rule modeling_for_all_participants:
     input:
-        overall_results = "data/processed/output_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/overall_results.csv",
-        nan_cells_ratio = "data/processed/data_for_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{source}_{day_segment}_nancellsratio.csv",
-        baseline =  "data/processed/output_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/baseline/{cv_method}/{source}_{day_segment}_{summarised}.csv"
+        data = "data/processed/models/population_model/input.csv"
+    params:
+        model = "{model}",
+        cv_method = "{cv_method}",
+        scaler = "{scaler}",
+        categorical_operators = config["PARAMS_FOR_ANALYSIS"]["CATEGORICAL_OPERATORS"],
+        categorical_demographic_features = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["CATEGORICAL_FEATURES"],
+        model_hyperparams = config["PARAMS_FOR_ANALYSIS"]["MODEL_HYPERPARAMS"],
     output:
-        "data/processed/output_population_model/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{rows_nan_threshold}|{cols_nan_threshold}_{days_before_threshold}|{days_after_threshold}_{cols_var_threshold}/{model}/{cv_method}/{source}_{day_segment}_{summarised}_{scaler}/merged_population_model_results.csv"
+        fold_predictions = "data/processed/models/population_model/output_{cv_method}/{model}/{scaler}/fold_predictions.csv",
+        fold_metrics = "data/processed/models/population_model/output_{cv_method}/{model}/{scaler}/fold_metrics.csv",
+        overall_results = "data/processed/models/population_model/output_{cv_method}/{model}/{scaler}/overall_results.csv",
+        fold_feature_importances = "data/processed/models/population_model/output_{cv_method}/{model}/{scaler}/fold_feature_importances.csv"
+    log:
+        "data/processed/models/population_model/output_{cv_method}/{model}/{scaler}/notes.log"
     script:
-        "../src/models/merge_population_model_results.py"
+        "../src/models/workflow_example/modeling.py"

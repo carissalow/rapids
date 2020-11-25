@@ -3,7 +3,7 @@ source("renv/activate.R")
 library("tidyr")
 library("dplyr", warn.conflicts = F)
 
-location_features_files <- snakemake@input[["location_features"]]
+location_features_files <- snakemake@input[["sensor_features"]]
 location_features <- setNames(data.frame(matrix(ncol = 1, nrow = 0)), c("local_segment"))
 
 

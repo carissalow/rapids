@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, classification_report, confusion_matrix
 from sklearn.metrics import precision_recall_fscore_support
@@ -44,24 +45,24 @@ def getNormAllParticipantsScaler(features, scaler_flag):
     scaler.fit(features)
     return scaler
 
-# get metrics: accuracy, precision1, recall1, f11, auc, kappa
-def getMetrics(pred_y, pred_y_prob, true_y):
+# get metrics: accuracy, precision0, recall0, f10, precision1, recall1, f11, f1_macro, auc, kappa
+def getMetrics(pred_y, pred_y_proba, true_y):
     metrics = {}
+    count = len(np.unique(true_y))
+    label= np.unique(true_y)[0]
     # metrics for all categories
     metrics["accuracy"] = accuracy_score(true_y, pred_y)
-    try:
-        metrics["auc"] = roc_auc_score(true_y, pred_y_prob)
-    except:
-        metrics["auc"] = None
+    metrics["f1_macro"] = f1_score(true_y, pred_y, average="macro") # unweighted mean
+    metrics["auc"] = np.nan if count == 1 else roc_auc_score(true_y, pred_y_proba)
     metrics["kappa"] = cohen_kappa_score(true_y, pred_y)
     # metrics for label 0
-    metrics["precision0"] = precision_score(true_y, pred_y, average=None, labels=[0,1], zero_division=0)[0]
-    metrics["recall0"] = recall_score(true_y, pred_y, average=None, labels=[0,1])[0]
-    metrics["f10"] = f1_score(true_y, pred_y, average=None, labels=[0,1])[0]
+    metrics["precision0"] = np.nan if (count == 1 and label == 1) else precision_score(true_y, pred_y, average=None, labels=[0,1], zero_division=0)[0]
+    metrics["recall0"] = np.nan if (count == 1 and label == 1) else recall_score(true_y, pred_y, average=None, labels=[0,1])[0]
+    metrics["f10"] = np.nan if (count == 1 and label == 1) else f1_score(true_y, pred_y, average=None, labels=[0,1])[0]
     # metrics for label 1
-    metrics["precision1"] = precision_score(true_y, pred_y, average=None, labels=[0,1], zero_division=0)[1]
-    metrics["recall1"] = recall_score(true_y, pred_y, average=None, labels=[0,1])[1]
-    metrics["f11"] = f1_score(true_y, pred_y, average=None, labels=[0,1])[1]
+    metrics["precision1"] = np.nan if (count == 1 and label == 0) else precision_score(true_y, pred_y, average=None, labels=[0,1], zero_division=0)[1]
+    metrics["recall1"] = np.nan if (count == 1 and label == 0) else recall_score(true_y, pred_y, average=None, labels=[0,1])[1]
+    metrics["f11"] = np.nan if (count == 1 and label == 0) else f1_score(true_y, pred_y, average=None, labels=[0,1])[1]
 
     return metrics
 

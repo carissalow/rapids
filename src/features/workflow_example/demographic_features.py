@@ -2,10 +2,9 @@ import pandas as pd
 
 pid = snakemake.params["pid"]
 requested_features = snakemake.params["features"]
-demographic_features = pd.DataFrame(columns=["pid"] + requested_features)
+demographic_features = pd.DataFrame(columns=requested_features)
 
 participant_info = pd.read_csv(snakemake.input["participant_info"], parse_dates=["surgery_date", "discharge_date"])
-demographic_features.loc[0, "pid"] = pid
 if not participant_info.empty:
     if "age" in requested_features:
         demographic_features.loc[0, "age"] = participant_info.loc[0, "age"]

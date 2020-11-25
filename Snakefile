@@ -19,6 +19,8 @@ for provider in config["PHONE_DATA_YIELD"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_data_yield_features/phone_data_yield_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_DATA_YIELD"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_data_yield.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_MESSAGES"]["PROVIDERS"].keys():
     if config["PHONE_MESSAGES"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -26,6 +28,8 @@ for provider in config["PHONE_MESSAGES"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/phone_messages_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_messages_features/phone_messages_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_MESSAGES"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_messages.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_CALLS"]["PROVIDERS"].keys():
     if config["PHONE_CALLS"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -34,6 +38,8 @@ for provider in config["PHONE_CALLS"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/phone_calls_with_datetime_unified.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_calls_features/phone_calls_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_CALLS"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_calls.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_BLUETOOTH"]["PROVIDERS"].keys():
     if config["PHONE_BLUETOOTH"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -41,6 +47,8 @@ for provider in config["PHONE_BLUETOOTH"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/phone_bluetooth_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_bluetooth_features/phone_bluetooth_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_BLUETOOTH"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_bluetooth.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_ACTIVITY_RECOGNITION"]["PROVIDERS"].keys():
     if config["PHONE_ACTIVITY_RECOGNITION"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -52,7 +60,8 @@ for provider in config["PHONE_ACTIVITY_RECOGNITION"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/interim/{pid}/phone_activity_recognition_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_activity_recognition_features/phone_activity_recognition_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_ACTIVITY_RECOGNITION"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_activity_recognition.csv", pid=config["PIDS"]))
-
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_BATTERY"]["PROVIDERS"].keys():
     if config["PHONE_BATTERY"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -62,7 +71,8 @@ for provider in config["PHONE_BATTERY"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/interim/{pid}/phone_battery_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_battery_features/phone_battery_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_BATTERY"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_battery.csv", pid=config["PIDS"]))
-
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_SCREEN"]["PROVIDERS"].keys():
     if config["PHONE_SCREEN"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -78,6 +88,8 @@ for provider in config["PHONE_SCREEN"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/interim/{pid}/phone_screen_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_screen_features/phone_screen_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_SCREEN"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_screen.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_LIGHT"]["PROVIDERS"].keys():
     if config["PHONE_LIGHT"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -85,6 +97,8 @@ for provider in config["PHONE_LIGHT"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/phone_light_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_light_features/phone_light_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_LIGHT"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_light.csv", pid=config["PIDS"],))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_ACCELEROMETER"]["PROVIDERS"].keys():
     if config["PHONE_ACCELEROMETER"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -92,6 +106,8 @@ for provider in config["PHONE_ACCELEROMETER"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/phone_accelerometer_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_accelerometer_features/phone_accelerometer_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_ACCELEROMETER"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_accelerometer.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"].keys():
     if config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -100,6 +116,8 @@ for provider in config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_applications_foreground_features/phone_applications_foreground_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_applications_foreground.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_WIFI_VISIBLE"]["PROVIDERS"].keys():
     if config["PHONE_WIFI_VISIBLE"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -107,6 +125,8 @@ for provider in config["PHONE_WIFI_VISIBLE"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/phone_wifi_visible_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_wifi_visible_features/phone_wifi_visible_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_WIFI_VISIBLE"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_wifi_visible.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_WIFI_CONNECTED"]["PROVIDERS"].keys():
     if config["PHONE_WIFI_CONNECTED"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -114,6 +134,8 @@ for provider in config["PHONE_WIFI_CONNECTED"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/phone_wifi_connected_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_wifi_connected_features/phone_wifi_connected_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_WIFI_CONNECTED"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_wifi_connected.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_CONVERSATION"]["PROVIDERS"].keys():    
     if config["PHONE_CONVERSATION"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -122,6 +144,8 @@ for provider in config["PHONE_CONVERSATION"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/phone_conversation_with_datetime_unified.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_conversation_features/phone_conversation_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_CONVERSATION"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_conversation.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
     if config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -136,6 +160,8 @@ for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_features/phone_locations_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_locations.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 if config["FITBIT_CALORIES"]["TABLE_FORMAT"] not in ["JSON", "CSV"]:
     raise ValueError("config['FITBIT_CALORIES']['TABLE_FORMAT'] should be JSON or CSV but you typed" + config["FITBIT_CALORIES"]["TABLE_FORMAT"])
@@ -147,6 +173,8 @@ for provider in config["FITBIT_HEARTRATE_SUMMARY"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_summary_parsed_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_heartrate_summary_features/fitbit_heartrate_summary_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["FITBIT_HEARTRATE_SUMMARY"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/fitbit_heartrate_summary.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"].keys():
     if config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -155,6 +183,8 @@ for provider in config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_heartrate_intraday_features/fitbit_heartrate_intraday_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/fitbit_heartrate_intraday.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"].keys():
     if config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -163,6 +193,8 @@ for provider in config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_summary_parsed_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_sleep_summary_features/fitbit_sleep_summary_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/fitbit_sleep_summary.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 # for provider in config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"].keys():
 #     if config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -177,6 +209,8 @@ for provider in config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_summary_parsed_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_steps_summary_features/fitbit_steps_summary_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/fitbit_steps_summary.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"].keys():
     if config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -185,12 +219,17 @@ for provider in config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_intraday_parsed_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_steps_intraday_features/fitbit_steps_intraday_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/fitbit_steps_intraday.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["FITBIT_CALORIES"]["PROVIDERS"].keys():
     if config["FITBIT_CALORIES"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_raw.csv", pid=config["PIDS"], fitbit_data_type=(["json"] if config["FITBIT_CALORIES"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"])))
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_parsed.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_parsed_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
+
 
 # visualization for data exploration
 # if config["HEATMAP_FEATURES_CORRELATIONS"]["PLOT"]:

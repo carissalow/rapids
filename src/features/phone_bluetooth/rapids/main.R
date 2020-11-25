@@ -46,7 +46,7 @@ rapids_features <- function(sensor_data_files, day_segment, provider){
     features <- merge(features, feature, by="local_segment", all = TRUE)
   }
 
-  features <- features %>% mutate_at(vars(contains("countscansmostuniquedevice")), list( ~ replace_na(., 0))) %>% select(-local_segment)
+  features <- features %>% mutate_at(vars(contains("countscansmostuniquedevice")), list( ~ replace_na(., 0)))
 
   return(features)
 }
