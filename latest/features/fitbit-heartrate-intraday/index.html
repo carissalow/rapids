@@ -938,11 +938,12 @@
 <tbody>
 <tr>
 <td><code>[TABLE]</code></td>
-<td>Database table name or file path where the heart rate intraday data is stored. Source data type and column format are defined in <a href="../../setup/configuration/#device-data-source-configuration">Device Data Source Configuration</a>.</td>
+<td>Database table name or file path where the heart rate intraday data is stored. The configuration keys in <a href="../../setup/configuration/#device-data-source-configuration">Device Data Source Configuration</a> control whether this parameter is interpreted as table or file.</td>
 </tr>
 </tbody>
 </table>
-<p>Column format could be <code>JSON</code> or <code>PLAIN_TEXT</code>. Data with <code>JSON</code> column format is obtained from Fitbit API directly. Summary data and intraday data come together in <code>JSON</code> format. Each row doesn&rsquo;t have to contain the data for a single day as it depends on the way Fitbit API is queried. Examples of the source data with two formats are as follows. Data with <code>JSON</code> format is chunked.</p>
+<p>The format of the column(s) containing the Fitbit sensor data can be <code>JSON</code> or <code>PLAIN_TEXT</code>. The data in <code>JSON</code> format is obtained directly from the Fitbit API. We support <code>PLAIN_TEXT</code> in case you already parsed your data and don&rsquo;t have access to your participants&rsquo; Fitbit accounts anymore. If your data is in <code>JSON</code> format then summary and intraday data come packed together. </p>
+<p>We provide examples of the input format that RAPIDS expects, note that both examples for <code>JSON</code> and <code>PLAIN_TEXT</code> are tabular and the actual format difference comes in the <code>fitbit_data</code> column (we truncate the <code>JSON</code> example for brevity).</p>
 <details class="example"><summary>Example of the structure of source data</summary><div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">JSON</label><div class="tabbed-content">
 <table>
 <thead>
