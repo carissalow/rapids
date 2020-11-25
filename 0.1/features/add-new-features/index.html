@@ -1156,7 +1156,7 @@
 <ul>
 <li>One row per day segment instance (e.g. 14 our <code>p01</code>&lsquo;s <code>my_days</code> example)</li>
 <li>The <code>local_segment</code> column added by <code>filter_data_by_segment()</code></li>
-<li>One column per feature. Your feature columns should be named <code>SENSOR_PROVIDER_FEATURE</code>, for example <code>accelerometr_vega_feature1</code></li>
+<li>One column per feature. By convention the name of your features should only contain letters or numbers (<code>feature1</code>). RAPIDS will automatically add the right sensor and provider prefix (<code>accelerometr_vega_</code>)</li>
 </ul>
 </details>
 <details class="example"><summary><code>PHONE_ACCELEROMETER</code> Provider Example</summary><p>For your reference, this a short example of our own provider (<code>RAPIDS</code>) for <code>PHONE_ACCELEROMETER</code> that computes five acceleration features</p>
