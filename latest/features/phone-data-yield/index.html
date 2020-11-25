@@ -14,7 +14,7 @@
     
     
       
-        <title>Phone Data Quality - RAPIDS</title>
+        <title>Phone Data Yield - RAPIDS</title>
       
     
     
@@ -63,7 +63,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#phone-data-quality" class="md-skip">
+        <a href="#phone-data-yield" class="md-skip">
           Skip to content
         </a>
       
@@ -95,7 +95,7 @@
         <div class="md-header-nav__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Phone Data Quality
+              Phone Data Yield
             
           </span>
         </div>
@@ -421,12 +421,12 @@
     
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
-        Phone Data Quality
+        Phone Data Yield
         <span class="md-nav__icon md-icon"></span>
       </label>
     
     <a href="./" class="md-nav__link md-nav__link--active">
-      Phone Data Quality
+      Phone Data Yield
     </a>
     
       
@@ -443,15 +443,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#phone-valid-sensed-bins" class="md-nav__link">
-    Phone Valid Sensed Bins
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phone-valid-sensed-days" class="md-nav__link">
-    Phone Valid Sensed Days
+  <a href="#rapids-provider" class="md-nav__link">
+    RAPIDS provider
   </a>
   
 </li>
@@ -910,15 +903,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#phone-valid-sensed-bins" class="md-nav__link">
-    Phone Valid Sensed Bins
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phone-valid-sensed-days" class="md-nav__link">
-    Phone Valid Sensed Days
+  <a href="#rapids-provider" class="md-nav__link">
+    RAPIDS provider
   </a>
   
 </li>
@@ -935,19 +921,73 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/carissalow/rapids/edit/master/docs/features/phone-data-quality.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/carissalow/rapids/edit/master/docs/features/phone-data-yield.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="phone-data-quality">Phone Data Quality<a class="headerlink" href="#phone-data-quality" title="Permanent link">&para;</a></h1>
-<h2 id="phone-valid-sensed-bins">Phone Valid Sensed Bins<a class="headerlink" href="#phone-valid-sensed-bins" title="Permanent link">&para;</a></h2>
-<p>A valid bin is any period of <code>BIN_SIZE</code> minutes starting from midnight with at least 1 row from any phone sensor. <code>PHONE_VALID_SENSED_BINS</code> are used to compute <code>PHONE_VALID_SENSED_DAYS</code>, to resample fused location data and to compute some screen features.</p>
+                <h1 id="phone-data-yield">Phone Data Yield<a class="headerlink" href="#phone-data-yield" title="Permanent link">&para;</a></h1>
+<p>This is a combinatorial sensor which means that we use the data from multiple sensors to extract data yield features. Data yield features can be used to remove rows (<a href="../../setup/configuration/#day-segments">day segments</a>) that do not contain enough data. You should decide what is your &ldquo;enough&rdquo; threshold depending on the type of sensors you collected (frequency vs event based, e.g. acceleroemter vs calls), the length of your study, and the rates of missing data that your analysis could handle.</p>
 <div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p><code>PHONE_VALID_SENSED_DAYS</code> are an approximation to the time the phone was sensing data so add as many sensors as you have to <code>[PHONE_VALID_SENSED_BINS][PHONE_SENSORS]</code></p>
+<p class="admonition-title">Why is data yield important?</p>
+<p>Imagine that you want to extract <code>PHONE_CALL</code> features on daily segments (<code>00:00</code> to <code>23:59</code>). Let&rsquo;s say that on day 1 the phone logged 10 calls and 23 hours of data from other sensors and on day 2 the phone logged 10 calls and only 2 hours of data from other sensors. It&rsquo;s more likely that other calls were placed on the 22 hours of data that you didn&rsquo;t log on day 2 than on the 1 hour of data you didn&rsquo;t log on day 1, and so including day 2 in your analysis could bias your results.</p>
 </div>
-<p>Parameters description for <code>PHONE_VALID_SENSED_BINS</code>:</p>
+<p>Sensor parameters description for <code>[PHONE_DATA_YIELD]</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[SENSORS]</code></td>
+<td>One or more phone sensor config keys (e.g. <code>PHONE_MESSAGE</code>). The more keys you include the more accurately RAPIDS can approximate the time an smartphone was sensing data. The supported phone sensors you can include in this list are outlined below (<strong>do NOT include Fitbit sensors</strong>).</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Supported phone sensors for <code>[PHONE_DATA_YIELD][SENSORS]</code></p>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">PHONE_ACCELEROMETER</span>
+<span class="l l-Scalar l-Scalar-Plain">PHONE_ACTIVITY_RECOGNITION</span>
+<span class="l l-Scalar l-Scalar-Plain">PHONE_APPLICATIONS_FOREGROUND</span>
+<span class="l l-Scalar l-Scalar-Plain">PHONE_BATTERY</span>
+<span class="l l-Scalar l-Scalar-Plain">PHONE_BLUETOOTH</span>
+<span class="l l-Scalar l-Scalar-Plain">PHONE_CALLS</span>
+<span class="l l-Scalar l-Scalar-Plain">PHONE_CONVERSATION</span>
+<span class="l l-Scalar l-Scalar-Plain">PHONE_MESSAGES</span>
+<span class="l l-Scalar l-Scalar-Plain">PHONE_LIGHT</span>
+<span class="l l-Scalar l-Scalar-Plain">PHONE_LOCATIONS</span>
+<span class="l l-Scalar l-Scalar-Plain">PHONE_SCREEN</span>
+<span class="l l-Scalar l-Scalar-Plain">PHONE_WIFI_VISIBLE</span>
+<span class="l l-Scalar l-Scalar-Plain">PHONE_WIFI_CONNECTED</span>
+</code></pre></div>
+</div>
+<h2 id="rapids-provider">RAPIDS provider<a class="headerlink" href="#rapids-provider" title="Permanent link">&para;</a></h2>
+<p>Before explaining the data yield features, let&rsquo;s define the following relevant concepts:</p>
+<ul>
+<li>A valid minute is any 60 second window when any phone sensor logged at least 1 row of data</li>
+<li>A valid hour is any 60 minute window with at least X valid minutes. The X or threshold is given by <code>[MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS]</code></li>
+</ul>
+<p>The timestamps of all sensors are concatenated and then grouped per day segment. Minute and hour windows are created from the beginning of each day segment instance and these windows are marked as valid based on the definitions above. The duration of each day segment is taken into account to compute the features described below.</p>
+<div class="admonition info">
+<p class="admonition-title">Available day segments and platforms</p>
+<ul>
+<li>Available for all day segments</li>
+<li>Available for Android and iOS</li>
+</ul>
+</div>
+<div class="admonition info">
+<p class="admonition-title">File Sequence</p>
+<div class="highlight"><pre><span></span><code>- data/raw/<span class="o">{</span>pid<span class="o">}</span>/<span class="o">{</span>sensor<span class="o">}</span>_raw.csv <span class="c1"># one for every [PHONE_DATA_YIELD][SENSORS]</span>
+- data/interim/<span class="o">{</span>pid<span class="o">}</span>/phone_yielded_timestamps.csv
+- data/interim/<span class="o">{</span>pid<span class="o">}</span>/phone_yielded_timestamps_with_datetime.csv
+- data/interim/<span class="o">{</span>pid<span class="o">}</span>/phone_data_yield_features/phone_data_yield_<span class="o">{</span>language<span class="o">}</span>_<span class="o">{</span>provider_key<span class="o">}</span>.csv
+- data/processed/features/<span class="o">{</span>pid<span class="o">}</span>/phone_data_yield.csv
+</code></pre></div>
+</div>
+<p>Parameters description for <code>[PHONE_DATA_YIELD][PROVIDERS][RAPIDS]</code>:</p>
 <table>
 <thead>
 <tr>
@@ -958,61 +998,54 @@
 <tbody>
 <tr>
 <td><code>[COMPUTE]</code></td>
-<td>Set to <code>True</code> to compute</td>
+<td>Set to <code>True</code> to extract <code>PHONE_DATA_YIELD</code> features from the <code>RAPIDS</code> provider</td>
 </tr>
 <tr>
-<td><code>[BIN_SIZE]</code></td>
-<td>Size of each bin in minutes</td>
+<td><code>[FEATURES]</code></td>
+<td>Features to be computed, see table below</td>
 </tr>
 <tr>
-<td><code>[PHONE_SENSORS]</code></td>
-<td>One or more sensor config keys (e.g. <code>PHONE_MESSAGE</code>) to be used to flag a bin as valid or not (whether or not a bin contains at least one row from any sensor)</td>
+<td><code>[MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS]</code></td>
+<td>The proportion <code>[0.0 ,1.0]</code> of valid minutes in a 60-minute window necessary to flag that window as valid.</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition info">
-<p class="admonition-title">Possible values for <code>[PHONE_VALID_SENSED_BINS][PHONE_SENSORS]</code></p>
-<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">PHONE_MESSAGES</span>
-<span class="l l-Scalar l-Scalar-Plain">PHONE_CALLS</span>
-<span class="l l-Scalar l-Scalar-Plain">PHONE_LOCATIONS</span>
-<span class="l l-Scalar l-Scalar-Plain">PHONE_BLUETOOTH</span>
-<span class="l l-Scalar l-Scalar-Plain">PHONE_ACTIVITY_RECOGNITION</span>
-<span class="l l-Scalar l-Scalar-Plain">PHONE_BATTERY</span>
-<span class="l l-Scalar l-Scalar-Plain">PHONE_SCREEN</span>
-<span class="l l-Scalar l-Scalar-Plain">PHONE_LIGHT</span>
-<span class="l l-Scalar l-Scalar-Plain">PHONE_ACCELEROMETER</span>
-<span class="l l-Scalar l-Scalar-Plain">PHONE_APPLICATIONS_FOREGROUND</span>
-<span class="l l-Scalar l-Scalar-Plain">PHONE_WIFI_VISIBLE</span>
-<span class="l l-Scalar l-Scalar-Plain">PHONE_WIFI_CONNECTED</span>
-<span class="l l-Scalar l-Scalar-Plain">PHONE_CONVERSATION</span>
-</code></pre></div>
-</div>
-<h2 id="phone-valid-sensed-days">Phone Valid Sensed Days<a class="headerlink" href="#phone-valid-sensed-days" title="Permanent link">&para;</a></h2>
-<p>On any given day, a phone could have sensed data only for a few minutes or for 24 hours. Features should considered more reliable the more hours the phone was logging data, for example, 10 calls logged on a day when only 1 hour of data was recorded is a less reliable feature compared to 10 calls on a day when 23 hours of data were recorded.</p>
-<p>Therefore, we define a valid hour as those that contain a minimum number of valid bins (see above). We mark an hour as valid when contains at least <code>MIN_VALID_BINS_PER_HOUR</code> (out of 60min/<code>BIN_SIZE</code> bins). In turn, we mark a day as valid if it has at least <code>MIN_VALID_HOURS_PER_DAY</code>. You can use <code>PHONE_VALID_SENSED_DAYS</code> to manually discard days when not enough data was collected after your features are computed.</p>
-<p>Parameters description for <code>PHONE_VALID_SENSED_DAYS</code>:</p>
+<p>Features description for <code>[PHONE_DATA_YIELD][PROVIDERS][RAPIDS]</code>:</p>
 <table>
 <thead>
 <tr>
-<th>Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>Feature</th>
+<th>Units</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>[COMPUTE]</code></td>
-<td>Set to <code>True</code> to compute</td>
+<td>ratiovalidyieldedminutes</td>
+<td>rows</td>
+<td>The ratio between the number of valid minutes and the duration in minutes of a day segment.</td>
 </tr>
 <tr>
-<td><code>[MIN_VALID_BINS_PER_HOUR]</code></td>
-<td>An array of integer values, 6 by default. Minimum number of valid bins to mark an hour as valid</td>
-</tr>
-<tr>
-<td><code>[MIN_VALID_HOURS_PER_DAY]</code></td>
-<td>An array of integer values, 16 by default. Minimum number of valid hours to mark a day as valid</td>
+<td>ratiovalidyieldedhours</td>
+<td>lux</td>
+<td>The ratio between the number of valid hours and the duration in hours of a day segment. If the day segment is shorter than 1 hour this feature will always be 1.</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Assumptions/Observations</p>
+<ol>
+<li>
+<p>We recommend using <code>ratiovalidyieldedminutes</code> on day segments that are shorter than two or three hours and <code>ratiovalidyieldedhours</code> for longer segments. This is because relying on yielded minutes only can be misleading when a big chunk of those missing minutes are clustered together. </p>
+<p>For example, let&rsquo;s assume we are working with a 24-hour day segment that is missing 12 hours of data. Two extreme cases can occur: </p>
+<p><ol type="A">
+    <li>the 12 missing hours are from the beginning of the segment or </li>
+    <li>30 minutes could be missing from every hour (24 * 30 minutes = 12 hours).</li>
+    </ol></p>
+<p><code>ratiovalidyieldedminutes</code> would be 0.5 for both <code>a</code> and <code>b</code> (hinting the missing circumstances are similar). However, <code>ratiovalidyieldedhours</code> would be 0.5 for <code>a</code> and 1.0 for <code>b</code> if <code>[MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS]</code> is between [0.0 and 0.49] (hinting that the missing circumstances might be more favorable for <code>b</code>. In other words, sensed data for <code>b</code> is more evenly spread compared to <code>a</code>.</p>
+</li>
+</ol>
+</div>
                 
               
               
