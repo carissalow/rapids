@@ -6,8 +6,8 @@ compute_bluetooth_feature <- function(data, feature, day_segment){
   if(feature %in% c("countscans", "uniquedevices")){
     data <- data %>% group_by(local_segment)
     data <- switch(feature,
-              "countscans" = data %>% summarise(!!paste("bluetooth_rapids", feature, sep = "_") := n()),
-              "uniquedevices" = data %>% summarise(!!paste("bluetooth_rapids", feature, sep = "_") := n_distinct(bt_address)))
+              "countscans" = data %>% summarise(!!feature := n()),
+              "uniquedevices" = data %>% summarise(!!feature := n_distinct(bt_address)))
     return(data)
    } else if(feature == "countscansmostuniquedevice"){
      # Get the most scanned device
@@ -22,7 +22,7 @@ compute_bluetooth_feature <- function(data, feature, day_segment){
     return(data %>% 
              filter(bt_address == mostuniquedevice) %>%
              group_by(local_segment) %>% 
-             summarise(!!paste("bluetooth_rapids", feature, sep = "_") := n()) %>%
+             summarise(!!feature := n()) %>%
              replace(is.na(.), 0))
   }
 }
@@ -46,7 +46,7 @@ rapids_features <- function(sensor_data_files, day_segment, provider){
     features <- merge(features, feature, by="local_segment", all = TRUE)
   }
 
-  features <- features %>% mutate_at(vars(contains("countscansmostuniquedevice")), list( ~ replace_na(., 0)))
+  features <- features %>% mutate_at(vars(contains("countscansmostuniquedevice")), list( ~ replace_na(., 0))) %>% select(-local_segment)
 
   return(features)
 }

@@ -55,10 +55,10 @@ DEVICE_DATA:
 ################################################################################
 
 PHONE_DATA_YIELD:
-  SENSORS: [PHONE_MESSAGES, PHONE_CALLS, PHONE_ACCELEROMETER]
+  SENSORS: []
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: [ratiovalidyieldedminutes, ratiovalidyieldedhours]
       MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 # 0 to 1 representing the number of minutes with at least
       SRC_LANGUAGE: "r"

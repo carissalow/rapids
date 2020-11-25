@@ -15,7 +15,7 @@ message_features_of_type <- function(messages, messages_type, day_segment, reque
     if(length(features_to_compute) == 0)
         return(features)
     if(nrow(messages) < 1)
-        return(cbind(features, read.csv(text = paste(paste("messages_rapids", messages_type, features_to_compute, sep = "_"), collapse = ","), stringsAsFactors = FALSE)))
+        return(cbind(features, read.csv(text = paste(paste(messages_type, features_to_compute, sep = "_"), collapse = ","), stringsAsFactors = FALSE)))
 
     for(feature_name in features_to_compute){
         if(feature_name == "countmostfrequentcontact"){
@@ -29,17 +29,17 @@ message_features_of_type <- function(messages, messages_type, day_segment, reque
                 pull(trace)
             feature <- messages %>% 
                 group_by(local_segment) %>% 
-                summarise(!!paste("messages_rapids", messages_type, feature_name, sep = "_") := sum(trace == mostfrequentcontact))
+                summarise(!!paste(messages_type, feature_name, sep = "_") := sum(trace == mostfrequentcontact))
             features <- merge(features, feature, by="local_segment", all = TRUE)
         } else {
             feature <- messages %>% 
                 group_by(local_segment)
             
             feature <- switch(feature_name,
-                    "count" = feature %>% summarise(!!paste("messages_rapids", messages_type, feature_name, sep = "_") := n()),
-                    "distinctcontacts" = feature %>% summarise(!!paste("messages_rapids", messages_type, feature_name, sep = "_") := n_distinct(trace)),
-                    "timefirstmessage" = feature %>% summarise(!!paste("messages_rapids", messages_type, feature_name, sep = "_") := first(local_hour) * 60 + first(local_minute)),
-                    "timelastmessage" = feature %>% summarise(!!paste("messages_rapids", messages_type, feature_name, sep = "_") := last(local_hour) * 60 + last(local_minute)))
+                    "count" = feature %>% summarise(!!paste(messages_type, feature_name, sep = "_") := n()),
+                    "distinctcontacts" = feature %>% summarise(!!paste(messages_type, feature_name, sep = "_") := n_distinct(trace)),
+                    "timefirstmessage" = feature %>% summarise(!!paste(messages_type, feature_name, sep = "_") := first(local_hour) * 60 + first(local_minute)),
+                    "timelastmessage" = feature %>% summarise(!!paste(messages_type, feature_name, sep = "_") := last(local_hour) * 60 + last(local_minute)))
 
             features <- merge(features, feature, by="local_segment", all = TRUE)
         }
@@ -57,7 +57,7 @@ rapids_features <- function(sensor_data_files, day_segment, provider){
         # Filter rows that belong to the message type and day segment of interest
         message_type_label = ifelse(message_type == "received", "1", ifelse(message_type == "sent", "2", NA))
         if(is.na(message_type_label))
-            stop(paste("Message type can online be received or sent but instead you typed: ", message_type, " in config[MESSAGES][MESSAGES_TYPES]"))
+            stop(paste("Message type can online be received or sent but instead you typed: ", message_type, " in config[PHONE_MESSAGES][MESSAGES_TYPES]"))
 
         requested_features <- provider[["FEATURES"]][[message_type]]
         messages_of_type <- messages_data %>% filter(message_type == message_type_label)

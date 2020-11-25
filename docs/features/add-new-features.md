@@ -139,7 +139,7 @@ The code to extract your behavioral features should be implemented in your provi
     
     -  One row per day segment instance (e.g. 14 our `p01`'s `my_days` example)
     -  The `local_segment` column added by `filter_data_by_segment()`
-    -  One column per feature. Your feature columns should be named `SENSOR_PROVIDER_FEATURE`, for example `accelerometr_vega_feature1`
+    -  One column per feature. By convention the name of your features should only contain letters or numbers (`feature1`). RAPIDS will automatically add the right sensor and provider prefix (`accelerometr_vega_`)
 
 ??? example "`PHONE_ACCELEROMETER` Provider Example"
     For your reference, this a short example of our own provider (`RAPIDS`) for `PHONE_ACCELEROMETER` that computes five acceleration features

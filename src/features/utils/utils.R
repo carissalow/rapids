@@ -61,12 +61,9 @@ fetch_provider_features <- function(provider, provider_key, sensor_key, sensor_d
             print(paste(rapids_log_tag,"Processing", sensor_key, provider_key, day_segment))
 
             features <- features_function(sensor_data_files, day_segment, provider)
-
-            # Check all features names contain the provider key so they are unique
-            features_names <- colnames(features %>% select(-local_segment))
-            if(any(!grepl(paste0(".*(",str_to_lower(provider_key),").*"), features_names)))
-            stop(paste("The name of all calls features of", provider_key," must contain its name in lower case but the following don't [", paste(features_names[!grepl(paste0(".*(",str_to_lower(provider_key),").*"), features_names)], collapse = ", "), "]"))
-
+            if(!"local_segment" %in% colnames(features))
+              stop(paste0("The dataframe returned by the ",sensor_key," provider '", provider_key,"' is missing the 'local_segment' column added by the 'filter_data_by_segment()' function. Check the provider script is using such function and is not removing 'local_segment' by accident (", code_path,")\n  The 'local_segment' column is used to index a provider's features (each row corresponds to a different day segment instance (e.g. 2020-01-01, 2020-01-02, 2020-01-03, etc.)"))
+            features <- features %>% rename_at(vars(!matches("local_segment")), ~ paste(sensor_key, provider_key, ., sep = "_"))
             sensor_features <- merge(sensor_features, features, all = TRUE)
         }
     } else { # This is redundant, if COMPUTE is FALSE this script will be never executed

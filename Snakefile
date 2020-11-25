@@ -66,10 +66,10 @@ for provider in config["PHONE_BATTERY"]["PROVIDERS"].keys():
 
 for provider in config["PHONE_SCREEN"]["PROVIDERS"].keys():
     if config["PHONE_SCREEN"]["PROVIDERS"][provider]["COMPUTE"]:
-        if "PHONE_SCREEN" in config["PHONE_DATA_YIELD"]["SENSORS"]:
-            files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
-        else:
-            raise ValueError("Error: Add PHONE_SCREEN (and as many phone sensor as you have in your database) to [PHONE_DATA_YIELD][SENSORS] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data)")
+        # if "PHONE_SCREEN" in config["PHONE_DATA_YIELD"]["SENSORS"]:# not used for now because we took episodepersensedminutes out of the list of supported features
+        #     files_to_compute.extend(expand("data/interim/{pid}/phone_yielded_timestamps.csv", pid=config["PIDS"]))
+        # else:
+        #     raise ValueError("Error: Add PHONE_SCREEN (and as many PHONE_SENSORS as you have in your database) to [PHONE_DATA_YIELD][SENSORS] in config.yaml. This is necessary to compute phone_yielded_timestamps (time when the smartphone was sensing data)")
         files_to_compute.extend(expand("data/raw/{pid}/phone_screen_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/phone_screen_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/phone_screen_with_datetime_unified.csv", pid=config["PIDS"]))
@@ -127,9 +127,9 @@ for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
     if config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["COMPUTE"]:
         if config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"] == "FUSED_RESAMPLED":
             if "PHONE_LOCATIONS" in config["PHONE_DATA_YIELD"]["SENSORS"]:
-                files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
+                files_to_compute.extend(expand("data/interim/{pid}/phone_yielded_timestamps.csv", pid=config["PIDS"]))
             else:
-                raise ValueError("Error: Add PHONE_LOCATIONS (and as many SENSORS as you have) to [PHONE_DATA_YIELD][SENSORS] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")
+                raise ValueError("Error: Add PHONE_LOCATIONS (and as many PHONE_SENSORS as you have) to [PHONE_DATA_YIELD][SENSORS] in config.yaml. This is necessary to compute phone_yielded_timestamps (time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")
 
         files_to_compute.extend(expand("data/raw/{pid}/phone_locations_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed.csv", pid=config["PIDS"]))

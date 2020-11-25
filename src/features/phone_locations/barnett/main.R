@@ -8,22 +8,22 @@ sapply(file.sources,source,.GlobalEnv)
 
 create_empty_file <- function(requested_features){
   return(data.frame(local_segment= character(), 
-                        locations_barnett_hometime= numeric(), 
-                        locations_barnett_disttravelled= numeric(), 
-                        locations_barnett_rog= numeric(), 
-                        locations_barnett_maxdiam= numeric(), 
-                        locations_barnett_maxhomedist= numeric(), 
-                        locations_barnett_siglocsvisited= numeric(), 
-                        locations_barnett_avgflightlen= numeric(), 
-                        locations_barnett_stdflightlen= numeric(), 
-                        locations_barnett_avgflightdur= numeric(), 
-                        locations_barnett_stdflightdur= numeric(), 
-                        locations_barnett_probpause= numeric(), 
-                        locations_barnett_siglocentropy= numeric(), 
-                        locations_barnett_minsmissing= numeric(), 
-                        locations_barnett_circdnrtn= numeric(), 
-                        locations_barnett_wkenddayrtn= numeric(),
-                        locations_barnett_minutes_data_used= numeric()
+                        hometime= numeric(), 
+                        disttravelled= numeric(), 
+                        rog= numeric(), 
+                        maxdiam= numeric(), 
+                        maxhomedist= numeric(), 
+                        siglocsvisited= numeric(), 
+                        avgflightlen= numeric(), 
+                        stdflightlen= numeric(), 
+                        avgflightdur= numeric(), 
+                        stdflightdur= numeric(), 
+                        probpause= numeric(), 
+                        siglocentropy= numeric(), 
+                        minsmissing= numeric(), 
+                        circdnrtn= numeric(), 
+                        wkenddayrtn= numeric(),
+                        minutes_data_used= numeric()
                       ) %>% select(all_of(requested_features)))
 }
 
@@ -41,9 +41,9 @@ barnett_features <- function(sensor_data_files, day_segment, params){
   available_features <- c("hometime","disttravelled","rog","maxdiam", "maxhomedist","siglocsvisited","avgflightlen", "stdflightlen",
                           "avgflightdur","stdflightdur", "probpause","siglocentropy","minsmissing", "circdnrtn","wkenddayrtn")
   requested_features <- intersect(unlist(params["FEATURES"], use.names = F), available_features)
-  requested_features <- c("local_segment", paste("locations_barnett", requested_features, sep = "_"))
+  requested_features <- c("local_segment", requested_features)
   if(minutes_data_used)
-    requested_features <- c(requested_features, "locations_barnett_minutes_data_used")
+    requested_features <- c(requested_features, "minutes_data_used")
 
   # Excludes datasets with less than 24 hours of data
   if(max(location$timestamp) - min(location$timestamp) < 86400000)
@@ -67,8 +67,8 @@ barnett_features <- function(sensor_data_files, day_segment, params){
         group_by(local_date, local_hour) %>% 
         summarise(n_minutes = n_distinct(local_minute)) %>% 
         group_by(local_date) %>% 
-        summarise(locations_barnett_minutes_data_used = sum(n_minutes)) %>% 
-        select(local_date, locations_barnett_minutes_data_used)
+        summarise(minutes_data_used = sum(n_minutes)) %>% 
+        select(local_date, minutes_data_used)
 
       # Save day segment to attach it later
       location_dates_segments <- location %>% select(local_date, local_segment) %>% distinct(local_date, .keep_all = TRUE)
@@ -89,7 +89,7 @@ barnett_features <- function(sensor_data_files, day_segment, params){
         features <- cbind(rownames(outputMobility$featavg), outputMobility$featavg)
         features <- as.data.frame(features)
         features[-1] <- lapply(lapply(features[-1], as.character), as.numeric)
-        colnames(features)=c("local_date",tolower(paste("locations_barnett", colnames(outputMobility$featavg), sep = "_")))
+        colnames(features)=c("local_date",tolower(colnames(outputMobility$featavg)))
         # Add the minute count column
         features <- left_join(features, location_minutes_used, by = "local_date")
         # Add the day segment column for consistency

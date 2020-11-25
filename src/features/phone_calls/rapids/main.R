@@ -20,7 +20,7 @@ call_features_of_type <- function(calls, call_type, day_segment, requested_featu
     if(length(features_to_compute) == 0)
         return(features)
     if(nrow(calls) < 1)
-        return(cbind(features, read.csv(text = paste(paste("calls_rapids", call_type, features_to_compute, sep = "_"), collapse = ","), stringsAsFactors = FALSE)))
+        return(cbind(features, read.csv(text = paste(paste(call_type, features_to_compute, sep = "_"), collapse = ","), stringsAsFactors = FALSE)))
 
     for(feature_name in features_to_compute){
         if(feature_name == "countmostfrequentcontact"){
@@ -34,24 +34,24 @@ call_features_of_type <- function(calls, call_type, day_segment, requested_featu
                 pull(trace)
             feature <- calls %>% 
                 group_by(local_segment) %>% 
-                summarise(!!paste("calls_rapids", call_type, feature_name, sep = "_") := sum(trace == mostfrequentcontact))
+                summarise(!!paste(call_type, feature_name, sep = "_") := sum(trace == mostfrequentcontact))
             features <- merge(features, feature, by="local_segment", all = TRUE)
         } else {
             feature <- calls %>% 
                 group_by(local_segment)
 
             feature <- switch(feature_name,
-                "count" = feature %>% summarise(!!paste("calls_rapids", call_type, feature_name, sep = "_") := n()),
-                "distinctcontacts" = feature %>% summarise(!!paste("calls_rapids", call_type, feature_name, sep = "_") := n_distinct(trace)),
-                "meanduration" = feature %>% summarise(!!paste("calls_rapids", call_type, feature_name, sep = "_") := mean(call_duration)),
-                "sumduration" = feature %>% summarise(!!paste("calls_rapids", call_type, feature_name, sep = "_") := sum(call_duration)),
-                "minduration" = feature %>% summarise(!!paste("calls_rapids", call_type, feature_name, sep = "_") := min(call_duration)),
-                "maxduration" = feature %>% summarise(!!paste("calls_rapids", call_type, feature_name, sep = "_") := max(call_duration)),
-                "stdduration" = feature %>% summarise(!!paste("calls_rapids", call_type, feature_name, sep = "_") := sd(call_duration)),
-                "modeduration" = feature %>% summarise(!!paste("calls_rapids", call_type, feature_name, sep = "_") := Mode(call_duration)),
-                "entropyduration" = feature %>% summarise(!!paste("calls_rapids", call_type, feature_name, sep = "_") := entropy.MillerMadow(call_duration)),
-                "timefirstcall" = feature %>% summarise(!!paste("calls_rapids", call_type, feature_name, sep = "_") := first(local_hour) * 60 + first(local_minute)),
-                "timelastcall" = feature %>% summarise(!!paste("calls_rapids", call_type, feature_name, sep = "_") := last(local_hour) * 60 + last(local_minute)))
+                "count" = feature %>% summarise(!!paste(call_type, feature_name, sep = "_") := n()),
+                "distinctcontacts" = feature %>% summarise(!!paste(call_type, feature_name, sep = "_") := n_distinct(trace)),
+                "meanduration" = feature %>% summarise(!!paste(call_type, feature_name, sep = "_") := mean(call_duration)),
+                "sumduration" = feature %>% summarise(!!paste(call_type, feature_name, sep = "_") := sum(call_duration)),
+                "minduration" = feature %>% summarise(!!paste(call_type, feature_name, sep = "_") := min(call_duration)),
+                "maxduration" = feature %>% summarise(!!paste(call_type, feature_name, sep = "_") := max(call_duration)),
+                "stdduration" = feature %>% summarise(!!paste(call_type, feature_name, sep = "_") := sd(call_duration)),
+                "modeduration" = feature %>% summarise(!!paste(call_type, feature_name, sep = "_") := Mode(call_duration)),
+                "entropyduration" = feature %>% summarise(!!paste(call_type, feature_name, sep = "_") := entropy.MillerMadow(call_duration)),
+                "timefirstcall" = feature %>% summarise(!!paste(call_type, feature_name, sep = "_") := first(local_hour) * 60 + first(local_minute)),
+                "timelastcall" = feature %>% summarise(!!paste(call_type, feature_name, sep = "_") := last(local_hour) * 60 + last(local_minute)))
 
             features <- merge(features, feature, by="local_segment", all = TRUE)
         }

@@ -19,8 +19,8 @@ compute_data_yield_features <- function(data, feature_name, day_segment, provide
               valid_yielded_hours = sum(valid_hour == TRUE) / 1.0,
               duration_minutes = first(duration_minutes),
               duration_hours = duration_minutes / 60.0,
-              phone_data_yield_rapids_ratiovalidyieldedminutes = valid_yielded_minutes / duration_minutes,
-              phone_data_yield_rapids_ratiovalidyieldedhours = if_else(duration_hours > 1, valid_yielded_hours / duration_hours, valid_yielded_hours))
+              ratiovalidyieldedminutes = valid_yielded_minutes / duration_minutes,
+              ratiovalidyieldedhours = if_else(duration_hours > 1, valid_yielded_hours / duration_hours, valid_yielded_hours))
   return(features)
 }
 
@@ -41,7 +41,7 @@ rapids_features <- function(sensor_data_files, day_segment, provider){
   features_to_compute  <- intersect(base_features_names, requested_features)
   
   features <- compute_data_yield_features(yield_data, feature_name, day_segment, provider) %>% 
-    select(c("local_segment", paste0("phone_data_yield_rapids_", features_to_compute)))
+    select(c("local_segment", features_to_compute))
   
   return(features)
 }

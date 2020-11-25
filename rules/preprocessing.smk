@@ -80,6 +80,8 @@ rule phone_readable_datetime:
 rule phone_yielded_timestamps:
     input:
         all_sensors = expand("data/raw/{{pid}}/{sensor}_raw.csv", sensor = map(str.lower, config["PHONE_DATA_YIELD"]["SENSORS"]))
+    params:
+        sensors = config["PHONE_DATA_YIELD"]["SENSORS"] # not used but needed so the rule is triggered if this array changes
     output:
         "data/interim/{pid}/phone_yielded_timestamps.csv"
     script:
@@ -99,18 +101,6 @@ rule phone_yielded_timestamps_with_datetime:
     script:
         "../src/data/readable_datetime.R"
 
-rule phone_valid_sensed_days:
-    input:
-        phone_sensed_bins =  "data/interim/{pid}/phone_sensed_bins.csv"
-    params:
-        min_valid_hours_per_day = "{min_valid_hours_per_day}",
-        min_valid_bins_per_hour = "{min_valid_bins_per_hour}"
-    output:
-        "data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins.csv"
-    script:
-        "../src/data/phone_valid_sensed_days.R"
-
-
 rule unify_ios_android:
     input:
         sensor_data = "data/raw/{pid}/{sensor}_with_datetime.csv",
@@ -125,7 +115,7 @@ rule unify_ios_android:
 rule process_phone_locations_types:
     input:
         locations = "data/raw/{pid}/phone_locations_raw.csv",
-        phone_sensed_timestamps = "data/interim/{pid}/phone_sensed_timestamps.csv",
+        phone_sensed_timestamps = "data/interim/{pid}/phone_yielded_timestamps.csv",
     params:
         consecutive_threshold = config["PHONE_LOCATIONS"]["FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD"],
         time_since_valid_location = config["PHONE_LOCATIONS"]["FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION"],

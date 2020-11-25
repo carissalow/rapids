@@ -5,8 +5,8 @@ compute_wifi_feature <- function(data, feature, day_segment){
   if(feature %in% c("countscans", "uniquedevices")){
     data <- data %>% group_by(local_segment)
     data <- switch(feature,
-              "countscans" = data %>% summarise(!!paste("wifi_rapids", feature, sep = "_") := n()),
-              "uniquedevices" = data %>% summarise(!!paste("wifi_rapids", feature, sep = "_") := n_distinct(bssid)))
+              "countscans" = data %>% summarise(!!feature := n()),
+              "uniquedevices" = data %>% summarise(!!feature := n_distinct(bssid)))
     return(data)
    } else if(feature == "countscansmostuniquedevice"){
      # Get the most scanned device
@@ -20,7 +20,7 @@ compute_wifi_feature <- function(data, feature, day_segment){
     return(data %>% 
              filter(bssid == mostuniquedevice) %>%
              group_by(local_segment) %>% 
-             summarise(!!paste("wifi_rapids", feature, sep = "_") := n()) %>%
+             summarise(!!feature := n()) %>%
              replace(is.na(.), 0))
   }
 }
