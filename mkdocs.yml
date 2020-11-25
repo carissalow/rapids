@@ -79,7 +79,7 @@ nav:
   - Behavioral Features:
       - Introduction: features/feature-introduction.md
       - Phone:
-        - Phone Data Quality: features/phone-data-quality.md
+        - Phone Data Yield: features/phone-data-yield.md
         - Phone Accelerometer: features/phone-accelerometer.md
         - Phone Activity Recognition: features/phone-activity-recognition.md
         - Phone Applications Foreground: features/phone-applications-foreground.md
