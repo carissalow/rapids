@@ -12,20 +12,13 @@ files_to_compute = []
 if len(config["PIDS"]) == 0:
     raise ValueError("Add participants IDs to PIDS in config.yaml. Remember to create their participant files in data/external")
 
-if config["PHONE_VALID_SENSED_BINS"]["COMPUTE"] or config["PHONE_VALID_SENSED_DAYS"]["COMPUTE"]: # valid sensed bins is necessary for sensed days, so we add these files anyways if sensed days are requested
-    if len(config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"]) == 0:
-            raise ValueError("If you want to compute PHONE_VALID_SENSED_BINS or PHONE_VALID_SENSED_DAYS, you need to add at least one PHONE_SENSOR to [PHONE_VALID_SENSED_BINS][PHONE_SENSORS] in config.yaml")
-
-    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=map(str.lower, config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"])))
-    files_to_compute.extend(expand("data/raw/{pid}/{sensor}_with_datetime.csv", pid=config["PIDS"], sensor=map(str.lower, config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"])))
-    files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
-    files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_timestamps.csv", pid=config["PIDS"]))
-
-if config["PHONE_VALID_SENSED_DAYS"]["COMPUTE"]:
-    files_to_compute.extend(expand("data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins.csv",
-                                pid=config["PIDS"],
-                                min_valid_hours_per_day=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_HOURS_PER_DAY"],
-                                min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
+for provider in config["PHONE_DATA_YIELD"]["PROVIDERS"].keys():
+    if config["PHONE_DATA_YIELD"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=map(str.lower, config["PHONE_DATA_YIELD"]["SENSORS"])))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_yielded_timestamps.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_data_yield_features/phone_data_yield_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_DATA_YIELD"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_data_yield.csv", pid=config["PIDS"]))
 
 for provider in config["PHONE_MESSAGES"]["PROVIDERS"].keys():
     if config["PHONE_MESSAGES"]["PROVIDERS"][provider]["COMPUTE"]:
@@ -73,10 +66,10 @@ for provider in config["PHONE_BATTERY"]["PROVIDERS"].keys():
 
 for provider in config["PHONE_SCREEN"]["PROVIDERS"].keys():
     if config["PHONE_SCREEN"]["PROVIDERS"][provider]["COMPUTE"]:
-        if "PHONE_SCREEN" in config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"]:
+        if "PHONE_SCREEN" in config["PHONE_DATA_YIELD"]["SENSORS"]:
             files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
         else:
-            raise ValueError("Error: Add PHONE_SCREEN (and as many phone sensor as you have in your database) to [PHONE_VALID_SENSED_BINS][PHONE_SENSORS] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data)")
+            raise ValueError("Error: Add PHONE_SCREEN (and as many phone sensor as you have in your database) to [PHONE_DATA_YIELD][SENSORS] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data)")
         files_to_compute.extend(expand("data/raw/{pid}/phone_screen_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/phone_screen_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/phone_screen_with_datetime_unified.csv", pid=config["PIDS"]))
@@ -133,10 +126,10 @@ for provider in config["PHONE_CONVERSATION"]["PROVIDERS"].keys():
 for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
     if config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["COMPUTE"]:
         if config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"] == "FUSED_RESAMPLED":
-            if "PHONE_LOCATIONS" in config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"]:
+            if "PHONE_LOCATIONS" in config["PHONE_DATA_YIELD"]["SENSORS"]:
                 files_to_compute.extend(expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]))
             else:
-                raise ValueError("Error: Add PHONE_LOCATIONS (and as many PHONE_SENSORS as you have) to [PHONE_VALID_SENSED_BINS][PHONE_SENSORS] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")
+                raise ValueError("Error: Add PHONE_LOCATIONS (and as many SENSORS as you have) to [PHONE_DATA_YIELD][SENSORS] in config.yaml. This is necessary to compute phone_sensed_bins (bins of time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")
 
         files_to_compute.extend(expand("data/raw/{pid}/phone_locations_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed.csv", pid=config["PIDS"]))
@@ -200,22 +193,22 @@ for provider in config["FITBIT_CALORIES"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_parsed_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
 
 # visualization for data exploration
-if config["HEATMAP_FEATURES_CORRELATIONS"]["PLOT"]:
-    files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/heatmap_features_correlations.html", min_valid_hours_per_day=config["HEATMAP_FEATURES_CORRELATIONS"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
+# if config["HEATMAP_FEATURES_CORRELATIONS"]["PLOT"]:
+#     files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/heatmap_features_correlations.html", min_valid_hours_per_day=config["HEATMAP_FEATURES_CORRELATIONS"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
     
-if config["HISTOGRAM_VALID_SENSED_HOURS"]["PLOT"]:
-    files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/histogram_valid_sensed_hours.html", min_valid_hours_per_day=config["HISTOGRAM_VALID_SENSED_HOURS"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
+# if config["HISTOGRAM_VALID_SENSED_HOURS"]["PLOT"]:
+#     files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/histogram_valid_sensed_hours.html", min_valid_hours_per_day=config["HISTOGRAM_VALID_SENSED_HOURS"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
 
-if config["HEATMAP_DAYS_BY_SENSORS"]["PLOT"]:
-    files_to_compute.extend(expand("reports/interim/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{pid}/heatmap_days_by_sensors.html", pid=config["PIDS"], min_valid_hours_per_day=config["HEATMAP_DAYS_BY_SENSORS"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
-    files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/heatmap_days_by_sensors_all_participants.html", min_valid_hours_per_day=config["HEATMAP_DAYS_BY_SENSORS"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
+# if config["HEATMAP_DAYS_BY_SENSORS"]["PLOT"]:
+#     files_to_compute.extend(expand("reports/interim/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{pid}/heatmap_days_by_sensors.html", pid=config["PIDS"], min_valid_hours_per_day=config["HEATMAP_DAYS_BY_SENSORS"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
+#     files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/heatmap_days_by_sensors_all_participants.html", min_valid_hours_per_day=config["HEATMAP_DAYS_BY_SENSORS"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
 
-if config["HEATMAP_SENSED_BINS"]["PLOT"]:
-    files_to_compute.extend(expand("reports/interim/heatmap_sensed_bins/{pid}/heatmap_sensed_bins.html", pid=config["PIDS"]))
-    files_to_compute.extend(["reports/data_exploration/heatmap_sensed_bins_all_participants.html"])
+# if config["HEATMAP_SENSED_BINS"]["PLOT"]:
+#     files_to_compute.extend(expand("reports/interim/heatmap_sensed_bins/{pid}/heatmap_sensed_bins.html", pid=config["PIDS"]))
+#     files_to_compute.extend(["reports/data_exploration/heatmap_sensed_bins_all_participants.html"])
 
-if config["OVERALL_COMPLIANCE_HEATMAP"]["PLOT"]:
-    files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/overall_compliance_heatmap.html", min_valid_hours_per_day=config["OVERALL_COMPLIANCE_HEATMAP"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
+# if config["OVERALL_COMPLIANCE_HEATMAP"]["PLOT"]:
+#     files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/overall_compliance_heatmap.html", min_valid_hours_per_day=config["OVERALL_COMPLIANCE_HEATMAP"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
 
 
 rule all:

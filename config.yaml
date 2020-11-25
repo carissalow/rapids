@@ -27,8 +27,8 @@ CREATE_PARTICIPANT_FILES:
 
 # See https://www.rapids.science/setup/configuration/#day-segments
 DAY_SEGMENTS: &day_segments
-  TYPE: EVENT # FREQUENCY, PERIODIC, EVENT
-  FILE: "data/external/daysegments_event.csv"
+  TYPE: PERIODIC # FREQUENCY, PERIODIC, EVENT
+  FILE: "data/external/daysegments_periodic.csv"
   INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, see docs
 
 # See https://www.rapids.science/setup/configuration/#device-data-source-configuration
@@ -54,27 +54,22 @@ DEVICE_DATA:
 ############## PHONE ###########################################################
 ################################################################################
 
-PHONE_VALID_SENSED_BINS:
-  COMPUTE: False # This flag is automatically ignored (set to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features
-  BIN_SIZE: &bin_size 5 # (in minutes)
-  # Add as many PHONE sensors as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
-  # If you are extracting screen or Barnett/Doryab location features, PHONE_SCREEN and PHONE_LOCATIONS tables are mandatory.
-  # You can choose any of the keys shown below, just make sure its TABLE exists in your database!
-  # PHONE_MESSAGES, PHONE_CALLS, PHONE_LOCATIONS, PHONE_BLUETOOTH, PHONE_ACTIVITY_RECOGNITION, PHONE_BATTERY, PHONE_SCREEN, PHONE_LIGHT,
-  # PHONE_ACCELEROMETER, PHONE_APPLICATIONS_FOREGROUND, PHONE_WIFI_VISIBLE, PHONE_WIFI_CONNECTED, PHONE_CONVERSATION
-  PHONE_SENSORS: []
-
-PHONE_VALID_SENSED_DAYS:
-  COMPUTE: False
-  MIN_VALID_BINS_PER_HOUR: &min_valid_bins_per_hour [6] # (out of 60min/BIN_SIZE bins)
-  MIN_VALID_HOURS_PER_DAY: &min_valid_hours_per_day [16] # (out of 24) MIN_HOURS_PER_DAY
+PHONE_DATA_YIELD:
+  SENSORS: [PHONE_MESSAGES, PHONE_CALLS, PHONE_ACCELEROMETER]
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      FEATURES: [ratiovalidyieldedminutes, ratiovalidyieldedhours]
+      MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 # 0 to 1 representing the number of minutes with at least
+      SRC_LANGUAGE: "r"
+      SRC_FOLDER: "rapids" # inside src/features/phone_data_yield
 
 # Communication SMS features config, TYPES and FEATURES keys need to match
 PHONE_MESSAGES:
   TABLE: messages
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       MESSAGES_TYPES : [received, sent]
       FEATURES: 
         received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
@@ -329,8 +324,8 @@ FITBIT_CALORIES:
 HEATMAP_FEATURES_CORRELATIONS:
   PLOT: False
   MIN_ROWS_RATIO: 0.5
-  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
-  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+  MIN_VALID_HOURS_PER_DAY: #*min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: #*min_valid_bins_per_hour
   PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
   FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
   CORR_THRESHOLD: 0.1
@@ -338,25 +333,25 @@ HEATMAP_FEATURES_CORRELATIONS:
 
 HISTOGRAM_VALID_SENSED_HOURS:
   PLOT: False
-  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
-  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+  MIN_VALID_HOURS_PER_DAY: #*min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: #*min_valid_bins_per_hour
 
 HEATMAP_DAYS_BY_SENSORS:
   PLOT: False
-  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
-  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+  MIN_VALID_HOURS_PER_DAY: #*min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: #*min_valid_bins_per_hour
   EXPECTED_NUM_OF_DAYS: -1
   DB_TABLES: [accelerometer, applications_foreground, battery, bluetooth, calls, light, locations, messages, screen, wifi, sensor_wifi, plugin_google_activity_recognition, plugin_ios_activity_recognition, plugin_studentlife_audio_android, plugin_studentlife_audio]
 
 HEATMAP_SENSED_BINS:
   PLOT: False
-  BIN_SIZE: *bin_size
+  BIN_SIZE: #*bin_size
 
 OVERALL_COMPLIANCE_HEATMAP:
   PLOT: False
   ONLY_SHOW_VALID_DAYS: False
   EXPECTED_NUM_OF_DAYS: -1
-  BIN_SIZE: *bin_size
-  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
-  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
+  BIN_SIZE: #*bin_size
+  MIN_VALID_HOURS_PER_DAY: #*min_valid_hours_per_day
+  MIN_VALID_BINS_PER_HOUR: #*min_valid_bins_per_hour
 

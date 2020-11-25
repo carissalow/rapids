@@ -77,23 +77,27 @@ rule phone_readable_datetime:
     script:
         "../src/data/readable_datetime.R"
 
-rule phone_sensed_bins:
+rule phone_yielded_timestamps:
     input:
-        all_sensors = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor = map(str.lower, config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"]))
-    params:
-        bin_size = config["PHONE_VALID_SENSED_BINS"]["BIN_SIZE"]
+        all_sensors = expand("data/raw/{{pid}}/{sensor}_raw.csv", sensor = map(str.lower, config["PHONE_DATA_YIELD"]["SENSORS"]))
     output:
-        "data/interim/{pid}/phone_sensed_bins.csv"
+        "data/interim/{pid}/phone_yielded_timestamps.csv"
     script:
-        "../src/data/phone_sensed_bins.R"
+        "../src/data/phone_yielded_timestamps.R"
 
-rule phone_sensed_timestamps:
+rule phone_yielded_timestamps_with_datetime:
     input:
-        all_sensors = expand("data/raw/{{pid}}/{sensor}_raw.csv", sensor = map(str.lower, config["PHONE_VALID_SENSED_BINS"]["PHONE_SENSORS"]))
+        sensor_input = "data/interim/{pid}/phone_yielded_timestamps.csv",
+        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
+    params:
+        timezones = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["TYPE"],
+        fixed_timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
+        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
-        "data/interim/{pid}/phone_sensed_timestamps.csv"
+        "data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv"
     script:
-        "../src/data/phone_sensed_timestamps.R"
+        "../src/data/readable_datetime.R"
 
 rule phone_valid_sensed_days:
     input:

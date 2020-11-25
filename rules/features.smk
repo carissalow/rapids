@@ -6,6 +6,32 @@ rule join_features_from_providers:
     script:
         "../src/features/join_features_from_providers.R"
 
+rule phone_data_yield_python_features:
+    input:
+        sensor_data = "data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_DATA_YIELD"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_data_yield"
+    output:
+        "data/interim/{pid}/phone_data_yield_features/phone_data_yield_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule phone_data_yield_r_features:
+    input:
+        sensor_data = "data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv",
+        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_DATA_YIELD"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_data_yield"
+    output:
+        "data/interim/{pid}/phone_data_yield_features/phone_data_yield_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R" 
+
 rule phone_accelerometer_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_accelerometer_with_datetime.csv",
