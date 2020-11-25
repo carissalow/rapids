@@ -4,9 +4,11 @@ Sensor parameters description for `[FITBIT_STEPS_SUMMARY]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[TABLE]`| Database table name or file path where the steps summary data is stored. Source data type and column format are defined in [Device Data Source Configuration](../../setup/configuration/#device-data-source-configuration).
+|`[TABLE]`| Database table name or file path where the steps summary data is stored. The configuration keys in [Device Data Source Configuration](../../setup/configuration/#device-data-source-configuration) control whether this parameter is interpreted as table or file.
 
-Column format could be `JSON` or `PLAIN_TEXT`. Data with `JSON` column format is obtained from Fitbit API directly. Summary data and intraday data come together in `JSON` format. Each row doesn't have to contain the data for a single day as it depends on the way Fitbit API is queried. Examples of the source data with two formats are as follows. Data with `JSON` format is chunked.
+The format of the column(s) containing the Fitbit sensor data can be `JSON` or `PLAIN_TEXT`. The data in `JSON` format is obtained directly from the Fitbit API. We support `PLAIN_TEXT` in case you already parsed your data and don't have access to your participants' Fitbit accounts anymore. If your data is in `JSON` format then summary and intraday data come packed together. 
+
+We provide examples of the input format that RAPIDS expects, note that both examples for `JSON` and `PLAIN_TEXT` are tabular and the actual format difference comes in the `fitbit_data` column (we truncate the `JSON` example for brevity).
 
 ??? example "Example of the structure of source data"
 
