@@ -317,85 +317,67 @@ Day segments (or epochs) are the time windows on which you want to extract behav
 --- 
 ## Device Data Source Configuration
 
-You might need to modify the following config keys in your `config.yaml` depending on what devices your participants used and where you are storing your data.
+You might need to modify the following config keys in your `config.yaml` depending on what devices your participants used and where you are storing your data. You can ignore `[PHONE_DATA_CONFIGURATION]` or `[FITBIT_DATA_CONFIGURATION]` if you are not working with either devices.
 
-!!! hint
-    You can ignore `[DEVICE_DATA][PHONE]` or `[DEVICE_DATA][FITBIT]` if you are not working with either devices.
+=== "Phone"
 
-The relevant `config.yaml` section looks as follows by default:
+    The relevant `config.yaml` section looks like this by default:
 
-```yaml
-DEVICE_DATA:
-  PHONE:
-    SOURCE: 
-      TYPE: DATABASE
-      DATABASE_GROUP: *database_group
-      DEVICE_ID_COLUMN: device_id # column name
-    TIMEZONE: 
-      TYPE: SINGLE 
-      VALUE: *timezone
-  FITBIT:
-    SOURCE: 
-      TYPE: DATABASE # DATABASE or FILES (set each FITBIT_SENSOR TABLE attribute accordingly with a table name or a file path)
-      COLUMN_FORMAT: JSON # JSON or PLAIN_TEXT
-      DATABASE_GROUP: *database_group
-      DEVICE_ID_COLUMN: fitbit_id # column name
-    TIMEZONE: 
-      TYPE: SINGLE # Fitbit only supports SINGLE timezones
-      VALUE: *timezone
+    ```yaml
+    PHONE_DATA_CONFIGURATION:
+      SOURCE: 
+        TYPE: DATABASE
+        DATABASE_GROUP: *database_group
+        DEVICE_ID_COLUMN: device_id # column name
+      TIMEZONE: 
+        TYPE: SINGLE # SINGLE (MULTIPLE support coming soon)
+        VALUE: *timezone
 
-```
+    ```
 
-**For `[DEVICE_DATA][PHONE]`**
+    **Parameters for `[PHONE_DATA_CONFIGURATION]`**
 
-| Key                  | Description                                                                                                                |
-|---------------------|----------------------------------------------------------------------------------------------------------------------------|
-| `[SOURCE] [TYPE]`             | Only `DATABASE` is supported (phone data will be pulled from a database)                                                   |
-| `[SOURCE] [DATABASE_GROUP]`   | `*database_group`  points to the value defined before in  [Database credentials](#database-credentials)    |
-| `[SOURCE] [DEVICE_ID_COLUMN]` | The column that has strings that uniquely identify smartphones. For data collected with AWARE this is usually  `device_id` |
-| `[TIMEZONE] [TYPE]`             | Only `SINGLE` is supported                                                                                                 |
-| `[TIMEZONE] [VALUE]`            | `*timezone`  points to the value defined before in  [Timezone of your study](#timezone-of-your-study)          |
+    | Key                  | Description                                                                                                                |
+    |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+    | `[SOURCE] [TYPE]`             | Only `DATABASE` is supported (phone data will be pulled from a database)                                                   |
+    | `[SOURCE] [DATABASE_GROUP]`   | `*database_group`  points to the value defined before in  [Database credentials](#database-credentials)    |
+    | `[SOURCE] [DEVICE_ID_COLUMN]` | A column that contains strings that uniquely identify smartphones. For data collected with AWARE this is usually  `device_id` |
+    | `[TIMEZONE] [TYPE]`             | Only `SINGLE` is supported for now                                                                                                |
+    | `[TIMEZONE] [VALUE]`            | `*timezone`  points to the value defined before in  [Timezone of your study](#timezone-of-your-study)          |
 
-**For `[DEVICE_DATA][FITBIT]`**
+=== "Fitbit"
 
-| Key                         | Description                                                                                                                                                       |
-|------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `[SOURCE]` `[TYPE]`             | `DATABASE` or `FILES`  (set each `[FITBIT_SENSOR]` `[TABLE]` attribute accordingly with a table name or a file path)                                                                                         |
-| `[SOURCE]` `[COLUMN_FORMAT]`    | `JSON` or `PLAIN_TEXT`. Column format of the source data.                                    |
-| `[SOURCE]` `[DATABASE_GROUP]`   | `*database_group`  points to the value defined before in  [Database credentials](#database-credentials). Only used if  `[TYPE]`  is  `DATABASE` . |
-| `[SOURCE]` `[DEVICE_ID_COLUMN]` | The column that has strings that uniquely identify Fitbit devices.                                                                                                |
-| `[TIMEZONE]` `[TYPE]`             | Only `SINGLE` is supported  (Fitbit devices always store data in local time).                                                                                 |
-| `[TIMEZONE]` `[VALUE]`            | `*timezone`  points to the value defined before in  [Timezone of your study](#timezone-of-your-study)                                             |
+    The relevant `config.yaml` section looks like this by default:
+
+      ```yaml
+      FITBIT_DATA_CONFIGURATION:
+        SOURCE: 
+          TYPE: DATABASE # DATABASE or FILES (set each [FITBIT_SENSOR][TABLE] attribute with a table name or a file path accordingly)
+          COLUMN_FORMAT: JSON # JSON or PLAIN_TEXT
+          DATABASE_GROUP: *database_group
+          DEVICE_ID_COLUMN: device_id # column name
+        TIMEZONE: 
+          TYPE: SINGLE # Fitbit devices don't support time zones so we read this data in the timezone indicated by VALUE 
+          VALUE: *timezone
+
+      ```
+
+      **Parameters for For `[FITBIT_DATA_CONFIGURATION]`**
+
+      | Key                         | Description                                                                                                                                                       |
+      |------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+      | `[SOURCE]` `[TYPE]`             | `DATABASE` or `FILES`  (set each `[FITBIT_SENSOR]` `[TABLE]` attribute accordingly with a table name or a file path)                                                                                         |
+      | `[SOURCE]` `[COLUMN_FORMAT]`    | `JSON` or `PLAIN_TEXT`. Column format of the source data. If you pulled your data directly from the Fitbit API the column containing the sensor data will be in `JSON` format                                   |
+      | `[SOURCE]` `[DATABASE_GROUP]`   | `*database_group`  points to the value defined before in  [Database credentials](#database-credentials). Only used if  `[TYPE]`  is  `DATABASE` . |
+      | `[SOURCE]` `[DEVICE_ID_COLUMN]` | A column that contains strings that uniquely identify Fitbit devices.                                                                                                |
+      | `[TIMEZONE]` `[TYPE]`             | Only `SINGLE` is supported  (Fitbit devices always store data in local time).                                                                                 |
+      | `[TIMEZONE]` `[VALUE]`            | `*timezone`  points to the value defined before in  [Timezone of your study](#timezone-of-your-study)                                             |
 
 ---
 
 ## Sensor and Features to Process
 
-Finally, you need to modify the `config.yaml` of the sensors you want to process. All sensors follow the same naming nomenclature `DEVICE_SENSOR` and have the following basic attributes (we will use `PHONE_MESSAGES` as an example). 
+Finally, you need to modify the `config.yaml` section of the sensors you want to extract behavioral features from. All sensors follow the same naming nomenclature (`DEVICE_SENSOR`) and parameter structure which we explain in the [Behavioral Features Introduction](../../features/feature-introduction/). 
 
-!!! hint
-    Every time you change any sensor parameters, all the necessary files will be updated as soon as you execute RAPIDS. Some sensors will have specific attributes (like `MESSAGES_TYPES`) so refer to each sensor documentation.
-
-```yaml
-PHONE_MESSAGES:
-  TABLE: messages
-  PROVIDERS:
-    RAPIDS:
-      COMPUTE: True
-      MESSAGES_TYPES : [received, sent]
-      FEATURES: 
-        received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
-        sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
-      SRC_LANGUAGE: "r"
-      SRC_FOLDER: "rapids" # inside src/features/phone_messages
-```
-
-| Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                           | Description                                                                                                                                                                                                                                                                                                                     |
-|-------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `[TABLE]`                     | The name of the table in your database that stores this sensor data.                                                                                                                                                                                                                                                            |
-| `[PROVIDERS]`                 | A collection of  `providers` . A provider is an author or group of authors that created specific features for the sensor at hand. The provider for all the features implemented by our team is called  `RAPIDS`  but we have also included contributions from other researchers (for example  `DORYAB`  for location features). |
-| `[PROVIDER]` `[COMPUTE]`      | Set this to  `TRUE`  if you want to process features for this  `provider` .                                                                                                                                                                                                                                                     |
-| `[PROVIDER]` `[FEATURES]`     | A list of all the features available for the  `provider` . Delete those that you don't want to compute.                                                                                                                                                                                                                         |
-| `[PROVIDER]` `[SRC_LANGUAGE]` | The programming language ( `r`  or  `python` ) in which the features of this  `provider`  are implemented.                                                                                                                                                                                                                      |
-| `[PROVIDER]` `[SRC_FOLDER]`   | The folder where the script(s) to compute the features of this  `provider`  are stored. This folder is always inside  `src/features/[DEVICE_SENSOR]/`                                                                                                                                                                           |
-
+!!! done
+    Head over to [Execution](../execution/) to learn how to execute RAPIDS.

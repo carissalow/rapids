@@ -79,7 +79,6 @@ nav:
   - Behavioral Features:
       - Introduction: features/feature-introduction.md
       - Phone:
-        - Phone Data Yield: features/phone-data-yield.md
         - Phone Accelerometer: features/phone-accelerometer.md
         - Phone Activity Recognition: features/phone-activity-recognition.md
         - Phone Applications Foreground: features/phone-applications-foreground.md
@@ -87,6 +86,7 @@ nav:
         - Phone Bluetooth: features/phone-bluetooth.md
         - Phone Calls: features/phone-calls.md
         - Phone Conversation: features/phone-conversation.md
+        - Phone Data Yield: features/phone-data-yield.md
         - Phone Light: features/phone-light.md
         - Phone Locations: features/phone-locations.md
         - Phone Messages: features/phone-messages.md

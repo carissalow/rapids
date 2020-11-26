@@ -31,29 +31,21 @@ DAY_SEGMENTS: &day_segments
   FILE: "example_profile/exampleworkflow_daysegments.csv"
   INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, see docs
 
-# See https://www.rapids.science/setup/configuration/#device-data-source-configuration
-DEVICE_DATA:
-  PHONE:
-    SOURCE: 
-      TYPE: DATABASE
-      DATABASE_GROUP: *database_group
-      DEVICE_ID_COLUMN: device_id # column name
-    TIMEZONE: 
-      TYPE: SINGLE # SINGLE or MULTIPLE
-      VALUE: *timezone # IF TYPE=SINGLE, see docs
-  FITBIT:
-    SOURCE: 
-      TYPE: DATABASE # DATABASE or FILES (set each FITBIT_SENSOR TABLE attribute accordingly with a table name or a file path)
-      COLUMN_FORMAT: JSON # JSON or PLAIN_TEXT
-      DATABASE_GROUP: *database_group
-      DEVICE_ID_COLUMN: device_id # column name
-    TIMEZONE: 
-      TYPE: SINGLE # Fitbit only supports SINGLE timezones
-      VALUE: *timezone # see docs
-
 ############## PHONE ###########################################################
 ################################################################################
 
+# See https://www.rapids.science/setup/configuration/#device-data-source-configuration
+PHONE_DATA_CONFIGURATION:
+  SOURCE: 
+    TYPE: DATABASE
+    DATABASE_GROUP: *database_group
+    DEVICE_ID_COLUMN: device_id # column name
+  TIMEZONE: 
+    TYPE: SINGLE # SINGLE or MULTIPLE
+    VALUE: *timezone # IF TYPE=SINGLE, see docs
+
+# Sensors ------
+  
 PHONE_DATA_YIELD:
   SENSORS: [PHONE_ACCELEROMETER, PHONE_ACTIVITY_RECOGNITION, PHONE_APPLICATIONS_FOREGROUND, PHONE_BATTERY, PHONE_BLUETOOTH, PHONE_CALLS, PHONE_CONVERSATION, PHONE_LIGHT, PHONE_LOCATIONS, PHONE_MESSAGES, PHONE_SCREEN, PHONE_WIFI_CONNECTED, PHONE_WIFI_VISIBLE]
   PROVIDERS:
@@ -253,6 +245,18 @@ PHONE_CONVERSATION:
 
 ############## FITBIT ##########################################################
 ################################################################################
+
+FITBIT_DATA_CONFIGURATION:
+  SOURCE: 
+    TYPE: DATABASE # DATABASE or FILES (set each [FITBIT_SENSOR][TABLE] attribute with a table name or a file path accordingly)
+    COLUMN_FORMAT: JSON # JSON or PLAIN_TEXT
+    DATABASE_GROUP: *database_group
+    DEVICE_ID_COLUMN: device_id # column name
+  TIMEZONE: 
+    TYPE: SINGLE # Fitbit only supports SINGLE timezones
+    VALUE: *timezone # see docs
+  HIDDEN:
+    SINGLE_FITBIT_TABLE: TRUE
 
 FITBIT_HEARTRATE_SUMMARY:
   TABLE: fitbit_data

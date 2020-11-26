@@ -8,7 +8,8 @@ library(yaml)
 
 participant_file <- snakemake@input[["participant_file"]]
 input_file <- snakemake@input[["input_file"]]
-source <- snakemake@params[["source"]]
+data_configuration <- snakemake@params[["data_configuration"]]
+source <- data_configuration$SOURCE
 sensor <- snakemake@params[["sensor"]]
 table <- snakemake@params[["table"]]
 sensor_file <- snakemake@output[[1]]
@@ -36,7 +37,7 @@ sensor_data <- sensor_data %>%
   rename(device_id = source$DEVICE_ID_COLUMN) %>% 
   mutate(device_id = unified_device_id) # Unify device_id
 
-if(FALSE) # For MoSHI use, we didn't split fitbit sensors into different tables
+if("HIDDEN" %in% names(data_configuration) && data_configuration$HIDDEN$SINGLE_FITBIT_TABLE == TRUE) # For MoSHI use, we didn't split fitbit sensors into different tables
   sensor_data <- sensor_data %>% filter(fitbit_data_type == str_split(sensor, "_", simplify = TRUE)[[2]])
 
 # Droping duplicates on all columns except for _id or id

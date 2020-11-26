@@ -27,10 +27,10 @@ rule download_phone_data:
     input:
         "data/external/participant_files/{pid}.yaml"
     params:
-        source = config["DEVICE_DATA"]["PHONE"]["SOURCE"],
+        source = config["PHONE_DATA_CONFIGURATION"]["SOURCE"],
         sensor = "phone_" + "{sensor}",
         table = lambda wildcards: config["PHONE_" + str(wildcards.sensor).upper()]["TABLE"],
-        timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
+        timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
         aware_multiplatform_tables = config["PHONE_ACTIVITY_RECOGNITION"]["TABLE"]["ANDROID"] + "," + config["PHONE_ACTIVITY_RECOGNITION"]["TABLE"]["IOS"] + "," + config["PHONE_CONVERSATION"]["TABLE"]["ANDROID"] + "," + config["PHONE_CONVERSATION"]["TABLE"]["IOS"],
     output:
         "data/raw/{pid}/phone_{sensor}_raw.csv"
@@ -40,9 +40,9 @@ rule download_phone_data:
 rule download_fitbit_data:
     input:
         participant_file = "data/external/participant_files/{pid}.yaml",
-        input_file = [] if config["DEVICE_DATA"]["FITBIT"]["SOURCE"]["TYPE"] == "DATABASE" else lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"]
+        input_file = [] if config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["TYPE"] == "DATABASE" else lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"]
     params:
-        source = config["DEVICE_DATA"]["FITBIT"]["SOURCE"],
+        data_configuration = config["FITBIT_DATA_CONFIGURATION"],
         sensor = "fitbit_" + "{sensor}",
         table = lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"],
     output:
@@ -68,8 +68,8 @@ rule phone_readable_datetime:
         sensor_input = "data/raw/{pid}/phone_{sensor}_raw.csv",
         day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
-        timezones = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["TYPE"],
-        fixed_timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
+        timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
+        fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
         day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
@@ -92,8 +92,8 @@ rule phone_yielded_timestamps_with_datetime:
         sensor_input = "data/interim/{pid}/phone_yielded_timestamps.csv",
         day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
-        timezones = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["TYPE"],
-        fixed_timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
+        timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
+        fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
         day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
@@ -130,8 +130,8 @@ rule phone_locations_processed_with_datetime:
         sensor_input = "data/interim/{pid}/phone_locations_processed.csv",
         day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
-        timezones = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["TYPE"],
-        fixed_timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
+        timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
+        fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
         day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
@@ -152,8 +152,8 @@ rule resample_episodes_with_datetime:
         sensor_input = "data/interim/{pid}/{sensor}_episodes_resampled.csv",
         day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
-        timezones = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["TYPE"],
-        fixed_timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
+        timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
+        fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
         day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
@@ -178,9 +178,9 @@ rule fitbit_parse_heartrate:
     input:
         "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_raw.csv"
     params:
-        timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
+        timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
         table = lambda wildcards: config["FITBIT_HEARTRATE_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
-        column_format = config["DEVICE_DATA"]["FITBIT"]["SOURCE"]["COLUMN_FORMAT"],
+        column_format = config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["COLUMN_FORMAT"],
         fitbit_data_type = "{fitbit_data_type}"
     output:
         "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_parsed.csv"
@@ -191,9 +191,9 @@ rule fitbit_parse_steps:
     input:
         "data/raw/{pid}/fitbit_steps_{fitbit_data_type}_raw.csv"
     params:
-        timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
+        timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
         table = lambda wildcards: config["FITBIT_STEPS_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
-        column_format = config["DEVICE_DATA"]["FITBIT"]["SOURCE"]["COLUMN_FORMAT"],
+        column_format = config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["COLUMN_FORMAT"],
         fitbit_data_type = "{fitbit_data_type}"
     output:
         "data/raw/{pid}/fitbit_steps_{fitbit_data_type}_parsed.csv"
@@ -204,9 +204,9 @@ rule fitbit_parse_sleep:
     input:
         "data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_raw.csv"
     params:
-        timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
+        timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
         table = lambda wildcards: config["FITBIT_SLEEP_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
-        column_format = config["DEVICE_DATA"]["FITBIT"]["SOURCE"]["COLUMN_FORMAT"],
+        column_format = config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["COLUMN_FORMAT"],
         fitbit_data_type = "{fitbit_data_type}",
         sleep_episode_timestamp = config["FITBIT_SLEEP_SUMMARY"]["SLEEP_EPISODE_TIMESTAMP"]
     output:
@@ -214,25 +214,25 @@ rule fitbit_parse_sleep:
     script:
         "../src/data/fitbit_parse_sleep.py"
 
-rule fitbit_parse_calories:
-    input:
-        data = expand("data/raw/{{pid}}/fitbit_calories_{fitbit_data_type}_raw.csv", fitbit_data_type = (["json"] if config["FITBIT_CALORIES"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"]))
-    params:
-        timezone = config["DEVICE_DATA"]["PHONE"]["TIMEZONE"]["VALUE"],
-        table = config["FITBIT_CALORIES"]["TABLE"],
-        table_format = config["FITBIT_CALORIES"]["TABLE_FORMAT"]
-    output:
-        summary_data = "data/raw/{pid}/fitbit_calories_summary_parsed.csv",
-        intraday_data = "data/raw/{pid}/fitbit_calories_intraday_parsed.csv"
-    script:
-        "../src/data/fitbit_parse_calories.py"
+# rule fitbit_parse_calories:
+#     input:
+#         data = expand("data/raw/{{pid}}/fitbit_calories_{fitbit_data_type}_raw.csv", fitbit_data_type = (["json"] if config["FITBIT_CALORIES"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"]))
+#     params:
+#         timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
+#         table = config["FITBIT_CALORIES"]["TABLE"],
+#         table_format = config["FITBIT_CALORIES"]["TABLE_FORMAT"]
+#     output:
+#         summary_data = "data/raw/{pid}/fitbit_calories_summary_parsed.csv",
+#         intraday_data = "data/raw/{pid}/fitbit_calories_intraday_parsed.csv"
+#     script:
+#         "../src/data/fitbit_parse_calories.py"
 
 rule fitbit_readable_datetime:
     input:
         sensor_input = "data/raw/{pid}/fitbit_{sensor}_{fitbit_data_type}_parsed.csv",
         day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
     params:
-        fixed_timezone = config["DEVICE_DATA"]["FITBIT"]["TIMEZONE"]["VALUE"],
+        fixed_timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
         day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:

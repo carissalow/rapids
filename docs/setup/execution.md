@@ -6,6 +6,9 @@ After you have [installed](../installation) and [configured](../configuration) R
 ./rapids -j1
 ```
 
+!!! done "Ready to extract behavioral features"
+    If you are ready to extract features head over to the [Behavioral Features Introduction](../../features/feature-introduction/)
+
 !!! info
     The script `#!bash ./rapids` is a wrapper around Snakemake so you can pass any parameters that Snakemake accepts (e.g. `-j1`). 
     
@@ -31,6 +34,3 @@ After you have [installed](../installation) and [configured](../configuration) R
     ```bash
     ./rapids -j1 -R clean
     ```
-
-!!! done "Ready to extract behavioral features"
-    If you are ready to extract features head over to the [Behavioral Features Introduction](../../features/feature-introduction/)

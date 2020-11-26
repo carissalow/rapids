@@ -3,10 +3,10 @@
 Every phone or Fitbit sensor has a corresponding config section in `config.yaml`, these sections follow a similar structure and we'll use `PHONE_ACCELEROMETER` as an example to explain this structure.
 
 !!! hint
-    We recommend reading this page if you are using RAPIDS for the first time
+    - We recommend reading this page if you are using RAPIDS for the first time
+    - All computed sensor features are stored under `/data/processed/features` on files per sensor, per participant and per study (all participants).
+    - Every time you change any sensor parameters, provider parameters or provider features, all the necessary files will be updated as soon as you execute RAPIDS.
 
-!!! hint
-    All sensor features are stored under `/data/processed/features` on files per sensor, per participant and per study (all participants).
 
 !!! example "Config section example for `PHONE_ACCELEROMETER`"
 
@@ -55,6 +55,3 @@ We explain every provider's parameter in a table under the `Parameters descripti
 Each provider offers a set of behavioral features (see `#4.2` or `#5.2` in the example). For some providers these features are grouped in an array (like those for `RAPIDS` provider in `#4.2`) but for others they are grouped in a collection of arrays depending on the meaning and purpose of those features (like those for `PANDAS` provider in `#5.2`). In either case, you can delete the features you are not interested in and they will not be included in the sensor's output feature file. 
 
 We explain each behavioral feature in a table under the `Features description` heading on each provider documentation page.
-
-!!! hint
-    Every time you change any sensor parameters, provider parameters or provider features, all the necessary files will be updated as soon as you execute RAPIDS.
