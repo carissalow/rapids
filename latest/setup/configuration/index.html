@@ -536,18 +536,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../features/phone-data-yield/" class="md-nav__link">
-      Phone Data Yield
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../features/phone-accelerometer/" class="md-nav__link">
       Phone Accelerometer
     </a>
@@ -622,6 +610,18 @@
   <li class="md-nav__item">
     <a href="../../features/phone-conversation/" class="md-nav__link">
       Phone Conversation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../features/phone-data-yield/" class="md-nav__link">
+      Phone Data Yield
     </a>
   </li>
 
@@ -1488,32 +1488,19 @@ mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 <h3 id="segment-examples">Segment Examples<a class="headerlink" href="#segment-examples" title="Permanent link">&para;</a></h3>
 <hr />
 <h2 id="device-data-source-configuration">Device Data Source Configuration<a class="headerlink" href="#device-data-source-configuration" title="Permanent link">&para;</a></h2>
-<p>You might need to modify the following config keys in your <code>config.yaml</code> depending on what devices your participants used and where you are storing your data.</p>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>You can ignore <code>[DEVICE_DATA][PHONE]</code> or <code>[DEVICE_DATA][FITBIT]</code> if you are not working with either devices.</p>
-</div>
-<p>The relevant <code>config.yaml</code> section looks as follows by default:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">DEVICE_DATA</span><span class="p">:</span>
-  <span class="nt">PHONE</span><span class="p">:</span>
-    <span class="nt">SOURCE</span><span class="p">:</span> 
-      <span class="nt">TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DATABASE</span>
-      <span class="nt">DATABASE_GROUP</span><span class="p">:</span> <span class="nv">*database_group</span>
-      <span class="nt">DEVICE_ID_COLUMN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">device_id</span> <span class="c1"># column name</span>
-    <span class="nt">TIMEZONE</span><span class="p">:</span> 
-      <span class="nt">TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">SINGLE</span> 
-      <span class="nt">VALUE</span><span class="p">:</span> <span class="nv">*timezone</span>
-  <span class="nt">FITBIT</span><span class="p">:</span>
-    <span class="nt">SOURCE</span><span class="p">:</span> 
-      <span class="nt">TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DATABASE</span> <span class="c1"># DATABASE or FILES (set each FITBIT_SENSOR TABLE attribute accordingly with a table name or a file path)</span>
-      <span class="nt">COLUMN_FORMAT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">JSON</span> <span class="c1"># JSON or PLAIN_TEXT</span>
-      <span class="nt">DATABASE_GROUP</span><span class="p">:</span> <span class="nv">*database_group</span>
-      <span class="nt">DEVICE_ID_COLUMN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">fitbit_id</span> <span class="c1"># column name</span>
-    <span class="nt">TIMEZONE</span><span class="p">:</span> 
-      <span class="nt">TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">SINGLE</span> <span class="c1"># Fitbit only supports SINGLE timezones</span>
-      <span class="nt">VALUE</span><span class="p">:</span> <span class="nv">*timezone</span>
+<p>You might need to modify the following config keys in your <code>config.yaml</code> depending on what devices your participants used and where you are storing your data. You can ignore <code>[PHONE_DATA_CONFIGURATION]</code> or <code>[FITBIT_DATA_CONFIGURATION]</code> if you are not working with either devices.</p>
+<div class="tabbed-set" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">Phone</label><div class="tabbed-content">
+<p>The relevant <code>config.yaml</code> section looks like this by default:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">PHONE_DATA_CONFIGURATION</span><span class="p">:</span>
+  <span class="nt">SOURCE</span><span class="p">:</span> 
+    <span class="nt">TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DATABASE</span>
+    <span class="nt">DATABASE_GROUP</span><span class="p">:</span> <span class="nv">*database_group</span>
+    <span class="nt">DEVICE_ID_COLUMN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">device_id</span> <span class="c1"># column name</span>
+  <span class="nt">TIMEZONE</span><span class="p">:</span> 
+    <span class="nt">TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">SINGLE</span> <span class="c1"># SINGLE (MULTIPLE support coming soon)</span>
+    <span class="nt">VALUE</span><span class="p">:</span> <span class="nv">*timezone</span>
 </code></pre></div>
-<p><strong>For <code>[DEVICE_DATA][PHONE]</code></strong></p>
+<p><strong>Parameters for <code>[PHONE_DATA_CONFIGURATION]</code></strong></p>
 <table>
 <thead>
 <tr>
@@ -1532,11 +1519,11 @@ mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 </tr>
 <tr>
 <td><code>[SOURCE] [DEVICE_ID_COLUMN]</code></td>
-<td>The column that has strings that uniquely identify smartphones. For data collected with AWARE this is usually  <code>device_id</code></td>
+<td>A column that contains strings that uniquely identify smartphones. For data collected with AWARE this is usually  <code>device_id</code></td>
 </tr>
 <tr>
 <td><code>[TIMEZONE] [TYPE]</code></td>
-<td>Only <code>SINGLE</code> is supported</td>
+<td>Only <code>SINGLE</code> is supported for now</td>
 </tr>
 <tr>
 <td><code>[TIMEZONE] [VALUE]</code></td>
@@ -1544,7 +1531,20 @@ mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 </tr>
 </tbody>
 </table>
-<p><strong>For <code>[DEVICE_DATA][FITBIT]</code></strong></p>
+</div>
+<input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">Fitbit</label><div class="tabbed-content">
+<p>The relevant <code>config.yaml</code> section looks like this by default:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">FITBIT_DATA_CONFIGURATION</span><span class="p">:</span>
+  <span class="nt">SOURCE</span><span class="p">:</span> 
+    <span class="nt">TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DATABASE</span> <span class="c1"># DATABASE or FILES (set each [FITBIT_SENSOR][TABLE] attribute with a table name or a file path accordingly)</span>
+    <span class="nt">COLUMN_FORMAT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">JSON</span> <span class="c1"># JSON or PLAIN_TEXT</span>
+    <span class="nt">DATABASE_GROUP</span><span class="p">:</span> <span class="nv">*database_group</span>
+    <span class="nt">DEVICE_ID_COLUMN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">device_id</span> <span class="c1"># column name</span>
+  <span class="nt">TIMEZONE</span><span class="p">:</span> 
+    <span class="nt">TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">SINGLE</span> <span class="c1"># Fitbit devices don&#39;t support time zones so we read this data in the timezone indicated by VALUE </span>
+    <span class="nt">VALUE</span><span class="p">:</span> <span class="nv">*timezone</span>
+</code></pre></div>
+<p><strong>Parameters for For <code>[FITBIT_DATA_CONFIGURATION]</code></strong></p>
 <table>
 <thead>
 <tr>
@@ -1559,7 +1559,7 @@ mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 </tr>
 <tr>
 <td><code>[SOURCE]</code> <code>[COLUMN_FORMAT]</code></td>
-<td><code>JSON</code> or <code>PLAIN_TEXT</code>. Column format of the source data.</td>
+<td><code>JSON</code> or <code>PLAIN_TEXT</code>. Column format of the source data. If you pulled your data directly from the Fitbit API the column containing the sensor data will be in <code>JSON</code> format</td>
 </tr>
 <tr>
 <td><code>[SOURCE]</code> <code>[DATABASE_GROUP]</code></td>
@@ -1567,7 +1567,7 @@ mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 </tr>
 <tr>
 <td><code>[SOURCE]</code> <code>[DEVICE_ID_COLUMN]</code></td>
-<td>The column that has strings that uniquely identify Fitbit devices.</td>
+<td>A column that contains strings that uniquely identify Fitbit devices.</td>
 </tr>
 <tr>
 <td><code>[TIMEZONE]</code> <code>[TYPE]</code></td>
@@ -1579,59 +1579,15 @@ mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 </tr>
 </tbody>
 </table>
+</div>
+</div>
 <hr />
 <h2 id="sensor-and-features-to-process">Sensor and Features to Process<a class="headerlink" href="#sensor-and-features-to-process" title="Permanent link">&para;</a></h2>
-<p>Finally, you need to modify the <code>config.yaml</code> of the sensors you want to process. All sensors follow the same naming nomenclature <code>DEVICE_SENSOR</code> and have the following basic attributes (we will use <code>PHONE_MESSAGES</code> as an example). </p>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>Every time you change any sensor parameters, all the necessary files will be updated as soon as you execute RAPIDS. Some sensors will have specific attributes (like <code>MESSAGES_TYPES</code>) so refer to each sensor documentation.</p>
+<p>Finally, you need to modify the <code>config.yaml</code> section of the sensors you want to extract behavioral features from. All sensors follow the same naming nomenclature (<code>DEVICE_SENSOR</code>) and parameter structure which we explain in the <a href="../../features/feature-introduction/">Behavioral Features Introduction</a>. </p>
+<div class="admonition done">
+<p class="admonition-title">Done</p>
+<p>Head over to <a href="../execution/">Execution</a> to learn how to execute RAPIDS.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="nt">PHONE_MESSAGES</span><span class="p">:</span>
-  <span class="nt">TABLE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">messages</span>
-  <span class="nt">PROVIDERS</span><span class="p">:</span>
-    <span class="nt">RAPIDS</span><span class="p">:</span>
-      <span class="nt">COMPUTE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
-      <span class="nt">MESSAGES_TYPES </span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">received</span><span class="p p-Indicator">,</span> <span class="nv">sent</span><span class="p p-Indicator">]</span>
-      <span class="nt">FEATURES</span><span class="p">:</span> 
-        <span class="nt">received</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">count</span><span class="p p-Indicator">,</span> <span class="nv">distinctcontacts</span><span class="p p-Indicator">,</span> <span class="nv">timefirstmessage</span><span class="p p-Indicator">,</span> <span class="nv">timelastmessage</span><span class="p p-Indicator">,</span> <span class="nv">countmostfrequentcontact</span><span class="p p-Indicator">]</span>
-        <span class="nt">sent</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">count</span><span class="p p-Indicator">,</span> <span class="nv">distinctcontacts</span><span class="p p-Indicator">,</span> <span class="nv">timefirstmessage</span><span class="p p-Indicator">,</span> <span class="nv">timelastmessage</span><span class="p p-Indicator">,</span> <span class="nv">countmostfrequentcontact</span><span class="p p-Indicator">]</span>
-      <span class="nt">SRC_LANGUAGE</span><span class="p">:</span> <span class="s">&quot;r&quot;</span>
-      <span class="nt">SRC_FOLDER</span><span class="p">:</span> <span class="s">&quot;rapids&quot;</span> <span class="c1"># inside src/features/phone_messages</span>
-</code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>[TABLE]</code></td>
-<td>The name of the table in your database that stores this sensor data.</td>
-</tr>
-<tr>
-<td><code>[PROVIDERS]</code></td>
-<td>A collection of  <code>providers</code> . A provider is an author or group of authors that created specific features for the sensor at hand. The provider for all the features implemented by our team is called  <code>RAPIDS</code>  but we have also included contributions from other researchers (for example  <code>DORYAB</code>  for location features).</td>
-</tr>
-<tr>
-<td><code>[PROVIDER]</code> <code>[COMPUTE]</code></td>
-<td>Set this to  <code>TRUE</code>  if you want to process features for this  <code>provider</code> .</td>
-</tr>
-<tr>
-<td><code>[PROVIDER]</code> <code>[FEATURES]</code></td>
-<td>A list of all the features available for the  <code>provider</code> . Delete those that you don&rsquo;t want to compute.</td>
-</tr>
-<tr>
-<td><code>[PROVIDER]</code> <code>[SRC_LANGUAGE]</code></td>
-<td>The programming language ( <code>r</code>  or  <code>python</code> ) in which the features of this  <code>provider</code>  are implemented.</td>
-</tr>
-<tr>
-<td><code>[PROVIDER]</code> <code>[SRC_FOLDER]</code></td>
-<td>The folder where the script(s) to compute the features of this  <code>provider</code>  are stored. This folder is always inside  <code>src/features/[DEVICE_SENSOR]/</code></td>
-</tr>
-</tbody>
-</table>
                 
               
               

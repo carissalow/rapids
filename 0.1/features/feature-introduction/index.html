@@ -475,18 +475,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../phone-data-yield/" class="md-nav__link">
-      Phone Data Yield
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../phone-accelerometer/" class="md-nav__link">
       Phone Accelerometer
     </a>
@@ -561,6 +549,18 @@
   <li class="md-nav__item">
     <a href="../phone-conversation/" class="md-nav__link">
       Phone Conversation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../phone-data-yield/" class="md-nav__link">
+      Phone Data Yield
     </a>
   </li>
 
@@ -982,11 +982,11 @@
 <p>Every phone or Fitbit sensor has a corresponding config section in <code>config.yaml</code>, these sections follow a similar structure and we&rsquo;ll use <code>PHONE_ACCELEROMETER</code> as an example to explain this structure.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
-<p>We recommend reading this page if you are using RAPIDS for the first time</p>
-</div>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>All sensor features are stored under <code>/data/processed/features</code> on files per sensor, per participant and per study (all participants).</p>
+<ul>
+<li>We recommend reading this page if you are using RAPIDS for the first time</li>
+<li>All computed sensor features are stored under <code>/data/processed/features</code> on files per sensor, per participant and per study (all participants).</li>
+<li>Every time you change any sensor parameters, provider parameters or provider features, all the necessary files will be updated as soon as you execute RAPIDS.</li>
+</ul>
 </div>
 <div class="admonition example">
 <p class="admonition-title">Config section example for <code>PHONE_ACCELEROMETER</code></p>
@@ -1029,10 +1029,6 @@
 <h3 id="provider-features">Provider Features<a class="headerlink" href="#provider-features" title="Permanent link">&para;</a></h3>
 <p>Each provider offers a set of behavioral features (see <code>#4.2</code> or <code>#5.2</code> in the example). For some providers these features are grouped in an array (like those for <code>RAPIDS</code> provider in <code>#4.2</code>) but for others they are grouped in a collection of arrays depending on the meaning and purpose of those features (like those for <code>PANDAS</code> provider in <code>#5.2</code>). In either case, you can delete the features you are not interested in and they will not be included in the sensor&rsquo;s output feature file. </p>
 <p>We explain each behavioral feature in a table under the <code>Features description</code> heading on each provider documentation page.</p>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>Every time you change any sensor parameters, provider parameters or provider features, all the necessary files will be updated as soon as you execute RAPIDS.</p>
-</div>
                 
               
               
@@ -1066,13 +1062,13 @@
           </a>
         
         
-          <a href="../phone-data-yield/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../phone-accelerometer/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Phone Data Yield
+                Phone Accelerometer
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">
