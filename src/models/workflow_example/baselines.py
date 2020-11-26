@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from statistics import mean
-from modeling_utils import getMetrics, createPipeline
+from modelling_utils import getMetrics, createPipeline
 from sklearn.model_selection import LeaveOneOut
 
 

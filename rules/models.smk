@@ -79,15 +79,6 @@ rule clean_sensor_features_for_all_participants:
     script:
         "../src/models/workflow_example/clean_sensor_features.R"
 
-
-
-
-
-
-
-
-
-
 rule merge_features_and_targets_for_individual_model:
     input:
         cleaned_sensor_features = "data/processed/features/{pid}/all_sensor_features_cleaned.csv",
@@ -133,7 +124,7 @@ rule baselines_for_population_model:
     script:
         "../src/models/workflow_example/baselines.py"
 
-rule modeling_for_individual_participants:
+rule modelling_for_individual_participants:
     input:
         data = "data/processed/models/individual_model/{pid}/input.csv"
     params:
@@ -151,9 +142,9 @@ rule modeling_for_individual_participants:
     log:
         "data/processed/models/individual_model/{pid}/output_{cv_method}/{model}/{scaler}/notes.log"
     script:
-        "../src/models/workflow_example/modeling.py"
+        "../src/models/workflow_example/modelling.py"
 
-rule modeling_for_all_participants:
+rule modelling_for_all_participants:
     input:
         data = "data/processed/models/population_model/input.csv"
     params:
@@ -171,4 +162,4 @@ rule modeling_for_all_participants:
     log:
         "data/processed/models/population_model/output_{cv_method}/{model}/{scaler}/notes.log"
     script:
-        "../src/models/workflow_example/modeling.py"
+        "../src/models/workflow_example/modelling.py"

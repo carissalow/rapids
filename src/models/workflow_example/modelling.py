@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from modeling_utils import getMatchingColNames, getNormAllParticipantsScaler, getMetrics, getFeatureImportances, createPipeline
+from modelling_utils import getMatchingColNames, getNormAllParticipantsScaler, getMetrics, getFeatureImportances, createPipeline
 from sklearn.model_selection import LeaveOneOut, GridSearchCV
 
 
