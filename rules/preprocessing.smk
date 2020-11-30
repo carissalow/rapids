@@ -176,7 +176,8 @@ rule phone_application_categories:
 
 rule fitbit_parse_heartrate:
     input:
-        "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_raw.csv"
+        participant_file = "data/external/participant_files/{pid}.yaml",
+        raw_data = "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_raw.csv"
     params:
         timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
         table = lambda wildcards: config["FITBIT_HEARTRATE_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
@@ -189,7 +190,8 @@ rule fitbit_parse_heartrate:
 
 rule fitbit_parse_steps:
     input:
-        "data/raw/{pid}/fitbit_steps_{fitbit_data_type}_raw.csv"
+        participant_file = "data/external/participant_files/{pid}.yaml",
+        raw_data = "data/raw/{pid}/fitbit_steps_{fitbit_data_type}_raw.csv"
     params:
         timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
         table = lambda wildcards: config["FITBIT_STEPS_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
@@ -202,7 +204,8 @@ rule fitbit_parse_steps:
 
 rule fitbit_parse_sleep:
     input:
-        "data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_raw.csv"
+        participant_file = "data/external/participant_files/{pid}.yaml",
+        raw_data = "data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_raw.csv"
     params:
         timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
         table = lambda wildcards: config["FITBIT_SLEEP_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],

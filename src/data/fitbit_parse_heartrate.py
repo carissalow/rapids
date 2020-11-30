@@ -1,4 +1,4 @@
-import json, sys
+import yaml, json, sys
 import pandas as pd
 import numpy as np
 from datetime import datetime, timezone
@@ -93,7 +93,6 @@ def parseHeartrateIntradayData(records_intraday, dataset, device_id, curr_date, 
         records_intraday.append(row_intraday)
     return records_intraday
 
-# def append_timestamp(data):
 
 
 def parseHeartrateData(heartrate_data, fitbit_data_type):
@@ -132,11 +131,21 @@ timezone = snakemake.params["timezone"]
 column_format = snakemake.params["column_format"]
 fitbit_data_type = snakemake.params["fitbit_data_type"]
 
+with open(snakemake.input["participant_file"], "r", encoding="utf-8") as f:
+    participant_file = yaml.safe_load(f)
+local_start_date = pd.Timestamp(participant_file["FITBIT"]["START_DATE"])
+local_end_date = pd.Timestamp(participant_file["FITBIT"]["END_DATE"]) + pd.DateOffset(1)
+
 if column_format == "JSON":
-    json_raw = pd.read_csv(snakemake.input[0])
+    json_raw = pd.read_csv(snakemake.input["raw_data"])
     parsed_data = parseHeartrateData(json_raw, fitbit_data_type)
 elif column_format == "PLAIN_TEXT":
-    parsed_data = pd.read_csv(snakemake.input[0], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
+    parsed_data = pd.read_csv(snakemake.input["raw_data"], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
+else:
+    raise ValueError("column_format can only be one of ['JSON', 'PLAIN_TEXT'].")
+
+# Only keep dates in the range of [local_start_date, local_end_date)
+parsed_data = parsed_data.loc[(parsed_data["local_date_time"] >= local_start_date) & (parsed_data["local_date_time"] < local_end_date)]
 
 if parsed_data.shape[0] > 0:
     parsed_data["timestamp"] = parsed_data["local_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6

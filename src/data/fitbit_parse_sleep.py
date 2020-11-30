@@ -1,4 +1,4 @@
-import json
+import json, yaml
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -222,30 +222,42 @@ column_format = snakemake.params["column_format"]
 fitbit_data_type = snakemake.params["fitbit_data_type"]
 sleep_episode_timestamp = snakemake.params["sleep_episode_timestamp"]
 
+with open(snakemake.input["participant_file"], "r", encoding="utf-8") as f:
+    participant_file = yaml.safe_load(f)
+local_start_date = pd.Timestamp(participant_file["FITBIT"]["START_DATE"])
+local_end_date = pd.Timestamp(participant_file["FITBIT"]["END_DATE"]) + pd.DateOffset(1)
+
 if column_format == "JSON":
-    json_raw = pd.read_csv(snakemake.input[0])
+    json_raw = pd.read_csv(snakemake.input["raw_data"])
     parsed_data = parseSleepData(json_raw, fitbit_data_type)
 elif column_format == "PLAIN_TEXT":
     if fitbit_data_type == "summary":
-        parsed_data = pd.read_csv(snakemake.input[0], parse_dates=["local_start_date_time", "local_end_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
+        parsed_data = pd.read_csv(snakemake.input["raw_data"], parse_dates=["local_start_date_time", "local_end_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
     elif fitbit_data_type == "intraday":
-        parsed_data = pd.read_csv(snakemake.input[1], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
+        parsed_data = pd.read_csv(snakemake.input["raw_data"], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
     else:
         raise ValueError("fitbit_data_type can only be one of ['summary', 'intraday'].")
 else:
     raise ValueError("column_format can only be one of ['JSON', 'PLAIN_TEXT'].")
 
 if parsed_data.shape[0] > 0 and fitbit_data_type == "summary":
-    if sleep_episode_timestamp == "start":
-        parsed_data["timestamp"] = parsed_data["local_start_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
-    elif sleep_episode_timestamp == "end":
-        parsed_data["timestamp"] = parsed_data["local_end_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
-    else:
+    
+    if sleep_episode_timestamp != "start" and sleep_episode_timestamp != "end":
         raise ValueError("SLEEP_EPISODE_TIMESTAMP can only be one of ['start', 'end'].")
+
+    # Column name to be considered as the event datetime
+    datetime_column = "local_" + sleep_episode_timestamp + "_date_time"
+    # Only keep dates in the range of [local_start_date, local_end_date)
+    parsed_data = parsed_data.loc[(parsed_data[datetime_column] >= local_start_date) & (parsed_data[datetime_column] < local_end_date)]
+    # Convert datetime to timestamp
+    parsed_data["timestamp"] = parsed_data[datetime_column].dt.tz_localize(timezone).astype(np.int64) // 10**6
     # Drop useless columns: local_start_date_time and local_end_date_time
     parsed_data.drop(["local_start_date_time", "local_end_date_time"], axis = 1, inplace=True)
 
 if parsed_data.shape[0] > 0 and fitbit_data_type == "intraday":
+    # Only keep dates in the range of [local_start_date, local_end_date)
+    parsed_data = parsed_data.loc[(parsed_data["local_date_time"] >= local_start_date) & (parsed_data["local_date_time"] < local_end_date)]
+    # Convert datetime to timestamp
     parsed_data["timestamp"] = parsed_data["local_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
     # Unifying level
     parsed_data["unified_level"] = np.where(parsed_data["level"].isin(["awake", "wake", "restless"]), 0, 1)
