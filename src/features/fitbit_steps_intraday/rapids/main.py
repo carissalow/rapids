@@ -9,20 +9,20 @@ def statsFeatures(steps_data, features_to_compute, features_type, steps_features
     else:
         raise ValueError("features_type can only be one of ['steps', 'sumsteps', 'durationsedentarybout', 'durationactivebout'].")
 
-    if ("summarycount" if features_type == "sumsteps" else "intradaycount") + features_type.replace("duration", "episode") in features_to_compute:
-        steps_features["steps_rapids_" + ("summarycount" if features_type == "sumsteps" else "intradaycount") + features_type.replace("duration", "episode")] = steps_data.groupby(["local_segment"])[col_name].count()
-    if ("summarysum" if features_type == "sumsteps" else "intradaysum") + features_type in features_to_compute:
-        steps_features["steps_rapids_" + ("summarysum" if features_type == "sumsteps" else "intradaysum") + features_type] = steps_data.groupby(["local_segment"])[col_name].sum()
-    if ("summarymax" if features_type == "sumsteps" else "intradaymax") + features_type in features_to_compute:
-        steps_features["steps_rapids_" + ("summarymax" if features_type == "sumsteps" else "intradaymax") + features_type] = steps_data.groupby(["local_segment"])[col_name].max()
-    if ("summarymin" if features_type == "sumsteps" else "intradaymin") + features_type in features_to_compute:
-        steps_features["steps_rapids_" + ("summarymin" if features_type == "sumsteps" else "intradaymin") + features_type] = steps_data.groupby(["local_segment"])[col_name].min()
-    if ("summaryavg" if features_type == "sumsteps" else "intradayavg") + features_type in features_to_compute:
-        steps_features["steps_rapids_" + ("summaryavg" if features_type == "sumsteps" else "intradayavg") + features_type] = steps_data.groupby(["local_segment"])[col_name].mean()
-    if ("summarymedian" if features_type == "sumsteps" else "intradaymedian") + features_type in features_to_compute:
-        steps_features["steps_rapids_" + ("summarymedian" if features_type == "sumsteps" else "intradaymedian") + features_type] = steps_data.groupby(["local_segment"])[col_name].median()
-    if ("summarystd" if features_type == "sumsteps" else "intradaystd") + features_type in features_to_compute:
-        steps_features["steps_rapids_" + ("summarystd" if features_type == "sumsteps" else "intradaystd") + features_type] = steps_data.groupby(["local_segment"])[col_name].std()
+    if "count" + features_type.replace("duration", "episode") in features_to_compute:
+        steps_features["count" + features_type.replace("duration", "episode")] = steps_data.groupby(["local_segment"])[col_name].count()
+    if "sum" + features_type in features_to_compute:
+        steps_features["sum" + features_type] = steps_data.groupby(["local_segment"])[col_name].sum()
+    if "max" + features_type in features_to_compute:
+        steps_features["max" + features_type] = steps_data.groupby(["local_segment"])[col_name].max()
+    if "min" + features_type in features_to_compute:
+        steps_features["min" + features_type] = steps_data.groupby(["local_segment"])[col_name].min()
+    if "avg" + features_type in features_to_compute:
+        steps_features["avg" + features_type] = steps_data.groupby(["local_segment"])[col_name].mean()
+    if "median" + features_type in features_to_compute:
+        steps_features["median" + features_type] = steps_data.groupby(["local_segment"])[col_name].median()
+    if "std" + features_type in features_to_compute:
+        steps_features["std" + features_type] = steps_data.groupby(["local_segment"])[col_name].std()
 
     return steps_features
 
@@ -73,13 +73,13 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
 
     requested_intraday_features = provider["FEATURES"]
 
-    requested_intraday_features_steps = ["intraday" + x + "steps" for x in requested_intraday_features["STEPS"]]
-    requested_intraday_features_sedentarybout = ["intraday" + x + "sedentarybout" for x in requested_intraday_features["SEDENTARY_BOUT"]]
-    requested_intraday_features_activebout = ["intraday" + x + "activebout" for x in requested_intraday_features["ACTIVE_BOUT"]]
+    requested_intraday_features_steps = [x + "steps" for x in requested_intraday_features["STEPS"]]
+    requested_intraday_features_sedentarybout = [x + "sedentarybout" for x in requested_intraday_features["SEDENTARY_BOUT"]]
+    requested_intraday_features_activebout = [x + "activebout" for x in requested_intraday_features["ACTIVE_BOUT"]]
     # name of the features this function can compute
-    base_intraday_features_steps = ["intradaysumsteps", "intradaymaxsteps", "intradayminsteps", "intradayavgsteps", "intradaystdsteps"]
-    base_intraday_features_sedentarybout = ["intradaycountepisodesedentarybout", "intradaysumdurationsedentarybout", "intradaymaxdurationsedentarybout", "intradaymindurationsedentarybout", "intradayavgdurationsedentarybout", "intradaystddurationsedentarybout"]
-    base_intraday_features_activebout = ["intradaycountepisodeactivebout", "intradaysumdurationactivebout", "intradaymaxdurationactivebout", "intradaymindurationactivebout", "intradayavgdurationactivebout", "intradaystddurationactivebout"]
+    base_intraday_features_steps = ["sumsteps", "maxsteps", "minsteps", "avgsteps", "stdsteps"]
+    base_intraday_features_sedentarybout = ["countepisodesedentarybout", "sumdurationsedentarybout", "maxdurationsedentarybout", "mindurationsedentarybout", "avgdurationsedentarybout", "stddurationsedentarybout"]
+    base_intraday_features_activebout = ["countepisodeactivebout", "sumdurationactivebout", "maxdurationactivebout", "mindurationactivebout", "avgdurationactivebout", "stddurationactivebout"]
     # the subset of requested features this function can compute
     intraday_features_to_compute_steps = list(set(requested_intraday_features_steps) & set(base_intraday_features_steps))
     intraday_features_to_compute_sedentarybout = list(set(requested_intraday_features_sedentarybout) & set(base_intraday_features_sedentarybout))
@@ -88,7 +88,7 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
     intraday_features_to_compute = intraday_features_to_compute_steps + intraday_features_to_compute_sedentarybout + intraday_features_to_compute_activebout
 
     # extract features from intraday features
-    steps_intraday_features = pd.DataFrame(columns=["local_segment"] + ["steps_rapids_" + x for x in intraday_features_to_compute])
+    steps_intraday_features = pd.DataFrame(columns=["local_segment"] + intraday_features_to_compute)
     if not steps_intraday_data.empty:
         steps_intraday_data = filter_data_by_segment(steps_intraday_data, day_segment)
 

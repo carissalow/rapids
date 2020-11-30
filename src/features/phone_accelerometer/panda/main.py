@@ -26,17 +26,17 @@ def getActivityEpisodes(acc_minute):
 
 def statsFeatures(acc_data, features_to_compute, features_type, acc_features):
     if "sum" + features_type in features_to_compute:
-        acc_features["acc_panda_sum" + features_type] = acc_data.groupby(["local_segment"])["duration"].sum()
+        acc_features["sum" + features_type] = acc_data.groupby(["local_segment"])["duration"].sum()
     if "max" + features_type in features_to_compute:
-        acc_features["acc_panda_max" + features_type] = acc_data.groupby(["local_segment"])["duration"].max()
+        acc_features["max" + features_type] = acc_data.groupby(["local_segment"])["duration"].max()
     if "min" + features_type in features_to_compute:
-        acc_features["acc_panda_min" + features_type] = acc_data.groupby(["local_segment"])["duration"].min()
+        acc_features["min" + features_type] = acc_data.groupby(["local_segment"])["duration"].min()
     if "avg" + features_type in features_to_compute:
-        acc_features["acc_panda_avg" + features_type] = acc_data.groupby(["local_segment"])["duration"].mean()
+        acc_features["avg" + features_type] = acc_data.groupby(["local_segment"])["duration"].mean()
     if "median" + features_type in features_to_compute:
-        acc_features["acc_panda_median" + features_type] = acc_data.groupby(["local_segment"])["duration"].median()
+        acc_features["median" + features_type] = acc_data.groupby(["local_segment"])["duration"].median()
     if "std" + features_type in features_to_compute:
-        acc_features["acc_panda_std" + features_type] = acc_data.groupby(["local_segment"])["duration"].std()
+        acc_features["std" + features_type] = acc_data.groupby(["local_segment"])["duration"].std()
 
     return acc_features
 
@@ -56,7 +56,7 @@ def panda_features(sensor_data_files, day_segment, provider, filter_data_by_segm
 
     features_to_compute =  features_to_compute_exertionalactivityepisode + features_to_compute_nonexertionalactivityepisode + (["validsensedminutes"] if valid_sensed_minutes else [])
 
-    acc_features = pd.DataFrame(columns=["local_segment"] + ["acc_panda_" + x for x in features_to_compute])
+    acc_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
     if not acc_data.empty:
         acc_data = filter_data_by_segment(acc_data, day_segment)
         
@@ -72,7 +72,7 @@ def panda_features(sensor_data_files, day_segment, provider, filter_data_by_segm
                 acc_minute.reset_index(inplace=True)
 
                 if valid_sensed_minutes:
-                    acc_features["acc_panda_validsensedminutes"] = acc_minute.groupby(["local_segment"])["isexertionalactivity"].count()
+                    acc_features["validsensedminutes"] = acc_minute.groupby(["local_segment"])["isexertionalactivity"].count()
                 
                 activity_episodes = getActivityEpisodes(acc_minute)
                 # compute exertional episodes features

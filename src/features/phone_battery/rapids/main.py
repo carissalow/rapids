@@ -11,7 +11,7 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
     requested_features = provider["FEATURES"]
     features_to_compute = list(set(requested_features) & set(base_features_names))
 
-    battery_features = pd.DataFrame(columns=["local_segment"] + ["battery_rapids_" + x for x in features_to_compute])
+    battery_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
     if not battery_data.empty:
         battery_data = filter_data_by_segment(battery_data, day_segment)
 
@@ -28,21 +28,21 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
             battery_discharge_episodes = battery_episodes[(battery_episodes["battery_status"] == 3) | (battery_episodes["battery_status"] == 4)]
             battery_discharge_features = pd.DataFrame()
             if "countdischarge" in features_to_compute:
-                battery_discharge_features["battery_rapids_countdischarge"] = battery_discharge_episodes.groupby(["local_segment"])["episode_id"].count()
+                battery_discharge_features["countdischarge"] = battery_discharge_episodes.groupby(["local_segment"])["episode_id"].count()
             if "sumdurationdischarge" in features_to_compute:
-                battery_discharge_features["battery_rapids_sumdurationdischarge"] = battery_discharge_episodes.groupby(["local_segment"])["duration"].sum()
+                battery_discharge_features["sumdurationdischarge"] = battery_discharge_episodes.groupby(["local_segment"])["duration"].sum()
             if "avgconsumptionrate" in features_to_compute:
-                battery_discharge_features["battery_rapids_avgconsumptionrate"] = battery_discharge_episodes.groupby(["local_segment"])["battery_consumption_rate"].mean()
+                battery_discharge_features["avgconsumptionrate"] = battery_discharge_episodes.groupby(["local_segment"])["battery_consumption_rate"].mean()
             if "maxconsumptionrate" in features_to_compute:
-                battery_discharge_features["battery_rapids_maxconsumptionrate"] = battery_discharge_episodes.groupby(["local_segment"])["battery_consumption_rate"].max()
+                battery_discharge_features["maxconsumptionrate"] = battery_discharge_episodes.groupby(["local_segment"])["battery_consumption_rate"].max()
 
             # for charge episodes
             battery_charge_episodes = battery_episodes[(battery_episodes["battery_status"] == 2) | (battery_episodes["battery_status"] == 5)]
             battery_charge_features = pd.DataFrame()
             if "countcharge" in features_to_compute:
-                battery_charge_features["battery_rapids_countcharge"] = battery_charge_episodes.groupby(["local_segment"])["episode_id"].count()
+                battery_charge_features["countcharge"] = battery_charge_episodes.groupby(["local_segment"])["episode_id"].count()
             if "sumdurationcharge" in features_to_compute:
-                battery_charge_features["battery_rapids_sumdurationcharge"] = battery_charge_episodes.groupby(["local_segment"])["duration"].sum()
+                battery_charge_features["sumdurationcharge"] = battery_charge_episodes.groupby(["local_segment"])["duration"].sum()
             
             # combine discharge features and charge features; fill the missing values with ZERO
             battery_features = pd.concat([battery_discharge_features, battery_charge_features], axis=1, sort=True).fillna(0)
