@@ -107,6 +107,7 @@ nav:
     - Testing: developers/testing.md
     - Test cases: developers/test-cases.md
   - Others:
+    - Code of Conduct: code_of_conduct.md
     - Frequently Asked Questions: faq.md
     - Team: team.md
     - Citation: citation.md
