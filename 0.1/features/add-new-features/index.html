@@ -1030,12 +1030,18 @@
 <li>Phone Bluetooth</li>
 <li>Phone Calls</li>
 <li>Phone Conversation</li>
+<li>Phone Data Yield</li>
 <li>Phone Light</li>
 <li>Phone Locations</li>
 <li>Phone Messages</li>
 <li>Phone Screen</li>
 <li>Phone WiFI Connected</li>
 <li>Phone WiFI Visible</li>
+<li>Fitbit Heart Rate Summary</li>
+<li>Fitbit Heart Rate Intraday</li>
+<li>Fitbit Sleep Summary</li>
+<li>Fitbit Steps Summary</li>
+<li>Fitbit Steps Intraday</li>
 </ul>
 </details>
 <h3 id="modify-the-configyaml-file">Modify the <code>config.yaml</code> file<a class="headerlink" href="#modify-the-configyaml-file" title="Permanent link">&para;</a></h3>
@@ -1160,7 +1166,7 @@
 </ul>
 <p>For this example, RAPIDS will call your provider function three times for <code>p01</code>, once where <code>day_segment</code> is <code>my_days</code>, once where <code>day_segment</code> is <code>my_weeks</code> and once where <code>day_segment</code> is <code>my_weekends</code>. In this example not every row in <code>p01</code>&lsquo;s data needs to take part in the feature computation for either segment <strong>and</strong> the rows need to be grouped differently. </p>
 <p>Thus <code>filter_data_by_segment()</code> comes in handy, it will return a data frame that contains the rows that were logged during a day segment plus an extra column called <code>local_segment</code>. This new column will have as many unique values as day segment instances exist (14, 2, and 2 for our <code>p01</code>&lsquo;s <code>my_days</code>, <code>my_weeks</code>, and <code>my_weekends</code> examples). After filtering, <strong>you should group the data frame by this column and compute any desired features</strong>, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;acc_rapids_maxmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;maxmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 </code></pre></div>
 <p>The reason RAPIDS does not filter the participant&rsquo;s data set for you is because your code might need to compute something based on a participant&rsquo;s complete dataset before computing their features. For example, you might want to identify the number that called a participant the most throughout the study before computing a feature with the number of calls the participant received from this number.</p>
 </details>
@@ -1168,7 +1174,7 @@
 <ul>
 <li>One row per day segment instance (e.g. 14 our <code>p01</code>&lsquo;s <code>my_days</code> example)</li>
 <li>The <code>local_segment</code> column added by <code>filter_data_by_segment()</code></li>
-<li>One column per feature. By convention the name of your features should only contain letters or numbers (<code>feature1</code>). RAPIDS will automatically add the right sensor and provider prefix (<code>accelerometr_vega_</code>)</li>
+<li>One column per feature. By convention the name of your features should only contain letters or numbers (<code>feature1</code>). RAPIDS will automatically add the right sensor and provider prefix (<code>phone_accelerometr_vega_</code>)</li>
 </ul>
 </details>
 <details class="example"><summary><code>PHONE_ACCELEROMETER</code> Provider Example</summary><p>For your reference, this a short example of our own provider (<code>RAPIDS</code>) for <code>PHONE_ACCELEROMETER</code> that computes five acceleration features</p>
@@ -1181,7 +1187,7 @@
     <span class="c1"># the subset of requested features this function can compute</span>
     <span class="n">features_to_compute</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">requested_features</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">base_features_names</span><span class="p">))</span>
 
-    <span class="n">acc_features</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;local_segment&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;acc_rapids_&quot;</span> <span class="o">+</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">features_to_compute</span><span class="p">])</span>
+    <span class="n">acc_features</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;local_segment&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">features_to_compute</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
         <span class="n">acc_data</span> <span class="o">=</span> <span class="n">filter_data_by_segment</span><span class="p">(</span><span class="n">acc_data</span><span class="p">,</span> <span class="n">day_segment</span><span class="p">)</span>
 
@@ -1192,15 +1198,15 @@
             <span class="n">acc_data</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">magnitude</span> <span class="o">=</span> <span class="n">magnitude</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="s2">&quot;maxmagnitude&quot;</span> <span class="ow">in</span> <span class="n">features_to_compute</span><span class="p">:</span>
-                <span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;acc_rapids_maxmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+                <span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;maxmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
             <span class="k">if</span> <span class="s2">&quot;minmagnitude&quot;</span> <span class="ow">in</span> <span class="n">features_to_compute</span><span class="p">:</span>
-                <span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;acc_rapids_minmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                <span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;minmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
             <span class="k">if</span> <span class="s2">&quot;avgmagnitude&quot;</span> <span class="ow">in</span> <span class="n">features_to_compute</span><span class="p">:</span>
-                <span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;acc_rapids_avgmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                <span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;avgmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
             <span class="k">if</span> <span class="s2">&quot;medianmagnitude&quot;</span> <span class="ow">in</span> <span class="n">features_to_compute</span><span class="p">:</span>
-                <span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;acc_rapids_medianmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+                <span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;medianmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
             <span class="k">if</span> <span class="s2">&quot;stdmagnitude&quot;</span> <span class="ow">in</span> <span class="n">features_to_compute</span><span class="p">:</span>
-                <span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;acc_rapids_stdmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+                <span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;stdmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
 
             <span class="n">acc_features</span> <span class="o">=</span> <span class="n">acc_features</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
 
