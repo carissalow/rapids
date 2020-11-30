@@ -26,12 +26,18 @@ As a tutorial, we will add a new provider for `PHONE_ACCELEROMETER` called `VEGA
     - Phone Bluetooth
     - Phone Calls
     - Phone Conversation
+    - Phone Data Yield
     - Phone Light
     - Phone Locations
     - Phone Messages
     - Phone Screen
     - Phone WiFI Connected
     - Phone WiFI Visible
+    - Fitbit Heart Rate Summary
+    - Fitbit Heart Rate Intraday
+    - Fitbit Sleep Summary
+    - Fitbit Steps Summary
+    - Fitbit Steps Intraday
 
 
 ### Modify the `config.yaml` file
@@ -129,7 +135,7 @@ The code to extract your behavioral features should be implemented in your provi
     Thus `filter_data_by_segment()` comes in handy, it will return a data frame that contains the rows that were logged during a day segment plus an extra column called `local_segment`. This new column will have as many unique values as day segment instances exist (14, 2, and 2 for our `p01`'s `my_days`, `my_weeks`, and `my_weekends` examples). After filtering, **you should group the data frame by this column and compute any desired features**, for example:
 
     ```python
-    acc_features["acc_rapids_maxmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].max()
+    acc_features["maxmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].max()
     ```
 
     The reason RAPIDS does not filter the participant's data set for you is because your code might need to compute something based on a participant's complete dataset before computing their features. For example, you might want to identify the number that called a participant the most throughout the study before computing a feature with the number of calls the participant received from this number.
@@ -139,7 +145,7 @@ The code to extract your behavioral features should be implemented in your provi
     
     -  One row per day segment instance (e.g. 14 our `p01`'s `my_days` example)
     -  The `local_segment` column added by `filter_data_by_segment()`
-    -  One column per feature. By convention the name of your features should only contain letters or numbers (`feature1`). RAPIDS will automatically add the right sensor and provider prefix (`accelerometr_vega_`)
+    -  One column per feature. By convention the name of your features should only contain letters or numbers (`feature1`). RAPIDS will automatically add the right sensor and provider prefix (`phone_accelerometr_vega_`)
 
 ??? example "`PHONE_ACCELEROMETER` Provider Example"
     For your reference, this a short example of our own provider (`RAPIDS`) for `PHONE_ACCELEROMETER` that computes five acceleration features
@@ -154,7 +160,7 @@ The code to extract your behavioral features should be implemented in your provi
         # the subset of requested features this function can compute
         features_to_compute = list(set(requested_features) & set(base_features_names))
 
-        acc_features = pd.DataFrame(columns=["local_segment"] + ["acc_rapids_" + x for x in features_to_compute])
+        acc_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
         if not acc_data.empty:
             acc_data = filter_data_by_segment(acc_data, day_segment)
             
@@ -165,15 +171,15 @@ The code to extract your behavioral features should be implemented in your provi
                 acc_data = acc_data.assign(magnitude = magnitude.values)
                 
                 if "maxmagnitude" in features_to_compute:
-                    acc_features["acc_rapids_maxmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].max()
+                    acc_features["maxmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].max()
                 if "minmagnitude" in features_to_compute:
-                    acc_features["acc_rapids_minmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].min()
+                    acc_features["minmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].min()
                 if "avgmagnitude" in features_to_compute:
-                    acc_features["acc_rapids_avgmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].mean()
+                    acc_features["avgmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].mean()
                 if "medianmagnitude" in features_to_compute:
-                    acc_features["acc_rapids_medianmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].median()
+                    acc_features["medianmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].median()
                 if "stdmagnitude" in features_to_compute:
-                    acc_features["acc_rapids_stdmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].std()
+                    acc_features["stdmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].std()
                 
                 acc_features = acc_features.reset_index()
 
