@@ -355,6 +355,9 @@ FITBIT_STEPS_INTRADAY:
 #                                                 PLOTS                                                                #
 ########################################################################################################################
 
+HISTOGRAM_PHONE_DATA_YIELD:
+  PLOT: False
+
 HEATMAP_FEATURES_CORRELATIONS:
   PLOT: False
   MIN_ROWS_RATIO: 0.5
@@ -364,11 +367,6 @@ HEATMAP_FEATURES_CORRELATIONS:
   FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
   CORR_THRESHOLD: 0.1
   CORR_METHOD: "pearson" # choose from {"pearson", "kendall", "spearman"}
-
-HISTOGRAM_VALID_SENSED_HOURS:
-  PLOT: False
-  MIN_VALID_HOURS_PER_DAY: #*min_valid_hours_per_day
-  MIN_VALID_BINS_PER_HOUR: #*min_valid_bins_per_hour
 
 HEATMAP_DAYS_BY_SENSORS:
   PLOT: False

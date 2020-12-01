@@ -1,3 +1,14 @@
+rule histogram_phone_data_yield:
+    input:
+        "data/processed/features/all_participants/all_sensor_features.csv"
+    output:
+        "reports/data_exploration/histogram_phone_data_yield.html"
+    script:
+        "../src/visualization/histogram_phone_data_yield.py"
+
+
+
+
 rule heatmap_features_correlations:
     input:
         features = expand("data/processed/{pid}/{sensor}_{day_segment}.csv", pid=config["PIDS"], sensor=config["HEATMAP_FEATURES_CORRELATIONS"]["PHONE_FEATURES"]+config["HEATMAP_FEATURES_CORRELATIONS"]["FITBIT_FEATURES"], day_segment=config["DAY_SEGMENTS"]),
@@ -10,14 +21,6 @@ rule heatmap_features_correlations:
         "reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/heatmap_features_correlations.html"
     script:
         "../src/visualization/heatmap_features_correlations.py"
-
-rule histogram_valid_sensed_hours:
-    input:
-        phone_valid_sensed_days = expand("data/interim/{pid}/phone_valid_sensed_days_{{min_valid_hours_per_day}}hours_{{min_valid_bins_per_hour}}bins.csv", pid=config["PIDS"])
-    output:
-        "reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/histogram_valid_sensed_hours.html"
-    script:
-         "../src/visualization/histogram_valid_sensed_hours.py"
 
 rule heatmap_days_by_sensors:
     input:
