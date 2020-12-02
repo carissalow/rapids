@@ -327,10 +327,16 @@ Time segments (or epochs) are the time windows on which you want to extract beha
     daily,00:00:00,23H 59M 59S,every_day,0
     ```
 === "Morning"
-    Use the following `Periodic` segment file to create morning segments starting from 06:00 and ending at 12:00 of every day in your study
+    Use the following `Periodic` segment file to create morning segments starting at 06:00:00 and ending at 11:59:59 of every day in your study
     ```csv
     label,start_time,length,repeats_on,repeats_value
-    morning,00:00:00,5H 59M 59S,every_day,0
+    morning,06:00:00,5H 59M 59S,every_day,0
+    ```
+=== "Overnight"
+    Use the following `Periodic` segment file to create overnight segments starting at 20:00:00 and ending at 07:59:59 (next day) of every day in your study
+    ```csv
+    label,start_time,length,repeats_on,repeats_value
+    morning,20:00:00,11H 59M 59S,every_day,0
     ```
 === "Weekly"
     Use the following `Periodic` segment file to create **non-overlapping** weekly segments starting at midnight of every **Monday** in your study
