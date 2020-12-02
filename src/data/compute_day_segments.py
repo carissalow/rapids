@@ -168,10 +168,10 @@ def parse_periodic_segments(day_segments):
     day_segments.loc[day_segments["repeats_on"] == "every_day", "repeats_value"] = 0
     return day_segments
 
-def parse_event_segments(day_segments, device_id):
-    return day_segments.query("device_id == @device_id")
+def parse_event_segments(day_segments, device_ids):
+    return day_segments.query("device_id == @device_ids")
 
-def parse_day_segments(day_segments_file, segments_type, device_id):
+def parse_day_segments(day_segments_file, segments_type, device_ids):
     # Add code to validate and parse frequencies, intervals, and events
     # Expected formats:
     # Frequency: label, length columns (e.g. my_prefix, 5) length has to be in minutes (int)
@@ -196,15 +196,18 @@ def parse_day_segments(day_segments_file, segments_type, device_id):
     elif(segments_type == "PERIODIC" and is_valid_periodic_segments(day_segments, day_segments_file)):
         day_segments = parse_periodic_segments(day_segments)
     elif(segments_type == "EVENT" and is_valid_event_segments(day_segments, day_segments_file)):
-        day_segments = parse_event_segments(day_segments, device_id)
+        day_segments = parse_event_segments(day_segments, device_ids)
     else:
         raise ValueError("{} does not have a format compatible with frequency, periodic or event day segments. Please refer to [LINK]".format(day_segments_file))
     return day_segments
 
 participant_file = yaml.load(open(snakemake.input[1], 'r'), Loader=yaml.FullLoader)
-device_id = participant_file["PHONE"]["DEVICE_IDS"]
-device_id = device_id[len(device_id) -1 ]
-final_day_segments = parse_day_segments(snakemake.input[0], snakemake.params["day_segments_type"], device_id)
+device_ids = []
+for key in participant_file.keys():
+    if "DEVICE_IDS" in participant_file[key]:
+        device_ids = device_ids + participant_file[key]["DEVICE_IDS"]
+
+final_day_segments = parse_day_segments(snakemake.input[0], snakemake.params["day_segments_type"], device_ids)
 
 if snakemake.params["day_segments_type"] == "EVENT" and final_day_segments.shape[0] == 0:
     warnings.warn("There are no event day segments for {}. Check your day segment file {}".format(snakemake.params["pid"], snakemake.input[0]))
