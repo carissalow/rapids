@@ -2,7 +2,7 @@ name: docs
 on:
   push:
     branches:
-      - time_segments
+      - day_segments
 jobs:
   deploy:
     runs-on: ubuntu-latest
