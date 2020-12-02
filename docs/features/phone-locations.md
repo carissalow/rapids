@@ -41,7 +41,7 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][BARNETT]`:
 |`[COMPUTE]`| Set to `True` to extract `PHONE_LOCATIONS` features from the `BARNETT` provider|
 |`[FEATURES]` |         Features to be computed, see table below
 |`[ACCURACY_LIMIT]` |   An integer in meters, any location rows with an accuracy higher than this will be dropped. This number means there's a 68% probability the true location is within this radius
-|`[TIMEZONE]` |    Timezone where the location data was collected. By default points to the one defined in the [Initial configuration](../../setup/configuration#timezone-of-your-study)
+|`[TIMEZONE]` |    Timezone where the location data was collected. By default points to the one defined in the [Configuration](../../setup/configuration#timezone-of-your-study)
 |`[MINUTES_DATA_USED]` |    Set to `True` to include an extra column in the final location feature file containing the number of minutes used to compute the features on each day segment. Use this for quality control purposes, the more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
 
 

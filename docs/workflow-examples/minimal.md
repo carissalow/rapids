@@ -4,7 +4,7 @@ Minimal Working Example
 This is a quick guide for creating and running a simple pipeline to extract missing, outgoing, and incoming call features for `daily` and `night` epochs of one participant monitored on the US East coast.
 
 1. Install RAPIDS and make sure your `conda` environment is active (see [Installation](../../setup/installation))
-2. Make the changes listed below for the corresponding [Initial Configuration](../../setup/configuration) step (we provide an example of what the relevant sections in your `config.yml` will look like after you are done)
+2. Make the changes listed below for the corresponding [Configuration](../../setup/configuration) step (we provide an example of what the relevant sections in your `config.yml` will look like after you are done)
     
     !!! info "Things to change on each configuration step"
         1\. Setup your database connection credentials in `.env`. We assume your credentials group is called `MY_GROUP`.

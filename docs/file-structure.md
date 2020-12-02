@@ -1,7 +1,7 @@
 # File Structure
 
 !!! tip
-    Read this page if you want to learn more about how RAPIDS is structured. If you want to start using it go to [Installation](../setup/installation/) and then to [Initial Configuration](../setup/configuration/)
+    Read this page if you want to learn more about how RAPIDS is structured. If you want to start using it go to [Installation](../setup/installation/), then to [Configuration](../setup/configuration/), and then to [Execution](../setup/execution/)
 
 All paths mentioned in this page are relative to RAPIDS' root folder.
 

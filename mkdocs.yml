@@ -72,7 +72,7 @@ nav:
   - Setup:
     - File Structure: file-structure.md
     - Installation: 'setup/installation.md'
-    - Initial Configuration: setup/configuration.md
+    - Configuration: setup/configuration.md
     - Execution: setup/execution.md
   - Example Workflows:
     - Minimal: workflow-examples/minimal.md
