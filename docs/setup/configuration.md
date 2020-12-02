@@ -314,6 +314,52 @@ Day segments (or epochs) are the time windows on which you want to extract behav
 
 ### Segment Examples
 
+=== "5-minutes"
+    Use the following `Frequency` segment file to create 288 (12 * 60 * 24) 5-minute segments starting from midnight of every day in your study
+    ```csv
+    label,length
+    fiveminutes,5
+    ```
+=== "Daily"
+    Use the following `Periodic` segment file to create daily segments starting from midnight of every day in your study
+    ```csv
+    label,start_time,length,repeats_on,repeats_value
+    daily,00:00:00,23H 59M 59S,every_day,0
+    ```
+=== "Morning"
+    Use the following `Periodic` segment file to create morning segments starting from 06:00 and ending at 12:00 of every day in your study
+    ```csv
+    label,start_time,length,repeats_on,repeats_value
+    morning,00:00:00,5H 59M 59S,every_day,0
+    ```
+=== "Weekly"
+    Use the following `Periodic` segment file to create **non-overlapping** weekly segments starting at midnight of every **Monday** in your study
+    ```csv
+    label,start_time,length,repeats_on,repeats_value
+    weekly,00:00:00,6D 23H 59M 59S,wday,1
+    ```
+    Use the following `Periodic` segment file to create **overlapping** weekly segments starting at midnight of **every day** in your study
+    ```csv
+    label,start_time,length,repeats_on,repeats_value
+    weekly,00:00:00,6D 23H 59M 59S,every_day,0
+    ```
+=== "Week-ends"
+    Use the following `Periodic` segment file to create week-end segments starting at midnight of every **Saturday** in your study
+    ```csv
+    label,start_time,length,repeats_on,repeats_value
+    weekend,00:00:00,1D 23H 59M 59S,wday,6
+    ```
+=== "Around surveys"
+    Use the following `Event` segment file to create two 2-hour segments that start 1 hour before surveys answered by 3 participants
+    ```csv
+    label,event_timestamp,length,shift,shift_direction,device_id
+    survey1,1587661220000,2H,1H,-1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
+    survey2,1587747620000,2H,1H,-1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
+    survey1,1587906020000,2H,1H,-1,rqtertsd-43ff-34fr-3eeg-efe4fergregr
+    survey2,1584291600000,2H,1H,-1,rqtertsd-43ff-34fr-3eeg-efe4fergregr
+    survey1,1588172420000,2H,1H,-1,klj34oi2-8frk-2343-21kk-324ljklewlr3
+    survey2,1584291600000,2H,1H,-1,klj34oi2-8frk-2343-21kk-324ljklewlr3
+    ```
 --- 
 ## Device Data Source Configuration
 
