@@ -8,8 +8,8 @@ Sensor parameters description for `[PHONE_BLUETOOTH]`:
 
 ## RAPIDS provider
 
-!!! info "Available day segments and platforms"
-    - Available for all day segments
+!!! info "Available time segments and platforms"
+    - Available for all time segments
     - Available for Android only
 
 !!! info "File Sequence"
@@ -33,9 +33,9 @@ Features description for `[PHONE_BLUETOOTH][PROVIDERS][RAPIDS]`:
 
 |Feature                    |Units      |Description|
 |-------------------------- |---------- |---------------------------|
-| countscans                 | devices | Number of scanned devices during a `day_segment`, a device can be detected multiple times over time and these appearances are counted separately |
-| uniquedevices              | devices | Number of unique devices during a `day_segment` as identified by their hardware (`bt_address`) address                                                          |
-| countscansmostuniquedevice | scans   | Number of scans of the most scanned device during a `day_segment` across the whole monitoring period                                             |
+| countscans                 | devices | Number of scanned devices during a `time_segment`, a device can be detected multiple times over time and these appearances are counted separately |
+| uniquedevices              | devices | Number of unique devices during a `time_segment` as identified by their hardware (`bt_address`) address                                                          |
+| countscansmostuniquedevice | scans   | Number of scans of the most scanned device during a `time_segment` across the whole monitoring period                                             |
 
 !!! note "Assumptions/Observations"
     NA

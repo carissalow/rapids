@@ -31,7 +31,7 @@ We provide examples of the input format that RAPIDS expects, note that both exam
 
 ## RAPIDS provider
 
-!!! info "Available day segments"
+!!! info "Available time segments"
     - Only available for segments that span 1 or more complete days (e.g. Jan 1st 00:00 to Jan 3rd 23:59)
 
 !!! info "File Sequence"
@@ -56,11 +56,11 @@ Features description for `[FITBIT_STEPS_SUMMARY][PROVIDERS][RAPIDS]`:
 
 |Feature                    |Units      |Description                                  |
 |-------------------------- |---------- |-------------------------------------------- |
-|maxsumsteps                |steps      |The maximum daily step count during a day segment.
-|minsumsteps                |steps      |The minimum daily step count during a day segment.
-|avgsumsteps                |steps      |The average daily step count during a day segment.
-|mediansumsteps             |steps      |The median of daily step count during a day segment.
-|stdsumsteps                |steps      |The standard deviation of daily step count during a day segment.
+|maxsumsteps                |steps      |The maximum daily step count during a time segment.
+|minsumsteps                |steps      |The minimum daily step count during a time segment.
+|avgsumsteps                |steps      |The average daily step count during a time segment.
+|mediansumsteps             |steps      |The median of daily step count during a time segment.
+|stdsumsteps                |steps      |The standard deviation of daily step count during a time segment.
 
 !!! note "Assumptions/Observations"
     

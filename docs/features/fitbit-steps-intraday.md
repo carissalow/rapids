@@ -31,8 +31,8 @@ We provide examples of the input format that RAPIDS expects, note that both exam
 
 ## RAPIDS provider
 
-!!! info "Available day segments"
-    - Available for all day segments
+!!! info "Available time segments"
+    - Available for all time segments
 
 !!! info "File Sequence"
     ```bash
@@ -51,30 +51,30 @@ Parameters description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]`:
 |`[COMPUTE]`                | Set to `True` to extract `FITBIT_STEPS_INTRADAY` features from the `RAPIDS` provider|
 |`[FEATURES]`               |         Features to be computed from steps intraday data, see table below           |
 |`[THRESHOLD_ACTIVE_BOUT]`  | Every minute with Fitbit steps data wil be labelled as `sedentary` if its step count is below this threshold, otherwise, `active`.    |
-|`[INCLUDE_ZERO_STEP_ROWS]` | Whether or not to include day segments with a 0 step count during the whole day.                          |
+|`[INCLUDE_ZERO_STEP_ROWS]` | Whether or not to include time segments with a 0 step count during the whole day.                          |
 
 
 Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]`:
 
 |Feature                    |Units          |Description                                                  |
 |-------------------------- |-------------- |-------------------------------------------------------------|
-|sumsteps                   |steps          |The total step count during a day segment.
-|maxsteps                   |steps          |The maximum step count during a day segment.
-|minsteps                   |steps          |The minimum step count during a day segment.
-|avgsteps                   |steps          |The average step count during a day segment.
-|stdsteps                   |steps          |The standard deviation of step count during a day segment.
-|countepisodesedentarybout  |bouts          |Number of sedentary bouts during a day segment.
-|sumdurationsedentarybout   |minutes        |Total duration of all sedentary bouts during a day segment.
-|maxdurationsedentarybout   |minutes        |The maximum duration of any sedentary bout during a day segment.
-|mindurationsedentarybout   |minutes        |The minimum duration of any sedentary bout during a day segment.
-|avgdurationsedentarybout   |minutes        |The average duration of sedentary bouts during a day segment.
-|stddurationsedentarybout   |minutes        |The standard deviation of the duration of sedentary bouts during a day segment.
-|countepisodeactivebout     |bouts          |Number of active bouts during a day segment.
-|sumdurationactivebout      |minutes        |Total duration of all active bouts during a day segment.
-|maxdurationactivebout      |minutes        |The maximum duration of any active bout during a day segment.
-|mindurationactivebout      |minutes        |The minimum duration of any active bout during a day segment.
-|avgdurationactivebout      |minutes        |The average duration of active bouts during a day segment.
-|stddurationactivebout      |minutes        |The standard deviation of the duration of active bouts during a day segment.
+|sumsteps                   |steps          |The total step count during a time segment.
+|maxsteps                   |steps          |The maximum step count during a time segment.
+|minsteps                   |steps          |The minimum step count during a time segment.
+|avgsteps                   |steps          |The average step count during a time segment.
+|stdsteps                   |steps          |The standard deviation of step count during a time segment.
+|countepisodesedentarybout  |bouts          |Number of sedentary bouts during a time segment.
+|sumdurationsedentarybout   |minutes        |Total duration of all sedentary bouts during a time segment.
+|maxdurationsedentarybout   |minutes        |The maximum duration of any sedentary bout during a time segment.
+|mindurationsedentarybout   |minutes        |The minimum duration of any sedentary bout during a time segment.
+|avgdurationsedentarybout   |minutes        |The average duration of sedentary bouts during a time segment.
+|stddurationsedentarybout   |minutes        |The standard deviation of the duration of sedentary bouts during a time segment.
+|countepisodeactivebout     |bouts          |Number of active bouts during a time segment.
+|sumdurationactivebout      |minutes        |Total duration of all active bouts during a time segment.
+|maxdurationactivebout      |minutes        |The maximum duration of any active bout during a time segment.
+|mindurationactivebout      |minutes        |The minimum duration of any active bout during a time segment.
+|avgdurationactivebout      |minutes        |The average duration of active bouts during a time segment.
+|stddurationactivebout      |minutes        |The standard deviation of the duration of active bouts during a time segment.
 
 !!! note "Assumptions/Observations"
     

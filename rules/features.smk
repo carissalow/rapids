@@ -11,7 +11,7 @@ rule join_features_from_providers:
 rule phone_data_yield_python_features:
     input:
         sensor_data = "data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_DATA_YIELD"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -24,7 +24,7 @@ rule phone_data_yield_python_features:
 rule phone_data_yield_r_features:
     input:
         sensor_data = "data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_DATA_YIELD"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -37,7 +37,7 @@ rule phone_data_yield_r_features:
 rule phone_accelerometer_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_accelerometer_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_ACCELEROMETER"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -50,7 +50,7 @@ rule phone_accelerometer_python_features:
 rule phone_accelerometer_r_features:
     input:
         sensor_data = "data/raw/{pid}/phone_accelerometer_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_ACCELEROMETER"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -73,7 +73,7 @@ rule activity_recognition_episodes:
 rule phone_activity_recognition_python_features:
     input:
         sensor_episodes = "data/interim/{pid}/phone_activity_recognition_episodes_resampled_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_ACTIVITY_RECOGNITION"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -86,7 +86,7 @@ rule phone_activity_recognition_python_features:
 rule phone_activity_recognition_r_features:
     input:
         sensor_episodes = "data/interim/{pid}/phone_activity_recognition_episodes_resampled_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_ACTIVITY_RECOGNITION"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -99,7 +99,7 @@ rule phone_activity_recognition_r_features:
 rule phone_applications_foreground_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -112,7 +112,7 @@ rule phone_applications_foreground_python_features:
 rule phone_applications_foreground_r_features:
     input:
         sensor_data = "data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -135,7 +135,7 @@ rule battery_episodes:
 rule phone_battery_python_features:
     input:
         sensor_episodes = "data/interim/{pid}/phone_battery_episodes_resampled_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_BATTERY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -148,7 +148,7 @@ rule phone_battery_python_features:
 rule phone_battery_r_features:
     input:
         sensor_episodes = "data/interim/{pid}/phone_battery_episodes_resampled_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_BATTERY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -161,7 +161,7 @@ rule phone_battery_r_features:
 rule phone_bluetooth_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_bluetooth_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_BLUETOOTH"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -174,7 +174,7 @@ rule phone_bluetooth_python_features:
 rule phone_bluetooth_r_features:
     input:
         sensor_data = "data/raw/{pid}/phone_bluetooth_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_BLUETOOTH"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -187,7 +187,7 @@ rule phone_bluetooth_r_features:
 rule calls_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_calls_with_datetime_unified.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CALLS"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -200,7 +200,7 @@ rule calls_python_features:
 rule calls_r_features:
     input:
         sensor_data = "data/raw/{pid}/phone_calls_with_datetime_unified.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CALLS"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -213,7 +213,7 @@ rule calls_r_features:
 rule conversation_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_conversation_with_datetime_unified.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CONVERSATION"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -226,7 +226,7 @@ rule conversation_python_features:
 rule conversation_r_features:
     input:
         sensor_data = "data/raw/{pid}/phone_conversation_with_datetime_unified.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CONVERSATION"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -239,7 +239,7 @@ rule conversation_r_features:
 rule phone_light_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_light_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_LIGHT"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -252,7 +252,7 @@ rule phone_light_python_features:
 rule phone_light_r_features:
     input:
         sensor_data = "data/raw/{pid}/phone_light_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_LIGHT"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -265,7 +265,7 @@ rule phone_light_r_features:
 rule phone_locations_python_features:
     input:
         sensor_data = "data/interim/{pid}/phone_locations_processed_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_LOCATIONS"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -278,7 +278,7 @@ rule phone_locations_python_features:
 rule phone_locations_r_features:
     input:
         sensor_data = "data/interim/{pid}/phone_locations_processed_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_LOCATIONS"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -291,7 +291,7 @@ rule phone_locations_r_features:
 rule phone_messages_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_messages_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_MESSAGES"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -304,7 +304,7 @@ rule phone_messages_python_features:
 rule phone_messages_r_features:
     input:
         sensor_data = "data/raw/{pid}/phone_messages_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_MESSAGES"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -325,7 +325,7 @@ rule screen_episodes:
 rule phone_screen_python_features:
     input:
         sensor_episodes = "data/interim/{pid}/phone_screen_episodes_resampled_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_SCREEN"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -338,7 +338,7 @@ rule phone_screen_python_features:
 rule phone_screen_r_features:
     input:
         sensor_episodes = "data/interim/{pid}/phone_screen_episodes_resampled_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_SCREEN"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -351,7 +351,7 @@ rule phone_screen_r_features:
 rule phone_wifi_connected_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_wifi_connected_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_WIFI_CONNECTED"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -364,7 +364,7 @@ rule phone_wifi_connected_python_features:
 rule phone_wifi_connected_r_features:
     input:
         sensor_data = "data/raw/{pid}/phone_wifi_connected_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_WIFI_CONNECTED"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -377,7 +377,7 @@ rule phone_wifi_connected_r_features:
 rule phone_wifi_visible_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_wifi_visible_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_WIFI_VISIBLE"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -390,7 +390,7 @@ rule phone_wifi_visible_python_features:
 rule phone_wifi_visible_r_features:
     input:
         sensor_data = "data/raw/{pid}/phone_wifi_visible_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_WIFI_VISIBLE"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -403,7 +403,7 @@ rule phone_wifi_visible_r_features:
 rule fitbit_heartrate_summary_python_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_heartrate_summary_parsed_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_HEARTRATE_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -416,7 +416,7 @@ rule fitbit_heartrate_summary_python_features:
 rule fitbit_heartrate_summary_r_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_heartrate_summary_parsed_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_HEARTRATE_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -429,7 +429,7 @@ rule fitbit_heartrate_summary_r_features:
 rule fitbit_heartrate_intraday_python_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -442,7 +442,7 @@ rule fitbit_heartrate_intraday_python_features:
 rule fitbit_heartrate_intraday_r_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -455,7 +455,7 @@ rule fitbit_heartrate_intraday_r_features:
 rule fitbit_steps_summary_python_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_steps_summary_parsed_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -468,7 +468,7 @@ rule fitbit_steps_summary_python_features:
 rule fitbit_steps_summary_r_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_steps_summary_parsed_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -481,7 +481,7 @@ rule fitbit_steps_summary_r_features:
 rule fitbit_steps_intraday_python_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_steps_intraday_parsed_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -494,7 +494,7 @@ rule fitbit_steps_intraday_python_features:
 rule fitbit_steps_intraday_r_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_steps_intraday_parsed_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -507,7 +507,7 @@ rule fitbit_steps_intraday_r_features:
 rule fitbit_sleep_summary_python_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_sleep_summary_parsed_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
@@ -520,7 +520,7 @@ rule fitbit_sleep_summary_python_features:
 rule fitbit_sleep_summary_r_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_sleep_summary_parsed_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",

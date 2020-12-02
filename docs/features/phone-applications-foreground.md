@@ -14,8 +14,8 @@ Sensor parameters description for `[PHONE_APPLICATIONS_FOREGROUND]` (these param
 
 The app category (genre) catalogue used in these features was originally created by [Stachl et al](../../citation#stachl-applications-foreground).
 
-!!! info "Available day segments and platforms"
-    - Available for all day segments
+!!! info "Available time segments and platforms"
+    - Available for all time segments
     - Available for Android only
 
 !!! info "File Sequence"
@@ -45,9 +45,9 @@ Features description for `[PHONE_APPLICATIONS_FOREGROUND][PROVIDERS][RAPIDS]`:
 |Feature                    |Units      |Description|
 |-------------------------- |---------- |---------------------------|
 |count              |apps      | Number of times a single app or apps within a category were used (i.e. they were brought to the foreground either by tapping their icon or switching to it from another app)
-|timeoffirstuse     |minutes   | The time in minutes between 12:00am (midnight) and the first use of a single app or apps within a category during a `day_segment`
-|timeoflastuse      |minutes   | The time in minutes between 12:00am (midnight) and the last use of a single app or apps within a category during a `day_segment`
-|frequencyentropy   |nats      | The entropy of the used apps within a category during a `day_segment` (each app is seen as a unique event, the more apps were used, the higher the entropy). This is especially relevant when computed over all apps. Entropy cannot be obtained for a single app
+|timeoffirstuse     |minutes   | The time in minutes between 12:00am (midnight) and the first use of a single app or apps within a category during a `time_segment`
+|timeoflastuse      |minutes   | The time in minutes between 12:00am (midnight) and the last use of a single app or apps within a category during a `time_segment`
+|frequencyentropy   |nats      | The entropy of the used apps within a category during a `time_segment` (each app is seen as a unique event, the more apps were used, the higher the entropy). This is especially relevant when computed over all apps. Entropy cannot be obtained for a single app
 
 !!! note "Assumptions/Observations"
     Features can be computed by app, by apps grouped under a single category (genre) and by multiple categories grouped together (meta-categories). For example, we can get features for `Facebook` (single app), for `Social Network` apps (a category including Facebook and other social media apps) or for `Social` (a meta-category formed by `Social Network` and `Social Media Tools` categories).

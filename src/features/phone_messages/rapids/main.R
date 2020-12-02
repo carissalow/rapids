@@ -1,7 +1,7 @@
 library('tidyr') 
 library('stringr')
 
-message_features_of_type <- function(messages, messages_type, day_segment, requested_features){
+message_features_of_type <- function(messages, messages_type, time_segment, requested_features){
     # Output dataframe
     features = data.frame(local_segment = character(), stringsAsFactors = FALSE)
 
@@ -47,14 +47,14 @@ message_features_of_type <- function(messages, messages_type, day_segment, reque
     return(features)
 }
 
-rapids_features <- function(sensor_data_files, day_segment, provider){
+rapids_features <- function(sensor_data_files, time_segment, provider){
     messages_data <-  read.csv(sensor_data_files[["sensor_data"]], stringsAsFactors = FALSE)
-    messages_data <- messages_data %>% filter_data_by_segment(day_segment)
+    messages_data <- messages_data %>% filter_data_by_segment(time_segment)
     messages_types = provider[["MESSAGES_TYPES"]]
     messages_features <- setNames(data.frame(matrix(ncol=1, nrow=0)), c("local_segment"))
 
     for(message_type in messages_types){
-        # Filter rows that belong to the message type and day segment of interest
+        # Filter rows that belong to the message type and time segment of interest
         message_type_label = ifelse(message_type == "received", "1", ifelse(message_type == "sent", "2", NA))
         if(is.na(message_type_label))
             stop(paste("Message type can online be received or sent but instead you typed: ", message_type, " in config[PHONE_MESSAGES][MESSAGES_TYPES]"))
@@ -62,7 +62,7 @@ rapids_features <- function(sensor_data_files, day_segment, provider){
         requested_features <- provider[["FEATURES"]][[message_type]]
         messages_of_type <- messages_data %>% filter(message_type == message_type_label)
 
-        features <- message_features_of_type(messages_of_type, message_type, day_segment, requested_features)
+        features <- message_features_of_type(messages_of_type, message_type, time_segment, requested_features)
         messages_features <- merge(messages_features, features, all=TRUE)
     }
     messages_features <- messages_features %>% mutate_at(vars(contains("countmostfrequentcontact") | contains("distinctcontacts") | contains("count")), list( ~ replace_na(., 0)))

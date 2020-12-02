@@ -8,8 +8,8 @@ Sensor parameters description for `[PHONE_ACCELEROMETER]`:
 
 ## RAPIDS provider
 
-!!! info "Available day segments and platforms"
-    - Available for all day segments
+!!! info "Available time segments and platforms"
+    - Available for all time segments
     - Available for Android and iOS
 
 !!! info "File Sequence"
@@ -46,8 +46,8 @@ Features description for `[PHONE_ACCELEROMETER][PROVIDERS][RAPIDS]`:
 
 These features are based on the work by [Panda et al](../../citation#panda-accelerometer).
 
-!!! info "Available day segments and platforms"
-    - Available for all day segments
+!!! info "Available time segments and platforms"
+    - Available for all time segments
     - Available for Android and iOS
 
 !!! info "File Sequence"

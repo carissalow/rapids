@@ -8,8 +8,8 @@ Sensor parameters description for `[PHONE_WIFI_VISIBLE]`:
 
 ## RAPIDS provider
 
-!!! info "Available day segments and platforms"
-    - Available for all day segments
+!!! info "Available time segments and platforms"
+    - Available for all time segments
     - Available for Android only
 
 !!! info "File Sequence"
@@ -33,9 +33,9 @@ Features description for `[PHONE_WIFI_VISIBLE][PROVIDERS][RAPIDS]`:
 
 |Feature                    |Units      |Description|
 |-------------------------- |---------- |---------------------------|
-| countscans                 | devices | Number of scanned WiFi access points visible during a day_segment, an access point can be detected multiple times over time and these appearances are counted separately |
-| uniquedevices              | devices | Number of unique access point during a day_segment as identified by their hardware address                                                                       |
-| countscansmostuniquedevice | scans   | Number of scans of the most scanned access point during a day_segment across the whole monitoring period                                                         |
+| countscans                 | devices | Number of scanned WiFi access points visible during a time_segment, an access point can be detected multiple times over time and these appearances are counted separately |
+| uniquedevices              | devices | Number of unique access point during a time_segment as identified by their hardware address                                                                       |
+| countscansmostuniquedevice | scans   | Number of scans of the most scanned access point during a time_segment across the whole monitoring period                                                         |
 
 !!! note "Assumptions/Observations"
     1. A visible WiFI access point is one that a phone sensed around itself but that it was not connected to. Due to API restrictions, this sensor is not available on iOS.

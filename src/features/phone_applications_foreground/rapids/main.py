@@ -4,7 +4,7 @@ import itertools
 from scipy.stats import entropy
 
 
-def compute_features(filtered_data, apps_type, requested_features, apps_features, day_segment):        
+def compute_features(filtered_data, apps_type, requested_features, apps_features, time_segment):        
     # There is the rare occasion that filtered_data is empty (found in testing)
     if "timeoffirstuse" in requested_features:
         time_first_event = filtered_data.sort_values(by="timestamp", ascending=True).drop_duplicates(subset="local_segment", keep="first").set_index("local_segment")
@@ -30,7 +30,7 @@ def compute_features(filtered_data, apps_type, requested_features, apps_features
     return apps_features
 
 
-def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
     
     apps_data = pd.read_csv(sensor_data_files["sensor_data"])
 
@@ -58,7 +58,7 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
         # deep copy the apps_data for the top1global computation
         apps_data_global = apps_data.copy()
         
-        apps_data = filter_data_by_segment(apps_data, day_segment)
+        apps_data = filter_data_by_segment(apps_data, time_segment)
         
         if not apps_data.empty:
             apps_features = pd.DataFrame()
@@ -66,14 +66,14 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
             single_categories.sort()
             for sc in single_categories:
                 if sc == "all":
-                    apps_features = compute_features(apps_data, "all", requested_features, apps_features, day_segment)
+                    apps_features = compute_features(apps_data, "all", requested_features, apps_features, time_segment)
                 else:
                     filtered_data = apps_data[apps_data["genre"].isin([sc])]
-                    apps_features = compute_features(filtered_data, sc, requested_features, apps_features, day_segment)
+                    apps_features = compute_features(filtered_data, sc, requested_features, apps_features, time_segment)
             # multiple category
             for mc in multiple_categories:
                 filtered_data = apps_data[apps_data["genre"].isin(multiple_categories_with_genres[mc])]
-                apps_features = compute_features(filtered_data, mc, requested_features, apps_features, day_segment)
+                apps_features = compute_features(filtered_data, mc, requested_features, apps_features, time_segment)
             # single apps
             for app in single_apps:
                 col_name = app
@@ -83,7 +83,7 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
                     app = apps_with_count.iloc[0]["package_name"]
                     col_name = "top1global"
                 filtered_data = apps_data[apps_data["package_name"].isin([app])]
-                apps_features = compute_features(filtered_data, col_name, requested_features, apps_features, day_segment)
+                apps_features = compute_features(filtered_data, col_name, requested_features, apps_features, time_segment)
  
             apps_features = apps_features.reset_index()
     

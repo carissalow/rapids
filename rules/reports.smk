@@ -11,7 +11,7 @@ rule histogram_phone_data_yield:
 
 rule heatmap_features_correlations:
     input:
-        features = expand("data/processed/{pid}/{sensor}_{day_segment}.csv", pid=config["PIDS"], sensor=config["HEATMAP_FEATURES_CORRELATIONS"]["PHONE_FEATURES"]+config["HEATMAP_FEATURES_CORRELATIONS"]["FITBIT_FEATURES"], day_segment=config["DAY_SEGMENTS"]),
+        features = expand("data/processed/{pid}/{sensor}_{time_segment}.csv", pid=config["PIDS"], sensor=config["HEATMAP_FEATURES_CORRELATIONS"]["PHONE_FEATURES"]+config["HEATMAP_FEATURES_CORRELATIONS"]["FITBIT_FEATURES"], time_segment=config["TIME_SEGMENTS"]),
         phone_valid_sensed_days = expand("data/interim/{pid}/phone_valid_sensed_days_{{min_valid_hours_per_day}}hours_{{min_valid_bins_per_hour}}bins.csv", pid=config["PIDS"])
     params:
         min_rows_ratio = config["HEATMAP_FEATURES_CORRELATIONS"]["MIN_ROWS_RATIO"],

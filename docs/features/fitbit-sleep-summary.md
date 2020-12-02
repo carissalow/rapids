@@ -51,7 +51,7 @@ We provide examples of the input format that RAPIDS expects, note that both exam
 
 ## RAPIDS provider
 
-!!! info "Available day segments"
+!!! info "Available time segments"
     - Only available for segments that span 1 or more complete days (e.g. Jan 1st 00:00 to Jan 3rd 23:59)
 
 !!! info "File Sequence"
@@ -77,18 +77,18 @@ Features description for `[FITBIT_SLEEP_SUMMARY][PROVIDERS][RAPIDS]`:
 
 |Feature                        |Units      |Description                                  |
 |------------------------------ |---------- |-------------------------------------------- |
-|countepisodeTYPE               |episodes   |Number of sleep episodes for a certain sleep type during a day segment.
-|avgefficiencyTYPE              |scores     |Average sleep efficiency for a certain sleep type during a day segment.
-|sumdurationafterwakeupTYPE     |minutes    |Total duration the user stayed in bed after waking up for a certain sleep type during a day segment.
-|sumdurationasleepTYPE          |minutes    |Total sleep duration for a certain sleep type during a day segment.
-|sumdurationawakeTYPE           |minutes    |Total duration the user stayed awake but still in bed for a certain sleep type during a day segment.
-|sumdurationtofallasleepTYPE    |minutes    |Total duration the user spent to fall asleep for a certain sleep type during a day segment.
-|sumdurationinbedTYPE           |minutes    |Total duration the user stayed in bed (sumdurationtofallasleep + sumdurationawake + sumdurationasleep + sumdurationafterwakeup) for a certain sleep type during a day segment.
-|avgdurationafterwakeupTYPE     |minutes    |Average duration the user stayed in bed after waking up for a certain sleep type during a day segment.
-|avgdurationasleepTYPE          |minutes    |Average sleep duration for a certain sleep type during a day segment.
-|avgdurationawakeTYPE           |minutes    |Average duration the user stayed awake but still in bed for a certain sleep type during a day segment.
-|avgdurationtofallasleepTYPE    |minutes    |Average duration the user spent to fall asleep for a certain sleep type during a day segment.
-|avgdurationinbedTYPE           |minutes    |Average duration the user stayed in bed (sumdurationtofallasleep + sumdurationawake + sumdurationasleep + sumdurationafterwakeup) for a certain sleep type during a day segment.
+|countepisodeTYPE               |episodes   |Number of sleep episodes for a certain sleep type during a time segment.
+|avgefficiencyTYPE              |scores     |Average sleep efficiency for a certain sleep type during a time segment.
+|sumdurationafterwakeupTYPE     |minutes    |Total duration the user stayed in bed after waking up for a certain sleep type during a time segment.
+|sumdurationasleepTYPE          |minutes    |Total sleep duration for a certain sleep type during a time segment.
+|sumdurationawakeTYPE           |minutes    |Total duration the user stayed awake but still in bed for a certain sleep type during a time segment.
+|sumdurationtofallasleepTYPE    |minutes    |Total duration the user spent to fall asleep for a certain sleep type during a time segment.
+|sumdurationinbedTYPE           |minutes    |Total duration the user stayed in bed (sumdurationtofallasleep + sumdurationawake + sumdurationasleep + sumdurationafterwakeup) for a certain sleep type during a time segment.
+|avgdurationafterwakeupTYPE     |minutes    |Average duration the user stayed in bed after waking up for a certain sleep type during a time segment.
+|avgdurationasleepTYPE          |minutes    |Average sleep duration for a certain sleep type during a time segment.
+|avgdurationawakeTYPE           |minutes    |Average duration the user stayed awake but still in bed for a certain sleep type during a time segment.
+|avgdurationtofallasleepTYPE    |minutes    |Average duration the user spent to fall asleep for a certain sleep type during a time segment.
+|avgdurationinbedTYPE           |minutes    |Average duration the user stayed in bed (sumdurationtofallasleep + sumdurationawake + sumdurationasleep + sumdurationafterwakeup) for a certain sleep type during a time segment.
 
 
 

@@ -1,13 +1,13 @@
 rapids_log_tag =  "RAPIDS:"
 
-def filter_data_by_segment(data, day_segment):
+def filter_data_by_segment(data, time_segment):
     datetime_regex = "[0-9]{4}[\-|\/][0-9]{2}[\-|\/][0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}"
     timestamps_regex = "[0-9]{13}"
-    segment_regex = "\[({}#{},{};{},{})\]".format(day_segment, datetime_regex, datetime_regex, timestamps_regex, timestamps_regex)
+    segment_regex = "\[({}#{},{};{},{})\]".format(time_segment, datetime_regex, datetime_regex, timestamps_regex, timestamps_regex)
     data["local_segment"] = data["assigned_segments"].str.extract(segment_regex, expand=True)
     data = data.drop(columns=["assigned_segments"])
     data = data.dropna(subset = ["local_segment"])
-    if(data.shape[0] == 0): # there are no rows belonging to day_segment
+    if(data.shape[0] == 0): # there are no rows belonging to time_segment
         data["timestamps_segment"] = None
     else:
         data[["local_segment","timestamps_segment"]] = data["local_segment"].str.split(pat =";",n=1, expand=True)
@@ -69,12 +69,12 @@ def chunk_episodes(sensor_episodes):
 
     return merged_sensor_episodes
 
-def fetch_provider_features(provider, provider_key, sensor_key, sensor_data_files, day_segments_file):
+def fetch_provider_features(provider, provider_key, sensor_key, sensor_data_files, time_segments_file):
     import pandas as pd
     from importlib import import_module, util
 
     sensor_features = pd.DataFrame(columns=["local_segment"])
-    day_segments_labels = pd.read_csv(day_segments_file, header=0)
+    time_segments_labels = pd.read_csv(time_segments_file, header=0)
     if "FEATURES" not in provider:
         raise ValueError("Provider config[{}][PROVIDERS][{}] is missing a FEATURES attribute in config.yaml".format(sensor_key.upper(), provider_key.upper()))
 
@@ -84,11 +84,11 @@ def fetch_provider_features(provider, provider_key, sensor_key, sensor_data_file
             feature_module = import_module(code_path)
             feature_function = getattr(feature_module,  provider["SRC_FOLDER"] + "_features")
             
-            for day_segment in day_segments_labels["label"]:
-                    print("{} Processing {} {} {}".format(rapids_log_tag, sensor_key, provider_key, day_segment))
-                    features = feature_function(sensor_data_files, day_segment, provider, filter_data_by_segment=filter_data_by_segment, chunk_episodes=chunk_episodes)
+            for time_segment in time_segments_labels["label"]:
+                    print("{} Processing {} {} {}".format(rapids_log_tag, sensor_key, provider_key, time_segment))
+                    features = feature_function(sensor_data_files, time_segment, provider, filter_data_by_segment=filter_data_by_segment, chunk_episodes=chunk_episodes)
                     if not "local_segment" in features.columns:
-                        raise ValueError("The dataframe returned by the " + sensor_key + " provider '" + provider_key + "' is missing the 'local_segment' column added by the 'filter_data_by_segment()' function. Check the provider script is using such function and is not removing 'local_segment' by accident (" + code_path + ")\n  The 'local_segment' column is used to index a provider's features (each row corresponds to a different day segment instance (e.g. 2020-01-01, 2020-01-02, 2020-01-03, etc.)")
+                        raise ValueError("The dataframe returned by the " + sensor_key + " provider '" + provider_key + "' is missing the 'local_segment' column added by the 'filter_data_by_segment()' function. Check the provider script is using such function and is not removing 'local_segment' by accident (" + code_path + ")\n  The 'local_segment' column is used to index a provider's features (each row corresponds to a different time segment instance (e.g. 2020-01-01, 2020-01-02, 2020-01-03, etc.)")
                     features.columns = ["{}{}".format("" if col.startswith("local_segment") else (sensor_key + "_"+ provider_key + "_"), col) for col in features.columns]
                     sensor_features = sensor_features.merge(features, how="outer")
     else:

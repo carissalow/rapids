@@ -1,7 +1,7 @@
 import pandas as pd
 from datetime import datetime, timedelta, time
 
-def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
     
     battery_data = pd.read_csv(sensor_data_files["sensor_episodes"])
 
@@ -13,7 +13,7 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
 
     battery_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
     if not battery_data.empty:
-        battery_data = filter_data_by_segment(battery_data, day_segment)
+        battery_data = filter_data_by_segment(battery_data, time_segment)
 
         if not battery_data.empty:
         

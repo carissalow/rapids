@@ -25,10 +25,10 @@ CREATE_PARTICIPANT_FILES:
     DEVICE_ID_COLUMN: device_id # column name
     IGNORED_DEVICE_IDS: []
 
-# See https://www.rapids.science/setup/configuration/#day-segments
-DAY_SEGMENTS: &day_segments
+# See https://www.rapids.science/setup/configuration/#time-segments
+TIME_SEGMENTS: &time_segments
   TYPE: PERIODIC # FREQUENCY, PERIODIC, EVENT
-  FILE: "example_profile/exampleworkflow_daysegments.csv"
+  FILE: "example_profile/exampleworkflow_timesegments.csv"
   INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, see docs
 
 

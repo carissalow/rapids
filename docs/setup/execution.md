@@ -29,8 +29,8 @@ After you have [installed](../installation) and [configured](../configuration) R
     ```
 
 !!! hint "Deleting RAPIDS output"
-    If you  want to delete all the output files RAPIDS produces you can execute the following command (the content of these folders will be deleted: `data/raw`, `data/interim`, `data/processed`, `reports/figures`, and `reports/compliance`)
+    If you  want to delete all the output files RAPIDS produces you can execute the following command:
 
     ```bash
-    ./rapids -j1 -R clean
+    ./rapids -j1 --delete-all-output
     ```

@@ -11,11 +11,11 @@ spec.loader.exec_module(mod)
 filter_data_by_segment = getattr(mod,  "filter_data_by_segment")
 
 targets = pd.read_csv(snakemake.input["targets"])
-day_segments_labels = pd.read_csv(snakemake.input["day_segments_labels"], header=0)
+time_segments_labels = pd.read_csv(snakemake.input["time_segments_labels"], header=0)
 
 all_targets = pd.DataFrame(columns=["local_segment"])
-for day_segment in day_segments_labels["label"]:
-    filtered_targets = filter_data_by_segment(targets, day_segment)
+for time_segment in time_segments_labels["label"]:
+    filtered_targets = filter_data_by_segment(targets, time_segment)
     all_targets = all_targets.merge(filtered_targets, how="outer")
 
 segment_colums = pd.DataFrame()

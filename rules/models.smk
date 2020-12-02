@@ -34,11 +34,11 @@ rule download_target_data:
 rule target_readable_datetime:
     input:
         sensor_input = "data/raw/{pid}/participant_target_raw.csv",
-        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
     params:
         fixed_timezone = config["PARAMS_FOR_ANALYSIS"]["TARGET"]["SOURCE"]["TIMEZONE"],
-        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
-        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/raw/{pid}/participant_target_with_datetime.csv"
     script:
@@ -47,7 +47,7 @@ rule target_readable_datetime:
 rule parse_targets:
     input:
         targets = "data/raw/{pid}/participant_target_with_datetime.csv",
-        day_segments_labels = "data/interim/day_segments/{pid}_day_segments_labels.csv"
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     output:
         "data/processed/targets/{pid}/parsed_targets.csv"
     script:

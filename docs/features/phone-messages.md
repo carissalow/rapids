@@ -8,8 +8,8 @@ Sensor parameters description for `[PHONE_MESSAGES]`:
 
 ## RAPIDS provider
 
-!!! info "Available day segments and platforms"
-    - Available for all day segments
+!!! info "Available time segments and platforms"
+    - Available for all time segments
     - Available for Android only
 
 !!! info "File Sequence"
@@ -34,11 +34,11 @@ Features description for `[PHONE_MESSAGES][PROVIDERS][RAPIDS]`:
 
 |Feature                    |Units      |Description|
 |-------------------------- |---------- |---------------------------|
-|count                      |messages   |Number of messages of type `messages_type` that occurred during a particular `day_segment`.
-|distinctcontacts           |contacts   |Number of distinct contacts that are associated with a particular `messages_type` during a particular `day_segment`.
-|timefirstmessages          |minutes    |Number of minutes between 12:00am (midnight) and the first `message` of a particular `messages_type` during a particular `day_segment`.
-|timelastmessages           |minutes    |Number of minutes between 12:00am (midnight) and the last `message` of a particular `messages_type` during a particular `day_segment`.
-|countmostfrequentcontact   |messages   |Number of messages from the contact with the most messages of `messages_type` during a `day_segment` throughout the whole dataset of each participant.
+|count                      |messages   |Number of messages of type `messages_type` that occurred during a particular `time_segment`.
+|distinctcontacts           |contacts   |Number of distinct contacts that are associated with a particular `messages_type` during a particular `time_segment`.
+|timefirstmessages          |minutes    |Number of minutes between 12:00am (midnight) and the first `message` of a particular `messages_type` during a particular `time_segment`.
+|timelastmessages           |minutes    |Number of minutes between 12:00am (midnight) and the last `message` of a particular `messages_type` during a particular `time_segment`.
+|countmostfrequentcontact   |messages   |Number of messages from the contact with the most messages of `messages_type` during a `time_segment` throughout the whole dataset of each participant.
 
 !!! note "Assumptions/Observations"
     1. `[MESSAGES_TYPES]` and `[FEATURES]` keys in `config.yaml` need to match. For example, `[MESSAGES_TYPES]` `sent` matches the `[FEATURES]` key `sent`

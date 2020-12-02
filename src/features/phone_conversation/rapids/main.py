@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
     conversation_data = pd.read_csv(sensor_data_files["sensor_data"])
 
@@ -23,7 +23,7 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
 
     conversation_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
     if not conversation_data.empty:
-        conversation_data = filter_data_by_segment(conversation_data, day_segment)
+        conversation_data = filter_data_by_segment(conversation_data, time_segment)
 
         if not conversation_data.empty:
             conversation_features = pd.DataFrame()

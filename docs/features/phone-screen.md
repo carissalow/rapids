@@ -8,8 +8,8 @@ Sensor parameters description for `[PHONE_SCREEN]`:
 
 ## RAPIDS provider
 
-!!! info "Available day segments and platforms"
-    - Available for all day segments
+!!! info "Available time segments and platforms"
+    - Available for all time segments
     - Available for Android and iOS
 
 !!! info "File Sequence"

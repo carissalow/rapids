@@ -3,6 +3,6 @@ DOWNLOAD_DATASET:
   GROUP: RAPIDS
 BLUETOOTH:
   COMPUTE: True
-  DAY_SEGMENTS: "data/external/daysegments_bluetooth.csv"
+  TIME_SEGMENTS: "data/external/timesegments_bluetooth.csv"
 WIFI:
   COMPUTE: True

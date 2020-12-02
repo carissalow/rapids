@@ -7,7 +7,7 @@ Mode <- function(v) {
   uniqv[which.max(tabulate(match(v, uniqv)))]
 }
 
-call_features_of_type <- function(calls, call_type, day_segment, requested_features){
+call_features_of_type <- function(calls, call_type, time_segment, requested_features){
     # Output dataframe
     features = data.frame(local_segment = character(), stringsAsFactors = FALSE)
 
@@ -59,14 +59,14 @@ call_features_of_type <- function(calls, call_type, day_segment, requested_featu
     return(features)
 }
 
-rapids_features <- function(sensor_data_files, day_segment, provider){
+rapids_features <- function(sensor_data_files, time_segment, provider){
     calls_data <-  read.csv(sensor_data_files[["sensor_data"]], stringsAsFactors = FALSE)
-    calls_data <- calls_data %>% filter_data_by_segment(day_segment)
+    calls_data <- calls_data %>% filter_data_by_segment(time_segment)
     call_types = provider[["CALL_TYPES"]]
     call_features <- setNames(data.frame(matrix(ncol=1, nrow=0)), c("local_segment"))
 
     for(call_type in call_types){
-        # Filter rows that belong to the calls type and day segment of interest
+        # Filter rows that belong to the calls type and time segment of interest
         call_type_label = ifelse(call_type == "incoming", "1", ifelse(call_type == "outgoing", "2", ifelse(call_type == "missed", "3", NA)))
         if(is.na(call_type_label))
             stop(paste("Call type can online be incoming, outgoing or missed but instead you typed: ", call_type, " in config[CALLS][CALL_TYPES]"))
@@ -74,7 +74,7 @@ rapids_features <- function(sensor_data_files, day_segment, provider){
         requested_features <- provider[["FEATURES"]][[call_type]]
         calls_of_type <- calls_data %>% filter(call_type == call_type_label)
 
-        features <- call_features_of_type(calls_of_type, call_type, day_segment, requested_features)
+        features <- call_features_of_type(calls_of_type, call_type, time_segment, requested_features)
         call_features <- merge(call_features, features, all=TRUE)
     }
     call_features <- call_features %>% mutate_at(vars(contains("countmostfrequentcontact") | contains("distinctcontacts") | contains("count")), list( ~ replace_na(., 0)))

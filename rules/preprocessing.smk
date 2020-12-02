@@ -50,28 +50,28 @@ rule download_fitbit_data:
     script:
         "../src/data/download_fitbit_data.R"
 
-rule compute_day_segments:
+rule compute_time_segments:
     input: 
-        config["DAY_SEGMENTS"]["FILE"],
+        config["TIME_SEGMENTS"]["FILE"],
         "data/external/participant_files/{pid}.yaml"
     params:
-        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         pid = "{pid}"
     output:
-        segments_file = "data/interim/day_segments/{pid}_day_segments.csv",
-        segments_labels_file = "data/interim/day_segments/{pid}_day_segments_labels.csv",
+        segments_file = "data/interim/time_segments/{pid}_time_segments.csv",
+        segments_labels_file = "data/interim/time_segments/{pid}_time_segments_labels.csv",
     script:
-        "../src/data/compute_day_segments.py"
+        "../src/data/compute_time_segments.py"
 
 rule phone_readable_datetime:
     input:
         sensor_input = "data/raw/{pid}/phone_{sensor}_raw.csv",
-        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
     params:
         timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
         fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
-        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/raw/{pid}/phone_{sensor}_with_datetime.csv"
     script:
@@ -90,12 +90,12 @@ rule phone_yielded_timestamps:
 rule phone_yielded_timestamps_with_datetime:
     input:
         sensor_input = "data/interim/{pid}/phone_yielded_timestamps.csv",
-        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
     params:
         timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
         fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
-        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv"
     script:
@@ -128,12 +128,12 @@ rule process_phone_locations_types:
 rule phone_locations_processed_with_datetime:
     input:
         sensor_input = "data/interim/{pid}/phone_locations_processed.csv",
-        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
     params:
         timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
         fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
-        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/interim/{pid}/phone_locations_processed_with_datetime.csv"
     script:
@@ -150,12 +150,12 @@ rule resample_episodes:
 rule resample_episodes_with_datetime:
     input:
         sensor_input = "data/interim/{pid}/{sensor}_episodes_resampled.csv",
-        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
     params:
         timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
         fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
-        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/interim/{pid}/{sensor}_episodes_resampled_with_datetime.csv"
     script:
@@ -233,11 +233,11 @@ rule fitbit_parse_sleep:
 rule fitbit_readable_datetime:
     input:
         sensor_input = "data/raw/{pid}/fitbit_{sensor}_{fitbit_data_type}_parsed.csv",
-        day_segments = "data/interim/day_segments/{pid}_day_segments.csv"
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
     params:
         fixed_timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-        day_segments_type = config["DAY_SEGMENTS"]["TYPE"],
-        include_past_periodic_segments = config["DAY_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/raw/{pid}/fitbit_{sensor}_{fitbit_data_type}_parsed_with_datetime.csv"
     script:

@@ -31,8 +31,8 @@ We provide examples of the input format that RAPIDS expects, note that both exam
 
 ## RAPIDS provider
 
-!!! info "Available day segments"
-    - Available for all day segments
+!!! info "Available time segments"
+    - Available for all time segments
 
 !!! info "File Sequence"
     ```bash
@@ -56,16 +56,16 @@ Features description for `[FITBIT_HEARTRATE_INTRADAY][PROVIDERS][RAPIDS]`:
 
 |Feature                    |Units          |Description|
 |-------------------------- |-------------- |---------------------------|
-|maxhr                      |beats/mins     |The maximum heart rate during a day segment.
-|minhr                      |beats/mins     |The minimum heart rate during a day segment.
-|avghr                      |beats/mins     |The average heart rate during a day segment.
-|medianhr                   |beats/mins     |The median of heart rate during a day segment.
-|modehr                     |beats/mins     |The mode of heart rate during a day segment.
-|stdhr                      |beats/mins     |The standard deviation of heart rate during a day segment.
-|diffmaxmodehr              |beats/mins     |The difference between the maximum and mode heart rate during a day segment.
-|diffminmodehr              |beats/mins     |The difference between the mode and minimum heart rate during a day segment.
-|entropyhr                  |nats           |Shannon’s entropy measurement based on heart rate during a day segment.
-|minutesonZONE              |minutes        |Number of minutes the user’s heart rate fell within each `heartrate_zone` during a day segment.
+|maxhr                      |beats/mins     |The maximum heart rate during a time segment.
+|minhr                      |beats/mins     |The minimum heart rate during a time segment.
+|avghr                      |beats/mins     |The average heart rate during a time segment.
+|medianhr                   |beats/mins     |The median of heart rate during a time segment.
+|modehr                     |beats/mins     |The mode of heart rate during a time segment.
+|stdhr                      |beats/mins     |The standard deviation of heart rate during a time segment.
+|diffmaxmodehr              |beats/mins     |The difference between the maximum and mode heart rate during a time segment.
+|diffminmodehr              |beats/mins     |The difference between the mode and minimum heart rate during a time segment.
+|entropyhr                  |nats           |Shannon’s entropy measurement based on heart rate during a time segment.
+|minutesonZONE              |minutes        |Number of minutes the user’s heart rate fell within each `heartrate_zone` during a time segment.
 
 !!! note "Assumptions/Observations"
     

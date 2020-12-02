@@ -6,7 +6,7 @@ You need to follow these steps to configure your RAPIDS deployment before you ca
 1. Add your [database credentials](#database-credentials)
 2. Choose the [timezone of your study](#timezone-of-your-study)
 3. Create your [participants files](#participant-files)
-4. Select what [day segments](#day-segments) you want to extract features on
+4. Select what [time segments](#time-segments) you want to extract features on
 5. Modify your [device data source configuration](#device-data-source-configuration)
 6. Select what [sensors and features](#sensor-and-features-to-process) you want to process
 
@@ -197,27 +197,27 @@ You have two options a) use the `aware_device` table in your database or b) use 
 
 ---
 
-## Day Segments
+## Time Segments
 
-Day segments (or epochs) are the time windows on which you want to extract behavioral features. For example, you might want to process data on every day, every morning, or only during weekends. RAPIDS offers three categories of day segments that are flexible enough to cover most use cases: **frequency** (short time windows every day), **periodic** (arbitrary time windows on any day), and **event** (arbitrary time windows around events of interest). See also our [examples](#segment-examples).
+Time segments (or epochs) are the time windows on which you want to extract behavioral features. For example, you might want to process data on every day, every morning, or only during weekends. RAPIDS offers three categories of time segments that are flexible enough to cover most use cases: **frequency** (short time windows every day), **periodic** (arbitrary time windows on any day), and **event** (arbitrary time windows around events of interest). See also our [examples](#segment-examples).
 
 === "Frequency Segments"
 
     These segments are computed on every day and all have the same duration (for example 30 minutes). Set the following keys in your `config.yaml`
 
     ```yaml
-    DAY_SEGMENTS: &day_segments
+    TIME_SEGMENTS: &time_segments
       TYPE: FREQUENCY
       FILE: "data/external/your_frequency_segments.csv"
       INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE
     ```
 
-    The file pointed by `[DAY_SEGMENTS][FILE]` should have the following format and can only have 1 row.
+    The file pointed by `[TIME_SEGMENTS][FILE]` should have the following format and can only have 1 row.
 
     | Column | Description                                                          |
     |--------|----------------------------------------------------------------------|
-    | label  | A string that is used as a prefix in the name of your day segments   |
-    | length | An integer representing the duration of your day segments in minutes |
+    | label  | A string that is used as a prefix in the name of your time segments   |
+    | length | An integer representing the duration of your time segments in minutes |
 
     !!! example
 
@@ -226,7 +226,7 @@ Day segments (or epochs) are the time windows on which you want to extract behav
         thirtyminutes,30
         ```
         
-        This configuration will compute 48 day segments for every day when any data from any participant was sensed. For example:
+        This configuration will compute 48 time segments for every day when any data from any participant was sensed. For example:
 
         ```csv
         start_time,length,label
@@ -242,7 +242,7 @@ Day segments (or epochs) are the time windows on which you want to extract behav
     These segments can be computed every day, or on specific days of the week, month, quarter, and year. Their minimum duration is 1 minute but they can be as long as you want. Set the following keys in your `config.yaml`.
 
     ```yaml
-    DAY_SEGMENTS: &day_segments
+    TIME_SEGMENTS: &time_segments
       TYPE: PERIODIC
       FILE: "data/external/your_periodic_segments.csv"
       INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # or TRUE
@@ -250,11 +250,11 @@ Day segments (or epochs) are the time windows on which you want to extract behav
 
     If `[INCLUDE_PAST_PERIODIC_SEGMENTS]` is set to `TRUE`, RAPIDS will consider instances of your segments back enough in the past as to include the first row of data of each participant. For example, if the first row of data from a participant happened on Saturday March 7th 2020 and the requested segment duration is 7 days starting on every Sunday, the first segment to be considered would start on Sunday March 1st if `[INCLUDE_PAST_PERIODIC_SEGMENTS]` is `TRUE` or on Sunday March 8th if `FALSE`.
 
-    The file pointed by `[DAY_SEGMENTS][FILE]` should have the following format and can have multiple rows.
+    The file pointed by `[TIME_SEGMENTS][FILE]` should have the following format and can have multiple rows.
 
     | Column        | Description                                                                                                                                                                                                   |
     |---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    | label         | A string that is used as a prefix in the name of your day segments. It has to be **unique** between rows                                                                                                      |
+    | label         | A string that is used as a prefix in the name of your time segments. It has to be **unique** between rows                                                                                                      |
     | start_time    | A string with format `HH:MM:SS` representing the starting time of this segment on any day                                                                                                                                 |
     | length        | A string representing the length of this segment.It can have one or more of the following strings **`XXD XXH XXM XXS`** to represent days, hours, minutes and seconds. For example `7D 23H 59M 59S`                        |
     | repeats_on    | One of the follow options `every_day`, `wday`, `qday`, `mday`, and `yday`. The last four represent a week, quarter, month and year day                                                                        |
@@ -278,18 +278,18 @@ Day segments (or epochs) are the time windows on which you want to extract behav
     These segments can be computed before or after an event of interest (defined as any UNIX timestamp). Their minimum duration is 1 minute but they can be as long as you want. The start of each segment can be shifted backwards or forwards from the specified timestamp. Set the following keys in your `config.yaml`.
 
     ```yaml
-    DAY_SEGMENTS: &day_segments
+    TIME_SEGMENTS: &time_segments
       TYPE: EVENT
       FILE: "data/external/your_event_segments.csv"
       INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # or TRUE
     ```
 
-    The file pointed by `[DAY_SEGMENTS][FILE]` should have the following format and can have multiple rows.
+    The file pointed by `[TIME_SEGMENTS][FILE]` should have the following format and can have multiple rows.
 
     | Column        | Description                                                                                                                                                                                                   |
     |---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    | label         | A string that is used as a prefix in the name of your day segments. If labels are unique, every segment is independent; if two or more segments have the same label, their data will be grouped when computing auxiliary data for features like the `most frequent contact` for calls (the most frequent contact will be computed across all these segments). There cannot be two *overlaping* event segments with the same label (RAPIDS will throw an error)                                                                                                      |
-    | event_timestamp    | A UNIX timestamp that represents the moment an event of interest happened (clinical relapse, survey, readmission, etc.). The corresponding day segment will be computed around this moment using `length`, `shift`, and `shift_direction`                                                                                            |
+    | label         | A string that is used as a prefix in the name of your time segments. If labels are unique, every segment is independent; if two or more segments have the same label, their data will be grouped when computing auxiliary data for features like the `most frequent contact` for calls (the most frequent contact will be computed across all these segments). There cannot be two *overlaping* event segments with the same label (RAPIDS will throw an error)                                                                                                      |
+    | event_timestamp    | A UNIX timestamp that represents the moment an event of interest happened (clinical relapse, survey, readmission, etc.). The corresponding time segment will be computed around this moment using `length`, `shift`, and `shift_direction`                                                                                            |
     | length        | A string representing the length of this segment. It can have one or more of the following keys `XXD XXH XXM XXS` to represent a number of days, hours, minutes, and seconds. For example `7D 23H 59M 59S`                        |
     | shift    | A string representing the time shift from `event_timestamp`. It can have one or more of the following keys `XXD XXH XXM XXS` to represent a number of days, hours, minutes and seconds. For example `7D 23H 59M 59S`. Use this value to  change the start of a segment with respect to its `event_timestamp`. For example, set this variable to `1H` to create a segment that starts 1 hour from an event of interest (`shift_direction` determines if it's before or after).                                                                        |
     | shift_direction | An integer representing whether the `shift` is before (`-1`) or after (`1`) an `event_timestamp` |
@@ -308,7 +308,7 @@ Day segments (or epochs) are the time windows on which you want to extract behav
         mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
         ```
         
-        This example will create eight segments for a single participant (`a748ee1a...`), five independent `stressX` segments with various lengths (1,4,3,7, and 9 hours). Segments `stress1`, `stress3`, and `stress5` are shifted forwards by 5 minutes and `stress2` and `stress4` are shifted backwards by 4 hours (that is, if the `stress4` event happened on March 15th at 1pm EST (`1584291600000`), the day segment will start on that day at 9am and end at 4pm). 
+        This example will create eight segments for a single participant (`a748ee1a...`), five independent `stressX` segments with various lengths (1,4,3,7, and 9 hours). Segments `stress1`, `stress3`, and `stress5` are shifted forwards by 5 minutes and `stress2` and `stress4` are shifted backwards by 4 hours (that is, if the `stress4` event happened on March 15th at 1pm EST (`1584291600000`), the time segment will start on that day at 9am and end at 4pm). 
         
         The three `mood` segments are 1 hour, 1 day and 7 days long and have no shift. In addition, these `mood` segments are grouped together, meaning that although RAPIDS will compute features on each one of them, some necessary information to compute a few of such features will be extracted from all three segments, for example the phone contact that called a participant the most or the location clusters visited by a participant.
 

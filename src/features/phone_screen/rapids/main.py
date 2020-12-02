@@ -1,7 +1,7 @@
 import pandas as pd
 import itertools
 
-def getEpisodeDurationFeatures(screen_data, day_segment, episode, features, reference_hour_first_use):
+def getEpisodeDurationFeatures(screen_data, time_segment, episode, features, reference_hour_first_use):
     screen_data_episode = screen_data[screen_data["episode"] == episode]
     duration_helper = pd.DataFrame()
     if "countepisode" in features:
@@ -25,7 +25,7 @@ def getEpisodeDurationFeatures(screen_data, day_segment, episode, features, refe
     return duration_helper
 
 
-def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
     screen_data = pd.read_csv(sensor_data_files["sensor_episodes"])
 
@@ -48,7 +48,7 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
     screen_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
     if not screen_data.empty:
 
-        screen_data = filter_data_by_segment(screen_data, day_segment)
+        screen_data = filter_data_by_segment(screen_data, time_segment)
         
         if not screen_data.empty:
             if ignore_episodes_shorter_than > 0:
@@ -59,7 +59,7 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
         if not screen_data.empty:
             screen_features = pd.DataFrame()
             for episode in episode_type_to_compute:
-                screen_features = pd.concat([screen_features, getEpisodeDurationFeatures(screen_data, day_segment, episode, features_episodes_to_compute, reference_hour_first_use)], axis=1)
+                screen_features = pd.concat([screen_features, getEpisodeDurationFeatures(screen_data, time_segment, episode, features_episodes_to_compute, reference_hour_first_use)], axis=1)
 
         if not screen_features.empty:
             screen_features = screen_features.reset_index()

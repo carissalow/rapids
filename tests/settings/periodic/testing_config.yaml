@@ -2,11 +2,11 @@
 # You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
 PIDS: [test01, test02, test03, test04]
 
-# Global var with common day segments
-DAY_SEGMENTS: &day_segments
+# Global var with common time segments
+TIME_SEGMENTS: &time_segments
   TYPE: PERIODIC # FREQUENCY, PERIODIC, EVENT
-  FILE: "data/external/daysegments_periodic.csv"
-  INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, if set to TRUE we consider day segments back enough in the past as to include the first day of data
+  FILE: "data/external/timesegments_periodic.csv"
+  INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, if set to TRUE we consider time segments back enough in the past as to include the first day of data
 
 # Use tz codes from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones. Double check your code, for example EST is not US Eastern Time.
 TIMEZONE: &timezone

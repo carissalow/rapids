@@ -21,7 +21,7 @@ This is a quick guide for creating and running a simple pipeline to extract miss
                 END_DATE: 2021-01-01 # this can also be empty
             ```
         
-        4\. `[DAY_SEGMENTS][TYPE]` should be the default `PERIODIC`. Change `[DAY_SEGMENTS][FILE]` with the path of a file containing the following lines:
+        4\. `[TIME_SEGMENTS][TYPE]` should be the default `PERIODIC`. Change `[TIME_SEGMENTS][FILE]` with the path of a file containing the following lines:
              ```csv
              label,start_time,length,repeats_on,repeats_value
              daily,00:00:00,23H 59M 59S,every_day,0
@@ -45,9 +45,9 @@ This is a quick guide for creating and running a simple pipeline to extract miss
 
         # ... other irrelevant sections
 
-        DAY_SEGMENTS: &day_segments
+        TIME_SEGMENTS: &time_segments
             TYPE: PERIODIC
-            FILE: "data/external/daysegments_periodic.csv" # make sure the three lines specified above are in the file
+            FILE: "data/external/timesegments_periodic.csv" # make sure the three lines specified above are in the file
             INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE
 
         # No need to change this if you collected AWARE data on a database and your credentials are grouped under `MY_GROUP` in `.env`
@@ -80,7 +80,7 @@ This is a quick guide for creating and running a simple pipeline to extract miss
     ```bash
     ./rapids -j1
     ```
-4. The call features for daily and morning day segments will be in 
+4. The call features for daily and morning time segments will be in 
    ```
    /data/processed/features/p01/phone_calls.csv
    ```

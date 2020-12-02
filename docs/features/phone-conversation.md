@@ -9,8 +9,8 @@ Sensor parameters description for `[PHONE_CONVERSATION]`:
 
 ## RAPIDS provider
 
-!!! info "Available day segments and platforms"
-    - Available for all day segments
+!!! info "Available time segments and platforms"
+    - Available for all time segments
     - Available for Android only
 
 !!! info "File Sequence"
@@ -46,8 +46,8 @@ Features description for `[PHONE_CONVERSATION][PROVIDERS][RAPIDS]`:
 | minconversationduration | minutes | Shortest duration of all conversations                                                                                                                                                     |
 | avgconversationduration | minutes | Average duration of all conversations                                                                                                                                                      |
 | sdconversationduration  | minutes | Standard Deviation of the duration of all conversations                                                                                                                                    |
-| timefirstconversation   | minutes | Minutes since midnight when the first conversation for a day segment was detected                                                                                                          |
-| timelastconversation    | minutes | Minutes since midnight when the last conversation for a day segment was detected                                                                                                           |
+| timefirstconversation   | minutes | Minutes since midnight when the first conversation for a time segment was detected                                                                                                          |
+| timelastconversation    | minutes | Minutes since midnight when the last conversation for a time segment was detected                                                                                                           |
 | noisesumenergy          | L2-norm | Sum of all energy values when inference is noise                                                                                                                                           |
 | noiseavgenergy          | L2-norm | Average of all energy values when inference is noise                                                                                                                                       |
 | noisesdenergy           | L2-norm | Standard Deviation of all energy values when inference is noise                                                                                                                            |

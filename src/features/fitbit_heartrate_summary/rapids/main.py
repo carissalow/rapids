@@ -59,7 +59,7 @@ def extractHRFeaturesFromSummaryData(heartrate_summary_data, summary_features):
     return heartrate_summary_features
 
 
-def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
     heartrate_summary_data = pd.read_csv(sensor_data_files["sensor_data"])
 
@@ -72,14 +72,14 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
     # extract features from summary data
     heartrate_summary_features = pd.DataFrame(columns=["local_segment"] + summary_features_to_compute)
     if not heartrate_summary_data.empty:
-        heartrate_summary_data = filter_data_by_segment(heartrate_summary_data, day_segment)
+        heartrate_summary_data = filter_data_by_segment(heartrate_summary_data, time_segment)
 
         if not heartrate_summary_data.empty:
             # only keep the segments start at 00:00:00 and end at 23:59:59
             datetime_start_regex = "[0-9]{4}[\\-|\\/][0-9]{2}[\\-|\\/][0-9]{2} 00:00:00"
             datetime_end_regex = "[0-9]{4}[\\-|\\/][0-9]{2}[\\-|\\/][0-9]{2} 23:59:59"
 
-            segment_regex = "{}#{},{}".format(day_segment, datetime_start_regex, datetime_end_regex)
+            segment_regex = "{}#{},{}".format(time_segment, datetime_start_regex, datetime_end_regex)
             heartrate_summary_data = heartrate_summary_data[heartrate_summary_data["local_segment"].str.match(segment_regex)]
 
             if not heartrate_summary_data.empty:

@@ -41,11 +41,11 @@ def statsFeatures(heartrate_data, features, features_type, heartrate_features):
     
     return heartrate_features
 
-def extractHRFeaturesFromIntradayData(heartrate_intraday_data, features, day_segment, filter_data_by_segment):
+def extractHRFeaturesFromIntradayData(heartrate_intraday_data, features, time_segment, filter_data_by_segment):
     heartrate_intraday_features = pd.DataFrame(columns=["local_segment"] + features)
     if not heartrate_intraday_data.empty:
         num_rows_per_minute = heartrate_intraday_data.groupby(["local_date", "local_hour", "local_minute"]).count().mean()["device_id"]
-        heartrate_intraday_data = filter_data_by_segment(heartrate_intraday_data, day_segment)
+        heartrate_intraday_data = filter_data_by_segment(heartrate_intraday_data, time_segment)
 
         if not heartrate_intraday_data.empty:
             heartrate_intraday_features = pd.DataFrame()
@@ -63,7 +63,7 @@ def extractHRFeaturesFromIntradayData(heartrate_intraday_data, features, day_seg
     return heartrate_intraday_features
 
 
-def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
     heartrate_intraday_data = pd.read_csv(sensor_data_files["sensor_data"])
 
@@ -74,6 +74,6 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
     intraday_features_to_compute = list(set(requested_intraday_features) & set(base_intraday_features_names))
     
     # extract features from intraday data
-    heartrate_intraday_features = extractHRFeaturesFromIntradayData(heartrate_intraday_data, intraday_features_to_compute, day_segment, filter_data_by_segment)
+    heartrate_intraday_features = extractHRFeaturesFromIntradayData(heartrate_intraday_data, intraday_features_to_compute, time_segment, filter_data_by_segment)
     
     return heartrate_intraday_features

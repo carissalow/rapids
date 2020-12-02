@@ -31,7 +31,7 @@ We provide examples of the input format that RAPIDS expects, note that both exam
 
 ## RAPIDS provider
 
-!!! info "Available day segments"
+!!! info "Available time segments"
     - Only available for segments that span 1 or more complete days (e.g. Jan 1st 00:00 to Jan 3rd 23:59)
 
 !!! info "File Sequence"
@@ -56,22 +56,22 @@ Features description for `[FITBIT_HEARTRATE_SUMMARY][PROVIDERS][RAPIDS]`:
 
 |Feature                    |Units      |Description|
 |-------------------------- |---------- |---------------------------|
-|maxrestinghr               |beats/mins     |The maximum daily resting heart rate during a day segment.
-|minrestinghr               |beats/mins     |The minimum daily resting heart rate during a day segment.
-|avgrestinghr               |beats/mins     |The average daily resting heart rate during a day segment.
-|medianrestinghr            |beats/mins     |The median of daily resting heart rate during a day segment.
-|moderestinghr              |beats/mins     |The mode of daily resting heart rate during a day segment.
-|stdrestinghr               |beats/mins     |The standard deviation of daily resting heart rate during a day segment.
-|diffmaxmoderestinghr       |beats/mins     |The difference between the maximum and mode daily resting heart rate during a day segment.
-|diffminmoderestinghr       |beats/mins     |The difference between the mode and minimum daily resting heart rate during a day segment.
-|entropyrestinghr           |nats           |Shannon’s entropy measurement based on daily resting heart rate during a day segment.
-|sumcaloriesZONE            |cals           |The total daily calories burned within `heartrate_zone` during a day segment.
-|maxcaloriesZONE            |cals           |The maximum daily calories burned within `heartrate_zone` during a day segment.
-|mincaloriesZONE            |cals           |The minimum daily calories burned within `heartrate_zone` during a day segment.
-|avgcaloriesZONE            |cals           |The average daily calories burned within `heartrate_zone` during a day segment.
-|mediancaloriesZONE         |cals           |The median of daily calories burned within `heartrate_zone` during a day segment.
-|stdcaloriesZONE            |cals           |The standard deviation of daily calories burned within `heartrate_zone` during a day segment.
-|entropycaloriesZONE        |nats           |Shannon’s entropy measurement based on daily calories burned within `heartrate_zone` during a day segment.
+|maxrestinghr               |beats/mins     |The maximum daily resting heart rate during a time segment.
+|minrestinghr               |beats/mins     |The minimum daily resting heart rate during a time segment.
+|avgrestinghr               |beats/mins     |The average daily resting heart rate during a time segment.
+|medianrestinghr            |beats/mins     |The median of daily resting heart rate during a time segment.
+|moderestinghr              |beats/mins     |The mode of daily resting heart rate during a time segment.
+|stdrestinghr               |beats/mins     |The standard deviation of daily resting heart rate during a time segment.
+|diffmaxmoderestinghr       |beats/mins     |The difference between the maximum and mode daily resting heart rate during a time segment.
+|diffminmoderestinghr       |beats/mins     |The difference between the mode and minimum daily resting heart rate during a time segment.
+|entropyrestinghr           |nats           |Shannon’s entropy measurement based on daily resting heart rate during a time segment.
+|sumcaloriesZONE            |cals           |The total daily calories burned within `heartrate_zone` during a time segment.
+|maxcaloriesZONE            |cals           |The maximum daily calories burned within `heartrate_zone` during a time segment.
+|mincaloriesZONE            |cals           |The minimum daily calories burned within `heartrate_zone` during a time segment.
+|avgcaloriesZONE            |cals           |The average daily calories burned within `heartrate_zone` during a time segment.
+|mediancaloriesZONE         |cals           |The median of daily calories burned within `heartrate_zone` during a time segment.
+|stdcaloriesZONE            |cals           |The standard deviation of daily calories burned within `heartrate_zone` during a time segment.
+|entropycaloriesZONE        |nats           |Shannon’s entropy measurement based on daily calories burned within `heartrate_zone` during a time segment.
 
 !!! note "Assumptions/Observations"
     

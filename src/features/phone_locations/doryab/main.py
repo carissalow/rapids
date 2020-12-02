@@ -4,7 +4,7 @@ from astropy.timeseries import LombScargle
 from sklearn.cluster import DBSCAN
 from math import radians, cos, sin, asin, sqrt
 
-def doryab_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
     location_data = pd.read_csv(sensor_data_files["sensor_data"])
     requested_features = provider["FEATURES"]
@@ -28,7 +28,7 @@ def doryab_features(sensor_data_files, day_segment, provider, filter_data_by_seg
     if location_data.empty:
         location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
     else:
-        location_data = filter_data_by_segment(location_data, day_segment)
+        location_data = filter_data_by_segment(location_data, time_segment)
 
         if location_data.empty:
             location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
@@ -47,7 +47,7 @@ def doryab_features(sensor_data_files, day_segment, provider, filter_data_by_seg
             location_data = location_data[(location_data['double_latitude']!=0.0) & (location_data['double_longitude']!=0.0)]
 
             if location_data.empty:
-                location_features = pd.DataFrame(columns=["local_date"] + ["location_" + day_segment + "_" + x for x in features_to_compute])
+                location_features = pd.DataFrame(columns=["local_date"] + ["location_" + time_segment + "_" + x for x in features_to_compute])
                 location_features = location_features.reset_index(drop=True)
                 return location_features
 

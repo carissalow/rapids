@@ -2,8 +2,8 @@ library("dplyr", warn.conflicts = F)
 library(tidyr)
 library(readr)
 
-compute_data_yield_features <- function(data, feature_name, day_segment, provider){
-  data <- data %>% filter_data_by_segment(day_segment)
+compute_data_yield_features <- function(data, feature_name, time_segment, provider){
+  data <- data %>% filter_data_by_segment(time_segment)
   features <- data %>%
     separate(timestamps_segment, into = c("start_timestamp", "end_timestamp"), convert = T, sep = ",") %>% 
     mutate(duration_minutes = (end_timestamp - start_timestamp) / 60000,
@@ -26,7 +26,7 @@ compute_data_yield_features <- function(data, feature_name, day_segment, provide
 
 
 
-rapids_features <- function(sensor_data_files, day_segment, provider){
+rapids_features <- function(sensor_data_files, time_segment, provider){
   
   yield_data <-  read_csv(sensor_data_files[["sensor_data"]], col_types = cols_only(timestamp ="d", assigned_segments = "c"))
   requested_features <- provider[["FEATURES"]]
@@ -40,7 +40,7 @@ rapids_features <- function(sensor_data_files, day_segment, provider){
   # The subset of requested features this function can compute
   features_to_compute  <- intersect(base_features_names, requested_features)
   
-  features <- compute_data_yield_features(yield_data, feature_name, day_segment, provider) %>% 
+  features <- compute_data_yield_features(yield_data, feature_name, time_segment, provider) %>% 
     select(c("local_segment", features_to_compute))
   
   return(features)

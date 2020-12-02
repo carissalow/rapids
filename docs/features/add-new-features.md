@@ -83,12 +83,12 @@ In this step you need to add a folder, script and function for your provider.
 
     !!! info "Python function"
         ```python
-        def [providername]_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+        def [providername]_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
         ```
 
     !!! info "R function"
         ```r
-        [providername]_features <- function(sensor_data, day_segment, provider)
+        [providername]_features <- function(sensor_data, time_segment, provider)
         ```
 
 ### Implement your feature extraction code
@@ -98,7 +98,7 @@ The provider function that you created in the step above will receive the follow
 | Parameter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description
 |---|---|
 |`sensor_data_files`| Path to the CSV file containing the data of a single participant. This data has been cleaned and preprocessed. Your function will be automatically called for each participant in your study (in the `[PIDS]` array in `config.yaml`) 
-|`day_segment`| The label of the day segment that should be processed.
+|`time_segment`| The label of the time segment that should be processed.
 |`provider`| The parameters you configured for your provider in `config.yaml` will be available in this variable as a dictionary in Python or a list in R. In our example this dictionary contains `{MY_PARAMETER:"a_string"}`
 |`filter_data_by_segment`| Python only. A function that you will use to filter your data. In R this function is already available in the environment.
 |`*args`| Python only. Not used for now
@@ -115,24 +115,24 @@ The code to extract your behavioral features should be implemented in your provi
     Note that phone's battery, screen, and activity recognition data is given as episodes instead of event rows (for example, start and end timestamps of the periods the phone screen was on)
 
 
-??? info "2. Filter your data to process only those rows that belong to `day_segment`"
+??? info "2. Filter your data to process only those rows that belong to `time_segment`"
 
     This step is only one line of code, but to undersand why we need it, keep reading.
     ```python
-    acc_data = filter_data_by_segment(acc_data, day_segment)
+    acc_data = filter_data_by_segment(acc_data, time_segment)
     ```
 
-    You should use the `filter_data_by_segment()` function to process and group those rows that belong to each of the [day segments RAPIDS could be configured with](../../setup/configuration/#day-segments).
+    You should use the `filter_data_by_segment()` function to process and group those rows that belong to each of the [time segments RAPIDS could be configured with](../../setup/configuration/#time-segments).
 
-    Let's understand the `filter_data_by_segment()` function with an example. A RAPIDS user can extract features on any arbitrary [day segment](../../setup/configuration/#day-segments). A day segment is a period of time that has a label and one or more instances. For example, the user (or you) could have requested features on a daily, weekly, and week-end basis for `p01`. The labels are arbritrary and the instances depend on the days a participant was monitored for: 
+    Let's understand the `filter_data_by_segment()` function with an example. A RAPIDS user can extract features on any arbitrary [time segment](../../setup/configuration/#time-segments). A time segment is a period of time that has a label and one or more instances. For example, the user (or you) could have requested features on a daily, weekly, and week-end basis for `p01`. The labels are arbritrary and the instances depend on the days a participant was monitored for: 
 
      - the daily segment could be named `my_days` and if `p01` was monitored for 14 days, it would have 14 instances
      - the weekly segment could be named `my_weeks` and if `p01` was monitored for 14 days, it would have 2 instances.
      - the weekend segment could be named `my_weekends` and if `p01` was monitored for 14 days, it would have 2 instances.
     
-    For this example, RAPIDS will call your provider function three times for `p01`, once where `day_segment` is `my_days`, once where `day_segment` is `my_weeks` and once where `day_segment` is `my_weekends`. In this example not every row in `p01`'s data needs to take part in the feature computation for either segment **and** the rows need to be grouped differently. 
+    For this example, RAPIDS will call your provider function three times for `p01`, once where `time_segment` is `my_days`, once where `time_segment` is `my_weeks` and once where `time_segment` is `my_weekends`. In this example not every row in `p01`'s data needs to take part in the feature computation for either segment **and** the rows need to be grouped differently. 
     
-    Thus `filter_data_by_segment()` comes in handy, it will return a data frame that contains the rows that were logged during a day segment plus an extra column called `local_segment`. This new column will have as many unique values as day segment instances exist (14, 2, and 2 for our `p01`'s `my_days`, `my_weeks`, and `my_weekends` examples). After filtering, **you should group the data frame by this column and compute any desired features**, for example:
+    Thus `filter_data_by_segment()` comes in handy, it will return a data frame that contains the rows that were logged during a time segment plus an extra column called `local_segment`. This new column will have as many unique values as time segment instances exist (14, 2, and 2 for our `p01`'s `my_days`, `my_weeks`, and `my_weekends` examples). After filtering, **you should group the data frame by this column and compute any desired features**, for example:
 
     ```python
     acc_features["maxmagnitude"] = acc_data.groupby(["local_segment"])["magnitude"].max()
@@ -143,7 +143,7 @@ The code to extract your behavioral features should be implemented in your provi
 ??? info "3. Return a data frame with your features"
     After filtering, grouping your data, and computing your features, your provider function should return a data frame that has:
     
-    -  One row per day segment instance (e.g. 14 our `p01`'s `my_days` example)
+    -  One row per time segment instance (e.g. 14 our `p01`'s `my_days` example)
     -  The `local_segment` column added by `filter_data_by_segment()`
     -  One column per feature. By convention the name of your features should only contain letters or numbers (`feature1`). RAPIDS will automatically add the right sensor and provider prefix (`phone_accelerometr_vega_`)
 
@@ -151,7 +151,7 @@ The code to extract your behavioral features should be implemented in your provi
     For your reference, this a short example of our own provider (`RAPIDS`) for `PHONE_ACCELEROMETER` that computes five acceleration features
 
     ```python
-    def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+    def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
         acc_data = pd.read_csv(sensor_data_files["sensor_data"])
         requested_features = provider["FEATURES"]
@@ -162,7 +162,7 @@ The code to extract your behavioral features should be implemented in your provi
 
         acc_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
         if not acc_data.empty:
-            acc_data = filter_data_by_segment(acc_data, day_segment)
+            acc_data = filter_data_by_segment(acc_data, time_segment)
             
             if not acc_data.empty:
                 acc_features = pd.DataFrame()

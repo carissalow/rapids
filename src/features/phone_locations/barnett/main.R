@@ -27,7 +27,7 @@ create_empty_file <- function(requested_features){
                       ) %>% select(all_of(requested_features)))
 }
 
-barnett_features <- function(sensor_data_files, day_segment, params){
+barnett_features <- function(sensor_data_files, time_segment, params){
   
   location_data <-  read.csv(sensor_data_files[["sensor_data"]], stringsAsFactors = FALSE)
   location_features <- NULL
@@ -51,14 +51,14 @@ barnett_features <- function(sensor_data_files, day_segment, params){
 
   if (nrow(location) > 1){
     # Filter by segment and skipping any non-daily segment
-    location <- location %>% filter_data_by_segment(day_segment)
+    location <- location %>% filter_data_by_segment(time_segment)
     
     datetime_start_regex = "[0-9]{4}[\\-|\\/][0-9]{2}[\\-|\\/][0-9]{2} 00:00:00"
     datetime_end_regex = "[0-9]{4}[\\-|\\/][0-9]{2}[\\-|\\/][0-9]{2} 23:59:59"
-    location <- location %>% mutate(is_daily = str_detect(local_segment, paste0(day_segment, "#", datetime_start_regex, ",", datetime_end_regex))) 
+    location <- location %>% mutate(is_daily = str_detect(local_segment, paste0(time_segment, "#", datetime_start_regex, ",", datetime_end_regex))) 
 
     if(!all(location$is_daily)){
-      message(paste("Barnett's location features cannot be computed for day segmentes that are not daily (cover 00:00:00 to 23:59:59 of every day). Skipping ", day_segment))
+      message(paste("Barnett's location features cannot be computed for time segmentes that are not daily (cover 00:00:00 to 23:59:59 of every day). Skipping ", time_segment))
       location_features <- create_empty_file(requested_features)  
     } else {
       # Count how many minutes of data we use to get location features
@@ -70,7 +70,7 @@ barnett_features <- function(sensor_data_files, day_segment, params){
         summarise(minutes_data_used = sum(n_minutes)) %>% 
         select(local_date, minutes_data_used)
 
-      # Save day segment to attach it later
+      # Save time segment to attach it later
       location_dates_segments <- location %>% select(local_date, local_segment) %>% distinct(local_date, .keep_all = TRUE)
 
       # Select only the columns that the algorithm needs
@@ -92,7 +92,7 @@ barnett_features <- function(sensor_data_files, day_segment, params){
         colnames(features)=c("local_date",tolower(colnames(outputMobility$featavg)))
         # Add the minute count column
         features <- left_join(features, location_minutes_used, by = "local_date")
-        # Add the day segment column for consistency
+        # Add the time segment column for consistency
         features <- left_join(features, location_dates_segments, by = "local_date")
         location_features <- features %>% select(all_of(requested_features))
       }

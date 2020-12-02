@@ -11,7 +11,7 @@ Sensor parameters description for `[PHONE_LOCATIONS]`:
 
 !!! note "Assumptions/Observations"
     **Types of location data to use**
-    AWARE Android and iOS clients can collect location coordinates through the phone\'s GPS, the network cellular towers around the phone or Google\'s fused location API. If you want to use only the GPS provider set `[LOCATIONS_TO_USE]` to `GPS`, if you want to use all providers (not recommended due to the difference in accuracy) set `[LOCATIONS_TO_USE]` to `ALL`, if your AWARE client was configured to use fused location only or want to focus only on this provider, set `[LOCATIONS_TO_USE]` to `RESAMPLE_FUSED`. `RESAMPLE_FUSED` takes the original fused location coordinates and replicates each pair forward in time as long as the phone was sensing data as indicated by [`PHONE_VALID_SENSED_BINS`](../phone-data-quality/#phone-valid-sensed-bins), this is done because Google\'s API only logs a new location coordinate pair when it is sufficiently different in time or space from the previous one.
+    AWARE Android and iOS clients can collect location coordinates through the phone\'s GPS, the network cellular towers around the phone or Google\'s fused location API. If you want to use only the GPS provider set `[LOCATIONS_TO_USE]` to `GPS`, if you want to use all providers (not recommended due to the difference in accuracy) set `[LOCATIONS_TO_USE]` to `ALL`, if your AWARE client was configured to use fused location only or want to focus only on this provider, set `[LOCATIONS_TO_USE]` to `RESAMPLE_FUSED`. `RESAMPLE_FUSED` takes the original fused location coordinates and replicates each pair forward in time as long as the phone was sensing data as indicated by the joined timestamps of [`[PHONE_DATA_YIELD][SENSORS]`](../phone-data-yield/), this is done because Google\'s API only logs a new location coordinate pair when it is sufficiently different in time or space from the previous one.
 
     There are two parameters associated with resampling fused location. `FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD` (in minutes, default 30) controls the maximum gap between any two coordinate pairs to replicate the last known pair (for example, participant A\'s phone did not collect data between 10.30am and 10:50am and between 11:05am and 11:40am, the last known coordinate pair will be replicated during the first period but not the second, in other words, we assume that we cannot longer guarantee the participant stayed at the last known location if the phone did not sense data for more than 30 minutes). `FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION` (in minutes, default 720 or 12 hours) stops the last known fused location from being replicated longer that this threshold even if the phone was sensing data continuously (for example, participant A went home at 9pm and their phone was sensing data without gaps until 11am the next morning, the last known location will only be replicated until 9am). If you have suggestions to modify or improve this resampling, let us know.
 
@@ -20,7 +20,7 @@ Sensor parameters description for `[PHONE_LOCATIONS]`:
 These features are based on the original open-source implementation by [Barnett et al](../../citation#barnett-locations) and some features created by [Canzian et al](../../citation#barnett-locations).
 
 
-!!! info "Available day segments and platforms"
+!!! info "Available time segments and platforms"
     - Available only for segments that start at 00:00:00 and end at 23:59:59 of the same day (daily segments)
     - Available for Android and iOS
 
@@ -42,7 +42,7 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][BARNETT]`:
 |`[FEATURES]` |         Features to be computed, see table below
 |`[ACCURACY_LIMIT]` |   An integer in meters, any location rows with an accuracy higher than this will be dropped. This number means there's a 68% probability the true location is within this radius
 |`[TIMEZONE]` |    Timezone where the location data was collected. By default points to the one defined in the [Configuration](../../setup/configuration#timezone-of-your-study)
-|`[MINUTES_DATA_USED]` |    Set to `True` to include an extra column in the final location feature file containing the number of minutes used to compute the features on each day segment. Use this for quality control purposes, the more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
+|`[MINUTES_DATA_USED]` |    Set to `True` to include an extra column in the final location feature file containing the number of minutes used to compute the features on each time segment. Use this for quality control purposes, the more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
 
 
 
@@ -80,8 +80,8 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][BARNETT]` adapted from [B
 These features are based on the original implementation by [Doryab et al.](../../citation#doryab-locations).
 
 
-!!! info "Available day segments and platforms"
-    - Available for all day segments
+!!! info "Available time segments and platforms"
+    - Available for all time segments
     - Available for Android and iOS
 
 !!! info "File Sequence"
@@ -104,7 +104,7 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][BARNETT]`:
 | `[DBSCAN_MINSAMPLES]`      | The number of samples (or total weight) in a neighborhood for a point to be considered as a core point of a cluster. This includes the point itself.
 | `[THRESHOLD_STATIC]`       | It is the threshold value in km/hr which labels a row as Static or Moving.
 | `[MAXIMUM_GAP_ALLOWED]`   | The maximum gap (in seconds) allowed between any two consecutive rows for them to be considered part of the same displacement. If this threshold is too high, it can throw speed and distance calculations off for periods when the the phone was not sensing.
-| `[MINUTES_DATA_USED]`     | Set to `True` to include an extra column in the final location feature file containing the number of minutes used to compute the features on each day segment. Use this for quality control purposes, the more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
+| `[MINUTES_DATA_USED]`     | Set to `True` to include an extra column in the final location feature file containing the number of minutes used to compute the features on each time segment. Use this for quality control purposes, the more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
 | `[SAMPLING_FREQUENCY]`     | Expected time difference between any two location rows in minutes. If set to `0`, the sampling frequency will be inferred automatically as the median of all the differences between any two consecutive row timestamps (recommended if you are using `FUSED_RESAMPLED` data). This parameter impacts all the time calculations.
 
 
@@ -114,18 +114,18 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][BARNETT]`:
 |-------------------------- |---------- |---------------------------|
 |locationvariance                                            |$meters^2$    |The sum of the variances of the latitude and longitude columns. 
 |loglocationvariance                                           | -          | Log of the sum of the variances of the latitude and longitude columns.
-|totaldistance                                                |meters        |Total distance travelled in a day segment using the haversine formula.
-|averagespeed                                                 |km/hr         |Average speed in a day segment considering only the instances labeled as Moving.
-|varspeed                                                      |km/hr         |Speed variance in a day segment considering only the instances labeled as Moving. 
+|totaldistance                                                |meters        |Total distance travelled in a time segment using the haversine formula.
+|averagespeed                                                 |km/hr         |Average speed in a time segment considering only the instances labeled as Moving.
+|varspeed                                                      |km/hr         |Speed variance in a time segment considering only the instances labeled as Moving. 
 |circadianmovement                                              |-             | \"It encodes the extent to which a person's location patterns follow a 24-hour circadian cycle.\" [Doryab et al.](../../citation#doryab-locations).
 |numberofsignificantplaces                                    |places        |Number of significant locations visited. It is calculated using the DBSCAN clustering algorithm which takes in EPS and MIN_SAMPLES as parameters to identify clusters. Each cluster is a significant place.
-|numberlocationtransitions                                    |transitions   |Number of movements between any two clusters in a day segment.
+|numberlocationtransitions                                    |transitions   |Number of movements between any two clusters in a time segment.
 |radiusgyration                                               |meters        |Quantifies the area covered by a participant
 |timeattop1location                                           |minutes       |Time spent at the most significant location.
 |timeattop2location                                           |minutes       |Time spent at the 2nd most significant location.
 |timeattop3location                                           |minutes       |Time spent at the 3rd most significant location. 
 |movingtostaticratio                                          | -   |  Ratio between the number of rows labeled Moving versus Static
-|outlierstimepercent                                          | -   | Ratio between the number of rows that belong to non-significant clusters divided by the total number of rows in a day segment.
+|outlierstimepercent                                          | -   | Ratio between the number of rows that belong to non-significant clusters divided by the total number of rows in a time segment.
 |maxlengthstayatclusters                                      |minutes       |Maximum time spent in a cluster (significant location).
 |minlengthstayatclusters                                      |minutes       |Minimum time spent in a cluster (significant location).
 |meanlengthstayatclusters                                     |minutes       |Average time spent in a cluster (significant location).

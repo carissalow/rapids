@@ -52,7 +52,7 @@ jobs:
 branches:
   only:
   - master
-  - day_segment
+  - time_segment
 
 stages:
   - name: deploy

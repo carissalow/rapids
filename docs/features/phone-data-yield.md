@@ -1,6 +1,6 @@
 # Phone Data Yield
 
-This is a combinatorial sensor which means that we use the data from multiple sensors to extract data yield features. Data yield features can be used to remove rows ([day segments](../../setup/configuration/#day-segments)) that do not contain enough data. You should decide what is your "enough" threshold depending on the type of sensors you collected (frequency vs event based, e.g. acceleroemter vs calls), the length of your study, and the rates of missing data that your analysis could handle.
+This is a combinatorial sensor which means that we use the data from multiple sensors to extract data yield features. Data yield features can be used to remove rows ([time segments](../../setup/configuration/#time-segments)) that do not contain enough data. You should decide what is your "enough" threshold depending on the type of sensors you collected (frequency vs event based, e.g. acceleroemter vs calls), the length of your study, and the rates of missing data that your analysis could handle.
 
 !!! hint "Why is data yield important?"
     Imagine that you want to extract `PHONE_CALL` features on daily segments (`00:00` to `23:59`). Let's say that on day 1 the phone logged 10 calls and 23 hours of data from other sensors and on day 2 the phone logged 10 calls and only 2 hours of data from other sensors. It's more likely that other calls were placed on the 22 hours of data that you didn't log on day 2 than on the 1 hour of data you didn't log on day 1, and so including day 2 in your analysis could bias your results.
@@ -35,10 +35,10 @@ Before explaining the data yield features, let's define the following relevant c
 - A valid minute is any 60 second window when any phone sensor logged at least 1 row of data
 - A valid hour is any 60 minute window with at least X valid minutes. The X or threshold is given by `[MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS]`
 
-The timestamps of all sensors are concatenated and then grouped per day segment. Minute and hour windows are created from the beginning of each day segment instance and these windows are marked as valid based on the definitions above. The duration of each day segment is taken into account to compute the features described below.
+The timestamps of all sensors are concatenated and then grouped per time segment. Minute and hour windows are created from the beginning of each time segment instance and these windows are marked as valid based on the definitions above. The duration of each time segment is taken into account to compute the features described below.
 
-!!! info "Available day segments and platforms"
-    - Available for all day segments
+!!! info "Available time segments and platforms"
+    - Available for all time segments
     - Available for Android and iOS
 
 !!! info "File Sequence"
@@ -64,14 +64,14 @@ Features description for `[PHONE_DATA_YIELD][PROVIDERS][RAPIDS]`:
 
 |Feature                    |Units      |Description|
 |-------------------------- |---------- |---------------------------|
-|ratiovalidyieldedminutes       |rows    | The ratio between the number of valid minutes and the duration in minutes of a day segment.
-|ratiovalidyieldedhours      |lux     | The ratio between the number of valid hours and the duration in hours of a day segment. If the day segment is shorter than 1 hour this feature will always be 1.
+|ratiovalidyieldedminutes       |rows    | The ratio between the number of valid minutes and the duration in minutes of a time segment.
+|ratiovalidyieldedhours      |lux     | The ratio between the number of valid hours and the duration in hours of a time segment. If the time segment is shorter than 1 hour this feature will always be 1.
 
 
 !!! note "Assumptions/Observations"
-    1. We recommend using `ratiovalidyieldedminutes` on day segments that are shorter than two or three hours and `ratiovalidyieldedhours` for longer segments. This is because relying on yielded minutes only can be misleading when a big chunk of those missing minutes are clustered together. 
+    1. We recommend using `ratiovalidyieldedminutes` on time segments that are shorter than two or three hours and `ratiovalidyieldedhours` for longer segments. This is because relying on yielded minutes only can be misleading when a big chunk of those missing minutes are clustered together. 
     
-        For example, let's assume we are working with a 24-hour day segment that is missing 12 hours of data. Two extreme cases can occur: 
+        For example, let's assume we are working with a 24-hour time segment that is missing 12 hours of data. Two extreme cases can occur: 
 
         <ol type="A">
         <li>the 12 missing hours are from the beginning of the segment or </li>

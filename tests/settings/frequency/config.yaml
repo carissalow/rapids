@@ -2,4 +2,4 @@ directory: ./
 configfile: ./tests/settings/frequency/testing_config.yaml
 snakefile: ./tests/Snakefile
 cores: 1
-forcerun: [compute_day_segments, join_features_from_providers]
+forcerun: [compute_time_segments, join_features_from_providers]

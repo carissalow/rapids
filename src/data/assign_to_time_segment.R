@@ -3,7 +3,7 @@ library("lubridate", warn.conflicts = F)
 options(scipen=999)
 
 day_type_delay <- function(day_type, include_past_periodic_segments){
-  delay <- day_segments %>% mutate(length_duration = duration(length)) %>%  filter(repeats_on == day_type) %>% arrange(-length_duration) %>% pull(length_duration) %>% first()
+  delay <- time_segments %>% mutate(length_duration = duration(length)) %>%  filter(repeats_on == day_type) %>% arrange(-length_duration) %>% pull(length_duration) %>% first()
   return(if_else(is.na(delay) | include_past_periodic_segments == FALSE, duration("0days"), delay))
 }
 
@@ -27,10 +27,10 @@ get_segment_dates <- function(data, local_timezone, day_type, delay){
   return(dates)
 }
 
-assign_rows_to_segments <- function(nested_data, nested_inferred_day_segments){
+assign_rows_to_segments <- function(nested_data, nested_inferred_time_segments){
   nested_data <- nested_data %>% mutate(assigned_segments = "")
-  for(i in 1:nrow(nested_inferred_day_segments)) {
-    segment <- nested_inferred_day_segments[i,]
+  for(i in 1:nrow(nested_inferred_time_segments)) {
+    segment <- nested_inferred_time_segments[i,]
     nested_data$assigned_segments <- ifelse(segment$segment_start_ts<= nested_data$timestamp & segment$segment_end_ts >= nested_data$timestamp,
                                             stringi::stri_c(nested_data$assigned_segments, segment$segment_id, sep = "|"), nested_data$assigned_segments)
   }
@@ -38,9 +38,9 @@ assign_rows_to_segments <- function(nested_data, nested_inferred_day_segments){
   return(nested_data)
 }
 
-assign_rows_to_segments_frequency <- function(nested_data, nested_timezone, day_segments){
-  for(i in 1:nrow(day_segments)) {
-    segment <- day_segments[i,]
+assign_rows_to_segments_frequency <- function(nested_data, nested_timezone, time_segments){
+  for(i in 1:nrow(time_segments)) {
+    segment <- time_segments[i,]
     nested_data$assigned_segments <- ifelse(segment$segment_start_ts<= nested_data$local_time_obj & segment$segment_end_ts >= nested_data$local_time_obj,
                                             # The segment_id is assambled on the fly because it depends on each row's local_date and timezone 
                                             stringi::stri_c("[",
@@ -57,14 +57,14 @@ assign_rows_to_segments_frequency <- function(nested_data, nested_timezone, day_
   return(nested_data)
 }
 
-assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, include_past_periodic_segments){
+assign_to_time_segment <- function(sensor_data, time_segments, time_segments_type, include_past_periodic_segments){
   
-  if(nrow(sensor_data) == 0 || nrow(day_segments) == 0)
+  if(nrow(sensor_data) == 0 || nrow(time_segments) == 0)
     return(sensor_data %>% mutate(assigned_segments = NA))
   
-  if(day_segments_type == "FREQUENCY"){
+  if(time_segments_type == "FREQUENCY"){
     
-    day_segments <- day_segments %>% mutate(start_time = lubridate::hm(start_time),
+    time_segments <- time_segments %>% mutate(start_time = lubridate::hm(start_time),
                                             end_time = start_time + minutes(length) - seconds(1),
                                             segment_id_start_time = paste(str_pad(hour(start_time),2, pad="0"), str_pad(minute(start_time),2, pad="0"), str_pad(second(start_time),2, pad="0"),sep =":"),
                                             segment_id_end_time = paste(str_pad(hour(ymd("1970-01-01") + end_time),2, pad="0"), str_pad(minute(ymd("1970-01-01") + end_time),2, pad="0"), str_pad(second(ymd("1970-01-01") + end_time),2, pad="0"),sep =":"), # add ymd("1970-01-01") to get a real time instead of duration
@@ -77,7 +77,7 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, 
     sensor_data <- sensor_data %>%
       group_by(local_timezone) %>% 
       nest() %>% 
-      mutate(data = map2(data, local_timezone, assign_rows_to_segments_frequency, day_segments)) %>% 
+      mutate(data = map2(data, local_timezone, assign_rows_to_segments_frequency, time_segments)) %>% 
       unnest(cols = data) %>% 
       arrange(timestamp) %>% 
       select(-local_time_obj)
@@ -85,10 +85,10 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, 
     return(sensor_data)
 
     
-  } else if (day_segments_type == "PERIODIC"){
+  } else if (time_segments_type == "PERIODIC"){
     
     # We need to take into account segment start dates that could include the first day of data
-    day_segments <- day_segments %>% mutate(length_duration = duration(length))
+    time_segments <- time_segments %>% mutate(length_duration = duration(length))
     every_day_delay <- duration("0days")
     wday_delay <- day_type_delay("wday", include_past_periodic_segments)
     mday_delay <- day_type_delay("mday", include_past_periodic_segments)
@@ -106,9 +106,9 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, 
              year_dates = map2(data, local_timezone, get_segment_dates, "yday", yday_delay),
              existent_dates = pmap(list(every_date, week_dates, month_dates, quarter_dates, year_dates),
                                    function(every_date, week_dates, month_dates, quarter_dates, year_dates) reduce(list(every_date, week_dates,month_dates, quarter_dates, year_dates), .f=full_join)),
-             # build the actual day segments taking into account the users requested length and repeat schedule
-             inferred_day_segments = map(existent_dates,
-                                         ~ crossing(day_segments, .x) %>%
+             # build the actual time segments taking into account the users requested length and repeat schedule
+             inferred_time_segments = map(existent_dates,
+                                         ~ crossing(time_segments, .x) %>%
                                            pivot_longer(cols = c(every_day,wday, mday, qday, yday), names_to = "day_type", values_to = "day_value") %>%
                                            filter(repeats_on == day_type & repeats_value == day_value) %>%
                                            # The segment ids (segment_id_start and segment_id_end) are computed in UTC to avoid having different labels for instances of a segment that happen in different timezones
@@ -125,21 +125,21 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, 
                                                                                     paste(str_pad(hour(segment_id_end),2, pad="0"), str_pad(minute(segment_id_end),2, pad="0"), str_pad(second(segment_id_end),2, pad="0"),sep =":")),";",
                                                                              paste0(segment_start_ts, ",", segment_end_ts)),
                                                                       "]")) %>% 
-                                           # drop day segments with an invalid start or end time (mostly due to daylight saving changes, e.g. 2020-03-08 02:00:00 EST does not exist, clock jumps from 01:59am to 03:00am)
+                                           # drop time segments with an invalid start or end time (mostly due to daylight saving changes, e.g. 2020-03-08 02:00:00 EST does not exist, clock jumps from 01:59am to 03:00am)
                                            drop_na(segment_start_ts, segment_end_ts)), 
-             data = map2(data, inferred_day_segments, assign_rows_to_segments)
+             data = map2(data, inferred_time_segments, assign_rows_to_segments)
       ) %>%
-      select(-existent_dates, -inferred_day_segments, -every_date, -week_dates, -month_dates, -quarter_dates, -year_dates) %>%
+      select(-existent_dates, -inferred_time_segments, -every_date, -week_dates, -month_dates, -quarter_dates, -year_dates) %>%
       unnest(cols = data) %>% 
       arrange(timestamp)
 
-  } else if ( day_segments_type == "EVENT"){
+  } else if ( time_segments_type == "EVENT"){
 
     sensor_data <- sensor_data %>% 
       group_by(local_timezone) %>% 
       nest() %>% 
-      mutate(inferred_day_segments = map(local_timezone, function(tz){ 
-                                         inferred <- day_segments %>% 
+      mutate(inferred_time_segments = map(local_timezone, function(tz){ 
+                                         inferred <- time_segments %>% 
                                            mutate(shift = ifelse(shift == "0", "0seconds", shift),
                                                   segment_start_ts = event_timestamp + (as.integer(seconds(lubridate::duration(shift))) * ifelse(shift_direction >= 0, 1, -1) * 1000),
                                                   segment_end_ts = segment_start_ts + (as.integer(seconds(lubridate::duration(length))) * 1000),
@@ -161,12 +161,12 @@ assign_to_day_segment <- function(sensor_data, day_segments, day_segments_type, 
                                                   overlapping_segments = paste(paste(lag(label), lag(event_timestamp), lag(length), lag(shift), lag(shift_direction), lag(device_id), sep = ","),"and",
                                                                                 paste(label, event_timestamp, length, shift, shift_direction, device_id, sep = ",")))
                                          if(any(overlapping$overlaps, na.rm = TRUE)){
-                                           stop(paste0("\n\nOne or more event day segments overlap for ",overlapping$device_id[[1]],", modify their lengths so they don't:\n", paste0(overlapping %>% filter(overlaps == TRUE) %>% pull(overlapping_segments), collapse = "\n"), "\n\n"))
+                                           stop(paste0("\n\nOne or more event time segments overlap for ",overlapping$device_id[[1]],", modify their lengths so they don't:\n", paste0(overlapping %>% filter(overlaps == TRUE) %>% pull(overlapping_segments), collapse = "\n"), "\n\n"))
                                          } else{
                                            return(inferred)
                                          }}),
-             data = map2(data, inferred_day_segments, assign_rows_to_segments)) %>% 
-      select(-inferred_day_segments) %>% 
+             data = map2(data, inferred_time_segments, assign_rows_to_segments)) %>% 
+      select(-inferred_time_segments) %>% 
       unnest(data) %>% 
       arrange(timestamp)
   }

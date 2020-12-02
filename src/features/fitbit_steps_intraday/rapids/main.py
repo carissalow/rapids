@@ -64,7 +64,7 @@ def extractStepsFeaturesFromIntradayData(steps_intraday_data, threshold_active_b
 
 
 
-def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_segment, *args, **kwargs):
+def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
     threshold_active_bout = provider["THRESHOLD_ACTIVE_BOUT"]
     include_zero_step_rows = provider["INCLUDE_ZERO_STEP_ROWS"]
@@ -90,7 +90,7 @@ def rapids_features(sensor_data_files, day_segment, provider, filter_data_by_seg
     # extract features from intraday features
     steps_intraday_features = pd.DataFrame(columns=["local_segment"] + intraday_features_to_compute)
     if not steps_intraday_data.empty:
-        steps_intraday_data = filter_data_by_segment(steps_intraday_data, day_segment)
+        steps_intraday_data = filter_data_by_segment(steps_intraday_data, time_segment)
 
         if not steps_intraday_data.empty:
             steps_intraday_features = extractStepsFeaturesFromIntradayData(steps_intraday_data, threshold_active_bout, intraday_features_to_compute_steps, intraday_features_to_compute_sedentarybout, intraday_features_to_compute_activebout, steps_intraday_features)
