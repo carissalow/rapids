@@ -1498,10 +1498,56 @@ mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 </div>
 </div>
 <h3 id="segment-examples">Segment Examples<a class="headerlink" href="#segment-examples" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set" data-tabs="3:6"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">5-minutes</label><div class="tabbed-content">
+<p>Use the following <code>Frequency</code> segment file to create 288 (12 * 60 * 24) 5-minute segments starting from midnight of every day in your study
+<div class="highlight"><pre><span></span><code>label,length
+fiveminutes,5
+</code></pre></div></p>
+</div>
+<input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">Daily</label><div class="tabbed-content">
+<p>Use the following <code>Periodic</code> segment file to create daily segments starting from midnight of every day in your study
+<div class="highlight"><pre><span></span><code>label,start_time,length,repeats_on,repeats_value
+daily,00:00:00,23H 59M 59S,every_day,0
+</code></pre></div></p>
+</div>
+<input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><label for="__tabbed_3_3">Morning</label><div class="tabbed-content">
+<p>Use the following <code>Periodic</code> segment file to create morning segments starting from 06:00 and ending at 12:00 of every day in your study
+<div class="highlight"><pre><span></span><code>label,start_time,length,repeats_on,repeats_value
+morning,00:00:00,5H 59M 59S,every_day,0
+</code></pre></div></p>
+</div>
+<input id="__tabbed_3_4" name="__tabbed_3" type="radio" /><label for="__tabbed_3_4">Weekly</label><div class="tabbed-content">
+<p>Use the following <code>Periodic</code> segment file to create <strong>non-overlapping</strong> weekly segments starting at midnight of every <strong>Monday</strong> in your study
+<div class="highlight"><pre><span></span><code>label,start_time,length,repeats_on,repeats_value
+weekly,00:00:00,6D 23H 59M 59S,wday,1
+</code></pre></div>
+Use the following <code>Periodic</code> segment file to create <strong>overlapping</strong> weekly segments starting at midnight of <strong>every day</strong> in your study
+<div class="highlight"><pre><span></span><code>label,start_time,length,repeats_on,repeats_value
+weekly,00:00:00,6D 23H 59M 59S,every_day,0
+</code></pre></div></p>
+</div>
+<input id="__tabbed_3_5" name="__tabbed_3" type="radio" /><label for="__tabbed_3_5">Week-ends</label><div class="tabbed-content">
+<p>Use the following <code>Periodic</code> segment file to create week-end segments starting at midnight of every <strong>Saturday</strong> in your study
+<div class="highlight"><pre><span></span><code>label,start_time,length,repeats_on,repeats_value
+weekend,00:00:00,1D 23H 59M 59S,wday,6
+</code></pre></div></p>
+</div>
+<input id="__tabbed_3_6" name="__tabbed_3" type="radio" /><label for="__tabbed_3_6">Around surveys</label><div class="tabbed-content">
+<p>Use the following <code>Event</code> segment file to create two 2-hour segments that start 1 hour before surveys answered by 3 participants
+<div class="highlight"><pre><span></span><code>label,event_timestamp,length,shift,shift_direction,device_id
+survey1,1587661220000,2H,1H,-1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
+survey2,1587747620000,2H,1H,-1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
+survey1,1587906020000,2H,1H,-1,rqtertsd-43ff-34fr-3eeg-efe4fergregr
+survey2,1584291600000,2H,1H,-1,rqtertsd-43ff-34fr-3eeg-efe4fergregr
+survey1,1588172420000,2H,1H,-1,klj34oi2-8frk-2343-21kk-324ljklewlr3
+survey2,1584291600000,2H,1H,-1,klj34oi2-8frk-2343-21kk-324ljklewlr3
+</code></pre></div></p>
+</div>
+</div>
 <hr />
 <h2 id="device-data-source-configuration">Device Data Source Configuration<a class="headerlink" href="#device-data-source-configuration" title="Permanent link">&para;</a></h2>
 <p>You might need to modify the following config keys in your <code>config.yaml</code> depending on what devices your participants used and where you are storing your data. You can ignore <code>[PHONE_DATA_CONFIGURATION]</code> or <code>[FITBIT_DATA_CONFIGURATION]</code> if you are not working with either devices.</p>
-<div class="tabbed-set" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">Phone</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">Phone</label><div class="tabbed-content">
 <p>The relevant <code>config.yaml</code> section looks like this by default:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">PHONE_DATA_CONFIGURATION</span><span class="p">:</span>
   <span class="nt">SOURCE</span><span class="p">:</span> 
@@ -1544,7 +1590,7 @@ mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 </tbody>
 </table>
 </div>
-<input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">Fitbit</label><div class="tabbed-content">
+<input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><label for="__tabbed_4_2">Fitbit</label><div class="tabbed-content">
 <p>The relevant <code>config.yaml</code> section looks like this by default:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">FITBIT_DATA_CONFIGURATION</span><span class="p">:</span>
   <span class="nt">SOURCE</span><span class="p">:</span> 
