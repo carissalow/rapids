@@ -1456,7 +1456,7 @@ night,00:00:00,5H 59M 59S,every_day,0
 <tbody>
 <tr>
 <td>label</td>
-<td>A string that is used as a prefix in the name of your day segments. If labels are unique, every segment is independent; if two or more segments have the same label, their data will be grouped when computing features like the <code>most frequent contact</code> for calls (the most frequent contact will be computed across all these segments)</td>
+<td>A string that is used as a prefix in the name of your day segments. If labels are unique, every segment is independent; if two or more segments have the same label, their data will be grouped when computing auxiliary data for features like the <code>most frequent contact</code> for calls (the most frequent contact will be computed across all these segments). There cannot be two <em>overlaping</em> event segments with the same label (RAPIDS will throw an error)</td>
 </tr>
 <tr>
 <td>event_timestamp</td>
@@ -1476,7 +1476,7 @@ night,00:00:00,5H 59M 59S,every_day,0
 </tr>
 <tr>
 <td>device_id</td>
-<td>The device id (smartphone or fitbit) to whom this segment belongs to. You have to create a line in the event segment file for each event of a participant that you want to analyse</td>
+<td>The device id (smartphone or fitbit) to whom this segment belongs to. You have to create a line in this event segment file for each event of a participant that you want to analyse. If you have participants with multiple device ids you can choose any of them</td>
 </tr>
 </tbody>
 </table>
