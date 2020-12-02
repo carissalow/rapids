@@ -965,7 +965,7 @@
                 <h1 id="welcome-to-rapids-documentation">Welcome to RAPIDS documentation<a class="headerlink" href="#welcome-to-rapids-documentation" title="Permanent link">&para;</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The functionality outlined in these docs is implemented in the branch <code>day_segments</code> which we will merge to <code>master</code> soon as release <code>0.1</code>. The previous (first) release of RAPIDS along with the old <a href="https://rapidspitt.readthedocs.io/en/latest/">docs</a> will be labeled <code>beta</code>. If you landed on this page feel free to look around, just have in mind that we are polishing the last rough patches before we advertise <code>0.1</code> (Nov 16, 2020)</p>
+<p>The functionality outlined in these docs is implemented in the branch <code>time_segments</code> which we will merge to <code>master</code> soon as release <code>0.1</code>. The previous (first) release of RAPIDS along with the old <a href="https://rapidspitt.readthedocs.io/en/latest/">docs</a> will be labeled <code>beta</code>. If you landed on this page feel free to look around, just have in mind that we are polishing the last rough patches before we advertise <code>0.1</code> (Nov 16, 2020)</p>
 </div>
 <p>Reproducible Analysis Pipeline for Data Streams (RAPIDS) allows you to process smartphone and wearable data to extract <strong>behavioral features</strong> (a.k.a. digital biomarkers/phenotypes).</p>
 <p>RAPIDS is open source, documented, modular, tested, and reproducible. At the moment we support smartphone data collected with <a href="https://awareframework.com/">AWARE</a> and wearable data from Fitbit devices.</p>
@@ -982,13 +982,13 @@
 <li><strong>Parallel execution</strong>. Thanks to Snakemake, your analysis can be executed over multiple cores without changing your code.</li>
 <li><strong>Extensible code</strong>. You can easily add your own behavioral features in R or Python and keep authorship and citations.</li>
 <li><strong>Timezone aware</strong>. Your data is adjusted to the specified timezone (multiple timezones suport <em>coming soon</em>).</li>
-<li><strong>Flexible day segments</strong>. You can extract behavioral features on time windows of any length (e.g. 5 minutes, 3 hours, 2 days), on every day or particular days (e.g. weekends, Mondays, the 1<sup>st</sup> of each month, etc.) or around events of interest (e.g. surveys or clinical relapses).</li>
+<li><strong>Flexible time segments</strong>. You can extract behavioral features on time windows of any length (e.g. 5 minutes, 3 hours, 2 days), on every day or particular days (e.g. weekends, Mondays, the 1<sup>st</sup> of each month, etc.) or around events of interest (e.g. surveys or clinical relapses).</li>
 <li><strong>Tested code</strong>. We are constantly adding tests to make sure our behavioral features are correct.</li>
 <li><strong>Reproducible code</strong>. You can be sure your code will run in other computers as intended thanks to R and Python virtual environments. You can share your analysis code along your publications without any overhead.</li>
 <li><strong>Private</strong>. All your data is processed locally.</li>
 </ol>
 <h2 id="how-is-it-organized">How is it organized?<a class="headerlink" href="#how-is-it-organized" title="Permanent link">&para;</a></h2>
-<p>In broad terms the <code>config.yaml</code>, <a href="../setup/configuration/#database-credentials"><code>.env</code> file</a>, <a href="../setup/configuration/#participant-files">participants files</a>, <a href="../setup/configuration/#day-segments">day segment files</a> are the only ones that you will have to modify. All data is stored in <code>data/</code> and all scripts are stored in <code>src/</code>. For more information see RAPIDS&rsquo; <a href="file-structure/">File Structure</a>.</p>
+<p>In broad terms the <code>config.yaml</code>, <a href="../setup/configuration/#database-credentials"><code>.env</code> file</a>, <a href="../setup/configuration/#participant-files">participants files</a>, <a href="../setup/configuration/#time-segments">time segment files</a> are the only ones that you will have to modify. All data is stored in <code>data/</code> and all scripts are stored in <code>src/</code>. For more information see RAPIDS&rsquo; <a href="file-structure/">File Structure</a>.</p>
                 
               
               

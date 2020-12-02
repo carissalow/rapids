@@ -1103,12 +1103,12 @@
 <p>Add your provider <strong>function</strong> in your provider script. The name of such function should be <code>[providername]_features</code>, in our example <code>vega_features</code></p>
 <div class="admonition info">
 <p class="admonition-title">Python function</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="p">[</span><span class="n">providername</span><span class="p">]</span><span class="n">_features</span><span class="p">(</span><span class="n">sensor_data_files</span><span class="p">,</span> <span class="n">day_segment</span><span class="p">,</span> <span class="n">provider</span><span class="p">,</span> <span class="n">filter_data_by_segment</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="p">[</span><span class="n">providername</span><span class="p">]</span><span class="n">_features</span><span class="p">(</span><span class="n">sensor_data_files</span><span class="p">,</span> <span class="n">time_segment</span><span class="p">,</span> <span class="n">provider</span><span class="p">,</span> <span class="n">filter_data_by_segment</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </code></pre></div>
 </div>
 <div class="admonition info">
 <p class="admonition-title">R function</p>
-<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">providername</span><span class="p">]</span>_<span class="n">features</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">sensor_data</span><span class="p">,</span> <span class="n">day_segment</span><span class="p">,</span> <span class="n">provider</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">providername</span><span class="p">]</span>_<span class="n">features</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">sensor_data</span><span class="p">,</span> <span class="n">time_segment</span><span class="p">,</span> <span class="n">provider</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </li>
@@ -1128,8 +1128,8 @@
 <td>Path to the CSV file containing the data of a single participant. This data has been cleaned and preprocessed. Your function will be automatically called for each participant in your study (in the <code>[PIDS]</code> array in <code>config.yaml</code>)</td>
 </tr>
 <tr>
-<td><code>day_segment</code></td>
-<td>The label of the day segment that should be processed.</td>
+<td><code>time_segment</code></td>
+<td>The label of the time segment that should be processed.</td>
 </tr>
 <tr>
 <td><code>provider</code></td>
@@ -1154,31 +1154,31 @@
 </code></pre></div>
 <p>Note that phone&rsquo;s battery, screen, and activity recognition data is given as episodes instead of event rows (for example, start and end timestamps of the periods the phone screen was on)</p>
 </details>
-<details class="info"><summary>2. Filter your data to process only those rows that belong to <code>day_segment</code></summary><p>This step is only one line of code, but to undersand why we need it, keep reading.
-<div class="highlight"><pre><span></span><code><span class="n">acc_data</span> <span class="o">=</span> <span class="n">filter_data_by_segment</span><span class="p">(</span><span class="n">acc_data</span><span class="p">,</span> <span class="n">day_segment</span><span class="p">)</span>
+<details class="info"><summary>2. Filter your data to process only those rows that belong to <code>time_segment</code></summary><p>This step is only one line of code, but to undersand why we need it, keep reading.
+<div class="highlight"><pre><span></span><code><span class="n">acc_data</span> <span class="o">=</span> <span class="n">filter_data_by_segment</span><span class="p">(</span><span class="n">acc_data</span><span class="p">,</span> <span class="n">time_segment</span><span class="p">)</span>
 </code></pre></div></p>
-<p>You should use the <code>filter_data_by_segment()</code> function to process and group those rows that belong to each of the <a href="../../setup/configuration/#day-segments">day segments RAPIDS could be configured with</a>.</p>
-<p>Let&rsquo;s understand the <code>filter_data_by_segment()</code> function with an example. A RAPIDS user can extract features on any arbitrary <a href="../../setup/configuration/#day-segments">day segment</a>. A day segment is a period of time that has a label and one or more instances. For example, the user (or you) could have requested features on a daily, weekly, and week-end basis for <code>p01</code>. The labels are arbritrary and the instances depend on the days a participant was monitored for: </p>
+<p>You should use the <code>filter_data_by_segment()</code> function to process and group those rows that belong to each of the <a href="../../setup/configuration/#time-segments">time segments RAPIDS could be configured with</a>.</p>
+<p>Let&rsquo;s understand the <code>filter_data_by_segment()</code> function with an example. A RAPIDS user can extract features on any arbitrary <a href="../../setup/configuration/#time-segments">time segment</a>. A time segment is a period of time that has a label and one or more instances. For example, the user (or you) could have requested features on a daily, weekly, and week-end basis for <code>p01</code>. The labels are arbritrary and the instances depend on the days a participant was monitored for: </p>
 <ul>
 <li>the daily segment could be named <code>my_days</code> and if <code>p01</code> was monitored for 14 days, it would have 14 instances</li>
 <li>the weekly segment could be named <code>my_weeks</code> and if <code>p01</code> was monitored for 14 days, it would have 2 instances.</li>
 <li>the weekend segment could be named <code>my_weekends</code> and if <code>p01</code> was monitored for 14 days, it would have 2 instances.</li>
 </ul>
-<p>For this example, RAPIDS will call your provider function three times for <code>p01</code>, once where <code>day_segment</code> is <code>my_days</code>, once where <code>day_segment</code> is <code>my_weeks</code> and once where <code>day_segment</code> is <code>my_weekends</code>. In this example not every row in <code>p01</code>&lsquo;s data needs to take part in the feature computation for either segment <strong>and</strong> the rows need to be grouped differently. </p>
-<p>Thus <code>filter_data_by_segment()</code> comes in handy, it will return a data frame that contains the rows that were logged during a day segment plus an extra column called <code>local_segment</code>. This new column will have as many unique values as day segment instances exist (14, 2, and 2 for our <code>p01</code>&lsquo;s <code>my_days</code>, <code>my_weeks</code>, and <code>my_weekends</code> examples). After filtering, <strong>you should group the data frame by this column and compute any desired features</strong>, for example:</p>
+<p>For this example, RAPIDS will call your provider function three times for <code>p01</code>, once where <code>time_segment</code> is <code>my_days</code>, once where <code>time_segment</code> is <code>my_weeks</code> and once where <code>time_segment</code> is <code>my_weekends</code>. In this example not every row in <code>p01</code>&lsquo;s data needs to take part in the feature computation for either segment <strong>and</strong> the rows need to be grouped differently. </p>
+<p>Thus <code>filter_data_by_segment()</code> comes in handy, it will return a data frame that contains the rows that were logged during a time segment plus an extra column called <code>local_segment</code>. This new column will have as many unique values as time segment instances exist (14, 2, and 2 for our <code>p01</code>&lsquo;s <code>my_days</code>, <code>my_weeks</code>, and <code>my_weekends</code> examples). After filtering, <strong>you should group the data frame by this column and compute any desired features</strong>, for example:</p>
 <div class="highlight"><pre><span></span><code><span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;maxmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 </code></pre></div>
 <p>The reason RAPIDS does not filter the participant&rsquo;s data set for you is because your code might need to compute something based on a participant&rsquo;s complete dataset before computing their features. For example, you might want to identify the number that called a participant the most throughout the study before computing a feature with the number of calls the participant received from this number.</p>
 </details>
 <details class="info"><summary>3. Return a data frame with your features</summary><p>After filtering, grouping your data, and computing your features, your provider function should return a data frame that has:</p>
 <ul>
-<li>One row per day segment instance (e.g. 14 our <code>p01</code>&lsquo;s <code>my_days</code> example)</li>
+<li>One row per time segment instance (e.g. 14 our <code>p01</code>&lsquo;s <code>my_days</code> example)</li>
 <li>The <code>local_segment</code> column added by <code>filter_data_by_segment()</code></li>
 <li>One column per feature. By convention the name of your features should only contain letters or numbers (<code>feature1</code>). RAPIDS will automatically add the right sensor and provider prefix (<code>phone_accelerometr_vega_</code>)</li>
 </ul>
 </details>
 <details class="example"><summary><code>PHONE_ACCELEROMETER</code> Provider Example</summary><p>For your reference, this a short example of our own provider (<code>RAPIDS</code>) for <code>PHONE_ACCELEROMETER</code> that computes five acceleration features</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rapids_features</span><span class="p">(</span><span class="n">sensor_data_files</span><span class="p">,</span> <span class="n">day_segment</span><span class="p">,</span> <span class="n">provider</span><span class="p">,</span> <span class="n">filter_data_by_segment</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rapids_features</span><span class="p">(</span><span class="n">sensor_data_files</span><span class="p">,</span> <span class="n">time_segment</span><span class="p">,</span> <span class="n">provider</span><span class="p">,</span> <span class="n">filter_data_by_segment</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="n">acc_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">sensor_data_files</span><span class="p">[</span><span class="s2">&quot;sensor_data&quot;</span><span class="p">])</span>
     <span class="n">requested_features</span> <span class="o">=</span> <span class="n">provider</span><span class="p">[</span><span class="s2">&quot;FEATURES&quot;</span><span class="p">]</span>
@@ -1189,7 +1189,7 @@
 
     <span class="n">acc_features</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;local_segment&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">features_to_compute</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-        <span class="n">acc_data</span> <span class="o">=</span> <span class="n">filter_data_by_segment</span><span class="p">(</span><span class="n">acc_data</span><span class="p">,</span> <span class="n">day_segment</span><span class="p">)</span>
+        <span class="n">acc_data</span> <span class="o">=</span> <span class="n">filter_data_by_segment</span><span class="p">(</span><span class="n">acc_data</span><span class="p">,</span> <span class="n">time_segment</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
             <span class="n">acc_features</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>

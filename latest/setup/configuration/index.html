@@ -371,11 +371,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#day-segments" class="md-nav__link">
-    Day Segments
+  <a href="#time-segments" class="md-nav__link">
+    Time Segments
   </a>
   
-    <nav class="md-nav" aria-label="Day Segments">
+    <nav class="md-nav" aria-label="Time Segments">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1062,11 +1062,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#day-segments" class="md-nav__link">
-    Day Segments
+  <a href="#time-segments" class="md-nav__link">
+    Time Segments
   </a>
   
-    <nav class="md-nav" aria-label="Day Segments">
+    <nav class="md-nav" aria-label="Time Segments">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1118,7 +1118,7 @@
 <li>Add your <a href="#database-credentials">database credentials</a></li>
 <li>Choose the <a href="#timezone-of-your-study">timezone of your study</a></li>
 <li>Create your <a href="#participant-files">participants files</a></li>
-<li>Select what <a href="#day-segments">day segments</a> you want to extract features on</li>
+<li>Select what <a href="#time-segments">time segments</a> you want to extract features on</li>
 <li>Modify your <a href="#device-data-source-configuration">device data source configuration</a></li>
 <li>Select what <a href="#sensor-and-features-to-process">sensors and features</a> you want to process</li>
 </ol>
@@ -1344,16 +1344,16 @@ a748ee1a-1d0b-4ae9-9074-279a2b6ba524;dsadas-2324-fgsf-sdwr-gdfgs4rfsdf43,p01,jul
 </div>
 </div>
 <hr />
-<h2 id="day-segments">Day Segments<a class="headerlink" href="#day-segments" title="Permanent link">&para;</a></h2>
-<p>Day segments (or epochs) are the time windows on which you want to extract behavioral features. For example, you might want to process data on every day, every morning, or only during weekends. RAPIDS offers three categories of day segments that are flexible enough to cover most use cases: <strong>frequency</strong> (short time windows every day), <strong>periodic</strong> (arbitrary time windows on any day), and <strong>event</strong> (arbitrary time windows around events of interest). See also our <a href="#segment-examples">examples</a>.</p>
+<h2 id="time-segments">Time Segments<a class="headerlink" href="#time-segments" title="Permanent link">&para;</a></h2>
+<p>Time segments (or epochs) are the time windows on which you want to extract behavioral features. For example, you might want to process data on every day, every morning, or only during weekends. RAPIDS offers three categories of time segments that are flexible enough to cover most use cases: <strong>frequency</strong> (short time windows every day), <strong>periodic</strong> (arbitrary time windows on any day), and <strong>event</strong> (arbitrary time windows around events of interest). See also our <a href="#segment-examples">examples</a>.</p>
 <div class="tabbed-set" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">Frequency Segments</label><div class="tabbed-content">
 <p>These segments are computed on every day and all have the same duration (for example 30 minutes). Set the following keys in your <code>config.yaml</code></p>
-<div class="highlight"><pre><span></span><code><span class="nt">DAY_SEGMENTS</span><span class="p">:</span> <span class="nl">&amp;day_segments</span>
+<div class="highlight"><pre><span></span><code><span class="nt">TIME_SEGMENTS</span><span class="p">:</span> <span class="nl">&amp;time_segments</span>
   <span class="nt">TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FREQUENCY</span>
   <span class="nt">FILE</span><span class="p">:</span> <span class="s">&quot;data/external/your_frequency_segments.csv&quot;</span>
   <span class="nt">INCLUDE_PAST_PERIODIC_SEGMENTS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FALSE</span>
 </code></pre></div>
-<p>The file pointed by <code>[DAY_SEGMENTS][FILE]</code> should have the following format and can only have 1 row.</p>
+<p>The file pointed by <code>[TIME_SEGMENTS][FILE]</code> should have the following format and can only have 1 row.</p>
 <table>
 <thead>
 <tr>
@@ -1364,11 +1364,11 @@ a748ee1a-1d0b-4ae9-9074-279a2b6ba524;dsadas-2324-fgsf-sdwr-gdfgs4rfsdf43,p01,jul
 <tbody>
 <tr>
 <td>label</td>
-<td>A string that is used as a prefix in the name of your day segments</td>
+<td>A string that is used as a prefix in the name of your time segments</td>
 </tr>
 <tr>
 <td>length</td>
-<td>An integer representing the duration of your day segments in minutes</td>
+<td>An integer representing the duration of your time segments in minutes</td>
 </tr>
 </tbody>
 </table>
@@ -1377,7 +1377,7 @@ a748ee1a-1d0b-4ae9-9074-279a2b6ba524;dsadas-2324-fgsf-sdwr-gdfgs4rfsdf43,p01,jul
 <div class="highlight"><pre><span></span><code>label,length
 thirtyminutes,30
 </code></pre></div>
-<p>This configuration will compute 48 day segments for every day when any data from any participant was sensed. For example:</p>
+<p>This configuration will compute 48 time segments for every day when any data from any participant was sensed. For example:</p>
 <div class="highlight"><pre><span></span><code>start_time,length,label
 00:00,30,thirtyminutes0000
 00:30,30,thirtyminutes0001
@@ -1389,13 +1389,13 @@ thirtyminutes,30
 </div>
 <input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">Periodic Segments</label><div class="tabbed-content">
 <p>These segments can be computed every day, or on specific days of the week, month, quarter, and year. Their minimum duration is 1 minute but they can be as long as you want. Set the following keys in your <code>config.yaml</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">DAY_SEGMENTS</span><span class="p">:</span> <span class="nl">&amp;day_segments</span>
+<div class="highlight"><pre><span></span><code><span class="nt">TIME_SEGMENTS</span><span class="p">:</span> <span class="nl">&amp;time_segments</span>
   <span class="nt">TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">PERIODIC</span>
   <span class="nt">FILE</span><span class="p">:</span> <span class="s">&quot;data/external/your_periodic_segments.csv&quot;</span>
   <span class="nt">INCLUDE_PAST_PERIODIC_SEGMENTS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FALSE</span> <span class="c1"># or TRUE</span>
 </code></pre></div>
 <p>If <code>[INCLUDE_PAST_PERIODIC_SEGMENTS]</code> is set to <code>TRUE</code>, RAPIDS will consider instances of your segments back enough in the past as to include the first row of data of each participant. For example, if the first row of data from a participant happened on Saturday March 7<sup>th</sup> 2020 and the requested segment duration is 7 days starting on every Sunday, the first segment to be considered would start on Sunday March 1<sup>st</sup> if <code>[INCLUDE_PAST_PERIODIC_SEGMENTS]</code> is <code>TRUE</code> or on Sunday March 8<sup>th</sup> if <code>FALSE</code>.</p>
-<p>The file pointed by <code>[DAY_SEGMENTS][FILE]</code> should have the following format and can have multiple rows.</p>
+<p>The file pointed by <code>[TIME_SEGMENTS][FILE]</code> should have the following format and can have multiple rows.</p>
 <table>
 <thead>
 <tr>
@@ -1406,7 +1406,7 @@ thirtyminutes,30
 <tbody>
 <tr>
 <td>label</td>
-<td>A string that is used as a prefix in the name of your day segments. It has to be <strong>unique</strong> between rows</td>
+<td>A string that is used as a prefix in the name of your time segments. It has to be <strong>unique</strong> between rows</td>
 </tr>
 <tr>
 <td>start_time</td>
@@ -1440,12 +1440,12 @@ night,00:00:00,5H 59M 59S,every_day,0
 </div>
 <input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><label for="__tabbed_2_3">Event segments</label><div class="tabbed-content">
 <p>These segments can be computed before or after an event of interest (defined as any UNIX timestamp). Their minimum duration is 1 minute but they can be as long as you want. The start of each segment can be shifted backwards or forwards from the specified timestamp. Set the following keys in your <code>config.yaml</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">DAY_SEGMENTS</span><span class="p">:</span> <span class="nl">&amp;day_segments</span>
+<div class="highlight"><pre><span></span><code><span class="nt">TIME_SEGMENTS</span><span class="p">:</span> <span class="nl">&amp;time_segments</span>
   <span class="nt">TYPE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">EVENT</span>
   <span class="nt">FILE</span><span class="p">:</span> <span class="s">&quot;data/external/your_event_segments.csv&quot;</span>
   <span class="nt">INCLUDE_PAST_PERIODIC_SEGMENTS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FALSE</span> <span class="c1"># or TRUE</span>
 </code></pre></div>
-<p>The file pointed by <code>[DAY_SEGMENTS][FILE]</code> should have the following format and can have multiple rows.</p>
+<p>The file pointed by <code>[TIME_SEGMENTS][FILE]</code> should have the following format and can have multiple rows.</p>
 <table>
 <thead>
 <tr>
@@ -1456,11 +1456,11 @@ night,00:00:00,5H 59M 59S,every_day,0
 <tbody>
 <tr>
 <td>label</td>
-<td>A string that is used as a prefix in the name of your day segments. If labels are unique, every segment is independent; if two or more segments have the same label, their data will be grouped when computing auxiliary data for features like the <code>most frequent contact</code> for calls (the most frequent contact will be computed across all these segments). There cannot be two <em>overlaping</em> event segments with the same label (RAPIDS will throw an error)</td>
+<td>A string that is used as a prefix in the name of your time segments. If labels are unique, every segment is independent; if two or more segments have the same label, their data will be grouped when computing auxiliary data for features like the <code>most frequent contact</code> for calls (the most frequent contact will be computed across all these segments). There cannot be two <em>overlaping</em> event segments with the same label (RAPIDS will throw an error)</td>
 </tr>
 <tr>
 <td>event_timestamp</td>
-<td>A UNIX timestamp that represents the moment an event of interest happened (clinical relapse, survey, readmission, etc.). The corresponding day segment will be computed around this moment using <code>length</code>, <code>shift</code>, and <code>shift_direction</code></td>
+<td>A UNIX timestamp that represents the moment an event of interest happened (clinical relapse, survey, readmission, etc.). The corresponding time segment will be computed around this moment using <code>length</code>, <code>shift</code>, and <code>shift_direction</code></td>
 </tr>
 <tr>
 <td>length</td>
@@ -1492,13 +1492,13 @@ mood,1587661220000,1H,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 mood,1587747620000,1D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 </code></pre></div>
-<p>This example will create eight segments for a single participant (<code>a748ee1a...</code>), five independent <code>stressX</code> segments with various lengths (1,4,3,7, and 9 hours). Segments <code>stress1</code>, <code>stress3</code>, and <code>stress5</code> are shifted forwards by 5 minutes and <code>stress2</code> and <code>stress4</code> are shifted backwards by 4 hours (that is, if the <code>stress4</code> event happened on March 15<sup>th</sup> at 1pm EST (<code>1584291600000</code>), the day segment will start on that day at 9am and end at 4pm). </p>
+<p>This example will create eight segments for a single participant (<code>a748ee1a...</code>), five independent <code>stressX</code> segments with various lengths (1,4,3,7, and 9 hours). Segments <code>stress1</code>, <code>stress3</code>, and <code>stress5</code> are shifted forwards by 5 minutes and <code>stress2</code> and <code>stress4</code> are shifted backwards by 4 hours (that is, if the <code>stress4</code> event happened on March 15<sup>th</sup> at 1pm EST (<code>1584291600000</code>), the time segment will start on that day at 9am and end at 4pm). </p>
 <p>The three <code>mood</code> segments are 1 hour, 1 day and 7 days long and have no shift. In addition, these <code>mood</code> segments are grouped together, meaning that although RAPIDS will compute features on each one of them, some necessary information to compute a few of such features will be extracted from all three segments, for example the phone contact that called a participant the most or the location clusters visited by a participant.</p>
 </div>
 </div>
 </div>
 <h3 id="segment-examples">Segment Examples<a class="headerlink" href="#segment-examples" title="Permanent link">&para;</a></h3>
-<div class="tabbed-set" data-tabs="3:6"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">5-minutes</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="3:7"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">5-minutes</label><div class="tabbed-content">
 <p>Use the following <code>Frequency</code> segment file to create 288 (12 * 60 * 24) 5-minute segments starting from midnight of every day in your study
 <div class="highlight"><pre><span></span><code>label,length
 fiveminutes,5
@@ -1511,12 +1511,18 @@ daily,00:00:00,23H 59M 59S,every_day,0
 </code></pre></div></p>
 </div>
 <input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><label for="__tabbed_3_3">Morning</label><div class="tabbed-content">
-<p>Use the following <code>Periodic</code> segment file to create morning segments starting from 06:00 and ending at 12:00 of every day in your study
+<p>Use the following <code>Periodic</code> segment file to create morning segments starting at 06:00:00 and ending at 11:59:59 of every day in your study
 <div class="highlight"><pre><span></span><code>label,start_time,length,repeats_on,repeats_value
-morning,00:00:00,5H 59M 59S,every_day,0
+morning,06:00:00,5H 59M 59S,every_day,0
 </code></pre></div></p>
 </div>
-<input id="__tabbed_3_4" name="__tabbed_3" type="radio" /><label for="__tabbed_3_4">Weekly</label><div class="tabbed-content">
+<input id="__tabbed_3_4" name="__tabbed_3" type="radio" /><label for="__tabbed_3_4">Overnight</label><div class="tabbed-content">
+<p>Use the following <code>Periodic</code> segment file to create overnight segments starting at 20:00:00 and ending at 07:59:59 (next day) of every day in your study
+<div class="highlight"><pre><span></span><code>label,start_time,length,repeats_on,repeats_value
+morning,20:00:00,11H 59M 59S,every_day,0
+</code></pre></div></p>
+</div>
+<input id="__tabbed_3_5" name="__tabbed_3" type="radio" /><label for="__tabbed_3_5">Weekly</label><div class="tabbed-content">
 <p>Use the following <code>Periodic</code> segment file to create <strong>non-overlapping</strong> weekly segments starting at midnight of every <strong>Monday</strong> in your study
 <div class="highlight"><pre><span></span><code>label,start_time,length,repeats_on,repeats_value
 weekly,00:00:00,6D 23H 59M 59S,wday,1
@@ -1526,13 +1532,13 @@ Use the following <code>Periodic</code> segment file to create <strong>overlappi
 weekly,00:00:00,6D 23H 59M 59S,every_day,0
 </code></pre></div></p>
 </div>
-<input id="__tabbed_3_5" name="__tabbed_3" type="radio" /><label for="__tabbed_3_5">Week-ends</label><div class="tabbed-content">
+<input id="__tabbed_3_6" name="__tabbed_3" type="radio" /><label for="__tabbed_3_6">Week-ends</label><div class="tabbed-content">
 <p>Use the following <code>Periodic</code> segment file to create week-end segments starting at midnight of every <strong>Saturday</strong> in your study
 <div class="highlight"><pre><span></span><code>label,start_time,length,repeats_on,repeats_value
 weekend,00:00:00,1D 23H 59M 59S,wday,6
 </code></pre></div></p>
 </div>
-<input id="__tabbed_3_6" name="__tabbed_3" type="radio" /><label for="__tabbed_3_6">Around surveys</label><div class="tabbed-content">
+<input id="__tabbed_3_7" name="__tabbed_3" type="radio" /><label for="__tabbed_3_7">Around surveys</label><div class="tabbed-content">
 <p>Use the following <code>Event</code> segment file to create two 2-hour segments that start 1 hour before surveys answered by 3 participants
 <div class="highlight"><pre><span></span><code>label,event_timestamp,length,shift,shift_direction,device_id
 survey1,1587661220000,2H,1H,-1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524

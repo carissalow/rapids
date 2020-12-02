@@ -910,7 +910,7 @@
     <span class="nt">START_DATE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2020-01-01</span> <span class="c1"># this can also be empty</span>
     <span class="nt">END_DATE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021-01-01</span> <span class="c1"># this can also be empty</span>
 </code></pre></div></p>
-<p>4. <code>[DAY_SEGMENTS][TYPE]</code> should be the default <code>PERIODIC</code>. Change <code>[DAY_SEGMENTS][FILE]</code> with the path of a file containing the following lines:
+<p>4. <code>[TIME_SEGMENTS][TYPE]</code> should be the default <code>PERIODIC</code>. Change <code>[TIME_SEGMENTS][FILE]</code> with the path of a file containing the following lines:
      <div class="highlight"><pre><span></span><code>label,start_time,length,repeats_on,repeats_value
 daily,00:00:00,23H 59M 59S,every_day,0
 night,00:00:00,5H 59M 59S,every_day,0
@@ -930,9 +930,9 @@ MY_GROUP
 
 # ... other irrelevant sections
 
-DAY_SEGMENTS: &amp;day_segments
+TIME_SEGMENTS: &amp;time_segments
     TYPE: PERIODIC
-    FILE: &quot;data/external/daysegments_periodic.csv&quot; # make sure the three lines specified above are in the file
+    FILE: &quot;data/external/timesegments_periodic.csv&quot; # make sure the three lines specified above are in the file
     INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE
 
 # No need to change this if you collected AWARE data on a database and your credentials are grouped under `MY_GROUP` in `.env`
@@ -967,7 +967,7 @@ PHONE_CALLS:
     <div class="highlight"><pre><span></span><code>./rapids -j1
 </code></pre></div></p>
 </li>
-<li>The call features for daily and morning day segments will be in 
+<li>The call features for daily and morning time segments will be in 
    <div class="highlight"><pre><span></span><code>/data/processed/features/p01/phone_calls.csv
 </code></pre></div></li>
 </ol>
