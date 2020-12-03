@@ -76,6 +76,7 @@ nav:
     - Execution: setup/execution.md
   - Example Workflows:
     - Minimal: workflow-examples/minimal.md
+    - Analysis: workflow-examples/analysis.md
   - Behavioral Features:
       - Introduction: features/feature-introduction.md
       - Phone:
