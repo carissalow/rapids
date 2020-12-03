@@ -11,9 +11,9 @@ rule restore_sql_file:
 
 rule create_example_participant_files:
     output:
-        expand("data/external/{pid}", pid = ["example01", "example02"])
+        expand("data/external/participant_files/{pid}.yaml", pid = ["example01", "example02"])
     shell:
-        "echo 'a748ee1a-1d0b-4ae9-9074-279a2b6ba524\nandroid\ntest01\n2020/04/23,2020/05/04\n' >> ./data/external/example01 && echo '13dbc8a3-dae3-4834-823a-4bc96a7d459d\nios\ntest02\n2020/04/23,2020/05/04\n' >> ./data/external/example02"
+        "echo 'PHONE:\n  DEVICE_IDS: [a748ee1a-1d0b-4ae9-9074-279a2b6ba524]\n  PLATFORMS: [android]\n  LABEL: test01\n  START_DATE: 2020/04/23\n  END_DATE: 2020/05/04\nFITBIT:\n  DEVICE_IDS: [a748ee1a-1d0b-4ae9-9074-279a2b6ba524]\n  LABEL: test01\n  START_DATE: 2020/04/23\n  END_DATE: 2020/05/04\n' >> ./data/external/participant_files/example01.yaml && echo 'PHONE:\n  DEVICE_IDS: [13dbc8a3-dae3-4834-823a-4bc96a7d459d]\n  PLATFORMS: [ios]\n  LABEL: test02\n  START_DATE: 2020/04/23\n  END_DATE: 2020/05/04\nFITBIT:\n  DEVICE_IDS: [13dbc8a3-dae3-4834-823a-4bc96a7d459d]\n  LABEL: test02\n  START_DATE: 2020/04/23\n  END_DATE: 2020/05/04\n' >> ./data/external/participant_files/example02.yaml"
 
 rule create_participants_files:
     input:
