@@ -6,7 +6,7 @@ This is a quick guide for creating and running a simple pipeline to extract miss
 1. Install RAPIDS and make sure your `conda` environment is active (see [Installation](../../setup/installation))
 2. Make the changes listed below for the corresponding [Configuration](../../setup/configuration) step (we provide an example of what the relevant sections in your `config.yml` will look like after you are done)
     
-    !!! info "Things to change on each configuration step"
+    ??? info "Things to change on each configuration step"
         1\. Setup your database connection credentials in `.env`. We assume your credentials group is called `MY_GROUP`.
 
         2\. `America/New_York` should be the default timezone
@@ -33,7 +33,7 @@ This is a quick guide for creating and running a simple pipeline to extract miss
          6\. Set `[PHONE_CALLS][PROVIDERS][RAPIDS][COMPUTE]` to `True`
 
 
-    !!! example "Example of the `config.yaml` sections after the changes outlined above"
+    ??? example "Example of the `config.yaml` sections after the changes outlined above"
         ```
         PIDS: [p01]
 
