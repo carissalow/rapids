@@ -26,8 +26,7 @@ import sys
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-import versionwarning
-version = release = versionwarning.version
+
 versionwarning_messages = {
     'latest': 'These are the old docs for RAPIDS beta. Got to <a href="https://www.rapids.science">https://www.rapids.science</a> for the latest',
 }
