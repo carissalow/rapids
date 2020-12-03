@@ -910,9 +910,7 @@
 <li>Install RAPIDS and make sure your <code>conda</code> environment is active (see <a href="../../setup/installation">Installation</a>)</li>
 <li>
 <p>Make the changes listed below for the corresponding <a href="../../setup/configuration">Configuration</a> step (we provide an example of what the relevant sections in your <code>config.yml</code> will look like after you are done)</p>
-<div class="admonition info">
-<p class="admonition-title">Things to change on each configuration step</p>
-<p>1. Setup your database connection credentials in <code>.env</code>. We assume your credentials group is called <code>MY_GROUP</code>.</p>
+<details class="info"><summary>Things to change on each configuration step</summary><p>1. Setup your database connection credentials in <code>.env</code>. We assume your credentials group is called <code>MY_GROUP</code>.</p>
 <p>2. <code>America/New_York</code> should be the default timezone</p>
 <p>3. Create a participant file <code>p01.yaml</code> based on one of your participants and add <code>p01</code> to <code>[PIDS]</code> in <code>config.yaml</code>. The following would be the content of your <code>p01.yaml</code> participant file:
     <div class="highlight"><pre><span></span><code><span class="nt">PHONE</span><span class="p">:</span>
@@ -929,10 +927,8 @@ night,00:00:00,5H 59M 59S,every_day,0
 </code></pre></div></p>
 <p>5. If you collected data with AWARE you won&rsquo;t need to modify the attributes of <code>[DEVICE_DATA][PHONE]</code></p>
 <p>6. Set <code>[PHONE_CALLS][PROVIDERS][RAPIDS][COMPUTE]</code> to <code>True</code></p>
-</div>
-<div class="admonition example">
-<p class="admonition-title">Example of the <code>config.yaml</code> sections after the changes outlined above</p>
-<div class="highlight"><pre><span></span><code>PIDS: [p01]
+</details>
+<details class="example"><summary>Example of the <code>config.yaml</code> sections after the changes outlined above</summary><div class="highlight"><pre><span></span><code>PIDS: [p01]
 
 TIMEZONE: &amp;timezone
 America/New_York
@@ -972,7 +968,7 @@ PHONE_CALLS:
             COMPUTE: True # set this to True!
             CALL_TYPES: ...
 </code></pre></div>
-</div>
+</details>
 </li>
 <li>
 <p>Run RAPIDS
