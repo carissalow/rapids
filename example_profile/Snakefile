@@ -214,6 +214,20 @@ for provider in config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"].keys():
 if config["HISTOGRAM_PHONE_DATA_YIELD"]["PLOT"]:
     files_to_compute.append("reports/data_exploration/histogram_phone_data_yield.html")
 
+if config["HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT"]["PLOT"]:
+    files_to_compute.extend(expand("reports/interim/{pid}/heatmap_sensors_per_minute_per_time_segment.html", pid=config["PIDS"]))
+    files_to_compute.append("reports/data_exploration/heatmap_sensors_per_minute_per_time_segment.html")
+
+if config["HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT"]["PLOT"]:
+    files_to_compute.extend(expand("reports/interim/{pid}/heatmap_sensor_row_count_per_time_segment.html", pid=config["PIDS"]))
+    files_to_compute.append("reports/data_exploration/heatmap_sensor_row_count_per_time_segment.html")
+
+if config["HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT"]["PLOT"]:
+    files_to_compute.append("reports/data_exploration/heatmap_phone_data_yield_per_participant_per_time_segment.html")
+
+if config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["PLOT"]:
+    files_to_compute.append("reports/data_exploration/heatmap_feature_correlation_matrix.html")
+
 # Analysis Workflow Example
 models, scalers = [], []
 for model_name in config["PARAMS_FOR_ANALYSIS"]["MODEL_NAMES"]:

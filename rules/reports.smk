@@ -6,74 +6,66 @@ rule histogram_phone_data_yield:
     script:
         "../src/visualization/histogram_phone_data_yield.py"
 
-
-
-
-rule heatmap_features_correlations:
+rule heatmap_sensors_per_minute_per_time_segment:
     input:
-        features = expand("data/processed/{pid}/{sensor}_{time_segment}.csv", pid=config["PIDS"], sensor=config["HEATMAP_FEATURES_CORRELATIONS"]["PHONE_FEATURES"]+config["HEATMAP_FEATURES_CORRELATIONS"]["FITBIT_FEATURES"], time_segment=config["TIME_SEGMENTS"]),
-        phone_valid_sensed_days = expand("data/interim/{pid}/phone_valid_sensed_days_{{min_valid_hours_per_day}}hours_{{min_valid_bins_per_hour}}bins.csv", pid=config["PIDS"])
+        phone_data_yield = "data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv",
+        participant_file = "data/external/participant_files/{pid}.yaml",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
-        min_rows_ratio = config["HEATMAP_FEATURES_CORRELATIONS"]["MIN_ROWS_RATIO"],
-        corr_threshold = config["HEATMAP_FEATURES_CORRELATIONS"]["CORR_THRESHOLD"],
-        corr_method = config["HEATMAP_FEATURES_CORRELATIONS"]["CORR_METHOD"]
+        pid = "{pid}"
     output:
-        "reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/heatmap_features_correlations.html"
+        "reports/interim/{pid}/heatmap_sensors_per_minute_per_time_segment.html"
     script:
-        "../src/visualization/heatmap_features_correlations.py"
+        "../src/visualization/heatmap_sensors_per_minute_per_time_segment.py"
 
-rule heatmap_days_by_sensors:
+rule merge_heatmap_sensors_per_minute_per_time_segment:
     input:
-        sensors = optional_heatmap_days_by_sensors_input,
-        phone_valid_sensed_days = "data/interim/{pid}/phone_valid_sensed_days_{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins.csv"
+        heatmap_sensors_per_minute_per_time_segment = expand("reports/interim/{pid}/heatmap_sensors_per_minute_per_time_segment.html", pid=config["PIDS"])
+    output:
+        "reports/data_exploration/heatmap_sensors_per_minute_per_time_segment.html"
+    script:
+        "../src/visualization/merge_heatmap_sensors_per_minute_per_time_segment.Rmd"
+
+rule heatmap_sensor_row_count_per_time_segment:
+    input:
+        all_sensors = expand("data/raw/{{pid}}/{sensor}_with_datetime.csv", sensor = map(str.lower, config["HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT"]["SENSORS"])),
+        phone_data_yield = "data/processed/features/{pid}/phone_data_yield.csv",
+        participant_file = "data/external/participant_files/{pid}.yaml",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
-        pid = "{pid}",
-        expected_num_of_days = config["HEATMAP_DAYS_BY_SENSORS"]["EXPECTED_NUM_OF_DAYS"]
+        pid = "{pid}"
     output:
-        "reports/interim/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{pid}/heatmap_days_by_sensors.html"
+        "reports/interim/{pid}/heatmap_sensor_row_count_per_time_segment.html"
     script:
-        "../src/visualization/heatmap_days_by_sensors.py"
+        "../src/visualization/heatmap_sensor_row_count_per_time_segment.py"
 
-rule heatmap_days_by_sensors_all_participants:
+rule merge_heatmap_sensor_row_count_per_time_segment:
     input:
-        heatmap_rows =  expand("reports/interim/{{min_valid_hours_per_day}}hours_{{min_valid_bins_per_hour}}bins/{pid}/heatmap_days_by_sensors.html", pid=config["PIDS"])
+        heatmap_sensor_row_count_per_time_segment = expand("reports/interim/{pid}/heatmap_sensor_row_count_per_time_segment.html", pid=config["PIDS"])
     output:
-        "reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/heatmap_days_by_sensors_all_participants.html"
+        "reports/data_exploration/heatmap_sensor_row_count_per_time_segment.html"
     script:
-        "../src/visualization/heatmap_days_by_sensors_all_participants.Rmd"
+        "../src/visualization/merge_heatmap_sensor_row_count_per_time_segment.Rmd"
 
-rule heatmap_sensed_bins:
+rule heatmap_phone_data_yield_per_participant_per_time_segment:
     input:
-        sensor = "data/interim/{pid}/phone_sensed_bins.csv",
-        pid_file = "data/external/{pid}"
+        phone_data_yield = expand("data/processed/features/{pid}/phone_data_yield.csv", pid=config["PIDS"]),
+        participant_file = expand("data/external/participant_files/{pid}.yaml", pid=config["PIDS"]),
+        time_segments_labels = expand("data/interim/time_segments/{pid}_time_segments_labels.csv", pid=config["PIDS"])
+    output:
+        "reports/data_exploration/heatmap_phone_data_yield_per_participant_per_time_segment.html"
+    script:
+        "../src/visualization/heatmap_phone_data_yield_per_participant_per_time_segment.py"
+
+rule heatmap_feature_correlation_matrix:
+    input:
+        all_sensor_features = "data/processed/features/all_participants/all_sensor_features.csv" # before data cleaning
     params:
-        pid = "{pid}",
-        bin_size = config["HEATMAP_SENSED_BINS"]["BIN_SIZE"]
+        min_rows_ratio = config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["MIN_ROWS_RATIO"],
+        corr_threshold = config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["CORR_THRESHOLD"],
+        corr_method = config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["CORR_METHOD"]
     output:
-        "reports/interim/heatmap_sensed_bins/{pid}/heatmap_sensed_bins.html"
+        "reports/data_exploration/heatmap_feature_correlation_matrix.html"
     script:
-        "../src/visualization/heatmap_sensed_bins.py"
+        "../src/visualization/heatmap_feature_correlation_matrix.py"
 
-rule heatmap_sensed_bins_all_participants:
-    input:
-        heatmap_sensed_bins = expand("reports/interim/heatmap_sensed_bins/{pid}/heatmap_sensed_bins.html", pid=config["PIDS"])
-    output:
-        "reports/data_exploration/heatmap_sensed_bins_all_participants.html"
-    script:
-        "../src/visualization/heatmap_sensed_bins_all_participants.Rmd"
-
-rule overall_compliance_heatmap:
-    input:
-        phone_sensed_bins =  expand("data/interim/{pid}/phone_sensed_bins.csv", pid=config["PIDS"]),
-        phone_valid_sensed_days = expand("data/interim/{pid}/phone_valid_sensed_days_{{min_valid_hours_per_day}}hours_{{min_valid_bins_per_hour}}bins.csv", pid=config["PIDS"]),
-        pid_files = expand("data/external/{pid}", pid=config["PIDS"])
-    params:
-        only_show_valid_days = config["OVERALL_COMPLIANCE_HEATMAP"]["ONLY_SHOW_VALID_DAYS"],
-        local_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-        expected_num_of_days = config["OVERALL_COMPLIANCE_HEATMAP"]["EXPECTED_NUM_OF_DAYS"],
-        bin_size = config["OVERALL_COMPLIANCE_HEATMAP"]["BIN_SIZE"],
-        min_bins_per_hour = "{min_valid_bins_per_hour}"
-    output:
-        "reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/overall_compliance_heatmap.html"
-    script:
-        "../src/visualization/overall_compliance_heatmap.py"

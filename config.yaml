@@ -259,9 +259,6 @@ PHONE_WIFI_VISIBLE:
 
 
 
-
-
-
 ########################################################################################################################
 #                                                 FITBIT                                                               #
 ########################################################################################################################
@@ -350,7 +347,6 @@ FITBIT_STEPS_INTRADAY:
 
 
 
-
 ########################################################################################################################
 #                                                 PLOTS                                                                #
 ########################################################################################################################
@@ -358,32 +354,19 @@ FITBIT_STEPS_INTRADAY:
 HISTOGRAM_PHONE_DATA_YIELD:
   PLOT: False
 
-HEATMAP_FEATURES_CORRELATIONS:
+HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT:
+  PLOT: False
+
+HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT:
+  PLOT: False
+  SENSORS: [PHONE_ACCELEROMETER, PHONE_ACTIVITY_RECOGNITION, PHONE_APPLICATIONS_FOREGROUND, PHONE_BATTERY, PHONE_BLUETOOTH, PHONE_CALLS, PHONE_CONVERSATION, PHONE_LIGHT, PHONE_LOCATIONS, PHONE_MESSAGES, PHONE_SCREEN, PHONE_WIFI_CONNECTED, PHONE_WIFI_VISIBLE]
+
+HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT:
+  PLOT: False
+
+HEATMAP_FEATURE_CORRELATION_MATRIX:
   PLOT: False
   MIN_ROWS_RATIO: 0.5
-  MIN_VALID_HOURS_PER_DAY: #*min_valid_hours_per_day
-  MIN_VALID_BINS_PER_HOUR: #*min_valid_bins_per_hour
-  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
-  FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
   CORR_THRESHOLD: 0.1
   CORR_METHOD: "pearson" # choose from {"pearson", "kendall", "spearman"}
-
-HEATMAP_DAYS_BY_SENSORS:
-  PLOT: False
-  MIN_VALID_HOURS_PER_DAY: #*min_valid_hours_per_day
-  MIN_VALID_BINS_PER_HOUR: #*min_valid_bins_per_hour
-  EXPECTED_NUM_OF_DAYS: -1
-  DB_TABLES: [accelerometer, applications_foreground, battery, bluetooth, calls, light, locations, messages, screen, wifi, sensor_wifi, plugin_google_activity_recognition, plugin_ios_activity_recognition, plugin_studentlife_audio_android, plugin_studentlife_audio]
-
-HEATMAP_SENSED_BINS:
-  PLOT: False
-  BIN_SIZE: #*bin_size
-
-OVERALL_COMPLIANCE_HEATMAP:
-  PLOT: False
-  ONLY_SHOW_VALID_DAYS: False
-  EXPECTED_NUM_OF_DAYS: -1
-  BIN_SIZE: #*bin_size
-  MIN_VALID_HOURS_PER_DAY: #*min_valid_hours_per_day
-  MIN_VALID_BINS_PER_HOUR: #*min_valid_bins_per_hour
 

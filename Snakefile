@@ -231,20 +231,19 @@ for provider in config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"].keys():
 if config["HISTOGRAM_PHONE_DATA_YIELD"]["PLOT"]:
     files_to_compute.append("reports/data_exploration/histogram_phone_data_yield.html")
 
-# visualization for data exploration
-# if config["HEATMAP_FEATURES_CORRELATIONS"]["PLOT"]:
-#     files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/heatmap_features_correlations.html", min_valid_hours_per_day=config["HEATMAP_FEATURES_CORRELATIONS"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
-    
-# if config["HEATMAP_DAYS_BY_SENSORS"]["PLOT"]:
-#     files_to_compute.extend(expand("reports/interim/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/{pid}/heatmap_days_by_sensors.html", pid=config["PIDS"], min_valid_hours_per_day=config["HEATMAP_DAYS_BY_SENSORS"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
-#     files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/heatmap_days_by_sensors_all_participants.html", min_valid_hours_per_day=config["HEATMAP_DAYS_BY_SENSORS"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
+if config["HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT"]["PLOT"]:
+    files_to_compute.extend(expand("reports/interim/{pid}/heatmap_sensors_per_minute_per_time_segment.html", pid=config["PIDS"]))
+    files_to_compute.append("reports/data_exploration/heatmap_sensors_per_minute_per_time_segment.html")
 
-# if config["HEATMAP_SENSED_BINS"]["PLOT"]:
-#     files_to_compute.extend(expand("reports/interim/heatmap_sensed_bins/{pid}/heatmap_sensed_bins.html", pid=config["PIDS"]))
-#     files_to_compute.extend(["reports/data_exploration/heatmap_sensed_bins_all_participants.html"])
+if config["HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT"]["PLOT"]:
+    files_to_compute.extend(expand("reports/interim/{pid}/heatmap_sensor_row_count_per_time_segment.html", pid=config["PIDS"]))
+    files_to_compute.append("reports/data_exploration/heatmap_sensor_row_count_per_time_segment.html")
 
-# if config["OVERALL_COMPLIANCE_HEATMAP"]["PLOT"]:
-#     files_to_compute.extend(expand("reports/data_exploration/{min_valid_hours_per_day}hours_{min_valid_bins_per_hour}bins/overall_compliance_heatmap.html", min_valid_hours_per_day=config["OVERALL_COMPLIANCE_HEATMAP"]["MIN_VALID_HOURS_PER_DAY"], min_valid_bins_per_hour=config["PHONE_VALID_SENSED_DAYS"]["MIN_VALID_BINS_PER_HOUR"]))
+if config["HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT"]["PLOT"]:
+    files_to_compute.append("reports/data_exploration/heatmap_phone_data_yield_per_participant_per_time_segment.html")
+
+if config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["PLOT"]:
+    files_to_compute.append("reports/data_exploration/heatmap_feature_correlation_matrix.html")
 
 
 rule all:
