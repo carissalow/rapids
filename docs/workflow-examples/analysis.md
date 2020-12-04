@@ -1,6 +1,6 @@
 # Analysis Workflow Example
 
-!!! hint "TL;DR"
+!!! info "TL;DR"
     - In addition to using RAPIDS to extract behavioral features and create plots, you can structure your data analysis within RAPIDS (i.e. cleaning your features and creating ML/statistical models)
     - We include an analysis example in RAPIDS that covers raw data processing, cleaning, feature extraction, machine learning modeling, and evaluation
     - Use this example as a guide to structure your own analysis within RAPIDS
@@ -12,15 +12,17 @@ Even though the bulk of RAPIDS current functionality is related to the computati
 
 We clarify that to create analysis workflows in RAPIDS, researchers can still use any data manipulation tools, editors, libraries or languages they are already familiar with. RAPIDS is meant to be the final destination of analysis code that was developed in interactive notebooks or stand-alone scripts. For example, a user can compute call and location features using RAPIDS, then, they can use Jupyter notebooks to explore feature cleaning approaches and once the cleaning code is final, it can be moved to RAPIDS as a new step in the pipeline. In turn, the output of this cleaning step can be used to explore machine learning models and once a model is finished, it can also be transferred to RAPIDS as a step of its own. The idea is that when it is time to publish a piece of research, a RAPIDS workflow can be shared in a public repository as is.
 
+In the following sections we share an example of how we structured an analysis workflow in RAPIDS.
+
 ## Analysis workflow structure
 To accurately reflect the complexity of a real-world modeling scenario, we decided not to oversimplify this example. Importantly, every step in this example follows a basic structure: an input file and parameters are manipulated by an R or Python script that saves the results to an output file. Input files, parameters, output files and scripts are grouped into Snakemake rules that are described on `smk` files in the rules folder (we point the reader to the relevant rule(s) of each step). 
 
-Researchers can use these rules and scripts as a guide to create their own as it is expected every modeling project will have different requirements, data and goals but ultimately most follow a similar pattern.
+Researchers can use these rules and scripts as a guide to create their own as it is expected every modeling project will have different requirements, data and goals but ultimately most follow a similar chainned pattern.
 
 !!! hint
     The example's config file is `example_profile/example_config.yaml` and its Snakefile is in `example_profile/Snakefile`. The config file is already configured to process the sensor data as explained in [Analysis workflow modules](#analysis-workflow-modules).
 
-## Analysis workflow's study description 
+## Description of the study modeled in our analysis workflow example
 Our example is based on a hypothetical study that recruited 2 participants that underwent surgery and collected mobile data for at least one week before and one week after the procedure. Participants wore a Fitbit device and installed the AWARE client in their personal Android and iOS smartphones to collect mobile data 24/7. In addition, participants completed daily severity ratings of 12 common symptoms on a scale from 0 to 10 that we summed up into a daily symptom burden score. 
 
 The goal of this workflow is to find out if we can predict the daily symptom burden score of a participant. Thus, we framed this question as a binary classification problem with two classes, high and low symptom burden based on the scores above and below average of each participant. We also want to compare the performance of individual (personalized) models vs a population model. 
@@ -33,7 +35,7 @@ In total, our example workflow has nine steps that are in charge of sensor data 
 </figure>
 
 
-## Configure and run the analysis workflow
+## Configure and run the analysis workflow example
 1.	[Install](../../setup/installation) RAPIDS
 2.	Configure the [user credentials](../../setup/configuration/#database-credentials) of a local or remote MySQL server with writing permissions in your `.env` file. 
 3.	Unzip the [test database](https://osf.io/skqfv/files/) to `data/external/rapids_example.sql` and run:
@@ -49,7 +51,7 @@ In total, our example workflow has nine steps that are in charge of sensor data 
     ./rapids -j1 --profile example_profile
     ```
 
-## Analysis workflow modules
+## Modules of our analysis workflow example
 
 ??? info "1. Feature extraction"
     We extract daily behavioral features for data yield, received and sent messages, missed, incoming and outgoing calls, resample fused location data using Doryab provider, activity recognition, battery, Bluetooth, screen, light, applications foreground, conversations, Wi-Fi connected, Wi-Fi visible, Fitbit heart rate summary and intraday data, Fitbit sleep summary data, and Fitbit step summary and intraday data without excluding sleep periods with an active bout threshold of 10 steps. In total, we obtained 237 daily sensor features over 12 days per participant. 
