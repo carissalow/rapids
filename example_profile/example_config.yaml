@@ -7,7 +7,7 @@ TIMEZONE: &timezone
   America/New_York
 
 # See https://www.rapids.science/setup/configuration/#participant-files
-PIDS: [t01, t02]
+PIDS: [example01, example02]
 
 # See https://www.rapids.science/setup/configuration/#automatic-creation-of-participant-files
 CREATE_PARTICIPANT_FILES:
