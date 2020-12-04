@@ -390,22 +390,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#analysis-workflows-study-description" class="md-nav__link">
-    Analysis workflow's study description
+  <a href="#description-of-the-study-modeled-in-our-analysis-workflow-example" class="md-nav__link">
+    Description of the study modeled in our analysis workflow example
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#configure-and-run-the-analysis-workflow" class="md-nav__link">
-    Configure and run the analysis workflow
+  <a href="#configure-and-run-the-analysis-workflow-example" class="md-nav__link">
+    Configure and run the analysis workflow example
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#analysis-workflow-modules" class="md-nav__link">
-    Analysis workflow modules
+  <a href="#modules-of-our-analysis-workflow-example" class="md-nav__link">
+    Modules of our analysis workflow example
   </a>
   
 </li>
@@ -1045,22 +1045,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#analysis-workflows-study-description" class="md-nav__link">
-    Analysis workflow's study description
+  <a href="#description-of-the-study-modeled-in-our-analysis-workflow-example" class="md-nav__link">
+    Description of the study modeled in our analysis workflow example
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#configure-and-run-the-analysis-workflow" class="md-nav__link">
-    Configure and run the analysis workflow
+  <a href="#configure-and-run-the-analysis-workflow-example" class="md-nav__link">
+    Configure and run the analysis workflow example
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#analysis-workflow-modules" class="md-nav__link">
-    Analysis workflow modules
+  <a href="#modules-of-our-analysis-workflow-example" class="md-nav__link">
+    Modules of our analysis workflow example
   </a>
   
 </li>
@@ -1083,7 +1083,7 @@
                 
                 
                 <h1 id="analysis-workflow-example">Analysis Workflow Example<a class="headerlink" href="#analysis-workflow-example" title="Permanent link">&para;</a></h1>
-<div class="admonition hint">
+<div class="admonition info">
 <p class="admonition-title">TL;DR</p>
 <ul>
 <li>In addition to using RAPIDS to extract behavioral features and create plots, you can structure your data analysis within RAPIDS (i.e. cleaning your features and creating ML/statistical models)</li>
@@ -1096,14 +1096,15 @@
 <h2 id="why-should-i-integrate-my-analysis-in-rapids">Why should I integrate my analysis in RAPIDS?<a class="headerlink" href="#why-should-i-integrate-my-analysis-in-rapids" title="Permanent link">&para;</a></h2>
 <p>Even though the bulk of RAPIDS current functionality is related to the computation of behavioral features, we recommend RAPIDS as a complementary tool to create a mobile data analysis workflow. This is because the cookiecutter data science file organization guidelines, the use of Snakemake, the provided behavioral features, and the reproducible R and Python development environments allow researchers to divide an analysis workflow into small parts that can be audited, shared in an online repository, reproduced in other computers, and understood by other people as they follow a familiar and consistent structure. We believe these advantages outweigh the time needed to learn how to create these workflows in RAPIDS.</p>
 <p>We clarify that to create analysis workflows in RAPIDS, researchers can still use any data manipulation tools, editors, libraries or languages they are already familiar with. RAPIDS is meant to be the final destination of analysis code that was developed in interactive notebooks or stand-alone scripts. For example, a user can compute call and location features using RAPIDS, then, they can use Jupyter notebooks to explore feature cleaning approaches and once the cleaning code is final, it can be moved to RAPIDS as a new step in the pipeline. In turn, the output of this cleaning step can be used to explore machine learning models and once a model is finished, it can also be transferred to RAPIDS as a step of its own. The idea is that when it is time to publish a piece of research, a RAPIDS workflow can be shared in a public repository as is.</p>
+<p>In the following sections we share an example of how we structured an analysis workflow in RAPIDS.</p>
 <h2 id="analysis-workflow-structure">Analysis workflow structure<a class="headerlink" href="#analysis-workflow-structure" title="Permanent link">&para;</a></h2>
 <p>To accurately reflect the complexity of a real-world modeling scenario, we decided not to oversimplify this example. Importantly, every step in this example follows a basic structure: an input file and parameters are manipulated by an R or Python script that saves the results to an output file. Input files, parameters, output files and scripts are grouped into Snakemake rules that are described on <code>smk</code> files in the rules folder (we point the reader to the relevant rule(s) of each step). </p>
-<p>Researchers can use these rules and scripts as a guide to create their own as it is expected every modeling project will have different requirements, data and goals but ultimately most follow a similar pattern.</p>
+<p>Researchers can use these rules and scripts as a guide to create their own as it is expected every modeling project will have different requirements, data and goals but ultimately most follow a similar chainned pattern.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>The example&rsquo;s config file is <code>example_profile/example_config.yaml</code> and its Snakefile is in <code>example_profile/Snakefile</code>. The config file is already configured to process the sensor data as explained in <a href="#analysis-workflow-modules">Analysis workflow modules</a>.</p>
 </div>
-<h2 id="analysis-workflows-study-description">Analysis workflow&rsquo;s study description<a class="headerlink" href="#analysis-workflows-study-description" title="Permanent link">&para;</a></h2>
+<h2 id="description-of-the-study-modeled-in-our-analysis-workflow-example">Description of the study modeled in our analysis workflow example<a class="headerlink" href="#description-of-the-study-modeled-in-our-analysis-workflow-example" title="Permanent link">&para;</a></h2>
 <p>Our example is based on a hypothetical study that recruited 2 participants that underwent surgery and collected mobile data for at least one week before and one week after the procedure. Participants wore a Fitbit device and installed the AWARE client in their personal Android and iOS smartphones to collect mobile data 24/7. In addition, participants completed daily severity ratings of 12 common symptoms on a scale from 0 to 10 that we summed up into a daily symptom burden score. </p>
 <p>The goal of this workflow is to find out if we can predict the daily symptom burden score of a participant. Thus, we framed this question as a binary classification problem with two classes, high and low symptom burden based on the scores above and below average of each participant. We also want to compare the performance of individual (personalized) models vs a population model. </p>
 <p>In total, our example workflow has nine steps that are in charge of sensor data preprocessing, feature extraction, feature cleaning, machine learning model training and model evaluation (see figure below). We ship this workflow with RAPIDS and share a database with <a href="https://osf.io/skqfv/files/">test data</a> in an Open Science Framework repository. </p>
@@ -1112,7 +1113,7 @@
   <figcaption>Modules of RAPIDS example workflow, from raw data to model evaluation</figcaption>
 </figure>
 
-<h2 id="configure-and-run-the-analysis-workflow">Configure and run the analysis workflow<a class="headerlink" href="#configure-and-run-the-analysis-workflow" title="Permanent link">&para;</a></h2>
+<h2 id="configure-and-run-the-analysis-workflow-example">Configure and run the analysis workflow example<a class="headerlink" href="#configure-and-run-the-analysis-workflow-example" title="Permanent link">&para;</a></h2>
 <ol>
 <li><a href="../../setup/installation">Install</a> RAPIDS</li>
 <li>Configure the <a href="../../setup/configuration/#database-credentials">user credentials</a> of a local or remote MySQL server with writing permissions in your <code>.env</code> file. </li>
@@ -1126,7 +1127,7 @@
     <div class="highlight"><pre><span></span><code>./rapids -j1 --profile example_profile
 </code></pre></div></li>
 </ol>
-<h2 id="analysis-workflow-modules">Analysis workflow modules<a class="headerlink" href="#analysis-workflow-modules" title="Permanent link">&para;</a></h2>
+<h2 id="modules-of-our-analysis-workflow-example">Modules of our analysis workflow example<a class="headerlink" href="#modules-of-our-analysis-workflow-example" title="Permanent link">&para;</a></h2>
 <details class="info"><summary>1. Feature extraction</summary><p>We extract daily behavioral features for data yield, received and sent messages, missed, incoming and outgoing calls, resample fused location data using Doryab provider, activity recognition, battery, Bluetooth, screen, light, applications foreground, conversations, Wi-Fi connected, Wi-Fi visible, Fitbit heart rate summary and intraday data, Fitbit sleep summary data, and Fitbit step summary and intraday data without excluding sleep periods with an active bout threshold of 10 steps. In total, we obtained 237 daily sensor features over 12 days per participant. </p>
 </details>
 <details class="info"><summary>2. Extract demographic data.</summary><p>It is common to have demographic data in addition to mobile and target (ground truth) data. In this example we include participants’ age, gender and the number of days they spent in hospital after their surgery as features in our model. We extract these three columns from the participant_info table of our test database . As these three features remain the same within participants, they are used only on the population model. Refer to the <code>demographic_features</code> rule in <code>rules/models.smk</code>.</p>
