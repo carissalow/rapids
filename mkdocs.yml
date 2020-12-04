@@ -101,6 +101,9 @@ nav:
         - Fitbit Steps Summary: features/fitbit-steps-summary.md
         - Fitbit Steps Intraday: features/fitbit-steps-intraday.md
       - Add New Features: features/add-new-features.md
+  - Visualizations:
+    - Data Quality: visualizations/data-quality-visualizations.md
+    - Features: visualizations/feature-visualizations.md
   - Developers:
     - Remote Support: developers/remote-support.md
     - Virtual Environments: developers/virtual-environments.md
