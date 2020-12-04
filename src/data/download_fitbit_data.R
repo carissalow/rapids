@@ -1,5 +1,5 @@
 source("renv/activate.R")
-library(RMySQL)
+library(RMariaDB)
 library("dplyr", warn.conflicts = F)
 library(readr)
 library(stringr)
@@ -23,7 +23,7 @@ unified_device_id <- tail(device_ids, 1)
 # As opposed to phone data, we dont' filter by date here because data can still be in JSON format, we need to parse it first
 
 if(source$TYPE == "DATABASE"){
-  dbEngine <- dbConnect(MySQL(), default.file = "./.env", group = source$DATABASE_GROUP)
+  dbEngine <- dbConnect(MariaDB(), default.file = "./.env", group = source$DATABASE_GROUP)
   query <- paste0("SELECT * FROM ", table, " WHERE ",source$DEVICE_ID_COLUMN," IN ('", paste0(device_ids, collapse = "','"), "')")
   sensor_data <- dbGetQuery(dbEngine, query)
   dbDisconnect(dbEngine)

@@ -1,5 +1,5 @@
 source("renv/activate.R")
-library(RMySQL)
+library(RMariaDB)
 library("dplyr", warn.conflicts = F)
 library(readr)
 library(stringr)
@@ -15,7 +15,7 @@ sensor_file <- snakemake@output[[1]]
 participant <- read_yaml(participant_file)
 record_id <- participant$PHONE$LABEL
 
-dbEngine <- dbConnect(MySQL(), default.file = "./.env", group = source$DATABASE_GROUP)
+dbEngine <- dbConnect(MariaDB(), default.file = "./.env", group = source$DATABASE_GROUP)
 query <- paste0("SELECT * FROM ", table, " WHERE record_id = '", record_id, "'")
 sensor_data <- dbGetQuery(dbEngine, query)
 dbDisconnect(dbEngine)

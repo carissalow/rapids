@@ -1,6 +1,6 @@
 source("renv/activate.R")
 
-library(RMySQL)
+library(RMariaDB)
 library(stringr)
 library(purrr)
 library(readr)
@@ -19,7 +19,7 @@ fitbit_ignored = config$FITBIT_SECTION$IGNORED_DEVICE_IDS
 rmysql.settingsfile <- "./.env"
 
 if(config$SOURCE$TYPE == "AWARE_DEVICE_TABLE"){
-  database <- dbConnect(MySQL(), default.file = rmysql.settingsfile, group = group)
+  database <- dbConnect(MariaDB(), default.file = rmysql.settingsfile, group = group)
   if(config$FITBIT_SECTION$ADD == TRUE){
     query <- paste("SELECT",phone_device_id_column, ",",fitbit_device_id_column," as _temp_fitbit_id, brand, label, timestamp FROM aware_device order by timestamp asc")
     fitbit_device_id_column <- "_temp_fitbit_id"

@@ -1,6 +1,6 @@
 source("renv/activate.R")
 source("src/data/unify_utils.R")
-library(RMySQL)
+library(RMariaDB)
 library(stringr)
 library("dplyr", warn.conflicts = F)
 library(readr)
@@ -80,7 +80,7 @@ platforms <- participant$PHONE$PLATFORMS
 validate_deviceid_platforms(device_ids, platforms)
 timestamp_filter <- get_timestamp_filter(device_ids, participant, timezone)
 
-dbEngine <- dbConnect(MySQL(), default.file = "./.env", group = group)
+dbEngine <- dbConnect(MariaDB(), default.file = "./.env", group = group)
 
 if(is_multiplaform_participant(dbEngine, device_ids, platforms)){
   sensor_data <- unify_raw_data(dbEngine, table, sensor, timestamp_filter, aware_multiplatform_tables, device_ids, platforms)
