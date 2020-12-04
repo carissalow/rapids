@@ -28,7 +28,7 @@ The goal of this workflow is to find out if we can predict the daily symptom bur
 In total, our example workflow has nine steps that are in charge of sensor data preprocessing, feature extraction, feature cleaning, machine learning model training and model evaluation (see figure below). We ship this workflow with RAPIDS and share a database with [test data](https://osf.io/skqfv/files/) in an Open Science Framework repository. 
 
 <figure>
-  <img src="../../img/analysis_workflow.png" width="600" />
+  <img src="../../img/analysis_workflow.png" max-width="100%" />
   <figcaption>Modules of RAPIDS example workflow, from raw data to model evaluation</figcaption>
 </figure>
 

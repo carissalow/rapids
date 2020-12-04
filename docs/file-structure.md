@@ -14,7 +14,7 @@ RAPIDS source code is saved in `src/`. The `src/data/` folder stores scripts to 
 In the figure below, we represent the interactions between users and files. After a user modifies the configuration files mentioned above, the `Snakefile` file will search for and execute the Snakemake rules that contain the Python or R scripts necessary to generate or update the required output files (behavioral features, plots, etc.).
 
 <figure>
-  <img src="../img/files.png" width="600" />
+  <img src="../img/files.png" max-width="100%" />
   <figcaption>Interaction diagram between the user, and important files in RAPIDS</figcaption>
 </figure>
 
