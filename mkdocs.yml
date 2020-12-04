@@ -108,8 +108,8 @@ nav:
     - Testing: developers/testing.md
     - Test cases: developers/test-cases.md
   - Others:
-    - Migrating from RAPIDS beta: migrating-from-beta.md
+    - Migrating from beta: migrating-from-old-versions.md
     - Code of Conduct: code_of_conduct.md
-    - Frequently Asked Questions: faq.md
+    - FAQ: faq.md
     - Team: team.md
     - Citation: citation.md
