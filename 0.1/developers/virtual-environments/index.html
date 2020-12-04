@@ -63,7 +63,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#virtual-environments" class="md-skip">
+        <a href="#python-virtual-environment" class="md-skip">
           Skip to content
         </a>
       
@@ -742,8 +742,6 @@
     
     <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
-      
-    
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
         Virtual Environments
@@ -758,8 +756,6 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -768,23 +764,70 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#python-virtual-environment" class="md-nav__link">
+    Python Virtual Environment
+  </a>
+  
+    <nav class="md-nav" aria-label="Python Virtual Environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#add-new-packages" class="md-nav__link">
     Add new packages
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
+  <a href="#remove-packages" class="md-nav__link">
+    Remove packages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#update-your-conda-environmentyaml" class="md-nav__link">
     Update your conda environment.yaml
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#update-and-prune-your-conda-environment-from-a-environmentyaml-file" class="md-nav__link">
-    Update and prune your conda environment from a environment.yaml file
+  <a href="#r-virtual-environment" class="md-nav__link">
+    R Virtual Environment
   </a>
+  
+    <nav class="md-nav" aria-label="R Virtual Environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add-new-packages_1" class="md-nav__link">
+    Add new packages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove-packages_1" class="md-nav__link">
+    Remove packages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-your-r-renvlock" class="md-nav__link">
+    Update your R renv.lock
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -941,8 +984,6 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -951,23 +992,70 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#python-virtual-environment" class="md-nav__link">
+    Python Virtual Environment
+  </a>
+  
+    <nav class="md-nav" aria-label="Python Virtual Environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#add-new-packages" class="md-nav__link">
     Add new packages
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
+  <a href="#remove-packages" class="md-nav__link">
+    Remove packages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#update-your-conda-environmentyaml" class="md-nav__link">
     Update your conda environment.yaml
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#update-and-prune-your-conda-environment-from-a-environmentyaml-file" class="md-nav__link">
-    Update and prune your conda environment from a environment.yaml file
+  <a href="#r-virtual-environment" class="md-nav__link">
+    R Virtual Environment
   </a>
+  
+    <nav class="md-nav" aria-label="R Virtual Environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add-new-packages_1" class="md-nav__link">
+    Add new packages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove-packages_1" class="md-nav__link">
+    Remove packages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-your-r-renvlock" class="md-nav__link">
+    Update your R renv.lock
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -988,17 +1076,37 @@
                   </a>
                 
                 
-                <h1 id="virtual-environments">Virtual Environments<a class="headerlink" href="#virtual-environments" title="Permanent link">&para;</a></h1>
-<h2 id="add-new-packages">Add new packages<a class="headerlink" href="#add-new-packages" title="Permanent link">&para;</a></h2>
-<p>Try to install any new package using <code>conda</code>. If a package is not available in one of <code>conda</code>&lsquo;s channels you can install it with <code>pip</code> but make sure your virtual environment is active.</p>
-<h2 id="update-your-conda-environmentyaml">Update your conda <code>environment.yaml</code><a class="headerlink" href="#update-your-conda-environmentyaml" title="Permanent link">&para;</a></h2>
-<p>After installing a new package you can use the following command in your terminal to update your <code>environment.yaml</code> before publishing your pipeline. Note that we ignore the package version for <code>libfortran</code> to keep compatibility with Linux:</p>
+                  <h1>Virtual Environments</h1>
+                
+                <h2 id="python-virtual-environment">Python Virtual Environment<a class="headerlink" href="#python-virtual-environment" title="Permanent link">&para;</a></h2>
+<h3 id="add-new-packages">Add new packages<a class="headerlink" href="#add-new-packages" title="Permanent link">&para;</a></h3>
+<p>Try to install any new package using <code>conda install -c CHANNEL PACKAGE_NAME</code> (you can use <code>pip</code> if the package is only available there). Make sure your Python virtual environment is active (<code>conda activate YOUR_ENV</code>).</p>
+<h3 id="remove-packages">Remove packages<a class="headerlink" href="#remove-packages" title="Permanent link">&para;</a></h3>
+<p>Uninstall packages using the same manager you used to install them <code>conda remove PACKAGE_NAME</code> or <code>pip uninstall PACKAGE_NAME</code></p>
+<h3 id="update-your-conda-environmentyaml">Update your conda <code>environment.yaml</code><a class="headerlink" href="#update-your-conda-environmentyaml" title="Permanent link">&para;</a></h3>
+<p>After installing or removing a package you can use the following command in your terminal to update your <code>environment.yaml</code> before publishing your pipeline. Note that we ignore the package version for <code>libfortran</code> to keep compatibility with Linux:
 <div class="highlight"><pre><span></span><code>conda env <span class="nb">export</span> --no-builds <span class="p">|</span> sed <span class="s1">&#39;s/^.*libgfortran.*$/  - libgfortran/&#39;</span> &gt;  environment.yml
-</code></pre></div>
-<h2 id="update-and-prune-your-conda-environment-from-a-environmentyaml-file">Update and prune your conda environment from a <code>environment.yaml</code> file<a class="headerlink" href="#update-and-prune-your-conda-environment-from-a-environmentyaml-file" title="Permanent link">&para;</a></h2>
-<p>Execute the following command in your terminal, see these docs for more <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#updating-an-environment">information</a></p>
-<div class="highlight"><pre><span></span><code>conda env update --prefix ./env --file environment.yml  --prune
-</code></pre></div>
+</code></pre></div></p>
+<h2 id="r-virtual-environment">R Virtual Environment<a class="headerlink" href="#r-virtual-environment" title="Permanent link">&para;</a></h2>
+<h3 id="add-new-packages_1">Add new packages<a class="headerlink" href="#add-new-packages_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Open your terminal and navigate to RAPIDS&rsquo; root folder</li>
+<li>Run <code>R</code> to open an R interactive session</li>
+<li>Run <code>renv::install("PACKAGE_NAME")</code></li>
+</ol>
+<h3 id="remove-packages_1">Remove packages<a class="headerlink" href="#remove-packages_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Open your terminal and navigate to RAPIDS&rsquo; root folder</li>
+<li>Run <code>R</code> to open an R interactive session</li>
+<li>Run <code>renv::remove("PACKAGE_NAME")</code></li>
+</ol>
+<h3 id="update-your-r-renvlock">Update your R <code>renv.lock</code><a class="headerlink" href="#update-your-r-renvlock" title="Permanent link">&para;</a></h3>
+<p>After installing or removing a package you can use the following command in your terminal to update your <code>renv.lock</code> before publishing your pipeline.</p>
+<ol>
+<li>Open your terminal and navigate to RAPIDS&rsquo; root folder</li>
+<li>Run <code>R</code> to open an R interactive session</li>
+<li>Run <code>renv::snapshot()</code> (renv will ask you to confirm any updates to this file)</li>
+</ol>
                 
               
               
