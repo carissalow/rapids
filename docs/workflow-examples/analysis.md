@@ -1,6 +1,7 @@
 # Analysis Workflow Example
 
 !!! hint "TL;DR"
+    - In addition to using RAPIDS to extract behavioral features and create plots, you can structure your data analysis within RAPIDS (i.e. cleaning your features and creating ML/statistical models)
     - We include an analysis example in RAPIDS that covers raw data processing, cleaning, feature extraction, machine learning modeling, and evaluation
     - Use this example as a guide to structure your own analysis within RAPIDS
     - RAPIDS analysis workflows are compatible with your favorite data science tools and libraries
