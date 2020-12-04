@@ -98,6 +98,8 @@ sensor_data <- sensor_data %>% arrange(timestamp)
 # Unify device_id
 sensor_data <- sensor_data %>% mutate(device_id = unified_device_id)
 
+# Removing blob_feature conversation column (it's loaded as a list column that crashes write_csv)
+sensor_data <- sensor_data %>% select(-any_of("blob_feature"))
 # Droping duplicates on all columns except for _id or id
 sensor_data <- sensor_data %>% distinct(!!!syms(setdiff(names(sensor_data), c("_id", "id"))))
 
