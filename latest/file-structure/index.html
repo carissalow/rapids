@@ -717,11 +717,65 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" >
     
     <label class="md-nav__link" for="nav-5">
+      Visualizations
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Visualizations" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        Visualizations
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../visualizations/data-quality-visualizations/" class="md-nav__link">
+      Data Quality
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../visualizations/feature-visualizations/" class="md-nav__link">
+      Features
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  
+    
+  
+  <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" >
+    
+    <label class="md-nav__link" for="nav-6">
       Developers
       <span class="md-nav__icon md-icon"></span>
     </label>
     <nav class="md-nav" aria-label="Developers" data-md-level="1">
-      <label class="md-nav__title" for="nav-5">
+      <label class="md-nav__title" for="nav-6">
         <span class="md-nav__icon md-icon"></span>
         Developers
       </label>
@@ -804,14 +858,14 @@
   <li class="md-nav__item md-nav__item--section md-nav__item--nested">
     
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" >
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7" >
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-7">
       Others
       <span class="md-nav__icon md-icon"></span>
     </label>
     <nav class="md-nav" aria-label="Others" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-7">
         <span class="md-nav__icon md-icon"></span>
         Others
       </label>
@@ -862,6 +916,18 @@
   <li class="md-nav__item">
     <a href="../team/" class="md-nav__link">
       Team
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../change-log/" class="md-nav__link">
+      Change Log
     </a>
   </li>
 
@@ -929,7 +995,7 @@
 <p>RAPIDS source code is saved in <code>src/</code>. The <code>src/data/</code> folder stores scripts to download, clean and pre-process sensor data, <code>src/features</code> has scripts to extract behavioral features organized in their respective sensor subfolders , <code>src/models/</code> can host any script to create models or statistical analyses with the behavioral features you extract, and <code>src/visualization/</code> has scripts to create plots of the raw and processed data. There are other files and folders but only relevant if you are interested in extending RAPIDS (e.g. virtual env files, docs, tests, Dockerfile, the Snakefile, etc.). </p>
 <p>In the figure below, we represent the interactions between users and files. After a user modifies the configuration files mentioned above, the <code>Snakefile</code> file will search for and execute the Snakemake rules that contain the Python or R scripts necessary to generate or update the required output files (behavioral features, plots, etc.).</p>
 <figure>
-  <img src="../img/files.png" width="600" />
+  <img src="../img/files.png" max-width="100%" />
   <figcaption>Interaction diagram between the user, and important files in RAPIDS</figcaption>
 </figure>
                 

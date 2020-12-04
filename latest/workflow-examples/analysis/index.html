@@ -774,11 +774,65 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" >
     
     <label class="md-nav__link" for="nav-5">
+      Visualizations
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Visualizations" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        Visualizations
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../visualizations/data-quality-visualizations/" class="md-nav__link">
+      Data Quality
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../visualizations/feature-visualizations/" class="md-nav__link">
+      Features
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  
+    
+  
+  <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" >
+    
+    <label class="md-nav__link" for="nav-6">
       Developers
       <span class="md-nav__icon md-icon"></span>
     </label>
     <nav class="md-nav" aria-label="Developers" data-md-level="1">
-      <label class="md-nav__title" for="nav-5">
+      <label class="md-nav__title" for="nav-6">
         <span class="md-nav__icon md-icon"></span>
         Developers
       </label>
@@ -861,14 +915,14 @@
   <li class="md-nav__item md-nav__item--section md-nav__item--nested">
     
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" >
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7" >
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-7">
       Others
       <span class="md-nav__icon md-icon"></span>
     </label>
     <nav class="md-nav" aria-label="Others" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-7">
         <span class="md-nav__icon md-icon"></span>
         Others
       </label>
@@ -919,6 +973,18 @@
   <li class="md-nav__item">
     <a href="../../team/" class="md-nav__link">
       Team
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../change-log/" class="md-nav__link">
+      Change Log
     </a>
   </li>
 
@@ -1042,7 +1108,7 @@
 <p>The goal of this workflow is to find out if we can predict the daily symptom burden score of a participant. Thus, we framed this question as a binary classification problem with two classes, high and low symptom burden based on the scores above and below average of each participant. We also want to compare the performance of individual (personalized) models vs a population model. </p>
 <p>In total, our example workflow has nine steps that are in charge of sensor data preprocessing, feature extraction, feature cleaning, machine learning model training and model evaluation (see figure below). We ship this workflow with RAPIDS and share a database with <a href="https://osf.io/skqfv/files/">test data</a> in an Open Science Framework repository. </p>
 <figure>
-  <img src="../../img/analysis_workflow.png" width="600" />
+  <img src="../../img/analysis_workflow.png" max-width="100%" />
   <figcaption>Modules of RAPIDS example workflow, from raw data to model evaluation</figcaption>
 </figure>
 
