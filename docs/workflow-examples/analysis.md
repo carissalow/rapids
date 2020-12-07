@@ -37,10 +37,10 @@ In total, our example workflow has nine steps that are in charge of sensor data 
 
 ## Configure and run the analysis workflow example
 1.	[Install](../../setup/installation) RAPIDS
-2.	Configure the [user credentials](../../setup/configuration/#database-credentials) of a local or remote MySQL server with writing permissions in your `.env` file. 
+2.	Configure the [user credentials](../../setup/configuration/#database-credentials) of a local or remote MySQL server with writing permissions in your `.env` file. The example config file is at `example_profile/example_config.yaml`.
 3.	Unzip the [test database](https://osf.io/skqfv/files/) to `data/external/rapids_example.sql` and run:
     ```bash
-    ./rapids -j1 restore_sql_file
+    ./rapids -j1 restore_sql_file --profile example_profile
     ```
 4.	Create the participant files for this example by running:
     ```bash
@@ -78,12 +78,12 @@ In total, our example workflow has nine steps that are in charge of sensor data 
 ??? info "7. Merge features and targets."
     In this step we merge the cleaned features and target labels for our individual models in the `merge_features_and_targets_for_individual_model` rule in `rules/models.smk`. Additionally, we merge the cleaned features, target labels, and demographic features of our two participants for the population model in the `merge_features_and_targets_for_population_model` rule in `rules/models.smk`. These two merged files are the input for our individual and population models. 
 
-??? info "8. Modeling."
+??? info "8. Modelling."
     This stage has three phases: model building, training and evaluation. 
 
     In the building phase we impute, normalize and oversample our dataset.  Missing numeric values in each column are imputed with their mean and we impute missing categorical values with their mode. We normalize each numeric column with one of three strategies (min-max, z-score, and scikit-learn package’s robust scaler) and we one-hot encode each categorial feature as a numerical array. We oversample our imbalanced dataset using SMOTE (Synthetic Minority Over-sampling Technique) or a Random Over sampler from scikit-learn. All these parameters are exposed in `example_profile/example_config.yaml`.
 
-    In the training phase, we create eight models: logistic regression, k-nearest neighbors, support vector machine, decision tree, random forest, gradient boosting classifier, extreme gradient boosting classifier and a light gradient boosting machine. We cross-validate each model with an inner cycle to tune hyper-parameters based on the Macro F1 score and an outer cycle to predict the test set on a model with the best hyper-parameters. Both cross-validation cycles use a leave-one-participant-out strategy. Parameters for each model like weights and learning rates are exposed in `example_profile/example_config.yaml`.
+    In the training phase, we create eight models: logistic regression, k-nearest neighbors, support vector machine, decision tree, random forest, gradient boosting classifier, extreme gradient boosting classifier and a light gradient boosting machine. We cross-validate each model with an inner cycle to tune hyper-parameters based on the Macro F1 score and an outer cycle to predict the test set on a model with the best hyper-parameters. Both cross-validation cycles use a leave-one-out strategy. Parameters for each model like weights and learning rates are exposed in `example_profile/example_config.yaml`.
 
     Finally, in the evaluation phase we compute the accuracy, Macro F1, kappa, area under the curve and per class precision, recall and F1 score of all folds of the outer cross-validation cycle.
     

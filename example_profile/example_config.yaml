@@ -1,6 +1,6 @@
 # See https://www.rapids.science/setup/configuration/#database-credentials
 DATABASE_GROUP: &database_group
-  RAPIDS_EXAMPLE
+  MY_GROUP
 
 # See https://www.rapids.science/setup/configuration/#timezone-of-your-study
 TIMEZONE: &timezone
