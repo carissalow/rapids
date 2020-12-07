@@ -1,0 +1,119 @@
+site_name: RAPIDS
+markdown_extensions:
+    - toc:
+        permalink: True
+    - admonition
+    - smarty
+    - wikilinks
+    - codehilite:
+        linenums: True
+    # - urlize # requires: pip install git+https://github.com/r0wb0t/markdown-urlize.git
+    - pymdownx.arithmatex:
+        generic: true
+    - pymdownx.betterem:
+        smart_enable: all
+    - pymdownx.caret
+    - pymdownx.critic
+    - pymdownx.details
+    - pymdownx.emoji:
+        emoji_index: !!python/name:materialx.emoji.twemoji
+        emoji_generator: !!python/name:materialx.emoji.to_svg
+    - pymdownx.highlight
+    - pymdownx.inlinehilite
+    - pymdownx.magiclink
+    - pymdownx.mark
+    - pymdownx.smartsymbols
+    - pymdownx.superfences
+    - pymdownx.tabbed
+    - pymdownx.tasklist:
+        custom_checkbox: True
+    - pymdownx.tilde
+    - attr_list
+    - pymdownx.keys
+extra:
+  version:
+    method: mike
+  social:
+    - icon: fontawesome/brands/twitter
+      link: 'https://twitter.com/julio_ui'
+extra_javascript:
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - javascripts/extra.js
+
+repo_name: 'carissalow/rapids'
+repo_url: 'https://github.com/carissalow/rapids'
+copyright: 'Released under AGPL'
+theme:
+  name: material
+  icon:
+    logo: material/air-filter
+  palette:
+    - scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+    - scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+  features:
+    - navigation.sections
+    - search.suggest
+    - search.highlight
+extra_css:
+    - stylesheets/extra.css
+nav:
+  - Home: 'index.md'
+  - Setup:
+    - File Structure: file-structure.md
+    - Installation: 'setup/installation.md'
+    - Configuration: setup/configuration.md
+    - Execution: setup/execution.md
+  - Example Workflows:
+    - Minimal: workflow-examples/minimal.md
+    - Analysis: workflow-examples/analysis.md
+  - Behavioral Features:
+      - Introduction: features/feature-introduction.md
+      - Phone:
+        - Phone Accelerometer: features/phone-accelerometer.md
+        - Phone Activity Recognition: features/phone-activity-recognition.md
+        - Phone Applications Foreground: features/phone-applications-foreground.md
+        - Phone Battery: features/phone-battery.md
+        - Phone Bluetooth: features/phone-bluetooth.md
+        - Phone Calls: features/phone-calls.md
+        - Phone Conversation: features/phone-conversation.md
+        - Phone Data Yield: features/phone-data-yield.md
+        - Phone Light: features/phone-light.md
+        - Phone Locations: features/phone-locations.md
+        - Phone Messages: features/phone-messages.md
+        - Phone Screen: features/phone-screen.md
+        - Phone WiFI Connected: features/phone-wifi-connected.md
+        - Phone WiFI Visible: features/phone-wifi-visible.md
+      - Fitbit:
+        - Fitbit Heart Rate Summary: features/fitbit-heartrate-summary.md
+        - Fitbit Heart Rate Intraday: features/fitbit-heartrate-intraday.md
+        - Fitbit Sleep Summary: features/fitbit-sleep-summary.md
+        - Fitbit Steps Summary: features/fitbit-steps-summary.md
+        - Fitbit Steps Intraday: features/fitbit-steps-intraday.md
+      - Add New Features: features/add-new-features.md
+  - Visualizations:
+    - Data Quality: visualizations/data-quality-visualizations.md
+    - Features: visualizations/feature-visualizations.md
+  - Developers:
+    - Remote Support: developers/remote-support.md
+    - Virtual Environments: developers/virtual-environments.md
+    - Documentation: developers/documentation.md
+    - Testing: developers/testing.md
+    - Test cases: developers/test-cases.md
+  - Others:
+    - Migrating from beta: migrating-from-old-versions.md
+    - Code of Conduct: code_of_conduct.md
+    - FAQ: faq.md
+    - Team: team.md
+    - Change Log: change-log.md
+    - Citation: citation.md

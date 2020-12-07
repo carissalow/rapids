@@ -1,0 +1,23 @@
+name: docs
+on:
+  push:
+    branches:
+      - day_segments
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - run: pip install git+https://${GH_TOKEN}@github.com/carissalow/mkdocs-material-insiders.git
+      - run: pip install mike
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          mike deploy --push --update-aliases 0.1 latest
+env:
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}

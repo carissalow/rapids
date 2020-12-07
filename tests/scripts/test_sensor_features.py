@@ -1,8 +1,10 @@
+from snakemake.io import expand
 import unittest
 import hashlib
 import pandas as pd
 import utils
 import yaml
+import sys
 import os
 
 class TestSensorFeatures(unittest.TestCase):
@@ -14,23 +16,26 @@ class TestSensorFeatures(unittest.TestCase):
     def setUpClass(cls):
         # Runs once to Setup env
         global configs 
-        with open(r'tests/settings/testing_config.yaml') as file:
+        with open(r'tests/settings/frequency/testing_config.yaml') as file:
             configs = yaml.full_load(file)
 
 
     def test_sensors_files_exist(self):
         # Loop through the file_list dictionary and check if the files exist. 
-
+    
+        #print("Testing existance of files")
         file_lists = utils.generate_sensor_file_lists(configs)
         for each in file_lists:
-            for out_file, _ in file_lists[each]:
-                self.assertEqual(os.path.exists(out_file), 1)
+            #for out_file, _ in file_lists[each]:
+            self.assertEqual(os.path.exists( each[0]), 1)
 
 
     def test_sensors_features_calculations(self):
-        calc_files = utils.generate_sensor_file_lists(configs)
-        for each in calc_files:
-            for act_result, exp_result in calc_files[each]:
+
+        # print("Testing calculations..")               
+        sensor_file_list = utils.generate_sensor_file_lists(configs)        
+        for each in sensor_file_list:
+            for act_result, exp_result in sensor_file_list:
                 df_act = pd.read_csv(act_result)
                 df_exp = pd.read_csv(exp_result)
                 if df_act.empty:
@@ -46,3 +51,4 @@ class TestSensorFeatures(unittest.TestCase):
 if __name__ == '__main__':
 
     unittest.main()
+   

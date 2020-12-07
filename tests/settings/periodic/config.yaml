@@ -1,0 +1,5 @@
+directory: ./
+configfile: ./tests/settings/periodic/testing_config.yaml
+snakefile: ./tests/Snakefile
+cores: 1
+forcerun: [compute_time_segments, join_features_from_providers]

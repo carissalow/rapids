@@ -39,38 +39,7 @@ jobs:
       - "$HOME/.local/share/renv"
       - "$TRAVIS_BUILD_DIR/renv/library"
     script:
-    - bash tests/scripts/run_tests.sh
-  - name: Python 3.7 on macOS
-    os: osx
-    osx_image: xcode11.3
-    language: generic
-    before_install:
-    - HOMEBREW_NO_AUTO_UPDATE=1 brew install gcc@9
-    - HOMEBREW_NO_AUTO_UPDATE=1 brew install https://github.com/Homebrew/homebrew-core/raw/218998d/Formula/r.rb
-    - R --version
-    - HOMEBREW_NO_AUTO_UPDATE=1 brew install mysql
-    - HOMEBREW_NO_AUTO_UPDATE=1 brew services start mysql
-    - HOMEBREW_NO_AUTO_UPDATE=1 brew cask install miniconda
-    - eval "$(/opt/miniconda3/condabin/conda shell.bash hook)"
-    - eval "$(conda shell.bash hook)"
-    install:
-    - conda init bash
-    - conda update -q --all --yes conda
-    - conda env create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file
-      environment.yml
-    - conda activate test-environment
-    - snakemake -j1 renv_install
-    - R -e 'renv::settings$use.cache(FALSE)'
-    - snakemake -j1 renv_restore
-    env:
-    - RENV_PATHS_ROOT="$HOME/renv/cache"
-    cache:
-      directories:
-      - "/usr/local/lib/R"
-      - "$RENV_PATHS_ROOT"
-      - "$TRAVIS_BUILD_DIR/renv/library"
-    script:
-    - bash tests/scripts/run_tests.sh
+    - bash tests/scripts/run_tests.sh all test 
   - stage: deploy
     name: Python 3.7 on Xenial Linux Docker
     os: linux
@@ -83,6 +52,7 @@ jobs:
 branches:
   only:
   - master
+  - time_segment
 
 stages:
   - name: deploy

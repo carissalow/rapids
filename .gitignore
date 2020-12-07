@@ -95,6 +95,7 @@ packrat/*
 data/external/*
 !/data/external/.gitkeep
 !/data/external/stachl_application_genre_catalogue.csv
+!/data/external/timesegments*.csv
 data/raw/*
 !/data/raw/.gitkeep
 data/interim/*
@@ -107,5 +108,7 @@ reports/
 .RData
 .Rhistory
 sn_profile_*/
+!sn_profile_rapids
 settings.dcf
 tests/fakedata_generation/
+site/

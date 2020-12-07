@@ -1,3 +1,0 @@
-"local_date","call_outgoing_evening_count","call_outgoing_evening_distinctcontacts","call_outgoing_evening_meanduration","call_outgoing_evening_sumduration","call_outgoing_evening_minduration","call_outgoing_evening_maxduration","call_outgoing_evening_stdduration","call_outgoing_evening_modeduration","call_outgoing_evening_entropyduration","call_outgoing_evening_timefirstcall","call_outgoing_evening_timelastcall","call_outgoing_evening_countmostfrequentcontact"
-"2020-06-01",2,2,1465,2930,1400,1530,91.9238815542512,1400,0.692333219466401,1156,1277,1
-"2020-06-02",3,3,980,2940,0,1530,850.823130856232,1410,0.692484030888463,1156,1277,0

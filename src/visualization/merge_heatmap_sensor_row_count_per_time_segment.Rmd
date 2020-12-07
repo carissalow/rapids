@@ -1,0 +1,37 @@
+---
+title: "Sensor Row Count per Time Segment For All Participants"
+author:
+    - "RAPIDS"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params:
+   rmd: "merge_heatmap_sensor_row_count_per_time_segment.Rmd"
+output:
+  html_document:
+  highlight: tango
+  number_sections: no
+  theme: default
+  toc: yes
+  toc_depth: 3
+  toc_float:
+    collapsed: no
+    smooth_scroll: yes
+---
+
+<style>
+.main-container {min-width:800px; max-width:100%;}
+</style>
+
+```{r include=FALSE}
+source("renv/activate.R")
+```
+
+
+```{r, echo=FALSE}
+heatmaps  <- snakemake@input[["heatmap_sensor_row_count_per_time_segment"]]
+heatmaps.html <- vector(mode="list", length(heatmaps))
+
+for(pid in 1:length(heatmaps)){
+    heatmaps.html[[pid]] <- htmltools::includeHTML(heatmaps[pid])
+}
+htmltools::tagList(heatmaps.html)
+```

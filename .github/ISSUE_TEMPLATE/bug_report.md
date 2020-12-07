@@ -12,10 +12,10 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+1. Enable ... feature provider
+2. Setup ... sensor parameters
+3. Run RAPIDS
+4. etc ...
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
@@ -25,7 +25,8 @@ If applicable, add screenshots to help explain your problem.
 
 **Please complete the following information:**
  - OS: [e.g. MacOS]
- - Version [e.g. 22]
+ - RAPIDS current commit, paste the output of `git rev-parse --short HEAD`
+ - A link to your `config.yaml`
  - Type of mobile data you are dealing with (Android/iOS)
 
 

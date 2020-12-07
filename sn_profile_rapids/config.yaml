@@ -1,0 +1,5 @@
+configfile: ./sn_profile_rapids/pipeline_config.yaml
+directory: ./
+snakefile: ./sn_profile_rapids/Snakefile
+cores: 1
+# forcerun: compute_time_segments

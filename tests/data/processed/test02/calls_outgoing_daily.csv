@@ -1,3 +1,0 @@
-"local_date","call_outgoing_daily_count","call_outgoing_daily_distinctcontacts","call_outgoing_daily_meanduration","call_outgoing_daily_sumduration","call_outgoing_daily_minduration","call_outgoing_daily_maxduration","call_outgoing_daily_stdduration","call_outgoing_daily_modeduration","call_outgoing_daily_entropyduration","call_outgoing_daily_timefirstcall","call_outgoing_daily_timelastcall","call_outgoing_daily_countmostfrequentcontact"
-"2020-06-01",11,11,837.909090909091,9217,0,1530,577.720772440364,0,2.0585997872903,57,1277,1
-"2020-06-02",6,6,973.333333333333,5840,0,1530,551.313582878807,1100,1.58092421564451,418,1277,0

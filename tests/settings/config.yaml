@@ -1,5 +1,0 @@
-directory: ./
-configfile: ./tests/settings/testing_config.yaml
-snakefile: ./tests/Snakefile
-cores: 1
-forcerun: [messages_features, call_features, bluetooth_features, activity_features, battery_features, screen_features, light_features, applications_foreground_features, wifi_features, conversation_features]
