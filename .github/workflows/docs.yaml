@@ -2,7 +2,9 @@ name: docs
 on:
   push:
     branches:
-      - day_segments
+      - develop
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,6 +20,12 @@ jobs:
       - run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          mike deploy --push --update-aliases 0.1 latest
+      - run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - run: echo "DOCS_TAG=$(echo $RELEASE_VERSION | sed -n "s/v\([0-9]\+\.[0-9]\+\).*$/\1/p")" >> $GITHUB_ENV
+      - if: startsWith(github.ref, 'refs/tags')
+        run: mike deploy --push --update-aliases $DOCS_TAG latest
+      - if: ${{ github.ref == 'refs/heads/develop' }}
+        run: mike deploy --push --update-aliases dev
+
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
