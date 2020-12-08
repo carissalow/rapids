@@ -105,6 +105,7 @@ nav:
     - Data Quality: visualizations/data-quality-visualizations.md
     - Features: visualizations/feature-visualizations.md
   - Developers:
+    - Git Flow: developers/git-flow.md
     - Remote Support: developers/remote-support.md
     - Virtual Environments: developers/virtual-environments.md
     - Documentation: developers/documentation.md
