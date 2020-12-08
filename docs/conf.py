@@ -28,7 +28,7 @@ import sys
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 
 versionwarning_messages = {
-    'latest': 'These are the old docs for RAPIDS beta. Got to <a href="https://www.rapids.science">https://www.rapids.science</a> for the latest',
+    'latest': 'These are the old docs for RAPIDS beta. Got to <a href="www.rapids.science">www.rapids.science</a> for the latest',
 }
 versionwarning_banner_title = 'Deprecated Version'
 versionwarning_body_selector = 'div[itemprop="articleBody"]'
