@@ -10,7 +10,7 @@ You need to follow these steps to configure your RAPIDS deployment before you ca
 5. Modify your [device data source configuration](#device-data-source-configuration)
 6. Select what [sensors and features](#sensor-and-features-to-process) you want to process
 
-When you are done with this configuration, go to [executing RAPIDS](setup/execution).
+When you are done with this configuration, go to [executing RAPIDS](../execution).
 
 !!! hint
     Every time you see `config["KEY"]` or `[KEY]` in these docs we are referring to the corresponding key in the `config.yaml` file.
