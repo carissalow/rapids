@@ -1,5 +1,9 @@
 # Change Log
 
+## Release in progress
+- Minor doc updates
+- New FAQ item
+
 ## v0.1.0
 - New and more consistent docs (this website). The [previous docs](https://rapidspitt.readthedocs.io/en/latest/) are marked as beta 
 - Consolidate [configuration](../setup/configuration) instructions
