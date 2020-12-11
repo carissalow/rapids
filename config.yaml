@@ -127,6 +127,14 @@ PHONE_BLUETOOTH:
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/phone_bluetooth
       SRC_LANGUAGE: "r"
+    DORYAB:
+      COMPUTE: False
+      FEATURES: 
+        ALL: ["countscans", "uniquedevices", "countscansmostuniquedevice", "countscansleastuniquedevice", "meanscans", "stdscans"]
+        OWN: ["countscans", "uniquedevices", "countscansmostuniquedevice", "countscansleastuniquedevice", "meanscans", "stdscans"]
+        OTHERS: ["countscans", "uniquedevices", "countscansmostuniquedevice", "countscansleastuniquedevice", "meanscans", "stdscans"]
+      SRC_FOLDER: "doryab" # inside src/features/phone_bluetooth
+      SRC_LANGUAGE: "python"
 
 # See https://www.rapids.science/latest/features/phone-calls/
 PHONE_CALLS:
