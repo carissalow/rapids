@@ -1089,6 +1089,7 @@ git commit -m <span class="s2">&quot;Add my new feature&quot;</span> <span class
 <p>You are an internal developer if you have writing permissions to the repository.</p>
 <p>Most feature branches are never pushed to the repo, only do so if you expect that its development will take days (to avoid losing your work if you computer is damaged). Otherwise follow the following instructions to locally rebase your feature branch into <code>develop</code> and push those rebased changes online.</p>
 <div class="highlight"><pre><span></span><code>git checkout feature/feature1
+git pull origin develop
 git rebase -i develop
 git checkout develop
 git merge --no-ff feature/feature1 <span class="c1"># (use the default merge message)</span>
