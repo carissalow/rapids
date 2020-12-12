@@ -123,7 +123,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     bt_data = bt_data.set_index("bt_address").join(device_ownership, how="left").reset_index()
     bt_data["own_device"].fillna(0, inplace=True)
     dataset_most_common_device, dataset_least_common_device = mostLeastScannedDevices(bt_data)
-    segment_bt_data = filter_data_by_segment(bt_data.head(0), time_segment)  
+    segment_bt_data = filter_data_by_segment(bt_data, time_segment)  
     features = pd.DataFrame(columns=['local_segment']).set_index("local_segment")
     for ownership in provider["FEATURES"].keys():
 
