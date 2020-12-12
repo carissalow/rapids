@@ -1,5 +1,8 @@
 # Change Log
 
+## v0.2.1
+- FIx link to the most recent version in the old version banner
+
 ## v0.2.0
 - Add new `PHONE_BLUETOOTH` `DORYAB` provider
 - Deprecate `PHONE_BLUETOOTH` `RAPIDS` provider
