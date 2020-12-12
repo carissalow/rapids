@@ -1,6 +1,9 @@
 # Change Log
 
-## Release in progress
+## v0.2.0
+- Add new `PHONE_BLUETOOTH` `DORYAB` provider
+- Deprecate `PHONE_BLUETOOTH` `RAPIDS` provider
+- Fix bug in `filter_data_by_segment` for Python when dataset was empty
 - Minor doc updates
 - New FAQ item
 

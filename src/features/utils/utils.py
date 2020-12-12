@@ -1,13 +1,17 @@
 rapids_log_tag =  "RAPIDS:"
 
 def filter_data_by_segment(data, time_segment):
+    if(data.shape[0] == 0): # data is empty
+        data["local_segment"] = data["timestamps_segment"] = None
+        return data
+
     datetime_regex = "[0-9]{4}[\-|\/][0-9]{2}[\-|\/][0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}"
     timestamps_regex = "[0-9]{13}"
     segment_regex = "\[({}#{},{};{},{})\]".format(time_segment, datetime_regex, datetime_regex, timestamps_regex, timestamps_regex)
     data["local_segment"] = data["assigned_segments"].str.extract(segment_regex, expand=True)
     data = data.drop(columns=["assigned_segments"])
     data = data.dropna(subset = ["local_segment"])
-    if(data.shape[0] == 0): # there are no rows belonging to time_segment
+    if(data.shape[0] == 0): # there are no rows belonging to time_segment after droping na
         data["timestamps_segment"] = None
     else:
         data[["local_segment","timestamps_segment"]] = data["local_segment"].str.split(pat =";",n=1, expand=True)
