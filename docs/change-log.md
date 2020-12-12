@@ -1,5 +1,7 @@
 # Change Log
 
+## v0.2.2
+- Fix readme link to docs
 ## v0.2.1
 - FIx link to the most recent version in the old version banner
 
