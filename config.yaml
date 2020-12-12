@@ -128,11 +128,20 @@ PHONE_BLUETOOTH:
       SRC_FOLDER: "rapids" # inside src/features/phone_bluetooth
       SRC_LANGUAGE: "r"
     DORYAB:
-      COMPUTE: False
+      COMPUTE: FALSE
       FEATURES: 
-        ALL: ["countscans", "uniquedevices", "countscansmostuniquedevice", "countscansleastuniquedevice", "meanscans", "stdscans"]
-        OWN: ["countscans", "uniquedevices", "countscansmostuniquedevice", "countscansleastuniquedevice", "meanscans", "stdscans"]
-        OTHERS: ["countscans", "uniquedevices", "countscansmostuniquedevice", "countscansleastuniquedevice", "meanscans", "stdscans"]
+        ALL: 
+            DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+            SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+            SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+        OWN: 
+            DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+            SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+            SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+        OTHERS:
+            DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+            SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+            SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
       SRC_FOLDER: "doryab" # inside src/features/phone_bluetooth
       SRC_LANGUAGE: "python"
 

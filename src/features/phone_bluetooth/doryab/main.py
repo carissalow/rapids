@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
 
-def deviceFeatures(devices, ownership, features_to_compute, features):
+def deviceFeatures(devices, ownership, common_devices, features_to_compute, features):
     if devices.shape[0] == 0:
         device_value_counts = pd.DataFrame(columns=["local_segment", "bt_address", "scans"], dtype=int)
     else:
@@ -12,14 +12,29 @@ def deviceFeatures(devices, ownership, features_to_compute, features):
         features = features.join(device_value_counts.groupby("local_segment")["scans"].sum().to_frame("countscans" + ownership), how="outer")
     if "uniquedevices" in features_to_compute:
         features = features.join(device_value_counts.groupby("local_segment")["bt_address"].nunique().to_frame("uniquedevices" + ownership), how="outer")
-    if "countscansmostuniquedevice" in features_to_compute:
-        features = features.join(device_value_counts.groupby("local_segment")["scans"].max().to_frame("countscansmostuniquedevice" + ownership), how="outer")
-    if "countscansleastuniquedevice" in features_to_compute:
-        features = features.join(device_value_counts.groupby("local_segment")["scans"].min().to_frame("countscansleastuniquedevice" + ownership), how="outer")
     if "meanscans" in features_to_compute:
         features = features.join(device_value_counts.groupby("local_segment")["scans"].mean().to_frame("meanscans" + ownership), how="outer")
     if "stdscans" in features_to_compute:
         features = features.join(device_value_counts.groupby("local_segment")["scans"].std().to_frame("stdscans" + ownership), how="outer")
+    # Most frequent device within segments, across segments, and across dataset
+    if "countscansmostfrequentdevicewithinsegments" in features_to_compute:
+        features = features.join(device_value_counts.groupby("local_segment")["scans"].max().to_frame("countscansmostfrequentdevicewithinsegments" + ownership), how="outer")
+    if "countscansmostfrequentdeviceacrosssegments" in features_to_compute:
+        common_device = common_devices['most_segments']
+        features = features.join(device_value_counts.query("bt_address in @common_device").groupby("local_segment")["scans"].max().to_frame("countscansmostfrequentdeviceacrosssegments" + ownership), how="outer")
+    if "countscansmostfrequentdeviceacrossdataset" in features_to_compute:
+        common_device = common_devices['most_dataset']
+        features = features.join(device_value_counts.query("bt_address in @common_device").groupby("local_segment")["scans"].max().to_frame("countscansmostfrequentdeviceacrossdataset" + ownership), how="outer")
+    # Least frequent device within segments, across segments, and across dataset
+    if "countscansleastfrequentdevicewithinsegments" in features_to_compute:
+        features = features.join(device_value_counts.groupby("local_segment")["scans"].min().to_frame("countscansleastfrequentdevicewithinsegments" + ownership), how="outer")
+    if "countscansleastfrequentdeviceacrosssegments" in features_to_compute:
+        common_device = common_devices['least_segments']
+        features = features.join(device_value_counts.query("bt_address in @common_device").groupby("local_segment")["scans"].min().to_frame("countscansleastfrequentdeviceacrosssegments" + ownership), how="outer")
+    if "countscansleastfrequentdeviceacrossdataset" in features_to_compute:
+        common_device = common_devices['least_dataset']
+        features = features.join(device_value_counts.query("bt_address in @common_device").groupby("local_segment")["scans"].min().to_frame("countscansleastfrequentdeviceacrossdataset" + ownership), how="outer")
+
     return(features)
 
 def deviceFrequency(bt_data):
@@ -77,30 +92,61 @@ def ownership_based_on_clustering(bt_frequency):
     maxcluster = np.where(labels == np.argmax(centers), 1, 0)
     bt_frequency["own_device"] = maxcluster
     return bt_frequency[["bt_address", "own_device"]]
+
+def mostLeastScannedDevices(devices):
+    device_counts = devices["bt_address"].value_counts()
+    return ("","") if (len(device_counts) == 0) else (device_counts.idxmax(), device_counts.idxmin())
+
+def validate_requested_features(provider):
+    base_features = {"DEVICES": set(["countscans", "uniquedevices", "meanscans", "stdscans"]),
+                        "SCANS_MOST_FREQUENT_DEVICE": set(["withinsegments", "acrosssegments", "acrossdataset"]),
+                        "SCANS_LEAST_FREQUENT_DEVICE": set(["withinsegments", "acrosssegments", "acrossdataset"])}
+
+    # Check we have three arrays of features
+    ownership_keys = [x.lower() for x in provider["FEATURES"].keys()]
+    if set(ownership_keys) != set(["own", "others", "all"]):
+        raise ValueError("[PHONE_BLUETOOTH][DORYAB][FEATURES] config key must have three types called ALL, OWN and OTHERS, instead you provided {}".format(ownership_keys))
     
+    # Check each array contains valid features
+    for ownership_key in provider["FEATURES"].keys():
+        for type_key in provider["FEATURES"][ownership_key]:
+            if len(provider["FEATURES"][ownership_key][type_key]) > 0 and not set(provider["FEATURES"][ownership_key][type_key]) <= base_features[type_key]:
+                raise ValueError("[PHONE_BLUETOOTH][DORYAB][FEATURES][{}][{}] config key only supports features called [{}], instead you provided [{}]".format(ownership_key, type_key, ",".join(base_features[type_key]), ",".join(set(provider["FEATURES"][ownership_key][type_key]) - base_features[type_key])))
 
 def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
     bt_data = pd.read_csv(sensor_data_files["sensor_data"])
-    base_features = set(["countscans", "uniquedevices", "countscansmostuniquedevice", "countscansleastuniquedevice", "meanscans", "stdscans"])
-    ownership_keys = [x.lower() for x in provider["FEATURES"].keys()]
-    if set(ownership_keys) != set(["own", "others", "all"]):
-        raise ValueError("[PHONE_BLUETOOTH][DORYAB][FEATURES] config key can only have three lists called ALL, OWN and OTHERS, instead you provided {}".format(ownership_keys))
-    
+    feature_prefix = {"DEVICES":"", "SCANS_MOST_FREQUENT_DEVICE":"countscansmostfrequentdevice", "SCANS_LEAST_FREQUENT_DEVICE":"countscansleastfrequentdevice"}
+    validate_requested_features(provider)
+
     device_ownership = ownership_based_on_clustering(deviceFrequency(bt_data)).set_index("bt_address")
     bt_data = bt_data.set_index("bt_address").join(device_ownership, how="left").reset_index()
     bt_data["own_device"].fillna(0, inplace=True)
-    segment_bt_data = filter_data_by_segment(bt_data, time_segment)
+    dataset_most_common_device, dataset_least_common_device = mostLeastScannedDevices(bt_data)
+    segment_bt_data = filter_data_by_segment(bt_data.head(0), time_segment)  
     features = pd.DataFrame(columns=['local_segment']).set_index("local_segment")
     for ownership in provider["FEATURES"].keys():
-        features_to_compute = list(set(provider["FEATURES"][ownership]) & base_features)
+
+        features_to_compute = []
+        for type_key in provider["FEATURES"][ownership]:
+            features_to_compute = features_to_compute + [feature_prefix[type_key] + feature for feature in provider["FEATURES"][ownership][type_key]]
+
         if ownership == "OWN":
             owner_segment_bt_data = segment_bt_data.query("own_device == 1")
         elif ownership == "OTHERS":
             owner_segment_bt_data = segment_bt_data.query("own_device == 0")
         else: #ALL
             owner_segment_bt_data = segment_bt_data
-        features = deviceFeatures(owner_segment_bt_data, ownership.lower(), features_to_compute, features)
-        
+
+        segment_most_common_device, segment_least_common_device = mostLeastScannedDevices(owner_segment_bt_data)
+        common_devices = {"most_dataset": dataset_most_common_device, "least_dataset": dataset_least_common_device, 
+                        "most_segments": segment_most_common_device, "least_segments": segment_least_common_device}
+
+        features = deviceFeatures(owner_segment_bt_data, ownership.lower(), common_devices, features_to_compute, features)
     features = features.reset_index()
+
+    # Impute all NaN except for std dev
+    for column in features:
+        if column not in ["stdscansall", "stdscansown", "stdscansothers"]:
+            features[column].fillna(0.0, inplace=True)
     return features
