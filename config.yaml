@@ -189,6 +189,15 @@ PHONE_DATA_YIELD:
       SRC_LANGUAGE: "r"
       SRC_FOLDER: "rapids" # inside src/features/phone_data_yield
 
+PHONE_KEYBOARD:
+  TABLE: keyboard
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      FEATURES: []
+      SRC_FOLDER: "rapids" # inside src/features/phone_keyboard
+      SRC_LANGUAGE: "python"
+
 # See https://www.rapids.science/latest/features/phone-light/
 PHONE_LIGHT:
   TABLE: light

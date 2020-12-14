@@ -262,6 +262,32 @@ rule phone_light_r_features:
     script:
         "../src/features/entry.R"
 
+rule phone_keyboard_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/phone_keyboard_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_KEYBOARD"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_keyboard"
+    output:
+        "data/interim/{pid}/phone_keyboard_features/phone_keyboard_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule phone_keyboard_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/phone_keyboard_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_KEYBOARD"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_keyboard"
+    output:
+        "data/interim/{pid}/phone_keyboard_features/phone_keyboard_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
 rule phone_locations_python_features:
     input:
         sensor_data = "data/interim/{pid}/phone_locations_processed_with_datetime.csv",
