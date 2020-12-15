@@ -30,3 +30,20 @@ def get_phone_sensor_names():
                     phone_sensor_names.append(config_key)
     return phone_sensor_names
 
+from pathlib import Path
+import re
+
+def get_zip_suffixes(pid):
+    zipfiles = list(Path("data/external/empatica").rglob(pid+"*.zip"))
+    suffixes = []
+    pattern = re.compile("{}(.*)".format(pid))
+    for zipfile in zipfiles:
+        name = zipfile.stem
+        results = pattern.search(name)
+        suffixes.append(results.group(1))
+    return suffixes
+
+def get_all_raw_empatica_sensor_files(wildcards):
+    suffixes = get_zip_suffixes(wildcards.pid)
+    files = ["data/raw/{}/empatica_{}_raw_{}.csv".format(wildcards.pid, wildcards.sensor, suffix) for suffix in suffixes]
+    return(files)
