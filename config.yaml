@@ -7,7 +7,7 @@ TIMEZONE: &timezone
   America/New_York
 
 # See https://www.rapids.science/latest/setup/configuration/#participant-files
-PIDS: [test01]
+PIDS: [e01]
 
 # See https://www.rapids.science/latest/setup/configuration/#automatic-creation-of-participant-files
 CREATE_PARTICIPANT_FILES:
@@ -408,6 +408,82 @@ FITBIT_STEPS_INTRADAY:
 #       FEATURES: []
 
 
+########################################################################################################################
+#                                                 EMPATICA                                                             #
+########################################################################################################################
+
+EMPATICA_DATA_CONFIGURATION:
+  SOURCE: 
+    TYPE: FILE
+  TIMEZONE: 
+    TYPE: SINGLE # Fitbit devices don't support time zones so we read this data in the timezone indicated by VALUE 
+    VALUE: *timezone
+
+# Sensors ------
+
+# See https://www.rapids.science/latest/features/fitbit-heartrate-summary/
+EMPATICA_ACCELEROMETER:
+  TABLE: acc
+  PROVIDERS:
+    DBDP:
+      COMPUTE: True
+      FEATURES: []
+      SRC_FOLDER: "dbdp" # inside src/features/empatica_accelerometer
+      SRC_LANGUAGE: "python"
+
+EMPATICA_HEARTRATE:
+  TABLE: hr
+  PROVIDERS:
+    DBDP:
+      COMPUTE: True
+      FEATURES: []
+      SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
+      SRC_LANGUAGE: "python"
+
+EMPATICA_TEMPERATURE:
+  TABLE: temp
+  PROVIDERS:
+    DBDP:
+      COMPUTE: True
+      FEATURES: []
+      SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
+      SRC_LANGUAGE: "python"
+
+EMPATICA_ELECTRODERMAL_ACTIVITY:
+  TABLE: temp
+  PROVIDERS:
+    DBDP:
+      COMPUTE: True
+      FEATURES: []
+      SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
+      SRC_LANGUAGE: "python"
+
+EMPATICA_BLOOD_VOLUME_PULSE:
+  TABLE: bvp
+  PROVIDERS:
+    DBDP:
+      COMPUTE: True
+      FEATURES: []
+      SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
+      SRC_LANGUAGE: "python"
+
+EMPATICA_INTER_BEAT_INTERVAL:
+  TABLE: ibi
+  PROVIDERS:
+    DBDP:
+      COMPUTE: True
+      FEATURES: []
+      SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
+      SRC_LANGUAGE: "python"
+
+EMPATICA_TAGS:
+  TABLE: tags
+  PROVIDERS:
+    DBDP:
+      COMPUTE: True
+      FEATURES: []
+      SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
+      SRC_LANGUAGE: "python"
 
 ########################################################################################################################
 #                                                 PLOTS                                                                #

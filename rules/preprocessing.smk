@@ -242,3 +242,34 @@ rule fitbit_readable_datetime:
         "data/raw/{pid}/fitbit_{sensor}_{fitbit_data_type}_parsed_with_datetime.csv"
     script:
         "../src/data/readable_datetime.R"
+
+def empatica_input(wildcards):
+    return expand("data/external/empatica/{{pid}}/{filename}.csv", filename=config["EMPATICA_" + str(wildcards.sensor).upper()]["TABLE"])
+
+rule extract_empatica_data:
+    input:
+        input_file = empatica_input,
+        participant_file = "data/external/participant_files/{pid}.yaml"
+    params:
+        data_configuration = config["EMPATICA_DATA_CONFIGURATION"],
+        sensor = "{sensor}",
+        table = lambda wildcards: config["EMPATICA_" + str(wildcards.sensor).upper()]["TABLE"],
+    output:
+        sensor_output = "data/raw/{pid}/empatica_{sensor}_raw.csv"
+    script:
+        "../src/data/empatica/extract_empatica_data.py"
+
+
+rule empatica_readable_datetime:
+    input:
+        sensor_input = "data/raw/{pid}/empatica_{sensor}_raw.csv",
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
+    params:
+        timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
+        fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+    output:
+        "data/raw/{pid}/empatica_{sensor}_with_datetime.csv"
+    script:
+        "../src/data/readable_datetime.R"
