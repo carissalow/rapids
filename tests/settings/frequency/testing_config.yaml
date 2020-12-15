@@ -1,85 +1,139 @@
-# Participants to include in the analysis
-# You must create a file for each participant named pXXX containing their device_id. This can be done manually or automatically
-PIDS: [test03, test04,test05, test06]
-
-# Global var with common time segments
-TIME_SEGMENTS: &time_segments
-  TYPE: FREQUENCY # FREQUENCY, PERIODIC, EVENT
-  FILE: "data/external/timesegments_frequency.csv"
-  INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, if set to TRUE we consider time segments back enough in the past as to include the first day of data
-
-# Use tz codes from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones. Double check your code, for example EST is not US Eastern Time.
-TIMEZONE: &timezone
-  America/New_York
-
+# See https://www.rapids.science/latest/setup/configuration/#database-credentials
 DATABASE_GROUP: &database_group
   MY_GROUP
 
-# config section for the script that creates participant files automatically
-PARTICIPANT_FILES: # run snakemake -j1 -R parse_participant_files
+# See https://www.rapids.science/latest/setup/configuration/#timezone-of-your-study
+TIMEZONE: &timezone
+  America/New_York
+
+# See https://www.rapids.science/latest/setup/configuration/#participant-files
+PIDS: [test03, test04,test05, test06]
+
+# See https://www.rapids.science/latest/setup/configuration/#automatic-creation-of-participant-files
+CREATE_PARTICIPANT_FILES:
+  SOURCE:
+    TYPE: AWARE_DEVICE_TABLE #AWARE_DEVICE_TABLE or CSV_FILE
+    DATABASE_GROUP: *database_group
+    CSV_FILE_PATH: "data/external/example_participants.csv" # see docs for required format
+    TIMEZONE: *timezone
   PHONE_SECTION:
-    ADD: FALSE
-    PARSED_FROM: AWARE_DEVICE_TABLE #AWARE_DEVICE_TABLE or CSV_FILE
-    PARSED_SOURCE: *database_group # DB credentials group or CSV file path. If CSV file, it should have: device_id, pid (optional), label (optional), start_date (optional), end_date (optional)
+    ADD: TRUE
+    DEVICE_ID_COLUMN: device_id # column name
     IGNORED_DEVICE_IDS: []
   FITBIT_SECTION:
-    ADD: FALSE
-    SAME_AS_PHONE: FALSE # If TRUE, all config below is ignored
-    PARSED_FROM: CSV_FILE
-    PARSED_SOURCE: "external/my_fitbit_participants.csv" # CSV file should have: device_id, pid (optional), label (optional), start_date (optional), end_date (optional)
+    ADD: TRUE
+    DEVICE_ID_COLUMN: device_id # column name
+    IGNORED_DEVICE_IDS: []
 
-DEVICE_DATA:
-  PHONE:
-    SOURCE: 
-      TYPE: DATABASE # Phone only supports DATABASE for now
-      DATABASE_GROUP: *database_group
-      DEVICE_ID_COLUMN: device_id # column name
-    TIMEZONE: 
-      TYPE: SINGLE # SINGLE or MULTIPLE
-      VALUE: *timezone # IF TYPE=SINGLE, timezone code (e.g. America/New_York, see attribute TIMEZONE above). If TYPE=MULTIPLE, a table in your database with two columns (timestamp, timezone) where timestamp is a unix timestamp and timezone is one of https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-  FITBIT:
-    SOURCE: 
-      TYPE: DATABASE # DATABASE or FILES (set each FITBIT_SENSOR TABLE attribute accordingly with a table name or a file path)
-      DATABASE_GROUP: *database_group
-      DEVICE_ID_COLUMN: device_id # column name
-    TIMEZONE: 
-      TYPE: SINGLE # Fitbit only supports SINGLE timezones
-      VALUE: *timezone # timezone code (e.g. America/New_York, see attribute TIMEZONE above and https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+# See https://www.rapids.science/latest/setup/configuration/#time-segments
+TIME_SEGMENTS: &time_segments
+  TYPE: FREQUENCY # FREQUENCY, PERIODIC, EVENT
+  FILE: "data/external/timesegments_frequency.csv"
+  INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, see docs
 
-PHONE_VALID_SENSED_BINS:
-  COMPUTE: False # This flag is automatically ignored (set to True) if you are extracting PHONE_VALID_SENSED_DAYS or screen or Barnett's location features
-  BIN_SIZE: &bin_size 5 # (in minutes)
-  # Add as many PHONE sensors as you have, they all improve the computation of PHONE_VALID_SENSED_BINS and PHONE_VALID_SENSED_DAYS. 
-  # If you are extracting screen or Barnett/Doryab location features, PHONE_SCREEN and PHONE_LOCATIONS tables are mandatory.
-  # You can choose any of the keys shown below, just make sure its TABLE exists in your database!
-  # PHONE_MESSAGES, PHONE_CALLS, PHONE_LOCATIONS, PHONE_BLUETOOTH, PHONE_ACTIVITY_RECOGNITION, PHONE_BATTERY, PHONE_SCREEN, PHONE_LIGHT,
-  # PHONE_ACCELEROMETER, PHONE_APPLICATIONS_FOREGROUND, PHONE_WIFI_VISIBLE, PHONE_WIFI_CONNECTED, PHONE_CONVERSATION
-  PHONE_SENSORS: []
 
-PHONE_VALID_SENSED_DAYS:
-  COMPUTE: False
-  MIN_VALID_HOURS_PER_DAY: &min_valid_hours_per_day [16] # (out of 24) MIN_HOURS_PER_DAY
-  MIN_VALID_BINS_PER_HOUR: &min_valid_bins_per_hour [6] # (out of 60min/BIN_SIZE bins)
 
-# Communication SMS features config, TYPES and FEATURES keys need to match
-PHONE_MESSAGES:
-  TABLE: messages
+########################################################################################################################
+#                                                 PHONE                                                                #
+########################################################################################################################
+
+# See https://www.rapids.science/latest/setup/configuration/#device-data-source-configuration
+PHONE_DATA_CONFIGURATION:
+  SOURCE: 
+    TYPE: DATABASE
+    DATABASE_GROUP: *database_group
+    DEVICE_ID_COLUMN: device_id # column name
+  TIMEZONE: 
+    TYPE: SINGLE
+    VALUE: *timezone
+
+# Sensors ------
+
+# https://www.rapids.science/latest/features/phone-accelerometer/
+PHONE_ACCELEROMETER:
+  TABLE: accelerometer
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE
-      MESSAGES_TYPES : [received, sent]
-      FEATURES: 
-        received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
-        sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
-      SRC_LANGUAGE: "r"
-      SRC_FOLDER: "rapids" # inside src/features/phone_messages
+      COMPUTE: False
+      FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_accelerometer
+      SRC_LANGUAGE: "python"
+    
+    PANDA:
+      COMPUTE: False
+      VALID_SENSED_MINUTES: False
+      FEATURES:
+        exertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
+        nonexertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
+      SRC_FOLDER: "panda" # inside src/features/phone_accelerometer
+      SRC_LANGUAGE: "python"
 
-# Communication call features config, TYPES and FEATURES keys need to match
+# See https://www.rapids.science/latest/features/phone-activity-recognition/
+PHONE_ACTIVITY_RECOGNITION:
+  TABLE: 
+    ANDROID: plugin_google_activity_recognition
+    IOS: plugin_ios_activity_recognition
+  EPISODE_THRESHOLD_BETWEEN_ROWS: 5 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["count", "mostcommonactivity", "countuniqueactivities", "durationstationary", "durationmobile", "durationvehicle"]
+      ACTIVITY_CLASSES:
+        STATIONARY: ["still", "tilting"]
+        MOBILE: ["on_foot", "walking", "running", "on_bicycle"]
+        VEHICLE: ["in_vehicle"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_activity_recognition
+      SRC_LANGUAGE: "python"
+
+# See https://www.rapids.science/latest/features/phone-applications-foreground/
+PHONE_APPLICATIONS_FOREGROUND:
+  TABLE: applications_foreground
+  APPLICATION_CATEGORIES:
+    CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
+    CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
+    UPDATE_CATALOGUE_FILE: False # if CATALOGUE_SOURCE is equal to FILE, whether or not to update CATALOGUE_FILE, if CATALOGUE_SOURCE is equal to GOOGLE all scraped genres will be saved to CATALOGUE_FILE
+    SCRAPE_MISSING_CATEGORIES: False # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      SINGLE_CATEGORIES: ["all", "email"]
+      MULTIPLE_CATEGORIES:
+        social: ["socialnetworks", "socialmediatools"]
+        entertainment: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
+      SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
+      EXCLUDED_CATEGORIES: []
+      EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
+      FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_applications_foreground
+      SRC_LANGUAGE: "python"
+
+# See https://www.rapids.science/latest/features/phone-battery/
+PHONE_BATTERY:
+  TABLE: battery
+  EPISODE_THRESHOLD_BETWEEN_ROWS: 30 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_battery
+      SRC_LANGUAGE: "python"
+
+# See https://www.rapids.science/latest/features/phone-bluetooth/
+PHONE_BLUETOOTH:
+  TABLE: bluetooth
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_bluetooth
+      SRC_LANGUAGE: "r"
+
+# See https://www.rapids.science/latest/features/phone-calls/
 PHONE_CALLS:
   TABLE: calls
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE
+      COMPUTE: False
       CALL_TYPES: [missed, incoming, outgoing]
       FEATURES:
         missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
@@ -88,6 +142,47 @@ PHONE_CALLS:
       SRC_LANGUAGE: "r"
       SRC_FOLDER: "rapids" # inside src/features/phone_calls
 
+# See https://www.rapids.science/latest/features/phone-conversation/
+PHONE_CONVERSATION:
+  TABLE: 
+    ANDROID: plugin_studentlife_audio_android
+    IOS: plugin_studentlife_audio
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
+    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
+    "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
+    "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
+    "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
+    "unknownexpectedfraction","countconversation"]
+      RECORDING_MINUTES: 1
+      PAUSED_MINUTES : 3
+      SRC_FOLDER: "rapids" # inside src/features/phone_conversation
+      SRC_LANGUAGE: "python"
+
+# See https://www.rapids.science/latest/features/phone-data-yield/
+PHONE_DATA_YIELD:
+  SENSORS: []
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: [ratiovalidyieldedminutes, ratiovalidyieldedhours]
+      MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 # 0 to 1 representing the number of minutes with at least
+      SRC_LANGUAGE: "r"
+      SRC_FOLDER: "rapids" # inside src/features/phone_data_yield
+
+# See https://www.rapids.science/latest/features/phone-light/
+PHONE_LIGHT:
+  TABLE: light
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_light
+      SRC_LANGUAGE: "python"
+
+# See https://www.rapids.science/latest/features/phone-locations/
 PHONE_LOCATIONS:
   TABLE: locations
   LOCATIONS_TO_USE: FUSED_RESAMPLED # ALL, GPS OR FUSED_RESAMPLED  
@@ -115,42 +210,20 @@ PHONE_LOCATIONS:
       SRC_FOLDER: "barnett" # inside src/features/phone_locations
       SRC_LANGUAGE: "r"
 
-PHONE_BLUETOOTH:
-  TABLE: bluetooth
+# See https://www.rapids.science/latest/features/phone-messages/
+PHONE_MESSAGES:
+  TABLE: messages
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE
-      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_bluetooth
+      COMPUTE: False
+      MESSAGES_TYPES : [received, sent]
+      FEATURES: 
+        received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+        sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
       SRC_LANGUAGE: "r"
+      SRC_FOLDER: "rapids" # inside src/features/phone_messages
 
-
-PHONE_ACTIVITY_RECOGNITION:
-  TABLE: 
-    ANDROID: plugin_google_activity_recognition
-    IOS: plugin_ios_activity_recognition
-  EPISODE_THRESHOLD_BETWEEN_ROWS: 5 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
-  PROVIDERS:
-    RAPIDS:
-      COMPUTE: False
-      FEATURES: ["count", "mostcommonactivity", "countuniqueactivities", "durationstationary", "durationmobile", "durationvehicle"]
-      ACTIVITY_CLASSES:
-        STATIONARY: ["still", "tilting"]
-        MOBILE: ["on_foot", "walking", "running", "on_bicycle"]
-        VEHICLE: ["in_vehicle"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_activity_recognition
-      SRC_LANGUAGE: "python"
-
-PHONE_BATTERY:
-  TABLE: battery
-  EPISODE_THRESHOLD_BETWEEN_ROWS: 30 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
-  PROVIDERS:
-    RAPIDS:
-      COMPUTE: False
-      FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_battery
-      SRC_LANGUAGE: "python"
-
+# See https://www.rapids.science/latest/features/phone-screen/
 PHONE_SCREEN:
   TABLE: screen
   PROVIDERS:
@@ -164,190 +237,138 @@ PHONE_SCREEN:
       SRC_FOLDER: "rapids" # inside src/features/phone_screen
       SRC_LANGUAGE: "python"
 
-PHONE_LIGHT:
-  TABLE: light
-  PROVIDERS:
-    RAPIDS:
-      COMPUTE: TRUE
-      FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_light
-      SRC_LANGUAGE: "python"
-
-PHONE_ACCELEROMETER:
-  TABLE: accelerometer
-  PROVIDERS:
-    RAPIDS:
-      COMPUTE: False
-      FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_accelerometer
-      SRC_LANGUAGE: "python"
-    
-    PANDA:
-      COMPUTE: False
-      VALID_SENSED_MINUTES: False
-      FEATURES:
-        exertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
-        nonexertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
-      SRC_FOLDER: "panda" # inside src/features/phone_accelerometer
-      SRC_LANGUAGE: "python"
-
-PHONE_APPLICATIONS_FOREGROUND:
-  TABLE: applications_foreground
-  APPLICATION_CATEGORIES:
-    CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
-    CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
-    UPDATE_CATALOGUE_FILE: False # if CATALOGUE_SOURCE is equal to FILE, whether or not to update CATALOGUE_FILE, if CATALOGUE_SOURCE is equal to GOOGLE all scraped genres will be saved to CATALOGUE_FILE
-    SCRAPE_MISSING_CATEGORIES: False # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
-  PROVIDERS:
-    RAPIDS:
-      COMPUTE: TRUE
-      SINGLE_CATEGORIES: ["all", "email"]
-      MULTIPLE_CATEGORIES:
-        social: ["socialnetworks", "socialmediatools"]
-        entertainment: ["entertainment", "gamingstrategy"]
-      SINGLE_APPS: ["top1global", "com.facebook.moments"] # There's no entropy for single apps
-      EXCLUDED_CATEGORIES: ["systemapp", "tvvideoapps"]
-      EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
-      FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_applications_foreground
-      SRC_LANGUAGE: "python"
-
-PHONE_WIFI_VISIBLE:
-  TABLE: "wifi"
-  PROVIDERS:
-    RAPIDS:
-      COMPUTE: TRUE
-      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_wifi_visible
-      SRC_LANGUAGE: "r"
-
+# See https://www.rapids.science/latest/features/phone-wifi-connected/
 PHONE_WIFI_CONNECTED:
   TABLE: "sensor_wifi"
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE
+      COMPUTE: False
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/phone_wifi_connected
       SRC_LANGUAGE: "r"
 
-PHONE_CONVERSATION:
-  TABLE: 
-    ANDROID: plugin_studentlife_audio_android
-    IOS: plugin_studentlife_audio
-  PROVIDERS:
-    RAPIDS:
-      COMPUTE: TRUE
-      FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
-        "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
-        "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
-        "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
-        "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
-        "unknownexpectedfraction","countconversation"]
-      RECORDING_MINUTES: 1
-      PAUSED_MINUTES : 3
-      SRC_FOLDER: "rapids" # inside src/features/phone_conversation
-      SRC_LANGUAGE: "python"
-
-############## FITBIT ##########################################################
-################################################################################
-
-FITBIT_HEARTRATE:
-  TABLE_FORMAT: JSON # JSON or CSV
-  TABLE:
-    JSON: fitbit_heartrate
-    CSV:
-      SUMMARY: heartrate_summary.csv
-      INTRADAY: heartrate_intraday.csv
+# See https://www.rapids.science/latest/features/phone-wifi-visible/
+PHONE_WIFI_VISIBLE:
+  TABLE: "wifi"
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
-      SUMMARY_FEATURES: ["restinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. height, weight) use these with care: ["caloriesoutofrange", "caloriesfatburn", "caloriescardio", "caloriespeak"] 
-      INTRADAY_FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_wifi_visible
+      SRC_LANGUAGE: "r"
 
 
-FITBIT_STEPS:
-  TABLE_FORMAT: JSON # JSON or CSV
-  TABLE:
-    JSON: fitbit_steps
-    CSV:
-      SUMMARY: steps_summary.csv
-      INTRADAY: steps_intraday.csv
-  EXCLUDE_SLEEP: # you can exclude sleep periods from the step features computation
-    EXCLUDE: False
-    TYPE: FIXED # FIXED OR FITBIT_BASED (configure FITBIT_SLEEP section)
-    FIXED:
-      START: "23:00"
-      END: "07:00"
 
+########################################################################################################################
+#                                                 FITBIT                                                               #
+########################################################################################################################
+
+# See https://www.rapids.science/latest/setup/configuration/#device-data-source-configuration
+FITBIT_DATA_CONFIGURATION:
+  SOURCE: 
+    TYPE: DATABASE # DATABASE or FILES (set each [FITBIT_SENSOR][TABLE] attribute with a table name or a file path accordingly)
+    COLUMN_FORMAT: JSON # JSON or PLAIN_TEXT
+    DATABASE_GROUP: *database_group
+    DEVICE_ID_COLUMN: device_id # column name
+  TIMEZONE: 
+    TYPE: SINGLE # Fitbit devices don't support time zones so we read this data in the timezone indicated by VALUE 
+    VALUE: *timezone
+
+# Sensors ------
+
+# See https://www.rapids.science/latest/features/fitbit-heartrate-summary/
+FITBIT_HEARTRATE_SUMMARY:
+  TABLE: heartrate_summary
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["maxrestinghr", "minrestinghr", "avgrestinghr", "medianrestinghr", "moderestinghr", "stdrestinghr", "diffmaxmoderestinghr", "diffminmoderestinghr", "entropyrestinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. height, weight) use these with care: ["sumcaloriesoutofrange", "maxcaloriesoutofrange", "mincaloriesoutofrange", "avgcaloriesoutofrange", "mediancaloriesoutofrange", "stdcaloriesoutofrange", "entropycaloriesoutofrange", "sumcaloriesfatburn", "maxcaloriesfatburn", "mincaloriesfatburn", "avgcaloriesfatburn", "mediancaloriesfatburn", "stdcaloriesfatburn", "entropycaloriesfatburn", "sumcaloriescardio", "maxcaloriescardio", "mincaloriescardio", "avgcaloriescardio", "mediancaloriescardio", "stdcaloriescardio", "entropycaloriescardio", "sumcaloriespeak", "maxcaloriespeak", "mincaloriespeak", "avgcaloriespeak", "mediancaloriespeak", "stdcaloriespeak", "entropycaloriespeak"]
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_heartrate_summary
+      SRC_LANGUAGE: "python"
+
+# See https://www.rapids.science/latest/features/fitbit-heartrate-intraday/
+FITBIT_HEARTRATE_INTRADAY:
+  TABLE: heartrate_intraday
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_heartrate_intraday
+      SRC_LANGUAGE: "python"
+
+# See https://www.rapids.science/latest/features/fitbit-sleep-summary/
+FITBIT_SLEEP_SUMMARY:
+  TABLE: sleep_summary
+  SLEEP_EPISODE_TIMESTAMP: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["countepisode", "avgefficiency", "sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgdurationafterwakeup", "avgdurationasleep", "avgdurationawake", "avgdurationtofallasleep", "avgdurationinbed"]
+      SLEEP_TYPES: ["main", "nap", "all"]
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_sleep_summary
+      SRC_LANGUAGE: "python"
+
+# See https://www.rapids.science/latest/features/fitbit-steps-summary/
+FITBIT_STEPS_SUMMARY:
+  TABLE: steps_summary
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["maxsumsteps", "minsumsteps", "avgsumsteps", "mediansumsteps", "stdsumsteps"]
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_steps_summary
+      SRC_LANGUAGE: "python"
+
+# See https://www.rapids.science/latest/features/fitbit-steps-intraday/
+FITBIT_STEPS_INTRADAY:
+  TABLE: steps_intraday
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
       FEATURES:
-        ALL_STEPS: ["sumallsteps", "maxallsteps", "minallsteps", "avgallsteps", "stdallsteps"]
+        STEPS: ["sum", "max", "min", "avg", "std"]
         SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
         ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
       THRESHOLD_ACTIVE_BOUT: 10 # steps
       INCLUDE_ZERO_STEP_ROWS: False
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_steps_intraday
+      SRC_LANGUAGE: "python"
 
-FITBIT_SLEEP:
-  TABLE_FORMAT: JSON # JSON or CSV
-  TABLE:
-    JSON: fitbit_sleep
-    CSV:
-      SUMMARY: sleep_summary.csv
-      INTRADAY: sleep_intraday.csv
-  PROVIDERS:
-    RAPIDS:
-      COMPUTE: False
-      SLEEP_TYPES: ["main", "nap", "all"]
-      SUMMARY_FEATURES: ["sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgefficiency", "countepisode"]
+# FITBIT_CALORIES:
+#   TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [DEVICE_DATA][FITBIT][SOURCE][TYPE] to FILES
+#   TABLE:
+#     JSON: fitbit_calories
+#     CSV:
+#       SUMMARY: calories_summary
+#       INTRADAY: calories_intraday
+#   PROVIDERS:
+#     RAPIDS:
+#       COMPUTE: False
+#       FEATURES: []
 
-FITBIT_CALORIES:
-  TABLE_FORMAT: JSON # JSON or CSV
-  TABLE:
-    JSON: fitbit_calories
-    CSV:
-      SUMMARY: calories_summary.csv
-      INTRADAY: calories_intraday.csv
-  PROVIDERS:
-    RAPIDS:
-      COMPUTE: False
-      FEATURES: []
 
-### Visualizations #############################################################
-################################################################################
 
-HEATMAP_FEATURES_CORRELATIONS:
+########################################################################################################################
+#                                                 PLOTS                                                                #
+########################################################################################################################
+
+# Data quality
+HISTOGRAM_PHONE_DATA_YIELD:
+  PLOT: False
+
+HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT:
+  PLOT: False
+
+HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT:
+  PLOT: False
+
+HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT:
+  PLOT: False
+  SENSORS: [PHONE_ACCELEROMETER, PHONE_ACTIVITY_RECOGNITION, PHONE_APPLICATIONS_FOREGROUND, PHONE_BATTERY, PHONE_BLUETOOTH, PHONE_CALLS, PHONE_CONVERSATION, PHONE_LIGHT, PHONE_LOCATIONS, PHONE_MESSAGES, PHONE_SCREEN, PHONE_WIFI_CONNECTED, PHONE_WIFI_VISIBLE]
+
+# Features
+HEATMAP_FEATURE_CORRELATION_MATRIX:
   PLOT: False
   MIN_ROWS_RATIO: 0.5
-  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
-  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
-  PHONE_FEATURES: [accelerometer, activity_recognition, applications_foreground, battery, calls_incoming, calls_missed, calls_outgoing, conversation, light, location_doryab, messages_received, messages_sent, screen]
-  FITBIT_FEATURES: [fitbit_heartrate, fitbit_step, fitbit_sleep]
   CORR_THRESHOLD: 0.1
   CORR_METHOD: "pearson" # choose from {"pearson", "kendall", "spearman"}
-
-HISTOGRAM_VALID_SENSED_HOURS:
-  PLOT: False
-  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
-  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
-
-HEATMAP_DAYS_BY_SENSORS:
-  PLOT: False
-  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
-  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
-  EXPECTED_NUM_OF_DAYS: -1
-  DB_TABLES: [accelerometer, applications_foreground, battery, bluetooth, calls, light, locations, messages, screen, wifi, sensor_wifi, plugin_google_activity_recognition, plugin_ios_activity_recognition, plugin_studentlife_audio_android, plugin_studentlife_audio]
-
-HEATMAP_SENSED_BINS:
-  PLOT: False
-  BIN_SIZE: *bin_size
-
-OVERALL_COMPLIANCE_HEATMAP:
-  PLOT: False
-  ONLY_SHOW_VALID_DAYS: False
-  EXPECTED_NUM_OF_DAYS: -1
-  BIN_SIZE: *bin_size
-  MIN_VALID_HOURS_PER_DAY: *min_valid_hours_per_day
-  MIN_VALID_BINS_PER_HOUR: *min_valid_bins_per_hour
 
