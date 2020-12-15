@@ -378,7 +378,8 @@ FITBIT_STEPS_INTRADAY:
 
 EMPATICA_DATA_CONFIGURATION:
   SOURCE: 
-    TYPE: FILE
+    TYPE: ZIP_FILE
+    FOLDER: data/external/empatica
   TIMEZONE: 
     TYPE: SINGLE # Fitbit devices don't support time zones so we read this data in the timezone indicated by VALUE 
     VALUE: *timezone
