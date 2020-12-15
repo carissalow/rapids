@@ -7,6 +7,6 @@
 
 **R**eproducible **A**nalysis **Pi**peline for **D**ata **S**treams
 
-For more information refer to our [documentation](https://www.rapids.science)
+For more information refer to our [documentation](http://www.rapids.science)
 
 By [MoSHI](https://www.moshi.pitt.edu/), [University of Pittsburgh](https://www.pitt.edu/)

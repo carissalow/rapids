@@ -100,6 +100,15 @@ for provider in config["PHONE_LIGHT"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
         files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
+for provider in config["PHONE_KEYBOARD"]["PROVIDERS"].keys():
+    if config["PHONE_KEYBOARD"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_keyboard_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_keyboard_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_keyboard_features/phone_keyboard_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_KEYBOARD"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_keyboard.csv", pid=config["PIDS"],))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
+
 for provider in config["PHONE_ACCELEROMETER"]["PROVIDERS"].keys():
     if config["PHONE_ACCELEROMETER"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/phone_accelerometer_raw.csv", pid=config["PIDS"]))

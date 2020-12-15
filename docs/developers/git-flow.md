@@ -15,6 +15,7 @@ git pull
 git checkout -b feature/feature1
 ```
 1. Add, modify or delete the necessary files to add your new feature
+1. Update the [change log](../../change-log) (`docs/change-log.md`)
 2. Stage and commit your changes using VS Code git GUI or the following commands
 ```bash
 git add modified-file1 modified-file2
@@ -29,6 +30,7 @@ git commit -m "Add my new feature" # use a concise description
 
     ```bash
     git checkout feature/feature1
+    git pull origin develop
     git rebase -i develop
     git checkout develop
     git merge --no-ff feature/feature1 # (use the default merge message)
@@ -88,6 +90,7 @@ git describe --abbrev=0 --tags # Bump the hotfix (0.1.0 to 0.1.1 => NEW_HOTFIX)
 git checkout -b hotfix/v[NEW_HOTFIX] master
 ```
 1. Fix whatever needs to be fixed
+1. Update the change log
 1. Tag and merge the hotfix
 ```bash
 git tag v[NEW_HOTFIX]

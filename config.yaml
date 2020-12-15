@@ -127,6 +127,23 @@ PHONE_BLUETOOTH:
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/phone_bluetooth
       SRC_LANGUAGE: "r"
+    DORYAB:
+      COMPUTE: FALSE
+      FEATURES: 
+        ALL: 
+            DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+            SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+            SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+        OWN: 
+            DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+            SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+            SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+        OTHERS:
+            DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+            SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+            SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+      SRC_FOLDER: "doryab" # inside src/features/phone_bluetooth
+      SRC_LANGUAGE: "python"
 
 # See https://www.rapids.science/latest/features/phone-calls/
 PHONE_CALLS:
@@ -171,6 +188,15 @@ PHONE_DATA_YIELD:
       MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 # 0 to 1 representing the number of minutes with at least
       SRC_LANGUAGE: "r"
       SRC_FOLDER: "rapids" # inside src/features/phone_data_yield
+
+PHONE_KEYBOARD:
+  TABLE: keyboard
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      FEATURES: []
+      SRC_FOLDER: "rapids" # inside src/features/phone_keyboard
+      SRC_LANGUAGE: "python"
 
 # See https://www.rapids.science/latest/features/phone-light/
 PHONE_LIGHT:
