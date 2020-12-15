@@ -127,13 +127,30 @@ PHONE_BLUETOOTH:
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/phone_bluetooth
       SRC_LANGUAGE: "r"
+    DORYAB:
+      COMPUTE: FALSE
+      FEATURES: 
+        ALL: 
+            DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+            SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+            SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+        OWN: 
+            DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+            SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+            SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+        OTHERS:
+            DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+            SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+            SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+      SRC_FOLDER: "doryab" # inside src/features/phone_bluetooth
+      SRC_LANGUAGE: "python"
 
 # See https://www.rapids.science/latest/features/phone-calls/
 PHONE_CALLS:
   TABLE: calls
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: TRUE
       CALL_TYPES: [missed, incoming, outgoing]
       FEATURES:
         missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
@@ -172,12 +189,21 @@ PHONE_DATA_YIELD:
       SRC_LANGUAGE: "r"
       SRC_FOLDER: "rapids" # inside src/features/phone_data_yield
 
+PHONE_KEYBOARD:
+  TABLE: keyboard
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: []
+      SRC_FOLDER: "rapids" # inside src/features/phone_keyboard
+      SRC_LANGUAGE: "python"
+
 # See https://www.rapids.science/latest/features/phone-light/
 PHONE_LIGHT:
   TABLE: light
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: FALSE
       FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
       SRC_FOLDER: "rapids" # inside src/features/phone_light
       SRC_LANGUAGE: "python"
@@ -215,7 +241,7 @@ PHONE_MESSAGES:
   TABLE: messages
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: TRUE
       MESSAGES_TYPES : [received, sent]
       FEATURES: 
         received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
