@@ -2,7 +2,13 @@ name: tests
 
 on:
   push:
-    #branches: [ develop ]
+    branches-ignore:
+      - "master"
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+  pull_request:
+    branches:
+      - "develop"
 env:
   RENV_PATHS_ROOT: ~/.local/share/renv
 
@@ -13,31 +19,60 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: s-weigand/setup-conda@v1
-      - run : conda --version
-      - run : source activate base
+      - run: "sed -i 's/name:.*/name: rapidstests/g' environment.yml"
+      - run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - run: echo "RELEASE_VERSION_URL=$(echo $RELEASE_VERSION | sed -e 's/\.//g')" >> $GITHUB_ENV
       - run : |
           sudo apt update
-          sudo apt install libcurl4-openssl-dev
-          sudo apt install libssl-dev
-          sudo apt install libxml2-dev
+          # sudo apt install libcurl4-openssl-dev
+          # sudo apt install libssl-dev
+          # sudo apt install libxml2-dev
           sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
           sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' 
           sudo apt install r-base
-          sudo apt install pandoc
-          sudo Rscript --vanilla -e 'install.packages("rmarkdown", repos="http://cran.us.r-project.org")'
-          conda env create -f environment.yml -n test-environment
-          source activate test-environment
-      - name: Cache packages
+      - name: Cache R packages
         uses: actions/cache@v1
         with:
           path: ${{ env.RENV_PATHS_ROOT }}
           key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
           restore-keys: |
             ${{ runner.os }}-renv-
-      - name: Restore packages
+      - name: Restore R packages
         shell: Rscript {0}
         run: |
           if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
           renv::restore()
-      - run : bash tests/scripts/run_tests.sh all test 
+      - name: Cache conda packages
+        uses: actions/cache@v1
+        env:
+          # Increase this value to reset cache if environment.yml has not changed
+          CACHE_NUMBER: 0
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
+            hashFiles('**/environment.yml') }}
+      - name: Restore conda packages
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: rapidstests
+          environment-file: environment.yml
+          use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
+      - name: Run tests
+        shell: bash -l {0}
+        run : |
+            conda activate rapidstests
+            bash tests/scripts/run_tests.sh all test 
+      - name: Release tag
+        if: success() && startsWith(github.ref, 'refs/tags')
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: |
+            See [change log](http://www.rapids.science/latest/change-log/#${{ env.RELEASE_VERSION_URL }})
+          draft: false
+          prerelease: false

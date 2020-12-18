@@ -37,7 +37,7 @@ In total, our example workflow has nine steps that are in charge of sensor data 
 
 ## Configure and run the analysis workflow example
 1.	[Install](../../setup/installation) RAPIDS
-2.	Configure the [user credentials](../../setup/configuration/#database-credentials) of a local or remote MySQL server with writing permissions in your `.env` file. The example config file is at `example_profile/example_config.yaml`.
+2.	Configure the [user credentials](../../setup/configuration/#database-credentials) of a local or remote MySQL server with writing permissions in your `.env` file. The config file where you need to modify the `DATABASE_GROUP` is at `example_profile/example_config.yaml`.
 3.	Unzip the [test database](https://osf.io/skqfv/files/) to `data/external/rapids_example.sql` and run:
     ```bash
     ./rapids -j1 restore_sql_file --profile example_profile
