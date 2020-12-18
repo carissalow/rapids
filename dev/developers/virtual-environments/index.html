@@ -852,6 +852,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#updating-all-packages" class="md-nav__link">
+    Updating all packages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#update-your-conda-environmentyaml" class="md-nav__link">
     Update your conda environment.yaml
   </a>
@@ -881,6 +888,13 @@
           <li class="md-nav__item">
   <a href="#remove-packages_1" class="md-nav__link">
     Remove packages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updating-all-packages_1" class="md-nav__link">
+    Updating all packages
   </a>
   
 </li>
@@ -1092,6 +1106,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#updating-all-packages" class="md-nav__link">
+    Updating all packages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#update-your-conda-environmentyaml" class="md-nav__link">
     Update your conda environment.yaml
   </a>
@@ -1121,6 +1142,13 @@
           <li class="md-nav__item">
   <a href="#remove-packages_1" class="md-nav__link">
     Remove packages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updating-all-packages_1" class="md-nav__link">
+    Updating all packages
   </a>
   
 </li>
@@ -1161,9 +1189,13 @@
 <p>Try to install any new package using <code>conda install -c CHANNEL PACKAGE_NAME</code> (you can use <code>pip</code> if the package is only available there). Make sure your Python virtual environment is active (<code>conda activate YOUR_ENV</code>).</p>
 <h3 id="remove-packages">Remove packages<a class="headerlink" href="#remove-packages" title="Permanent link">&para;</a></h3>
 <p>Uninstall packages using the same manager you used to install them <code>conda remove PACKAGE_NAME</code> or <code>pip uninstall PACKAGE_NAME</code></p>
+<h3 id="updating-all-packages">Updating all packages<a class="headerlink" href="#updating-all-packages" title="Permanent link">&para;</a></h3>
+<p>Make sure your Python virtual environment is active (<code>conda activate YOUR_ENV</code>), then run
+<div class="highlight"><pre><span></span><code>conda update --all
+</code></pre></div></p>
 <h3 id="update-your-conda-environmentyaml">Update your conda <code>environment.yaml</code><a class="headerlink" href="#update-your-conda-environmentyaml" title="Permanent link">&para;</a></h3>
-<p>After installing or removing a package you can use the following command in your terminal to update your <code>environment.yaml</code> before publishing your pipeline. Note that we ignore the package version for <code>libfortran</code> to keep compatibility with Linux:
-<div class="highlight"><pre><span></span><code>conda env <span class="nb">export</span> --no-builds <span class="p">|</span> sed <span class="s1">&#39;s/^.*libgfortran.*$/  - libgfortran/&#39;</span> &gt;  environment.yml
+<p>After installing or removing a package you can use the following command in your terminal to update your <code>environment.yaml</code> before publishing your pipeline. Note that we ignore the package version for <code>libfortran</code> and <code>mkl</code> to keep compatibility with Linux:
+<div class="highlight"><pre><span></span><code>conda env <span class="nb">export</span> --no-builds <span class="p">|</span> sed <span class="s1">&#39;s/^.*libgfortran.*$/  - libgfortran/&#39;</span> <span class="p">|</span> sed <span class="s1">&#39;s/^.*mkl=.*$/  - mkl/&#39;</span> &gt;  environment.yml
 </code></pre></div></p>
 <h2 id="r-virtual-environment">R Virtual Environment<a class="headerlink" href="#r-virtual-environment" title="Permanent link">&para;</a></h2>
 <h3 id="add-new-packages_1">Add new packages<a class="headerlink" href="#add-new-packages_1" title="Permanent link">&para;</a></h3>
@@ -1177,6 +1209,12 @@
 <li>Open your terminal and navigate to RAPIDS&rsquo; root folder</li>
 <li>Run <code>R</code> to open an R interactive session</li>
 <li>Run <code>renv::remove("PACKAGE_NAME")</code></li>
+</ol>
+<h3 id="updating-all-packages_1">Updating all packages<a class="headerlink" href="#updating-all-packages_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Open your terminal and navigate to RAPIDS&rsquo; root folder</li>
+<li>Run <code>R</code> to open an R interactive session</li>
+<li>Run <code>renv::update()</code></li>
 </ol>
 <h3 id="update-your-r-renvlock">Update your R <code>renv.lock</code><a class="headerlink" href="#update-your-r-renvlock" title="Permanent link">&para;</a></h3>
 <p>After installing or removing a package you can use the following command in your terminal to update your <code>renv.lock</code> before publishing your pipeline.</p>
