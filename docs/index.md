@@ -13,6 +13,8 @@ RAPIDS is open source, documented, modular, tested, and reproducible. At the mom
 
     :fontawesome-solid-play: Ready to start? Go to [Installation](setup/installation/), then to [Configuration](setup/configuration/), and then to [Execution](setup/execution/)
 
+    :fontawesome-solid-sync-alt: Are you upgrading from RAPIDS [beta](https://rapidspitt.readthedocs.io/en/latest/)? Follow this [guide](migrating-from-old-versions)
+
 ## How does it work?
 
 RAPIDS is formed by R and Python scripts orchestrated by [Snakemake](https://snakemake.readthedocs.io/en/stable/). We suggest you read Snakemake's docs but in short: every link in the analysis chain is atomic and has files as input and output. Behavioral features are processed per sensor and per participant.
