@@ -1,5 +1,6 @@
 # Change Log
-
+## v0.2.3
+- Fix participant IDS in the example analysis workflow
 ## v0.2.2
 - Fix readme link to docs
 ## v0.2.1
