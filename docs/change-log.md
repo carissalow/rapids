@@ -1,4 +1,6 @@
 # Change Log
+## v0.2.4
+- Fix broken links in landing page and docs deploy
 ## v0.2.3
 - Fix participant IDS in the example analysis workflow
 ## v0.2.2
