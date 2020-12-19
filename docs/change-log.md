@@ -1,4 +1,6 @@
 # Change Log
+## v0.2.5
+- Fix docs deploy typo
 ## v0.2.4
 - Fix broken links in landing page and docs deploy
 ## v0.2.3
