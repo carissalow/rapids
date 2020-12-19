@@ -34,4 +34,4 @@ RAPIDS is formed by R and Python scripts orchestrated by [Snakemake](https://sna
 
 ## How is it organized?
 
-In broad terms the `config.yaml`, [`.env` file](../setup/configuration/#database-credentials), [participants files](../setup/configuration/#participant-files), and [time segment files](../setup/configuration/#time-segments) are the only ones that you will have to modify. All data is stored in `data/` and all scripts are stored in `src/`. For more information see RAPIDS' [File Structure](file-structure.md).
+In broad terms the `config.yaml`, [`.env` file](setup/configuration/#database-credentials), [participants files](setup/configuration/#participant-files), and [time segment files](setup/configuration/#time-segments) are the only ones that you will have to modify. All data is stored in `data/` and all scripts are stored in `src/`. For more information see RAPIDS' [File Structure](file-structure.md).
