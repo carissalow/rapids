@@ -1,8 +1,0 @@
-PIDS: [t01]
-DOWNLOAD_DATASET:
-  GROUP: RAPIDS
-BLUETOOTH:
-  COMPUTE: True
-  TIME_SEGMENTS: "data/external/timesegments_bluetooth.csv"
-WIFI:
-  COMPUTE: True
