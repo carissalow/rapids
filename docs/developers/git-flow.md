@@ -30,7 +30,7 @@ git commit -m "Add my new feature" # use a concise description
 
     ```bash
     git checkout feature/feature1
-    git pull origin develop
+    git fetch origin develop
     git rebase -i develop
     git checkout develop
     git merge --no-ff feature/feature1 # (use the default merge message)

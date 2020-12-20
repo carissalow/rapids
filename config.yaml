@@ -193,7 +193,7 @@ PHONE_KEYBOARD:
   TABLE: keyboard
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: []
       SRC_FOLDER: "rapids" # inside src/features/phone_keyboard
       SRC_LANGUAGE: "python"
