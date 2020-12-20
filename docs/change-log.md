@@ -1,7 +1,9 @@
 # Change Log
 
-## next release (0.3.0)
+## 0.3.0
 - Update R and Python virtual environments
+- Add GH actions CI support for tests and docker
+- Add release and test badges to README
 ## v0.2.6
 - Fix old versions banner on nested pages
 ## v0.2.5
