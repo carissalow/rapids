@@ -1,6 +1,6 @@
 window.addEventListener("DOMContentLoaded", function() {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", window.location + "../versions.json");
+    xhr.open("GET", window.location.origin + "/versions.json");
     xhr.onload = function() {
       var versions = JSON.parse(this.responseText);
       latest_version = ""
