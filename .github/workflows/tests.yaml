@@ -31,12 +31,16 @@ jobs:
           sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' 
           sudo apt install r-base
       - name: Cache R packages
-        uses: actions/cache@v1
+        uses: actions/cache@v2
+        id: cacherenv
         with:
           path: ${{ env.RENV_PATHS_ROOT }}
           key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
           restore-keys: |
             ${{ runner.os }}-renv-
+      - name: Install R dependencies
+        if: steps.cacherenv.outputs.cache-hit != 'true'
+        run: sudo apt install libcurl4-openssl-dev
       - name: Restore R packages
         shell: Rscript {0}
         run: |
