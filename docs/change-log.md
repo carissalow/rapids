@@ -1,4 +1,6 @@
 # Change Log
+## v0.2.6
+- Fix old versions banner on nested pages
 ## v0.2.5
 - Fix docs deploy typo
 ## v0.2.4
