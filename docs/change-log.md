@@ -2,6 +2,8 @@
 
 ## next release (0.3.0)
 - Update R and Python virtual environments
+## v0.2.6
+- Fix old versions banner on nested pages
 ## v0.2.5
 - Fix docs deploy typo
 ## v0.2.4
