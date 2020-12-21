@@ -22,6 +22,8 @@ We provide examples of the input format that RAPIDS expects, note that both exam
     
     === "PLAIN_TEXT"
 
+        All columns are mandatory, however, all except `device_id` and `local_date_time` can be empty if you don't have that data. Just have in mind that some features will be empty if some of these columns are empty.
+        
         |device_id                              |local_start_date_time  |local_end_date_time    |efficiency  |minutes_after_wakeup  |minutes_asleep  |minutes_awake  |minutes_to_fall_asleep  |minutes_in_bed  |is_main_sleep  |type     |count_awake |duration_awake  |count_awakenings  |count_restless  |duration_restless  |
         |-------------------------------------- |---------------------- |---------------------- |----------- |--------------------- |--------------- |-------------- |----------------------- |--------------- |-------------- |-------- |----------- |--------------- |----------------- |--------------- |------------------ |
         |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |2020-10-07 15:55:00    |2020-10-07 18:10:00    |91          |0                     |123             |12             |0                       |135             |1              |classic  |2           |3               |10                |8               |9                  |
@@ -40,6 +42,7 @@ We provide examples of the input format that RAPIDS expects, note that both exam
         |a748ee1a-1d0b-4ae9-9074-279a2b6ba524     |{"sleep":[{"dateOfSleep":"2020-10-12","duration":28980000,"efficiency":93,"endTime":"2020-10-12T09:34:30.000","infoCode":0,"isMainSleep":true,"levels":{"data":[{"dateTime":"2020-10-12T01:31:00.000","level":"wake","seconds":600},{"dateTime":"2020-10-12T01:41:00.000","level":"light","seconds":60},{"dateTime":"2020-10-12T01:42:00.000","level":"deep","seconds":2340},...], "summary":{"deep":{"count":4,"minutes":63,"thirtyDayAvgMinutes":59},"light":{"count":27,"minutes":257,"thirtyDayAvgMinutes":364},"rem":{"count":5,"minutes":94,"thirtyDayAvgMinutes":58},"wake":{"count":24,"minutes":69,"thirtyDayAvgMinutes":95}}},"logId":26589710673,"minutesAfterWakeup":0,"minutesAsleep":415,"minutesAwake":68,"minutesToFallAsleep":0,"startTime":"2020-10-12T01:31:00.000","timeInBed":483,"type":"stages"}],"summary":{"stages":{"deep":63,"light":257,"rem":94,"wake":69},"totalMinutesAsleep":415,"totalSleepRecords":1,"totalTimeInBed":483}}
     
     === "PLAIN_TEXT"
+        All columns are mandatory, however, all except `device_id` and `local_date_time` can be empty if you don't have that data. Just have in mind that some features will be empty if some of these columns are empty.
 
         |device_id                              |local_start_date_time  |local_end_date_time    |efficiency  |minutes_after_wakeup  |minutes_asleep  |minutes_awake  |minutes_to_fall_asleep  |minutes_in_bed  |is_main_sleep  |type     |
         |-------------------------------------- |---------------------- |---------------------- |----------- |--------------------- |--------------- |-------------- |----------------------- |--------------- |-------------- |-------- |

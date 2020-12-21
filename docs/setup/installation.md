@@ -8,14 +8,14 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
 
     2.  Pull our RAPIDS container
         ``` bash
-        docker pull agamk/rapids:latest`
+        docker pull moshiresearch/rapids:latest`
         ```
 
     3.  Run RAPIDS\' container (after this step is done you should see a
         prompt in the main RAPIDS folder with its python environment active)
 
         ``` bash
-        docker run -it agamk/rapids:latest
+        docker run -it moshiresearch/rapids:latest
         ```
 
     4.  Pull the latest version of RAPIDS
@@ -41,8 +41,8 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
             - Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
             - Go to the `Remote Explorer` panel on the left hand sidebar
             - On the top right dropdown menu choose `Containers`
-            - Double click on the `agamk/rapids` container in the`CONTAINERS` tree
-            - A new VS Code session should open on RAPIDS main folder insidethe container.
+            - Double click on the `moshiresearch/rapids` container in the`CONTAINERS` tree
+            - A new VS Code session should open on RAPIDS main folder inside the container.
 
 === "MacOS"
     We tested these instructions in Catalina

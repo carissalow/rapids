@@ -1,6 +1,12 @@
 # Change Log
 
-## 0.3.0
+## v0.3.1
+- Update installation docs for RAPIDS' docker container
+- Fix example analysis use of accelerometer data in a plot
+- Update FAQ
+- Update minimal example documentation
+- Minor doc updates
+## v0.3.0
 - Update R and Python virtual environments
 - Add GH actions CI support for tests and docker
 - Add release and test badges to README

@@ -207,10 +207,21 @@
     This problem is due to the way `RMariaDB` handles a mismatch between data types in R and MySQL (see [this issue](https://github.com/r-dbi/RMariaDB/issues/121)). Since it seems this problem won't be handled by `RMariaDB`, you have two options:
     
     1. If it's only a few rows that are causing this problem, remove the the null character from the conflictive table cell.
-    2. If it's not feasible to modify your data you can try swapping `RMariaDB` with `RMySQL`. Just have in mind you might have problems connecting to modern MySQL servers running in Liunx:
+    2. If it's not feasible to modify your data you can try swapping `RMariaDB` with `RMySQL`. Just have in mind you might have problems connecting to modern MySQL servers running in Linux:
         - Add `RMySQL` to the renv environment by running the following command in a terminal open on RAPIDS root folder
         ```bash
         R -e 'renv::install("RMySQL")'
         ```
-        - Go to `src/data/download_phone_data.R` and replace `library(RMariaDB)` with `library(RMySQL)`
+        - Go to `src/data/download_phone_data.R` or `src/data/download_fitbit_data.R` and replace `library(RMariaDB)` with `library(RMySQL)`
         - In the same file replace `dbEngine <- dbConnect(MariaDB(), default.file = "./.env", group = group)` with `dbEngine <- dbConnect(MySQL(), default.file = "./.env", group = group)`
+## There is no package called `RMariaDB`
+
+???+ failure "Problem"
+    You get the following error when executing RAPIDS:
+    ```bash
+    Error in library(RMariaDB) : there is no package called 'RMariaDB'
+    Execution halted
+    ```
+
+???+ done "Solution"
+    In RAPIDS v0.1.0 we replaced `RMySQL` R package with `RMariaDB`, this error means your R virtual environment is out of date, to update it run `snakemake -j1 renv_restore`

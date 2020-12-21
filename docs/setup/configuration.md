@@ -32,12 +32,12 @@ When you are done with this configuration, go to [executing RAPIDS](../execution
 
 !!! warning
     The label `MY_GROUP` is arbitrary but it has to match the following `config.yaml` key:
-
     ```yaml
     DATABASE_GROUP: &database_group
       MY_GROUP
     ```
-
+!!! hint
+        If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, connect to your MySQL database using the host `host.docker.internal` instead of `127.0.0.1`
 !!! note
     You can ignore this step if you are only processing Fitbit data in CSV files.
 ---

@@ -21,6 +21,7 @@ We provide examples of the input format that RAPIDS expects, note that both exam
         |a748ee1a-1d0b-4ae9-9074-279a2b6ba524     |"activities-steps":[{"dateTime":"2020-10-09","value":"998"}],"activities-steps-intraday":{"dataset":[{"time":"00:00:00","value":0},{"time":"00:01:00","value":0},{"time":"00:02:00","value":0},...],"datasetInterval":1,"datasetType":"minute"}}
     
     === "PLAIN_TEXT"
+        All columns are mandatory.
 
         |device_id                              |local_date_time        |steps     |
         |-------------------------------------- |---------------------- |--------- |
