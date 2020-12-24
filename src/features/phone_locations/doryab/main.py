@@ -13,6 +13,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     threshold_static = provider["THRESHOLD_STATIC"]
     maximum_gap_allowed = provider["MAXIMUM_GAP_ALLOWED"]
     sampling_frequency = provider["SAMPLING_FREQUENCY"]
+    cluster_on = provider["CLUSTER_ON"]
     
     minutes_data_used = provider["MINUTES_DATA_USED"]
     if(minutes_data_used):
@@ -28,7 +29,12 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     if location_data.empty:
         location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
     else:
-        location_data = filter_data_by_segment(location_data, time_segment)
+        if cluster_on == "PARTICIPANT_DATASET":
+            location_data = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
+            location_data = filter_data_by_segment(location_data, time_segment)
+        else:
+            location_data = filter_data_by_segment(location_data, time_segment)
+            location_data = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
 
         if location_data.empty:
             location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
@@ -81,7 +87,8 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
                 for localDate in location_data['local_segment'].unique():
                     location_features.loc[localDate,"circadianmovement"] = circadian_movement(location_data[location_data['local_segment']==localDate])
 
-            newLocationData = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
+            # newLocationData = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
+            newLocationData = location_data[location_data['stationary_or_not'] == 1]
 
             if "numberofsignificantplaces" in features_to_compute:
                 for localDate in newLocationData['local_segment'].unique():
@@ -251,38 +258,41 @@ def cluster_and_label(df,**kwargs):
     :return: a new df of labeled locations with moving points removed, where the cluster
              labeled as "1" is the largest, "2" the second largest, and so on
     """
-    location_data = df
-    if not isinstance(df.index, pd.DatetimeIndex):
-        location_data = df.set_index("local_date_time")
+    if not df.empty:
+        location_data = df
+        if not isinstance(df.index, pd.DatetimeIndex):
+            location_data = df.set_index("local_date_time")
 
-    stationary = remove_moving(location_data,1)
+        stationary = mark_moving(location_data,1)
 
-    #return degrees(arcminutes=nautical(meters= d))
-    #nautical miles = m ÷ 1,852
-    clusterer = DBSCAN(**kwargs)
+        #return degrees(arcminutes=nautical(meters= d))
+        #nautical miles = m ÷ 1,852
+        clusterer = DBSCAN(**kwargs)
 
-    counts_df = stationary[["double_latitude" ,"double_longitude"]].groupby(["double_latitude" ,"double_longitude"]).size().reset_index()
-    counts = counts_df[0]
-    lat_lon = counts_df[["double_latitude","double_longitude"]].values
-    cluster_results = clusterer.fit_predict(lat_lon, sample_weight= counts)
+        counts_df = stationary[["double_latitude" ,"double_longitude"]].groupby(["double_latitude" ,"double_longitude"]).size().reset_index()
+        counts = counts_df[0]
+        lat_lon = counts_df[["double_latitude","double_longitude"]].values
+        cluster_results = clusterer.fit_predict(lat_lon, sample_weight= counts)
 
-    #Need to extend labels back to original df without weights
-    counts_df["location_label"] = cluster_results
-    # remove the old count column
-    del counts_df[0]
+        #Need to extend labels back to original df without weights
+        counts_df["location_label"] = cluster_results
+        # remove the old count column
+        del counts_df[0]
 
-    merged = pd.merge(stationary,counts_df, on = ["double_latitude" ,"double_longitude"])
+        merged = pd.merge(stationary,counts_df, on = ["double_latitude" ,"double_longitude"])
 
-    #Now compute the label mapping:
-    cluster_results = merged["location_label"].values
-    valid_clusters = cluster_results[np.where(cluster_results != -1)]
-    label_map = rank_count_map(valid_clusters)
+        #Now compute the label mapping:
+        cluster_results = merged["location_label"].values
+        valid_clusters = cluster_results[np.where(cluster_results != -1)]
+        label_map = rank_count_map(valid_clusters)
 
-    #And remap the labels:
-    merged.index = stationary.index
-    stationary = stationary.assign(location_label = merged["location_label"].map(label_map).values)
-    stationary.loc[:, "location_label"] = merged["location_label"].map(label_map)
-    return stationary
+        #And remap the labels:
+        merged.index = stationary.index
+        stationary = stationary.assign(location_label = merged["location_label"].map(label_map).values)
+        stationary.loc[:, "location_label"] = merged["location_label"].map(label_map)
+        return stationary
+    else:
+        return df
 
 def rank_count_map(clusters):
     """ Returns a function which will map each element of a list 'l' to its rank,
@@ -303,7 +313,7 @@ def rank_count_map(clusters):
     return lambda x: label_to_rank.get(x, -1)
 
 
-def remove_moving(df, v):
+def mark_moving(df, v):
 
     if not df.index.is_monotonic:
         df = df.sort_index()
@@ -320,7 +330,9 @@ def remove_moving(df, v):
     time = ((pd.to_datetime(df.reset_index().local_date_time.shift(-1),format="%Y-%m-%d %H:%M:%S") - pd.to_datetime(df.reset_index().local_date_time.shift(),format="%Y-%m-%d %H:%M:%S")) / np.timedelta64(1,'s')).fillna(-1) / (60.*60)
     time.index = distance.index.copy()
     
-    return df[(distance / time) < v]
+    df['stationary_or_not'] = np.where((distance / time) < v,1,0)   # 1 being stationary,0 for moving 
+
+    return df
 
 def number_of_significant_places(locationData):
     
