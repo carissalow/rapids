@@ -1,12 +1,12 @@
 from zipfile import ZipFile
 import warnings
-sensor_short_name = {"accelerometer":"acc",
-                "temperature":"temp",
+sensor_short_name = {"accelerometer":"ACC",
+                "temperature":"TEMP",
                 "tags":"tags",
-                "heartrate":"hr",
-                "inter_beat_interval":"ibi",
-                "blood_volume_pulse":"bvp",
-                "electrodermal_activity":"eda"}
+                "heartrate":"HR",
+                "inter_beat_interval":"IBI",
+                "blood_volume_pulse":"BVP",
+                "electrodermal_activity":"EDA"}
 
 sensor_csv = sensor_short_name[snakemake.params["sensor"]] + '.csv'
 warning = True
