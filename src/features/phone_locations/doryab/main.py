@@ -320,11 +320,10 @@ def mark_moving(df, v):
 
     lat_lon_temp = pd.DataFrame()
 
-    lat_lon_temp['_lat_before'] = df.double_latitude.shift()
+    lat_lon_temp['_lat_before'] = df.double_latitude
     lat_lon_temp['_lat_after'] =  df.double_latitude.shift(-1)
-    lat_lon_temp['_lon_before'] = df.double_longitude.shift()
+    lat_lon_temp['_lon_before'] = df.double_longitude
     lat_lon_temp['_lon_after'] =  df.double_longitude.shift(-1)
-
     #
     distance = lat_lon_temp.apply( haversine, axis = 1) / 1000
     time = ((pd.to_datetime(df.reset_index().local_date_time.shift(-1),format="%Y-%m-%d %H:%M:%S") - pd.to_datetime(df.reset_index().local_date_time.shift(),format="%Y-%m-%d %H:%M:%S")) / np.timedelta64(1,'s')).fillna(-1) / (60.*60)
