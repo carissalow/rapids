@@ -391,7 +391,7 @@ EMPATICA_ACCELEROMETER:
   TABLE: acc
   PROVIDERS:
     DBDP:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: []
       SRC_FOLDER: "dbdp" # inside src/features/empatica_accelerometer
       SRC_LANGUAGE: "python"
@@ -409,7 +409,7 @@ EMPATICA_TEMPERATURE:
   TABLE: temp
   PROVIDERS:
     DBDP:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: []
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
@@ -418,7 +418,7 @@ EMPATICA_ELECTRODERMAL_ACTIVITY:
   TABLE: eda
   PROVIDERS:
     DBDP:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: []
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
@@ -427,7 +427,7 @@ EMPATICA_BLOOD_VOLUME_PULSE:
   TABLE: bvp
   PROVIDERS:
     DBDP:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: []
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
@@ -436,7 +436,7 @@ EMPATICA_INTER_BEAT_INTERVAL:
   TABLE: ibi
   PROVIDERS:
     DBDP:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: []
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
