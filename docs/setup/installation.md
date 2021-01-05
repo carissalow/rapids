@@ -1,6 +1,6 @@
 # Installation 
 
-You can install RAPIDS using Docker (the fastest), or native instructions for MacOS and Ubuntu
+You can install RAPIDS using Docker (the fastest), or native instructions for MacOS and Linux (Ubuntu). Windows is supported through Docker or WSL.
 
 === "Docker"
     
@@ -8,7 +8,7 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
 
     2.  Pull our RAPIDS container
         ``` bash
-        docker pull moshiresearch/rapids:latest`
+        docker pull moshiresearch/rapids:latest
         ```
 
     3.  Run RAPIDS\' container (after this step is done you should see a
@@ -43,6 +43,9 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
             - On the top right dropdown menu choose `Containers`
             - Double click on the `moshiresearch/rapids` container in the`CONTAINERS` tree
             - A new VS Code session should open on RAPIDS main folder inside the container.
+
+    !!! warning
+        If you installed RAPIDS using Docker for Windows on Windows 10, the container will have [limits](https://stackoverflow.com/questions/43460770/docker-windows-container-memory-limit) on the amount of RAM it can use. If you find that RAPIDS crashes due to running out of memory, [increase](https://stackoverflow.com/a/56583203/6030343) this limit.
 
 === "MacOS"
     We tested these instructions in Catalina
@@ -108,7 +111,7 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
 
 === "Ubuntu"
 
-    We tested on Ubuntu 18.04 & 20.04
+    We tested RAPIDS on Ubuntu 18.04 & 20.04. Note that the necessary Python and R packages are available in other Linux distributions, so if you decide to give it a try, let us know and we can update these docs.
 
     1.  Install dependencies
 
@@ -133,15 +136,17 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
 
     4. Add R's repository
 
-        1. For 18.04    
-        ``` bash
-        sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'
-        ```
+        === "Ubuntu 18.04 Bionic"
 
-        1. For 20.04
-        ``` bash
-        sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
-        ```
+            ``` bash
+            sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'
+            ```
+
+        === "Ubuntu 20.04 Focal"
+
+            ``` bash
+            sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
+            ```
 
     5. Install R 4.0. If you have other instances of R, we recommend uninstalling them
 
@@ -181,13 +186,34 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         conda activate MY_ENV_NAME
         ```
 
-    7.  Install R packages and virtual environment:
+    7.  Install the R virtual environment management package (renv)
 
         ``` bash
         snakemake -j1 renv_install
-        snakemake -j1 renv_restore
-           
         ```
+
+    8. Restore the R virtual environment
+
+        === "Ubuntu 18.04 Bionic (fast)"
+
+            Run the following command to restore the R virtual environment using [RSPM](https://packagemanager.rstudio.com/client/#/repos/1/overview) binaries
+            ```bash
+            R -e 'renv::restore(repos = c(CRAN = "https://packagemanager.rstudio.com/all/__linux__/bionic/latest"))'
+            ```
+
+        === "Ubuntu 20.04 Focal (fast)"
+
+            Run the following command to restore the R virtual environment using [RSPM](https://packagemanager.rstudio.com/client/#/repos/1/overview) binaries
+            ```bash
+            R -e 'renv::restore(repos = c(CRAN = "https://packagemanager.rstudio.com/all/__linux__/focal/latest"))'
+            ```
+            
+        === "Ubuntu (slow)"
+
+            If the fast installation command failed for some reason, you can restore the R virtual environment from source:
+            ```bash
+            R -e 'renv::restore()'
+            ```
 
         !!! note
             This step could take several minutes to complete, especially if you have less than 3Gb of RAM or packages need to be compiled from source. Please be patient and let it run until completion.
@@ -201,3 +227,11 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         ``` bash
         ./rapids -j1
         ```
+    
+=== "Windows"
+
+    There are several options varying in complexity:
+
+    - You can use our Docker instructions (tested)
+    - You can use our Ubuntu 20.04 instructions on [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (not tested but it will likely work)
+    - Native installation (experimental). If you would like to contribute to RAPIDS you could try to install MySQL, miniconda, Python, and R 4.0+ in Windows and restore the Python and R virtual environments using steps 6 and 7 of the instructions for Mac. You can [get in touch](../../team) if you would like to discuss this with the team.
