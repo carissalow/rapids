@@ -15,6 +15,7 @@ RUN apt update && apt install -y r-base
 RUN apt install -y pandoc
 RUN apt install -y git
 RUN apt-get update && apt-get install -y vim
+RUN apt-get update && apt-get install -y nano
 RUN apt update && apt install -y unzip
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV PATH /opt/conda/bin:$PATH
@@ -42,7 +43,7 @@ RUN conda update -n base -c defaults conda
 WORKDIR /rapids
 RUN conda env create -f environment.yml -n rapids
 RUN Rscript --vanilla -e 'install.packages("rmarkdown", repos="http://cran.us.r-project.org")'
-RUN R -e 'renv::restore()'
+RUN R -e 'renv::restore(repos = c(CRAN = "https://packagemanager.rstudio.com/all/__linux__/focal/latest"))'
 ADD https://osf.io/587wc/download data/external
 RUN mv data/external/download data/external/rapids_example.sql.zip
 RUN unzip data/external/rapids_example.sql.zip
