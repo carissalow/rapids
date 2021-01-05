@@ -67,7 +67,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
             preComputedDistanceandSpeed = pd.DataFrame()
             for localDate in location_data['local_segment'].unique():
                 speeddf = get_all_travel_distances_meters_speed(location_data[location_data['local_segment']==localDate],threshold_static,maximum_gap_allowed)
-                preComputedDistanceandSpeed.loc[localDate,"distance"] = speeddf['distances'].sum() # on pandas column skipna =True
+                preComputedDistanceandSpeed.loc[localDate,"distance"] = speeddf['distances'].sum() 
                 preComputedDistanceandSpeed.loc[localDate,"avgspeed"] = speeddf[speeddf['speedTag'] == 'Moving']['speed'].mean()
                 preComputedDistanceandSpeed.loc[localDate,"varspeed"] = speeddf[speeddf['speedTag'] == 'Moving']['speed'].var()
 
@@ -87,7 +87,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
                 for localDate in location_data['local_segment'].unique():
                     location_features.loc[localDate,"circadianmovement"] = circadian_movement(location_data[location_data['local_segment']==localDate])
 
-            # newLocationData = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
+            
             newLocationData = location_data[location_data['stationary_or_not'] == 1]
 
             if "numberofsignificantplaces" in features_to_compute:
@@ -172,9 +172,7 @@ def distance_to_degrees(d):
 
 def get_all_travel_distances_meters_speed(locationData,threshold,maximum_gap_allowed):
     
-    locationData['timeInSeconds'] = locationData.timestamp.diff()/1000
-    lat_lon_temp = pd.DataFrame()
-
+    locationData['timeInSeconds'] = (locationData.timestamp.diff(-1)* -1)/1000
     lat_lon_temp = locationData[locationData['timeInSeconds'] <= maximum_gap_allowed][['double_latitude','double_longitude','timeInSeconds']]
     
     if lat_lon_temp.empty:
@@ -182,7 +180,7 @@ def get_all_travel_distances_meters_speed(locationData,threshold,maximum_gap_all
     
     lat_lon_temp['distances'] = haversine(lat_lon_temp['double_longitude'],lat_lon_temp['double_latitude'],lat_lon_temp['double_longitude'].shift(-1),lat_lon_temp['double_latitude'].shift(-1)) # metersa.double_longitude,locationData.double_latitude,locationData.double_longitude.shift(-1),locationData.double_latitude.shift(-1)).shape)
     lat_lon_temp['speed']  = (lat_lon_temp['distances'] / lat_lon_temp['timeInSeconds'] )  # meter/second
-    lat_lon_temp['speed'] = lat_lon_temp['speed'].replace(np.inf, np.nan) * 3.6   # multiply by 3.6 to convert to km/hr
+    lat_lon_temp['speed'] = lat_lon_temp['speed'].replace(np.inf, np.nan) * 3.6  
     
     lat_lon_temp['speedTag'] = np.where(lat_lon_temp['speed'] >= threshold,"Moving","Static")
 
@@ -207,7 +205,6 @@ def haversine(lon1,lat1,lon2,lat2):
     on the earth (specified in decimal degrees)
     """
     # convert decimal degrees to radians 
-    # lon1, lat1, lon2, lat2 = x['_lon_before'], x['_lat_before'],x['_lon_after'], x['_lat_after']
     lon1, lat1, lon2, lat2 = np.radians([lon1, lat1, lon2, lat2])
 
     # haversine formula 
@@ -310,8 +307,7 @@ def mark_moving(df, v):
         df = df.sort_index()
 
     distance = haversine(df.double_longitude,df.double_latitude,df.double_longitude.shift(-1),df.double_latitude.shift(-1))/ 1000
-    time = df.timestamp.diff()/ (1000*60*60)
-    time.index = distance.copy()
+    time = (df.timestamp.diff(-1) * -1) / (1000*60*60)
     
     df['stationary_or_not'] = np.where((distance / time) < v,1,0)   # 1 being stationary,0 for moving 
 
@@ -341,7 +337,8 @@ def radius_of_gyration(locationData,sampling_frequency):
     
     rog = 0
     for labels in clusters_centroid.index:    
-        distance = haversine(clusters_centroid.loc[labels].double_longitude,clusters_centroid.loc[labels].double_latitude,centroid_all_clusters.double_longitude,centroid_all_clusters.double_latitude) ** 2
+        distance = haversine(clusters_centroid.loc[labels].double_longitude,clusters_centroid.loc[labels].double_latitude,
+                    centroid_all_clusters.double_longitude,centroid_all_clusters.double_latitude) ** 2
         
         time_in_cluster = locationData[locationData["location_label"]==labels].shape[0]* sampling_frequency
         rog = rog + (time_in_cluster * distance)
@@ -385,8 +382,7 @@ def moving_time_percent(locationData):
     lbls = locationData["location_label"]
     nummoving = lbls.isnull().sum()
     numtotal = len(lbls)
-    # print (nummoving)
-    # print(numtotal)
+    
     return (float(nummoving) / numtotal)
 
 def len_stay_at_clusters_in_minutes(locationData,sampling_frequency):
@@ -456,4 +452,4 @@ def location_entropy_normalized(locationData):
 
 def getSamplingFrequency(locationData):
 
-    return ((pd.to_datetime(locationData['local_time'], format="%H:%M:%S") - pd.to_datetime(locationData['local_time'].shift(periods=1), format="%H:%M:%S")).apply(lambda x: x.total_seconds())/60).median()
+    return (locationData.timestamp.diff()/(1000*60)).median()
