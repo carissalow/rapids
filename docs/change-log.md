@@ -1,5 +1,10 @@
 # Change Log
 
+## Next version v0.3.2
+- Update docker and linux instructions to use RSPM binary repo for for faster installation
+- Update CI to create a release on a tagged push that passes the tests
+- Clarify in DB credential configuration that we only support MySQL
+- Add Windows installation instructions
 ## v0.3.1
 - Update installation docs for RAPIDS' docker container
 - Fix example analysis use of accelerometer data in a plot
