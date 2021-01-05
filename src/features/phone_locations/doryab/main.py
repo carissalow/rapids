@@ -66,8 +66,8 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
             
             preComputedDistanceandSpeed = pd.DataFrame()
             for localDate in location_data['local_segment'].unique():
-                distance, speeddf = get_all_travel_distances_meters_speed(location_data[location_data['local_segment']==localDate],threshold_static,maximum_gap_allowed)
-                preComputedDistanceandSpeed.loc[localDate,"distance"] = distance.sum()
+                speeddf = get_all_travel_distances_meters_speed(location_data[location_data['local_segment']==localDate],threshold_static,maximum_gap_allowed)
+                preComputedDistanceandSpeed.loc[localDate,"distance"] = speeddf['distances'].sum() # on pandas column skipna =True
                 preComputedDistanceandSpeed.loc[localDate,"avgspeed"] = speeddf[speeddf['speedTag'] == 'Moving']['speed'].mean()
                 preComputedDistanceandSpeed.loc[localDate,"varspeed"] = speeddf[speeddf['speedTag'] == 'Moving']['speed'].var()
 
@@ -172,30 +172,21 @@ def distance_to_degrees(d):
 
 def get_all_travel_distances_meters_speed(locationData,threshold,maximum_gap_allowed):
     
+    locationData['timeInSeconds'] = locationData.timestamp.diff()/1000
     lat_lon_temp = pd.DataFrame()
 
-    lat_lon_temp['_lat_before'] = locationData.double_latitude
-    lat_lon_temp['_lat_after'] = locationData.double_latitude.shift(-1)
-    lat_lon_temp['_lon_before'] = locationData.double_longitude
-    lat_lon_temp['_lon_after'] = locationData.double_longitude.shift(-1)
-    lat_lon_temp['time_before'] = pd.to_datetime(locationData['local_time'], format="%H:%M:%S")
-    lat_lon_temp['time_after'] = lat_lon_temp['time_before'].shift(-1)
-    lat_lon_temp['time_diff'] = lat_lon_temp['time_after'] - lat_lon_temp['time_before']
-    lat_lon_temp['timeInSeconds'] = lat_lon_temp['time_diff'].apply(lambda x: x.total_seconds())
-
-    lat_lon_temp = lat_lon_temp[lat_lon_temp['timeInSeconds'] <= maximum_gap_allowed]
-
+    lat_lon_temp = locationData[locationData['timeInSeconds'] <= maximum_gap_allowed][['double_latitude','double_longitude','timeInSeconds']]
+    
     if lat_lon_temp.empty:
         return pd.Series(), pd.DataFrame({"speed": [], "speedTag": []})
     
-    lat_lon_temp['distances'] = lat_lon_temp.apply(haversine, axis=1)  # meters
-    lat_lon_temp['speed']  = (lat_lon_temp['distances'] / lat_lon_temp['timeInSeconds'] )
-    lat_lon_temp['speed'] = lat_lon_temp['speed'].replace(np.inf, np.nan) * 3.6
-    distances = lat_lon_temp['distances']
-    lat_lon_temp = lat_lon_temp.dropna()
+    lat_lon_temp['distances'] = haversine(lat_lon_temp['double_longitude'],lat_lon_temp['double_latitude'],lat_lon_temp['double_longitude'].shift(-1),lat_lon_temp['double_latitude'].shift(-1)) # metersa.double_longitude,locationData.double_latitude,locationData.double_longitude.shift(-1),locationData.double_latitude.shift(-1)).shape)
+    lat_lon_temp['speed']  = (lat_lon_temp['distances'] / lat_lon_temp['timeInSeconds'] )  # meter/second
+    lat_lon_temp['speed'] = lat_lon_temp['speed'].replace(np.inf, np.nan) * 3.6   # multiply by 3.6 to convert to km/hr
+    
     lat_lon_temp['speedTag'] = np.where(lat_lon_temp['speed'] >= threshold,"Moving","Static")
 
-    return distances,lat_lon_temp[['speed','speedTag']]
+    return lat_lon_temp[['speed','speedTag','distances']]
 
 
 def vincenty_row(x):
@@ -210,22 +201,22 @@ def vincenty_row(x):
     except:
        return 0
 
-def haversine(x):
+def haversine(lon1,lat1,lon2,lat2):
     """
     Calculate the great circle distance between two points 
     on the earth (specified in decimal degrees)
     """
     # convert decimal degrees to radians 
-    lon1, lat1, lon2, lat2 = x['_lon_before'], x['_lat_before'],x['_lon_after'], x['_lat_after']
-    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+    # lon1, lat1, lon2, lat2 = x['_lon_before'], x['_lat_before'],x['_lon_after'], x['_lat_after']
+    lon1, lat1, lon2, lat2 = np.radians([lon1, lat1, lon2, lat2])
 
     # haversine formula 
-    dlon = lon2 - lon1 
-    dlat = lat2 - lat1 
-    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
-    c = 2 * asin(sqrt(a)) 
+    a = np.sin((lat2-lat1)/2.0)**2 + \
+        np.cos(lat1) * np.cos(lat2) * np.sin((lon2-lon1)/2.0)**2
+
     r = 6371 # Radius of earth in kilometers. Use 3956 for miles
-    return c * r* 1000
+
+    return r * 2 * np.arcsin(np.sqrt(a)) * 1000
 
 
 def circadian_movement_energies(locationData):
@@ -318,16 +309,9 @@ def mark_moving(df, v):
     if not df.index.is_monotonic:
         df = df.sort_index()
 
-    lat_lon_temp = pd.DataFrame()
-
-    lat_lon_temp['_lat_before'] = df.double_latitude
-    lat_lon_temp['_lat_after'] =  df.double_latitude.shift(-1)
-    lat_lon_temp['_lon_before'] = df.double_longitude
-    lat_lon_temp['_lon_after'] =  df.double_longitude.shift(-1)
-    #
-    distance = lat_lon_temp.apply( haversine, axis = 1) / 1000
-    time = ((pd.to_datetime(df.reset_index().local_date_time.shift(-1),format="%Y-%m-%d %H:%M:%S") - pd.to_datetime(df.reset_index().local_date_time.shift(),format="%Y-%m-%d %H:%M:%S")) / np.timedelta64(1,'s')).fillna(-1) / (60.*60)
-    time.index = distance.index.copy()
+    distance = haversine(df.double_longitude,df.double_latitude,df.double_longitude.shift(-1),df.double_latitude.shift(-1))/ 1000
+    time = df.timestamp.diff()/ (1000*60*60)
+    time.index = distance.copy()
     
     df['stationary_or_not'] = np.where((distance / time) < v,1,0)   # 1 being stationary,0 for moving 
 
@@ -356,14 +340,8 @@ def radius_of_gyration(locationData,sampling_frequency):
     clusters_centroid = valid_clusters.groupby('location_label')[['double_latitude','double_longitude']].mean()
     
     rog = 0
-    for labels in clusters_centroid.index:
-        lat_lon_dict = dict()
-        lat_lon_dict['_lon_before'] = clusters_centroid.loc[labels].double_longitude
-        lat_lon_dict['_lat_before'] = clusters_centroid.loc[labels].double_latitude
-        lat_lon_dict['_lon_after'] = centroid_all_clusters.double_longitude
-        lat_lon_dict['_lat_after'] = centroid_all_clusters.double_latitude
-        
-        distance = haversine(lat_lon_dict) ** 2
+    for labels in clusters_centroid.index:    
+        distance = haversine(clusters_centroid.loc[labels].double_longitude,clusters_centroid.loc[labels].double_latitude,centroid_all_clusters.double_longitude,centroid_all_clusters.double_latitude) ** 2
         
         time_in_cluster = locationData[locationData["location_label"]==labels].shape[0]* sampling_frequency
         rog = rog + (time_in_cluster * distance)
