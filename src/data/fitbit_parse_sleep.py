@@ -188,7 +188,10 @@ def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_summary, re
 def parseSleepData(sleep_data, fitbit_data_type):
     SLEEP_SUMMARY_COLUMNS = SLEEP_SUMMARY_COLUMNS_V1_2
     if sleep_data.empty:
-        return pd.DataFrame(columns=SLEEP_SUMMARY_COLUMNS), pd.DataFrame(columns=SLEEP_INTRADAY_COLUMNS)
+        if fitbit_data_type == "summary":
+            return pd.DataFrame(columns=SLEEP_SUMMARY_COLUMNS)
+        elif fitbit_data_type == "intraday":
+            return pd.DataFrame(columns=SLEEP_INTRADAY_COLUMNS)
     device_id = sleep_data["device_id"].iloc[0]
     records_summary, records_intraday = [], []
     # Parse JSON into individual records
@@ -210,12 +213,8 @@ def parseSleepData(sleep_data, fitbit_data_type):
         parsed_data = pd.DataFrame(data=records_summary, columns=SLEEP_SUMMARY_COLUMNS)
     elif fitbit_data_type == "intraday":
         parsed_data = pd.DataFrame(data=records_intraday, columns=SLEEP_INTRADAY_COLUMNS)
-    else:
-        raise ValueError("fitbit_data_type can only be one of ['summary', 'intraday'].")
 
     return parsed_data
-
-
 
 timezone = snakemake.params["timezone"]
 column_format = snakemake.params["column_format"]
@@ -235,31 +234,26 @@ elif column_format == "PLAIN_TEXT":
         parsed_data = pd.read_csv(snakemake.input["raw_data"], parse_dates=["local_start_date_time", "local_end_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
     elif fitbit_data_type == "intraday":
         parsed_data = pd.read_csv(snakemake.input["raw_data"], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
-    else:
-        raise ValueError("fitbit_data_type can only be one of ['summary', 'intraday'].")
 else:
     raise ValueError("column_format can only be one of ['JSON', 'PLAIN_TEXT'].")
 
 if parsed_data.shape[0] > 0 and fitbit_data_type == "summary":
-    
     if sleep_episode_timestamp != "start" and sleep_episode_timestamp != "end":
         raise ValueError("SLEEP_EPISODE_TIMESTAMP can only be one of ['start', 'end'].")
-
     # Column name to be considered as the event datetime
     datetime_column = "local_" + sleep_episode_timestamp + "_date_time"
-    # Only keep dates in the range of [local_start_date, local_end_date)
-    parsed_data = parsed_data.loc[(parsed_data[datetime_column] >= local_start_date) & (parsed_data[datetime_column] < local_end_date)]
-    # Convert datetime to timestamp
-    parsed_data["timestamp"] = parsed_data[datetime_column].dt.tz_localize(timezone).astype(np.int64) // 10**6
-    # Drop useless columns: local_start_date_time and local_end_date_time
+    
+    if not pd.isnull(local_start_date) and not pd.isnull(local_end_date):
+        parsed_data = parsed_data.loc[(parsed_data[datetime_column] >= local_start_date) & (parsed_data[datetime_column] < local_end_date)]
+    parsed_data["timestamp"] = parsed_data[datetime_column].dt.tz_localize(timezone, ambiguous=False, nonexistent="NaT").dropna().astype(np.int64) // 10**6
+    parsed_data.dropna(subset=['timestamp'], inplace=True)
     parsed_data.drop(["local_start_date_time", "local_end_date_time"], axis = 1, inplace=True)
 
 if parsed_data.shape[0] > 0 and fitbit_data_type == "intraday":
-    # Only keep dates in the range of [local_start_date, local_end_date)
-    parsed_data = parsed_data.loc[(parsed_data["local_date_time"] >= local_start_date) & (parsed_data["local_date_time"] < local_end_date)]
-    # Convert datetime to timestamp
-    parsed_data["timestamp"] = parsed_data["local_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
-    # Unifying level
+    if not pd.isnull(local_start_date) and not pd.isnull(local_end_date):
+        parsed_data = parsed_data.loc[(parsed_data["local_date_time"] >= local_start_date) & (parsed_data["local_date_time"] < local_end_date)]
+    parsed_data["timestamp"] = parsed_data["local_date_time"].dt.tz_localize(timezone, ambiguous=False, nonexistent="NaT").dropna().astype(np.int64) // 10**6
+    parsed_data.dropna(subset=['timestamp'], inplace=True)
     parsed_data["unified_level"] = np.where(parsed_data["level"].isin(["awake", "wake", "restless"]), 0, 1)
 
 parsed_data.to_csv(snakemake.output[0], index=False)

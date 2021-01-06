@@ -41,10 +41,14 @@ elif table_format == "CSV":
     summary = pd.read_csv(snakemake.input[0], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
     intraday = pd.read_csv(snakemake.input[1], parse_dates=["local_date_time"], date_parser=lambda col: pd.to_datetime(col).tz_localize(None))
 
+#    if not pd.isnull(local_start_date) and not pd.isnull(local_end_date):
+
 if summary.shape[0] > 0:
-    summary["timestamp"] = summary["local_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
+    summary["timestamp"] = summary["local_date_time"].dt.tz_localize(timezone, ambiguous=False, nonexistent="NaT").dropna().astype(np.int64) // 10**6
+    summary.dropna(subset=['timestamp'], inplace=True)
 if intraday.shape[0] > 0:
-    intraday["timestamp"] = intraday["local_date_time"].dt.tz_localize(timezone).astype(np.int64) // 10**6
+    intraday["timestamp"] = intraday["local_date_time"].dt.tz_localize(timezone, ambiguous=False, nonexistent="NaT").dropna().astype(np.int64) // 10**6
+    intraday.dropna(subset=['timestamp'], inplace=True)
 
 summary.to_csv(snakemake.output["summary_data"], index=False)
 intraday.to_csv(snakemake.output["intraday_data"], index=False)
