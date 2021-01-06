@@ -11,8 +11,8 @@ group <- config$SOURCE$DATABASE_GROUP
 timezone <- config$SOURCE$TIMEZONE
 phone_device_id_column = config$PHONE_SECTION$DEVICE_ID_COLUMN
 fitbit_device_id_column = config$FITBIT_SECTION$DEVICE_ID_COLUMN
-add_fitbit_section = config$PHONE_SECTION$ADD
-add_phone_section = config$FITBIT_SECTION$ADD
+add_phone_section = config$PHONE_SECTION$ADD
+add_fitbit_section = config$FITBIT_SECTION$ADD
 phone_ignored = config$PHONE_SECTION$IGNORED_DEVICE_IDS
 fitbit_ignored = config$FITBIT_SECTION$IGNORED_DEVICE_IDS
 
@@ -39,7 +39,8 @@ if(config$SOURCE$TYPE == "AWARE_DEVICE_TABLE"){
 
 } else if(config$SOURCE$TYPE == "CSV_FILE"){
   participants <- read_csv(config$SOURCE$CSV_FILE_PATH, col_types=cols_only(device_id="c",pid="c",label="c",platform="c",
-                            start_date=col_date(format = "%Y-%m-%d"),end_date=col_date(format = "%Y-%m-%d"),fitbit_id="c"))
+                            start_date=col_date(format = "%Y-%m-%d"),end_date=col_date(format = "%Y-%m-%d"),fitbit_id="c")) %>% 
+                            mutate(start_date = as.character(start_date), end_date = as.character(end_date)) # we read as date to validate format
   participants <- participants %>% 
   mutate(!!phone_device_id_column := str_replace(!!rlang::sym(phone_device_id_column), ";",","),
          platform = str_replace(platform, ";",","),
@@ -55,16 +56,18 @@ participants %>%
     empty_fitbit <- c("FITBIT:", "  DEVICE_IDS:", "  LABEL:", "  START_DATE:", "  END_DATE:")
     row <- tibble(...)
     lines <- c()
+    start_date = if_else(is.na(row$start_date), "", row$start_date)
+    end_date = if_else(is.na(row$end_date), "", row$end_date)
 
     if(add_phone_section == TRUE && !is.na(row[phone_device_id_column])){
       lines <- append(lines, c("PHONE:", paste0("  DEVICE_IDS: [",row[phone_device_id_column],"]"), paste0("  PLATFORMS: [",row$platform,"]"),
-                               paste("  LABEL:",row$label), paste("  START_DATE:", row$start_date), paste("  END_DATE:", row$end_date)))
+                               paste("  LABEL:",row$label), paste("  START_DATE:", start_date), paste("  END_DATE:", end_date)))
     }else
       lines <- append(lines, empty_phone)
     
     if(add_fitbit_section == TRUE && !is.na(row[fitbit_device_id_column])){
       lines <- append(lines, c("FITBIT:", paste0("  DEVICE_IDS: [",row[fitbit_device_id_column],"]"),
-                               paste("  LABEL:",row$label), paste("  START_DATE:", row$start_date), paste("  END_DATE:", row$end_date)))
+                               paste("  LABEL:",row$label), paste("  START_DATE:", start_date), paste("  END_DATE:", end_date)))
     } else
       lines <- append(lines, empty_fitbit)
     
