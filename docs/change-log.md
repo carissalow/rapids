@@ -5,6 +5,8 @@
 - Update CI to create a release on a tagged push that passes the tests
 - Clarify in DB credential configuration that we only support MySQL
 - Add Windows installation instructions
+- Fix bugs in the create_participants_file script
+- Fix bugs in Fitbit data parsing.
 ## v0.3.1
 - Update installation docs for RAPIDS' docker container
 - Fix example analysis use of accelerometer data in a plot
