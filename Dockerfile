@@ -6,6 +6,7 @@ RUN apt update && apt install -y \
     libssl-dev \
     libxml2-dev \
     libmysqlclient-dev \
+    libglpk40 \
     mysql-server
 RUN apt-get update && apt-get install -y gnupg
 RUN apt-get update && apt-get install -y software-properties-common

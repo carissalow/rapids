@@ -119,6 +119,7 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         sudo apt install libcurl4-openssl-dev
         sudo apt install libssl-dev
         sudo apt install libxml2-dev
+        sudo apt install libglpk40
         ```
 
     2.  Install MySQL
