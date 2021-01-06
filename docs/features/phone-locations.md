@@ -124,8 +124,8 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][BARNETT]`:
 |timeattop1location                                           |minutes       |Time spent at the most significant location.
 |timeattop2location                                           |minutes       |Time spent at the 2nd most significant location.
 |timeattop3location                                           |minutes       |Time spent at the 3rd most significant location. 
-|movingtostaticratio                                          | -   |  Ratio between the number of rows labeled Moving versus Static
-|outlierstimepercent                                          | -   | Ratio between the number of rows that belong to non-significant clusters divided by the total number of rows in a time segment.
+|movingtostaticratio                                          | -   |  Ratio between stationary time and total location sensed time. A lat/long coordinate pair is labelled as stationary if it’s speed (distance/time) to the next coordinate pair is less than 1km/hr. A higher value represents a more stationary routine. These times are computed by multiplying the number of rows by `[SAMPLING_FREQUENCY]`
+|outlierstimepercent                                          | -   | Ratio between the time spent in non-significant clusters divided by the time spent in all clusters (total location sensed time). A higher value represents more time spent in non-significant clusters. These times are computed by multiplying the number of rows by `[SAMPLING_FREQUENCY]`
 |maxlengthstayatclusters                                      |minutes       |Maximum time spent in a cluster (significant location).
 |minlengthstayatclusters                                      |minutes       |Minimum time spent in a cluster (significant location).
 |meanlengthstayatclusters                                     |minutes       |Average time spent in a cluster (significant location).
