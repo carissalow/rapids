@@ -204,7 +204,7 @@ def parse_time_segments(time_segments_file, segments_type, device_ids):
 participant_file = yaml.load(open(snakemake.input[1], 'r'), Loader=yaml.FullLoader)
 device_ids = []
 for key in participant_file.keys():
-    if "DEVICE_IDS" in participant_file[key]:
+    if "DEVICE_IDS" in participant_file[key] and isinstance(participant_file[key]["DEVICE_IDS"], list):
         device_ids = device_ids + participant_file[key]["DEVICE_IDS"]
 
 final_time_segments = parse_time_segments(snakemake.input[0], snakemake.params["time_segments_type"], device_ids)
