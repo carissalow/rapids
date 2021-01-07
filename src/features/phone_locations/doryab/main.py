@@ -13,6 +13,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     threshold_static = provider["THRESHOLD_STATIC"]
     maximum_gap_allowed = provider["MAXIMUM_GAP_ALLOWED"]
     sampling_frequency = provider["SAMPLING_FREQUENCY"]
+    cluster_on = provider["CLUSTER_ON"]
     
     minutes_data_used = provider["MINUTES_DATA_USED"]
     if(minutes_data_used):
@@ -28,7 +29,14 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     if location_data.empty:
         location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
     else:
-        location_data = filter_data_by_segment(location_data, time_segment)
+        if cluster_on == "PARTICIPANT_DATASET":
+            location_data = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
+            location_data = filter_data_by_segment(location_data, time_segment)
+        elif cluster_on == "TIME_SEGMENT":
+            location_data = filter_data_by_segment(location_data, time_segment)
+            location_data = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
+        else:
+            raise ValueError("Incorrect Clustering technique in Config")
 
         if location_data.empty:
             location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
@@ -47,7 +55,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
             location_data = location_data[(location_data['double_latitude']!=0.0) & (location_data['double_longitude']!=0.0)]
 
             if location_data.empty:
-                location_features = pd.DataFrame(columns=["local_date"] + ["location_" + time_segment + "_" + x for x in features_to_compute])
+                location_features = pd.DataFrame(columns=["local_segment"] + ["location_" + time_segment + "_" + x for x in features_to_compute])
                 location_features = location_features.reset_index(drop=True)
                 return location_features
 
@@ -60,8 +68,8 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
             
             preComputedDistanceandSpeed = pd.DataFrame()
             for localDate in location_data['local_segment'].unique():
-                distance, speeddf = get_all_travel_distances_meters_speed(location_data[location_data['local_segment']==localDate],threshold_static,maximum_gap_allowed)
-                preComputedDistanceandSpeed.loc[localDate,"distance"] = distance.sum()
+                speeddf = get_all_travel_distances_meters_speed(location_data[location_data['local_segment']==localDate],threshold_static,maximum_gap_allowed)
+                preComputedDistanceandSpeed.loc[localDate,"distance"] = speeddf['distances'].sum() 
                 preComputedDistanceandSpeed.loc[localDate,"avgspeed"] = speeddf[speeddf['speedTag'] == 'Moving']['speed'].mean()
                 preComputedDistanceandSpeed.loc[localDate,"varspeed"] = speeddf[speeddf['speedTag'] == 'Moving']['speed'].var()
 
@@ -81,71 +89,72 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
                 for localDate in location_data['local_segment'].unique():
                     location_features.loc[localDate,"circadianmovement"] = circadian_movement(location_data[location_data['local_segment']==localDate])
 
-            newLocationData = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
+            
+            stationaryLocations = location_data[location_data['stationary_or_not'] == 1]
 
             if "numberofsignificantplaces" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
-                    location_features.loc[localDate,"numberofsignificantplaces"] = number_of_significant_places(newLocationData[newLocationData['local_segment']==localDate])
+                for localDate in stationaryLocations['local_segment'].unique():
+                    location_features.loc[localDate,"numberofsignificantplaces"] = number_of_significant_places(stationaryLocations[stationaryLocations['local_segment']==localDate])
 
             if "numberlocationtransitions" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
-                    location_features.loc[localDate,"numberlocationtransitions"] = number_location_transitions(newLocationData[newLocationData['local_segment']==localDate])
+                for localDate in stationaryLocations['local_segment'].unique():
+                    location_features.loc[localDate,"numberlocationtransitions"] = number_location_transitions(stationaryLocations[stationaryLocations['local_segment']==localDate])
             
             if "radiusgyration" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
-                    location_features.loc[localDate,"radiusgyration"] = radius_of_gyration(newLocationData[newLocationData['local_segment']==localDate],sampling_frequency)
+                for localDate in stationaryLocations['local_segment'].unique():
+                    location_features.loc[localDate,"radiusgyration"] = radius_of_gyration(stationaryLocations[stationaryLocations['local_segment']==localDate],sampling_frequency)
 
             if "timeattop1location" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
-                    location_features.loc[localDate,"timeattop1"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_segment']==localDate],1,sampling_frequency)
+                for localDate in stationaryLocations['local_segment'].unique():
+                    location_features.loc[localDate,"timeattop1"] = time_at_topn_clusters_in_group(stationaryLocations[stationaryLocations['local_segment']==localDate],1,sampling_frequency)
 
             if "timeattop2location" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
-                    location_features.loc[localDate,"timeattop2"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_segment']==localDate],2,sampling_frequency)
+                for localDate in stationaryLocations['local_segment'].unique():
+                    location_features.loc[localDate,"timeattop2"] = time_at_topn_clusters_in_group(stationaryLocations[stationaryLocations['local_segment']==localDate],2,sampling_frequency)
             
             if "timeattop3location" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
-                    location_features.loc[localDate,"timeattop3"] = time_at_topn_clusters_in_group(newLocationData[newLocationData['local_segment']==localDate],3,sampling_frequency)
+                for localDate in stationaryLocations['local_segment'].unique():
+                    location_features.loc[localDate,"timeattop3"] = time_at_topn_clusters_in_group(stationaryLocations[stationaryLocations['local_segment']==localDate],3,sampling_frequency)
 
             if "movingtostaticratio" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
-                    location_features.loc[localDate,"movingtostaticratio"] =  (newLocationData[newLocationData['local_segment']==localDate].shape[0]*sampling_frequency) / (location_data[location_data['local_segment']==localDate].shape[0] * sampling_frequency)
+                for localDate in stationaryLocations['local_segment'].unique():
+                    location_features.loc[localDate,"movingtostaticratio"] =  (stationaryLocations[stationaryLocations['local_segment']==localDate].shape[0]*sampling_frequency) / (location_data[location_data['local_segment']==localDate].shape[0] * sampling_frequency)
 
             if "outlierstimepercent" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
-                    location_features.loc[localDate,"outlierstimepercent"] = outliers_time_percent(newLocationData[newLocationData['local_segment']==localDate],sampling_frequency)
+                for localDate in stationaryLocations['local_segment'].unique():
+                    location_features.loc[localDate,"outlierstimepercent"] = outliers_time_percent(stationaryLocations[stationaryLocations['local_segment']==localDate],sampling_frequency)
 
             preComputedmaxminCluster = pd.DataFrame()
-            for localDate in newLocationData['local_segment'].unique():
-                    smax, smin, sstd,smean = len_stay_at_clusters_in_minutes(newLocationData[newLocationData['local_segment']==localDate],sampling_frequency)
+            for localDate in stationaryLocations['local_segment'].unique():
+                    smax, smin, sstd,smean = len_stay_at_clusters_in_minutes(stationaryLocations[stationaryLocations['local_segment']==localDate],sampling_frequency)
                     preComputedmaxminCluster.loc[localDate,"maxlengthstayatclusters"] = smax 
                     preComputedmaxminCluster.loc[localDate,"minlengthstayatclusters"] = smin 
                     preComputedmaxminCluster.loc[localDate,"stdlengthstayatclusters"] = sstd
                     preComputedmaxminCluster.loc[localDate,"meanlengthstayatclusters"] = smean
             
             if "maxlengthstayatclusters" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
+                for localDate in stationaryLocations['local_segment'].unique():
                     location_features.loc[localDate,"maxlengthstayatclusters"] = preComputedmaxminCluster.loc[localDate,"maxlengthstayatclusters"]
             
             if "minlengthstayatclusters" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
+                for localDate in stationaryLocations['local_segment'].unique():
                     location_features.loc[localDate,"minlengthstayatclusters"] = preComputedmaxminCluster.loc[localDate,"minlengthstayatclusters"]
 
             if "stdlengthstayatclusters" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
+                for localDate in stationaryLocations['local_segment'].unique():
                     location_features.loc[localDate,"stdlengthstayatclusters"] = preComputedmaxminCluster.loc[localDate,"stdlengthstayatclusters"]
 
             if "meanlengthstayatclusters" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
+                for localDate in stationaryLocations['local_segment'].unique():
                     location_features.loc[localDate,"meanlengthstayatclusters"] = preComputedmaxminCluster.loc[localDate,"meanlengthstayatclusters"]
 
             if "locationentropy" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
-                    location_features.loc[localDate,"locationentropy"] = location_entropy(newLocationData[newLocationData['local_segment']==localDate])
+                for localDate in stationaryLocations['local_segment'].unique():
+                    location_features.loc[localDate,"locationentropy"] = location_entropy(stationaryLocations[stationaryLocations['local_segment']==localDate])
 
             if "normalizedlocationentropy" in features_to_compute:
-                for localDate in newLocationData['local_segment'].unique():
-                    location_features.loc[localDate,"normalizedlocationentropy"] = location_entropy_normalized(newLocationData[newLocationData['local_segment']==localDate])
+                for localDate in stationaryLocations['local_segment'].unique():
+                    location_features.loc[localDate,"normalizedlocationentropy"] = location_entropy_normalized(stationaryLocations[stationaryLocations['local_segment']==localDate])
             
             location_features = location_features.reset_index()
 
@@ -165,30 +174,19 @@ def distance_to_degrees(d):
 
 def get_all_travel_distances_meters_speed(locationData,threshold,maximum_gap_allowed):
     
-    lat_lon_temp = pd.DataFrame()
-
-    lat_lon_temp['_lat_before'] = locationData.double_latitude
-    lat_lon_temp['_lat_after'] = locationData.double_latitude.shift(-1)
-    lat_lon_temp['_lon_before'] = locationData.double_longitude
-    lat_lon_temp['_lon_after'] = locationData.double_longitude.shift(-1)
-    lat_lon_temp['time_before'] = pd.to_datetime(locationData['local_time'], format="%H:%M:%S")
-    lat_lon_temp['time_after'] = lat_lon_temp['time_before'].shift(-1)
-    lat_lon_temp['time_diff'] = lat_lon_temp['time_after'] - lat_lon_temp['time_before']
-    lat_lon_temp['timeInSeconds'] = lat_lon_temp['time_diff'].apply(lambda x: x.total_seconds())
-
-    lat_lon_temp = lat_lon_temp[lat_lon_temp['timeInSeconds'] <= maximum_gap_allowed]
-
-    if lat_lon_temp.empty:
-        return pd.Series(), pd.DataFrame({"speed": [], "speedTag": []})
+    locationData['timeInSeconds'] = (locationData.timestamp.diff(-1)* -1)/1000
+    lat_lon_temp = locationData[locationData['timeInSeconds'] <= maximum_gap_allowed][['double_latitude','double_longitude','timeInSeconds']]
     
-    lat_lon_temp['distances'] = lat_lon_temp.apply(haversine, axis=1)  # meters
-    lat_lon_temp['speed']  = (lat_lon_temp['distances'] / lat_lon_temp['timeInSeconds'] )
-    lat_lon_temp['speed'] = lat_lon_temp['speed'].replace(np.inf, np.nan) * 3.6
-    distances = lat_lon_temp['distances']
-    lat_lon_temp = lat_lon_temp.dropna()
+    if lat_lon_temp.empty:
+        return pd.DataFrame({"speed": [], "speedTag": [],"distances": []})
+    
+    lat_lon_temp['distances'] = haversine(lat_lon_temp['double_longitude'],lat_lon_temp['double_latitude'],lat_lon_temp['double_longitude'].shift(-1),lat_lon_temp['double_latitude'].shift(-1)) 
+    lat_lon_temp['speed']  = (lat_lon_temp['distances'] / lat_lon_temp['timeInSeconds'] )  # meter/second
+    lat_lon_temp['speed'] = lat_lon_temp['speed'].replace(np.inf, np.nan) * 3.6  
+    
     lat_lon_temp['speedTag'] = np.where(lat_lon_temp['speed'] >= threshold,"Moving","Static")
-
-    return distances,lat_lon_temp[['speed','speedTag']]
+    
+    return lat_lon_temp[['speed','speedTag','distances']]
 
 
 def vincenty_row(x):
@@ -203,22 +201,20 @@ def vincenty_row(x):
     except:
        return 0
 
-def haversine(x):
+def haversine(lon1,lat1,lon2,lat2):
     """
     Calculate the great circle distance between two points 
     on the earth (specified in decimal degrees)
     """
     # convert decimal degrees to radians 
-    lon1, lat1, lon2, lat2 = x['_lon_before'], x['_lat_before'],x['_lon_after'], x['_lat_after']
-    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+    lon1, lat1, lon2, lat2 = np.radians([lon1, lat1, lon2, lat2])
 
     # haversine formula 
-    dlon = lon2 - lon1 
-    dlat = lat2 - lat1 
-    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
-    c = 2 * asin(sqrt(a)) 
+    a = np.sin((lat2-lat1)/2.0)**2 + np.cos(lat1) * np.cos(lat2) * np.sin((lon2-lon1)/2.0)**2
+
     r = 6371 # Radius of earth in kilometers. Use 3956 for miles
-    return c * r* 1000
+
+    return (r * 2 * np.arcsin(np.sqrt(a)) * 1000)
 
 
 def circadian_movement_energies(locationData):
@@ -251,38 +247,41 @@ def cluster_and_label(df,**kwargs):
     :return: a new df of labeled locations with moving points removed, where the cluster
              labeled as "1" is the largest, "2" the second largest, and so on
     """
-    location_data = df
-    if not isinstance(df.index, pd.DatetimeIndex):
-        location_data = df.set_index("local_date_time")
+    if not df.empty:
+        location_data = df
+        if not isinstance(df.index, pd.DatetimeIndex):
+            location_data = df.set_index("local_date_time")
 
-    stationary = remove_moving(location_data,1)
+        stationary = mark_moving(location_data,1)
 
-    #return degrees(arcminutes=nautical(meters= d))
-    #nautical miles = m ÷ 1,852
-    clusterer = DBSCAN(**kwargs)
+        #return degrees(arcminutes=nautical(meters= d))
+        #nautical miles = m ÷ 1,852
+        clusterer = DBSCAN(**kwargs)
 
-    counts_df = stationary[["double_latitude" ,"double_longitude"]].groupby(["double_latitude" ,"double_longitude"]).size().reset_index()
-    counts = counts_df[0]
-    lat_lon = counts_df[["double_latitude","double_longitude"]].values
-    cluster_results = clusterer.fit_predict(lat_lon, sample_weight= counts)
+        counts_df = stationary[["double_latitude" ,"double_longitude"]].groupby(["double_latitude" ,"double_longitude"]).size().reset_index()
+        counts = counts_df[0]
+        lat_lon = counts_df[["double_latitude","double_longitude"]].values
+        cluster_results = clusterer.fit_predict(lat_lon, sample_weight= counts)
 
-    #Need to extend labels back to original df without weights
-    counts_df["location_label"] = cluster_results
-    # remove the old count column
-    del counts_df[0]
+        #Need to extend labels back to original df without weights
+        counts_df["location_label"] = cluster_results
+        # remove the old count column
+        del counts_df[0]
 
-    merged = pd.merge(stationary,counts_df, on = ["double_latitude" ,"double_longitude"])
+        merged = pd.merge(stationary,counts_df, on = ["double_latitude" ,"double_longitude"])
 
-    #Now compute the label mapping:
-    cluster_results = merged["location_label"].values
-    valid_clusters = cluster_results[np.where(cluster_results != -1)]
-    label_map = rank_count_map(valid_clusters)
+        #Now compute the label mapping:
+        cluster_results = merged["location_label"].values
+        valid_clusters = cluster_results[np.where(cluster_results != -1)]
+        label_map = rank_count_map(valid_clusters)
 
-    #And remap the labels:
-    merged.index = stationary.index
-    stationary = stationary.assign(location_label = merged["location_label"].map(label_map).values)
-    stationary.loc[:, "location_label"] = merged["location_label"].map(label_map)
-    return stationary
+        #And remap the labels:
+        merged.index = stationary.index
+        stationary = stationary.assign(location_label = merged["location_label"].map(label_map).values)
+        stationary.loc[:, "location_label"] = merged["location_label"].map(label_map)
+        return stationary
+    else:
+        return df
 
 def rank_count_map(clusters):
     """ Returns a function which will map each element of a list 'l' to its rank,
@@ -303,24 +302,17 @@ def rank_count_map(clusters):
     return lambda x: label_to_rank.get(x, -1)
 
 
-def remove_moving(df, v):
+def mark_moving(df, v):
 
     if not df.index.is_monotonic:
         df = df.sort_index()
 
-    lat_lon_temp = pd.DataFrame()
-
-    lat_lon_temp['_lat_before'] = df.double_latitude.shift()
-    lat_lon_temp['_lat_after'] =  df.double_latitude.shift(-1)
-    lat_lon_temp['_lon_before'] = df.double_longitude.shift()
-    lat_lon_temp['_lon_after'] =  df.double_longitude.shift(-1)
-
-    #
-    distance = lat_lon_temp.apply( haversine, axis = 1) / 1000
-    time = ((pd.to_datetime(df.reset_index().local_date_time.shift(-1),format="%Y-%m-%d %H:%M:%S") - pd.to_datetime(df.reset_index().local_date_time.shift(),format="%Y-%m-%d %H:%M:%S")) / np.timedelta64(1,'s')).fillna(-1) / (60.*60)
-    time.index = distance.index.copy()
+    distance = haversine(df.double_longitude,df.double_latitude,df.double_longitude.shift(-1),df.double_latitude.shift(-1))/ 1000
+    time = (df.timestamp.diff(-1) * -1) / (1000*60*60)
     
-    return df[(distance / time) < v]
+    df['stationary_or_not'] = np.where((distance / time) < v,1,0)   # 1 being stationary,0 for moving 
+
+    return df
 
 def number_of_significant_places(locationData):
     
@@ -345,14 +337,9 @@ def radius_of_gyration(locationData,sampling_frequency):
     clusters_centroid = valid_clusters.groupby('location_label')[['double_latitude','double_longitude']].mean()
     
     rog = 0
-    for labels in clusters_centroid.index:
-        lat_lon_dict = dict()
-        lat_lon_dict['_lon_before'] = clusters_centroid.loc[labels].double_longitude
-        lat_lon_dict['_lat_before'] = clusters_centroid.loc[labels].double_latitude
-        lat_lon_dict['_lon_after'] = centroid_all_clusters.double_longitude
-        lat_lon_dict['_lat_after'] = centroid_all_clusters.double_latitude
-        
-        distance = haversine(lat_lon_dict) ** 2
+    for labels in clusters_centroid.index:    
+        distance = haversine(clusters_centroid.loc[labels].double_longitude,clusters_centroid.loc[labels].double_latitude,
+                    centroid_all_clusters.double_longitude,centroid_all_clusters.double_latitude) ** 2
         
         time_in_cluster = locationData[locationData["location_label"]==labels].shape[0]* sampling_frequency
         rog = rog + (time_in_cluster * distance)
@@ -396,8 +383,7 @@ def moving_time_percent(locationData):
     lbls = locationData["location_label"]
     nummoving = lbls.isnull().sum()
     numtotal = len(lbls)
-    # print (nummoving)
-    # print(numtotal)
+    
     return (float(nummoving) / numtotal)
 
 def len_stay_at_clusters_in_minutes(locationData,sampling_frequency):
@@ -467,4 +453,4 @@ def location_entropy_normalized(locationData):
 
 def getSamplingFrequency(locationData):
 
-    return ((pd.to_datetime(locationData['local_time'], format="%H:%M:%S") - pd.to_datetime(locationData['local_time'].shift(periods=1), format="%H:%M:%S")).apply(lambda x: x.total_seconds())/60).median()
+    return (locationData.timestamp.diff()/(1000*60)).median()
