@@ -1,7 +1,7 @@
 name: docker
 on:
   release:
-    types: [published, edited, released]
+    types: [edited, released]
 jobs:
   main:
     runs-on: ubuntu-20.04
