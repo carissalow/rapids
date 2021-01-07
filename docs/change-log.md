@@ -1,12 +1,15 @@
 # Change Log
 
-## Next version v0.3.2
+## v0.3.2
 - Update docker and linux instructions to use RSPM binary repo for for faster installation
 - Update CI to create a release on a tagged push that passes the tests
 - Clarify in DB credential configuration that we only support MySQL
 - Add Windows installation instructions
 - Fix bugs in the create_participants_file script
 - Fix bugs in Fitbit data parsing.
+- Fixed Doryab location features context of clustering.
+- Fixed the wrong shifting while calculating distance in Doryab location features.
+- Refactored the haversine function
 ## v0.3.1
 - Update installation docs for RAPIDS' docker container
 - Fix example analysis use of accelerometer data in a plot
