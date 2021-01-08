@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from astropy.timeseries import LombScargle
-from sklearn.cluster import DBSCAN
+from sklearn.cluster import DBSCAN,OPTICS
 from math import radians, cos, sin, asin, sqrt
 
 def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
@@ -14,6 +14,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     maximum_gap_allowed = provider["MAXIMUM_GAP_ALLOWED"]
     sampling_frequency = provider["SAMPLING_FREQUENCY"]
     cluster_on = provider["CLUSTER_ON"]
+    clustering_algorithm = provider["CLUSTERING_ALGORITHM"]
     
     minutes_data_used = provider["MINUTES_DATA_USED"]
     if(minutes_data_used):
@@ -24,19 +25,25 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     # the subset of requested features this function can compute
     features_to_compute = list(set(requested_features) & set(base_features_names))
 
-    
+    if clustering_algorithm == "DBSCAN":
+        hyperparameters = {'eps' : distance_to_degrees(dbscan_eps), 'min_samples': dbscan_minsamples}
+    elif clustering_algorithm == "OPTICS":
+        hyperparameters = {'max_eps': distance_to_degrees(dbscan_eps), 'min_samples': 2, 'metric':'euclidean', 'cluster_method' : 'dbscan'} 
+    else:
+        raise ValueError("Incorrect Clustering technique in Config")
 
     if location_data.empty:
         location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
     else:
         if cluster_on == "PARTICIPANT_DATASET":
-            location_data = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
+            location_data = cluster_and_label(location_data,clustering_algorithm,**hyperparameters)
             location_data = filter_data_by_segment(location_data, time_segment)
+
         elif cluster_on == "TIME_SEGMENT":
             location_data = filter_data_by_segment(location_data, time_segment)
-            location_data = cluster_and_label(location_data, eps= distance_to_degrees(dbscan_eps), min_samples=dbscan_minsamples)
+            location_data = cluster_and_label(location_data,clustering_algorithm,**hyperparameters)
         else:
-            raise ValueError("Incorrect Clustering technique in Config")
+            raise ValueError("Incorrect Clustering Dataset in Config")
 
         if location_data.empty:
             location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
@@ -237,7 +244,7 @@ def circadian_movement(locationData):
     energy_latitude, energy_longitude = circadian_movement_energies(locationData)
     return np.log10(energy_latitude + energy_longitude)
 
-def cluster_and_label(df,**kwargs):
+def cluster_and_label(df,clustering_algorithm,**kwargs):
     """
 
     :param df:   a df with columns "latitude", "longitude", and "datetime"
@@ -254,14 +261,16 @@ def cluster_and_label(df,**kwargs):
 
         stationary = mark_moving(location_data,1)
 
-        #return degrees(arcminutes=nautical(meters= d))
-        #nautical miles = m ÷ 1,852
-        clusterer = DBSCAN(**kwargs)
-
         counts_df = stationary[["double_latitude" ,"double_longitude"]].groupby(["double_latitude" ,"double_longitude"]).size().reset_index()
         counts = counts_df[0]
         lat_lon = counts_df[["double_latitude","double_longitude"]].values
-        cluster_results = clusterer.fit_predict(lat_lon, sample_weight= counts)
+
+        if clustering_algorithm == "DBSCAN":
+            clusterer = DBSCAN(**kwargs)
+            cluster_results = clusterer.fit_predict(lat_lon, sample_weight= counts)
+        else:
+            clusterer = OPTICS(**kwargs)
+            cluster_results = clusterer.fit_predict(lat_lon)
 
         #Need to extend labels back to original df without weights
         counts_df["location_label"] = cluster_results
