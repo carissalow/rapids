@@ -107,6 +107,7 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 | `[MINUTES_DATA_USED]`     | Set to `True` to include an extra column in the final location feature file containing the number of minutes used to compute the features on each time segment. Use this for quality control purposes, the more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
 | `[SAMPLING_FREQUENCY]`     | Expected time difference between any two location rows in minutes. If set to `0`, the sampling frequency will be inferred automatically as the median of all the differences between any two consecutive row timestamps (recommended if you are using `FUSED_RESAMPLED` data). This parameter impacts all the time calculations.
 | `[CLUSTER_ON]`             | Set this flag to `PARTICIPANT_DATASET` to create clusters based on the entire participant's dataset or to `TIME_SEGMENT` to create clusters based on all the instances of the corresponding time segment (e.g. all mornings).
+| `[CLUSTERING_ALGORITHM]`   | The original Doryab et al implementation uses `DBSCAN`, `OPTICS` is also available with similar (but not identical) clustering results and lower memory consumption.
 
 
 Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:

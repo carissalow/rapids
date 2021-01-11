@@ -30,7 +30,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     elif clustering_algorithm == "OPTICS":
         hyperparameters = {'max_eps': distance_to_degrees(dbscan_eps), 'min_samples': 2, 'metric':'euclidean', 'cluster_method' : 'dbscan'} 
     else:
-        raise ValueError("Incorrect Clustering technique in Config")
+        raise ValueError("config[PHONE_LOCATIONS][DORYAB][CLUSTERING ALGORITHM] only accepts DBSCAN or OPTICS but you provided ",clustering_algorithm)
 
     if location_data.empty:
         location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
@@ -43,7 +43,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
             location_data = filter_data_by_segment(location_data, time_segment)
             location_data = cluster_and_label(location_data,clustering_algorithm,**hyperparameters)
         else:
-            raise ValueError("Incorrect Clustering Dataset in Config")
+            raise ValueError("config[PHONE_LOCATIONS][DORYAB][CLUSTER_ON] only accepts PARTICIPANT_DATASET or TIME_SEGMENT but you provided ",cluster_on)
 
         if location_data.empty:
             location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
