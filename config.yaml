@@ -209,14 +209,14 @@ PHONE_LOCATIONS:
     DORYAB:
       COMPUTE: False
       FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
-      DBSCAN_EPS: 10 # meters
+      DBSCAN_EPS: 100 # meters
       DBSCAN_MINSAMPLES: 5
       THRESHOLD_STATIC : 1 # km/h
       MAXIMUM_GAP_ALLOWED: 300
       MINUTES_DATA_USED: False
       SAMPLING_FREQUENCY: 0
       CLUSTER_ON: TIME_SEGMENT # PARTICIPANT_DATASET,TIME_SEGMENT
-      CLUSTERING_ALGORITHM: DBSCAN
+      CLUSTERING_ALGORITHM: DBSCAN #DBSCAN,OPTICS  
       SRC_FOLDER: "doryab" # inside src/features/phone_locations
       SRC_LANGUAGE: "python"
 

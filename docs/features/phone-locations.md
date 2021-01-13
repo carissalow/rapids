@@ -142,3 +142,6 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 
     **The Circadian Calculation**
     For a detailed description of how this is calculated, see [Canzian et al](../../citation#doryab-locations).
+
+    **Fine Tuning Clustering Parameters**
+    After running the Clustering algorithm on our own data for 7 days. We realised that EPS=10 gave us way more significant location then intended. Finally experimenting with different values *EPS*=100 worked better than other values, as mean of the location accuracy data was 86 for us. Higher values missed out few significant places like a small grocery visit between home and another major location nearby. Lower values picked up traffic lights and stop signs while driving as significant locations too. *EPS*=100 turned out to be more balanced.

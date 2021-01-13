@@ -36,12 +36,12 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
         location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
     else:
         if cluster_on == "PARTICIPANT_DATASET":
-            location_data = cluster_and_label(location_data,clustering_algorithm,**hyperparameters)
+            location_data = cluster_and_label(location_data,clustering_algorithm,threshold_static,**hyperparameters)
             location_data = filter_data_by_segment(location_data, time_segment)
 
         elif cluster_on == "TIME_SEGMENT":
             location_data = filter_data_by_segment(location_data, time_segment)
-            location_data = cluster_and_label(location_data,clustering_algorithm,**hyperparameters)
+            location_data = cluster_and_label(location_data,clustering_algorithm,threshold_static,**hyperparameters)
         else:
             raise ValueError("config[PHONE_LOCATIONS][DORYAB][CLUSTER_ON] only accepts PARTICIPANT_DATASET or TIME_SEGMENT but you provided ",cluster_on)
 
@@ -244,7 +244,7 @@ def circadian_movement(locationData):
     energy_latitude, energy_longitude = circadian_movement_energies(locationData)
     return np.log10(energy_latitude + energy_longitude)
 
-def cluster_and_label(df,clustering_algorithm,**kwargs):
+def cluster_and_label(df,clustering_algorithm,threshold_static,**kwargs):
     """
 
     :param df:   a df with columns "latitude", "longitude", and "datetime"
@@ -259,7 +259,7 @@ def cluster_and_label(df,clustering_algorithm,**kwargs):
         if not isinstance(df.index, pd.DatetimeIndex):
             location_data = df.set_index("local_date_time")
 
-        stationary = mark_moving(location_data,1)
+        stationary = mark_moving(location_data,threshold_static)
 
         counts_df = stationary[["double_latitude" ,"double_longitude"]].groupby(["double_latitude" ,"double_longitude"]).size().reset_index()
         counts = counts_df[0]
@@ -311,7 +311,7 @@ def rank_count_map(clusters):
     return lambda x: label_to_rank.get(x, -1)
 
 
-def mark_moving(df, v):
+def mark_moving(df, threshold_static):
 
     if not df.index.is_monotonic:
         df = df.sort_index()
@@ -319,7 +319,7 @@ def mark_moving(df, v):
     distance = haversine(df.double_longitude,df.double_latitude,df.double_longitude.shift(-1),df.double_latitude.shift(-1))/ 1000
     time = (df.timestamp.diff(-1) * -1) / (1000*60*60)
     
-    df['stationary_or_not'] = np.where((distance / time) < v,1,0)   # 1 being stationary,0 for moving 
+    df['stationary_or_not'] = np.where((distance / time) < threshold_static,1,0)   # 1 being stationary,0 for moving 
 
     return df
 
