@@ -85,6 +85,11 @@ PHONE_ACTIVITY_RECOGNITION:
       SRC_FOLDER: "rapids" # inside src/features/phone_activity_recognition
       SRC_LANGUAGE: "python"
 
+# See https://www.rapids.science/latest/features/phone-applications-crashes/
+PHONE_APPLICATIONS_CRASHES:
+  TABLE: applications_crashes
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
+
 # See https://www.rapids.science/latest/features/phone-applications-foreground/
 PHONE_APPLICATIONS_FOREGROUND:
   TABLE: applications_foreground
@@ -106,6 +111,16 @@ PHONE_APPLICATIONS_FOREGROUND:
       FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
       SRC_FOLDER: "rapids" # inside src/features/phone_applications_foreground
       SRC_LANGUAGE: "python"
+
+# See https://www.rapids.science/latest/features/phone-applications-notifications/
+PHONE_APPLICATIONS_NOTIFICATIONS:
+  TABLE: applications_notifications
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
+
+# See https://www.rapids.science/latest/features/phone-aware-log/
+PHONE_AWARE_LOG:
+  TABLE: aware_log
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
 
 # See https://www.rapids.science/latest/features/phone-battery/
 PHONE_BATTERY:
@@ -188,6 +203,11 @@ PHONE_DATA_YIELD:
       MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 # 0 to 1 representing the number of minutes with at least
       SRC_LANGUAGE: "r"
       SRC_FOLDER: "rapids" # inside src/features/phone_data_yield
+
+# See https://www.rapids.science/latest/features/phone-keyboard/
+PHONE_KEYBOARD:
+  TABLE: keyboard
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
 
 # See https://www.rapids.science/latest/features/phone-light/
 PHONE_LIGHT:

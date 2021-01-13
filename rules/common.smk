@@ -15,7 +15,7 @@ def optional_steps_sleep_input(wildcards):
 def input_merge_sensor_features_for_individual_participants(wildcards):
     feature_files = []
     for config_key in config.keys():
-        if config_key.startswith(("PHONE", "FITBIT")) and "PROVIDERS" in config[config_key]:
+        if config_key.startswith(("PHONE", "FITBIT")) and "PROVIDERS" in config[config_key] and isinstance(config[config_key]["PROVIDERS"], dict):
             for provider_key, provider in config[config_key]["PROVIDERS"].items():
                 if "COMPUTE" in provider.keys() and provider["COMPUTE"]:
                     feature_files.append("data/processed/features/{pid}/" + config_key.lower() + ".csv")
