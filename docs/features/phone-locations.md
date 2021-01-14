@@ -107,6 +107,7 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 | `[MINUTES_DATA_USED]`     | Set to `True` to include an extra column in the final location feature file containing the number of minutes used to compute the features on each time segment. Use this for quality control purposes, the more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
 | `[SAMPLING_FREQUENCY]`     | Expected time difference between any two location rows in minutes. If set to `0`, the sampling frequency will be inferred automatically as the median of all the differences between any two consecutive row timestamps (recommended if you are using `FUSED_RESAMPLED` data). This parameter impacts all the time calculations.
 | `[CLUSTER_ON]`             | Set this flag to `PARTICIPANT_DATASET` to create clusters based on the entire participant's dataset or to `TIME_SEGMENT` to create clusters based on all the instances of the corresponding time segment (e.g. all mornings).
+| `[CLUSTERING_ALGORITHM]`   | The original Doryab et al implementation uses `DBSCAN`, `OPTICS` is also available with similar (but not identical) clustering results and lower memory consumption.
 
 
 Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
@@ -141,3 +142,6 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 
     **The Circadian Calculation**
     For a detailed description of how this is calculated, see [Canzian et al](../../citation#doryab-locations).
+
+    **Fine Tuning Clustering Parameters**
+    Based on an experiment where we collected fused location data for 7 days with a mean accuracy of 86 & SD of 350.874635, we determined that `EPS/MAX_EPS`=100 produced closer clustering results to reality. Higher values (>100) missed out some significant places like a short grocery visit while lower values (<100) picked up traffic lights and stop signs while driving as significant locations. We recommend you set `EPS` based on the accuracy of your location data (the more accurate your data is, the lower you should be able to set EPS).
