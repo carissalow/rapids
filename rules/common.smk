@@ -22,3 +22,11 @@ def input_merge_sensor_features_for_individual_participants(wildcards):
                     break
     return feature_files
 
+def get_phone_sensor_names():
+    phone_sensor_names = []
+    for config_key in config.keys():
+        if config_key.startswith(("PHONE")) and "PROVIDERS" in config[config_key]:
+            if config_key != "PHONE_DATA_YIELD" and config_key not in phone_sensor_names:
+                    phone_sensor_names.append(config_key)
+    return phone_sensor_names
+

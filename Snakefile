@@ -14,6 +14,15 @@ if len(config["PIDS"]) == 0:
 
 for provider in config["PHONE_DATA_YIELD"]["PROVIDERS"].keys():
     if config["PHONE_DATA_YIELD"]["PROVIDERS"][provider]["COMPUTE"]:
+        
+        allowed_phone_sensors = get_phone_sensor_names()
+        if not (set(config["PHONE_DATA_YIELD"]["SENSORS"]) <= set(allowed_phone_sensors)):
+            raise ValueError('\nInvalid sensor(s) for PHONE_DATA_YIELD. config["PHONE_DATA_YIELD"]["SENSORS"] can have '
+                            'one or more of the following phone sensors: {}.\nInstead you provided "{}".\n'
+                            'Keep in mind that the sensors\' TABLE attribute must point to a valid database table'\
+                            .format(', '.join(allowed_phone_sensors),
+                                    ', '.join(set(config["PHONE_DATA_YIELD"]["SENSORS"]) - set(allowed_phone_sensors))))
+        
         files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=map(str.lower, config["PHONE_DATA_YIELD"]["SENSORS"])))
         files_to_compute.extend(expand("data/interim/{pid}/phone_yielded_timestamps.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv", pid=config["PIDS"]))
