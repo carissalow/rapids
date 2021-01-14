@@ -206,14 +206,17 @@
 ???+ done "Solution"
     This problem is due to the way `RMariaDB` handles a mismatch between data types in R and MySQL (see [this issue](https://github.com/r-dbi/RMariaDB/issues/121)). Since it seems this problem won't be handled by `RMariaDB`, you have two options:
     
-    1. If it's only a few rows that are causing this problem, remove the the null character from the conflictive table cell.
+    1. Remove the the null character from the conflictive table cell(s). You can adapt the following query on a MySQL server 8.0 or older
+        ```sql
+        update YOUR_TABLE set YOUR_COLUMN = regexp_replace(YOUR_COLUMN, '\0', '');
+        ```
     2. If it's not feasible to modify your data you can try swapping `RMariaDB` with `RMySQL`. Just have in mind you might have problems connecting to modern MySQL servers running in Linux:
         - Add `RMySQL` to the renv environment by running the following command in a terminal open on RAPIDS root folder
         ```bash
         R -e 'renv::install("RMySQL")'
         ```
         - Go to `src/data/download_phone_data.R` or `src/data/download_fitbit_data.R` and replace `library(RMariaDB)` with `library(RMySQL)`
-        - In the same file replace `dbEngine <- dbConnect(MariaDB(), default.file = "./.env", group = group)` with `dbEngine <- dbConnect(MySQL(), default.file = "./.env", group = group)`
+        - In the same file(s) replace `dbEngine <- dbConnect(MariaDB(), default.file = "./.env", group = group)` with `dbEngine <- dbConnect(MySQL(), default.file = "./.env", group = group)`
 ## There is no package called `RMariaDB`
 
 ???+ failure "Problem"
