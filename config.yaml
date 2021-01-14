@@ -85,6 +85,16 @@ PHONE_ACTIVITY_RECOGNITION:
       SRC_FOLDER: "rapids" # inside src/features/phone_activity_recognition
       SRC_LANGUAGE: "python"
 
+# See https://www.rapids.science/latest/features/phone-applications-crashes/
+PHONE_APPLICATIONS_CRASHES:
+  TABLE: applications_crashes
+  APPLICATION_CATEGORIES:
+    CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
+    CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
+    UPDATE_CATALOGUE_FILE: False # if CATALOGUE_SOURCE is equal to FILE, whether or not to update CATALOGUE_FILE, if CATALOGUE_SOURCE is equal to GOOGLE all scraped genres will be saved to CATALOGUE_FILE
+    SCRAPE_MISSING_CATEGORIES: False # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
+
 # See https://www.rapids.science/latest/features/phone-applications-foreground/
 PHONE_APPLICATIONS_FOREGROUND:
   TABLE: applications_foreground
@@ -106,6 +116,21 @@ PHONE_APPLICATIONS_FOREGROUND:
       FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
       SRC_FOLDER: "rapids" # inside src/features/phone_applications_foreground
       SRC_LANGUAGE: "python"
+
+# See https://www.rapids.science/latest/features/phone-applications-notifications/
+PHONE_APPLICATIONS_NOTIFICATIONS:
+  TABLE: applications_notifications
+  APPLICATION_CATEGORIES:
+    CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
+    CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
+    UPDATE_CATALOGUE_FILE: False # if CATALOGUE_SOURCE is equal to FILE, whether or not to update CATALOGUE_FILE, if CATALOGUE_SOURCE is equal to GOOGLE all scraped genres will be saved to CATALOGUE_FILE
+    SCRAPE_MISSING_CATEGORIES: False # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
+
+# See https://www.rapids.science/latest/features/phone-aware-log/
+PHONE_AWARE_LOG:
+  TABLE: aware_log
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
 
 # See https://www.rapids.science/latest/features/phone-battery/
 PHONE_BATTERY:
@@ -189,6 +214,11 @@ PHONE_DATA_YIELD:
       SRC_LANGUAGE: "r"
       SRC_FOLDER: "rapids" # inside src/features/phone_data_yield
 
+# See https://www.rapids.science/latest/features/phone-keyboard/
+PHONE_KEYBOARD:
+  TABLE: keyboard
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
+
 # See https://www.rapids.science/latest/features/phone-light/
 PHONE_LIGHT:
   TABLE: light
@@ -202,20 +232,21 @@ PHONE_LIGHT:
 # See https://www.rapids.science/latest/features/phone-locations/
 PHONE_LOCATIONS:
   TABLE: locations
-  LOCATIONS_TO_USE: FUSED_RESAMPLED # ALL, GPS OR FUSED_RESAMPLED  
+  LOCATIONS_TO_USE: ALL_RESAMPLED # ALL, GPS, ALL_RESAMPLED, OR FUSED_RESAMPLED
   FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
   FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION: 720 # minutes, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
   PROVIDERS:
     DORYAB:
       COMPUTE: False
       FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
-      DBSCAN_EPS: 100 # meters
+      ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
+      DBSCAN_EPS: 10 # meters
       DBSCAN_MINSAMPLES: 5
       THRESHOLD_STATIC : 1 # km/h
       MAXIMUM_GAP_ALLOWED: 300
       MINUTES_DATA_USED: False
       SAMPLING_FREQUENCY: 0
-      CLUSTER_ON: TIME_SEGMENT # PARTICIPANT_DATASET,TIME_SEGMENT
+      CLUSTER_ON: PARTICIPANT_DATASET # PARTICIPANT_DATASET,TIME_SEGMENT
       CLUSTERING_ALGORITHM: DBSCAN #DBSCAN,OPTICS  
       SRC_FOLDER: "doryab" # inside src/features/phone_locations
       SRC_LANGUAGE: "python"

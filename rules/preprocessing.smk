@@ -163,14 +163,14 @@ rule resample_episodes_with_datetime:
 
 rule phone_application_categories:
     input:
-        "data/raw/{pid}/phone_applications_foreground_with_datetime.csv"
+        "data/raw/{pid}/phone_applications_{type}_with_datetime.csv"
     params:
-        catalogue_source = config["PHONE_APPLICATIONS_FOREGROUND"]["APPLICATION_CATEGORIES"]["CATALOGUE_SOURCE"],
-        catalogue_file = config["PHONE_APPLICATIONS_FOREGROUND"]["APPLICATION_CATEGORIES"]["CATALOGUE_FILE"],
-        update_catalogue_file = config["PHONE_APPLICATIONS_FOREGROUND"]["APPLICATION_CATEGORIES"]["UPDATE_CATALOGUE_FILE"],
-        scrape_missing_genres = config["PHONE_APPLICATIONS_FOREGROUND"]["APPLICATION_CATEGORIES"]["SCRAPE_MISSING_CATEGORIES"]
+        catalogue_source = lambda wildcards: config["PHONE_APPLICATIONS_" + str(wildcards.type).upper()]["APPLICATION_CATEGORIES"]["CATALOGUE_SOURCE"],
+        catalogue_file = lambda wildcards: config["PHONE_APPLICATIONS_" + str(wildcards.type).upper()]["APPLICATION_CATEGORIES"]["CATALOGUE_FILE"],
+        update_catalogue_file = lambda wildcards: config["PHONE_APPLICATIONS_" + str(wildcards.type).upper()]["APPLICATION_CATEGORIES"]["UPDATE_CATALOGUE_FILE"],
+        scrape_missing_genres = lambda wildcards: config["PHONE_APPLICATIONS_" + str(wildcards.type).upper()]["APPLICATION_CATEGORIES"]["SCRAPE_MISSING_CATEGORIES"]
     output:
-        "data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv"
+        "data/raw/{pid}/phone_applications_{type}_with_datetime_with_categories.csv"
     script:
         "../src/data/application_categories.R"
 

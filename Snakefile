@@ -14,6 +14,15 @@ if len(config["PIDS"]) == 0:
 
 for provider in config["PHONE_DATA_YIELD"]["PROVIDERS"].keys():
     if config["PHONE_DATA_YIELD"]["PROVIDERS"][provider]["COMPUTE"]:
+        
+        allowed_phone_sensors = get_phone_sensor_names()
+        if not (set(config["PHONE_DATA_YIELD"]["SENSORS"]) <= set(allowed_phone_sensors)):
+            raise ValueError('\nInvalid sensor(s) for PHONE_DATA_YIELD. config["PHONE_DATA_YIELD"]["SENSORS"] can have '
+                            'one or more of the following phone sensors: {}.\nInstead you provided "{}".\n'
+                            'Keep in mind that the sensors\' TABLE attribute must point to a valid database table'\
+                            .format(', '.join(allowed_phone_sensors),
+                                    ', '.join(set(config["PHONE_DATA_YIELD"]["SENSORS"]) - set(allowed_phone_sensors))))
+        
         files_to_compute.extend(expand("data/raw/{pid}/{sensor}_raw.csv", pid=config["PIDS"], sensor=map(str.lower, config["PHONE_DATA_YIELD"]["SENSORS"])))
         files_to_compute.extend(expand("data/interim/{pid}/phone_yielded_timestamps.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv", pid=config["PIDS"]))
@@ -146,6 +155,49 @@ for provider in config["PHONE_CONVERSATION"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_conversation.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
         files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
+
+# We can delete these if's as soon as we add feature PROVIDERS to any of these sensors
+if isinstance(config["PHONE_APPLICATIONS_CRASHES"]["PROVIDERS"], dict):
+    for provider in config["PHONE_APPLICATIONS_CRASHES"]["PROVIDERS"].keys():
+        if config["PHONE_APPLICATIONS_CRASHES"]["PROVIDERS"][provider]["COMPUTE"]:
+            files_to_compute.extend(expand("data/raw/{pid}/phone_applications_crashes_raw.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/raw/{pid}/phone_applications_crashes_with_datetime.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/raw/{pid}/phone_applications_crashes_with_datetime_with_categories.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/phone_applications_crashes_features/phone_applications_crashes_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_APPLICATIONS_CRASHES"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+            files_to_compute.extend(expand("data/processed/features/{pid}/phone_applications_crashes.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+            files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
+
+if isinstance(config["PHONE_APPLICATIONS_NOTIFICATIONS"]["PROVIDERS"], dict):
+    for provider in config["PHONE_APPLICATIONS_NOTIFICATIONS"]["PROVIDERS"].keys():
+        if config["PHONE_APPLICATIONS_NOTIFICATIONS"]["PROVIDERS"][provider]["COMPUTE"]:
+            files_to_compute.extend(expand("data/raw/{pid}/phone_applications_notifications_raw.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/raw/{pid}/phone_applications_notifications_with_datetime.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/raw/{pid}/phone_applications_notifications_with_datetime_with_categories.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/phone_applications_notifications_features/phone_applications_notifications_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_APPLICATIONS_NOTIFICATIONS"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+            files_to_compute.extend(expand("data/processed/features/{pid}/phone_applications_notifications.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+            files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
+
+if isinstance(config["PHONE_KEYBOARD"]["PROVIDERS"], dict):
+    for provider in config["PHONE_KEYBOARD"]["PROVIDERS"].keys():    
+        if config["PHONE_KEYBOARD"]["PROVIDERS"][provider]["COMPUTE"]:
+            files_to_compute.extend(expand("data/raw/{pid}/phone_keyboard_raw.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/raw/{pid}/phone_keyboard_with_datetime.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/phone_keyboard_features/phone_keyboard_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_KEYBOARD"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+            files_to_compute.extend(expand("data/processed/features/{pid}/phone_keyboard.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+            files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
+
+if isinstance(config["PHONE_AWARE_LOG"]["PROVIDERS"], dict):
+    for provider in config["PHONE_AWARE_LOG"]["PROVIDERS"].keys():    
+        if config["PHONE_AWARE_LOG"]["PROVIDERS"][provider]["COMPUTE"]:
+            files_to_compute.extend(expand("data/raw/{pid}/phone_aware_log_raw.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/raw/{pid}/phone_aware_log_with_datetime.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/phone_aware_log_features/phone_aware_log_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_AWARE_LOG"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+            files_to_compute.extend(expand("data/processed/features/{pid}/phone_aware_log.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+            files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
     if config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["COMPUTE"]:

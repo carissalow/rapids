@@ -82,12 +82,16 @@ nav:
       - Phone:
         - Phone Accelerometer: features/phone-accelerometer.md
         - Phone Activity Recognition: features/phone-activity-recognition.md
+        - Phone Applications Crashes: features/phone-applications-crashes.md
         - Phone Applications Foreground: features/phone-applications-foreground.md
+        - Phone Applications Notifications: features/phone-applications-notifications.md
+        - Phone Aware Log: features/phone-aware-log.md
         - Phone Battery: features/phone-battery.md
         - Phone Bluetooth: features/phone-bluetooth.md
         - Phone Calls: features/phone-calls.md
         - Phone Conversation: features/phone-conversation.md
         - Phone Data Yield: features/phone-data-yield.md
+        - Phone Keyboard: features/phone-keyboard.md
         - Phone Light: features/phone-light.md
         - Phone Locations: features/phone-locations.md
         - Phone Messages: features/phone-messages.md

@@ -9,18 +9,22 @@ Sensor parameters description for `[PHONE_DATA_YIELD]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[SENSORS]`| One or more phone sensor config keys (e.g. `PHONE_MESSAGE`). The more keys you include the more accurately RAPIDS can approximate the time an smartphone was sensing data. The supported phone sensors you can include in this list are outlined below (**do NOT include Fitbit sensors**).
+|`[SENSORS]`| One or more phone sensor config keys (e.g. `PHONE_MESSAGE`). The more keys you include the more accurately RAPIDS can approximate the time an smartphone was sensing data. The supported phone sensors you can include in this list are outlined below (**do NOT include Fitbit sensors, ONLY include phone sensors**).
 
 !!! info "Supported phone sensors for `[PHONE_DATA_YIELD][SENSORS]`"
     ```yaml
     PHONE_ACCELEROMETER
     PHONE_ACTIVITY_RECOGNITION
+    PHONE_APPLICATIONS_CRASHES
     PHONE_APPLICATIONS_FOREGROUND
+    PHONE_APPLICATIONS_NOTIFICATIONS
+    PHONE_AWARE_LOG
     PHONE_BATTERY
     PHONE_BLUETOOTH
     PHONE_CALLS
     PHONE_CONVERSATION
     PHONE_MESSAGES
+    PHONE_KEYBOARD
     PHONE_LIGHT
     PHONE_LOCATIONS
     PHONE_SCREEN
