@@ -96,6 +96,32 @@ rule phone_activity_recognition_r_features:
     script:
         "../src/features/entry.R"
 
+rule phone_applications_crashes_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/phone_applications_crashes_with_datetime_with_categories.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_APPLICATIONS_CRASHES"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_applications_crashes"
+    output:
+        "data/interim/{pid}/phone_applications_crashes_features/phone_applications_crashes_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule phone_applications_crashes_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/phone_applications_crashes_with_datetime_with_categories.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_APPLICATIONS_CRASHES"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_applications_crashes"
+    output:
+        "data/interim/{pid}/phone_applications_crashes_features/phone_applications_crashes_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
 rule phone_applications_foreground_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv",
@@ -119,6 +145,58 @@ rule phone_applications_foreground_r_features:
         sensor_key = "phone_applications_foreground"
     output:
         "data/interim/{pid}/phone_applications_foreground_features/phone_applications_foreground_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
+rule phone_applications_notifications_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/phone_applications_notifications_with_datetime_with_categories.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_APPLICATIONS_NOTIFICATIONS"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_applications_notifications"
+    output:
+        "data/interim/{pid}/phone_applications_notifications_features/phone_applications_notifications_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule phone_applications_notifications_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/phone_applications_notifications_with_datetime_with_categories.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_APPLICATIONS_NOTIFICATIONS"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_applications_notifications"
+    output:
+        "data/interim/{pid}/phone_applications_notifications_features/phone_applications_notifications_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
+rule phone_aware_log_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/phone_aware_log_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_AWARE_LOG"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_aware_log"
+    output:
+        "data/interim/{pid}/phone_aware_log_features/phone_aware_log_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule phone_aware_log_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/phone_aware_log_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_AWARE_LOG"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_aware_log"
+    output:
+        "data/interim/{pid}/phone_aware_log_features/phone_aware_log_r_{provider_key}.csv"
     script:
         "../src/features/entry.R"
 
@@ -233,6 +311,32 @@ rule conversation_r_features:
         sensor_key = "phone_conversation"
     output:
         "data/interim/{pid}/phone_conversation_features/phone_conversation_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
+rule phone_keyboard_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/phone_keyboard_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_KEYBOARD"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_keyboard"
+    output:
+        "data/interim/{pid}/phone_keyboard_features/phone_keyboard_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule phone_keyboard_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/phone_keyboard_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_KEYBOARD"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_keyboard"
+    output:
+        "data/interim/{pid}/phone_keyboard_features/phone_keyboard_r_{provider_key}.csv"
     script:
         "../src/features/entry.R"
 

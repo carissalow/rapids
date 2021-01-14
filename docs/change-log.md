@@ -1,5 +1,8 @@
 # Change Log
 
+## next version v0.4.0
+- Add four new phone sensors that can be used for PHONE_DATA_YIELD
+- Add code so new feature providers can be added for the new four sensors
 ## v0.3.2
 - Update docker and linux instructions to use RSPM binary repo for for faster installation
 - Update CI to create a release on a tagged push that passes the tests
