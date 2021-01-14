@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import warnings
 from astropy.timeseries import LombScargle
 from sklearn.cluster import DBSCAN,OPTICS
 from math import radians, cos, sin, asin, sqrt
@@ -8,6 +9,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
     location_data = pd.read_csv(sensor_data_files["sensor_data"])
     requested_features = provider["FEATURES"]
+    accuracy_limit = provider["ACCURACY_LIMIT"]
     dbscan_eps = provider["DBSCAN_EPS"]
     dbscan_minsamples = provider["DBSCAN_MINSAMPLES"]
     threshold_static = provider["THRESHOLD_STATIC"]
@@ -31,6 +33,11 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
         hyperparameters = {'max_eps': distance_to_degrees(dbscan_eps), 'min_samples': 2, 'metric':'euclidean', 'cluster_method' : 'dbscan'} 
     else:
         raise ValueError("config[PHONE_LOCATIONS][DORYAB][CLUSTERING ALGORITHM] only accepts DBSCAN or OPTICS but you provided ",clustering_algorithm)
+    
+    rows_before_accuracy_filter = len(location_data)
+    location_data.query("accuracy < @accuracy_limit", inplace=True)
+    if rows_before_accuracy_filter > 0 and len(location_data) == 0:
+        warnings.warn("Cannot compute Doryab location features because there are no rows with an accuracy value lower than ACCURACY_LIMIT: {}".format(accuracy_limit))
 
     if location_data.empty:
         location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)

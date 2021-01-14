@@ -65,9 +65,9 @@ barnett_features <- function(sensor_data_files, time_segment, params){
       # Some minutes have multiple fused rows
       location_minutes_used <- location %>% 
         group_by(local_date, local_hour) %>% 
-        summarise(n_minutes = n_distinct(local_minute)) %>% 
+        summarise(n_minutes = n_distinct(local_minute), .groups = 'drop_last') %>% 
         group_by(local_date) %>% 
-        summarise(minutes_data_used = sum(n_minutes)) %>% 
+        summarise(minutes_data_used = sum(n_minutes), .groups = 'drop_last') %>% 
         select(local_date, minutes_data_used)
 
       # Save time segment to attach it later
@@ -78,7 +78,7 @@ barnett_features <- function(sensor_data_files, time_segment, params){
       if(nrow(location %>% filter(accuracy < accuracy_limit)) > 1){
         outputMobility <- MobilityFeatures(location, ACCURACY_LIM = accuracy_limit, tz = timezone)
       } else {
-        print(paste("Cannot compute location features because there are no rows with an accuracy value lower than ACCURACY_LIMIT", accuracy_limit))
+        print(paste("Cannot compute Barnett location features because there are no rows with an accuracy value lower than ACCURACY_LIMIT", accuracy_limit))
         outputMobility <- NULL
       }
 

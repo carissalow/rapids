@@ -12,21 +12,34 @@ locations <- read.csv(snakemake@input[["locations"]]) %>%
             filter(double_latitude != 0 & double_longitude != 0) %>% 
             drop_na(double_longitude, double_latitude)
 
-if(!locations_to_use %in% c("ALL", "FUSED_RESAMPLED", "GPS")){
-    print("Unkown location filter, provide one of the following three: ALL, GPS, or FUSED_RESAMPLED")
+if(!locations_to_use %in% c("ALL", "FUSED_RESAMPLED", "GPS", "ALL_RESAMPLED")){
+    print("Unkown location filter, provide one of the following three: ALL, GPS, ALL_RESAMPLED, or FUSED_RESAMPLED")
     quit(save = "no", status = 1, runLast = FALSE)
   }
 
+# keep the location row that has the best (lowest) accuracy if more than 1 row was logged within any 1 second
+if(locations_to_use %in% c("FUSED_RESAMPLED", "ALL_RESAMPLED"))
+    locations <- locations %>% drop_na(double_longitude, double_latitude) %>% 
+        mutate(minute_bin = timestamp %/% 1001) %>% 
+        group_by(minute_bin) %>% 
+        slice(which.min(accuracy)) %>% 
+        ungroup() %>% 
+        select(-minute_bin)
 
 if(locations_to_use == "ALL"){
     processed_locations <- locations
 } else if(locations_to_use == "GPS"){
     processed_locations <- locations %>% filter(provider == "gps")
-} else if(locations_to_use == "FUSED_RESAMPLED"){
-    locations <- locations %>% filter(provider == "fused")
+} else if(locations_to_use %in% c("FUSED_RESAMPLED", "ALL_RESAMPLED")){
+    if (locations_to_use == "FUSED_RESAMPLED"){
+        locations <- locations %>% filter(provider == "fused")
+        providers_to_keep = c("fused")
+    } else if(locations_to_use == "ALL_RESAMPLED"){
+        providers_to_keep = c("fused", "gps", "network")
+    }
+
     if(nrow(locations) > 0){
         processed_locations <- locations %>%
-            # TODO filter repeated location rows based on the accurcy
             distinct(timestamp, .keep_all = TRUE) %>% 
             bind_rows(phone_sensed_timestamps) %>%
             arrange(timestamp) %>%
@@ -37,7 +50,7 @@ if(locations_to_use == "ALL"){
             group_by(resample_group) %>%
             # Filter those rows that are further away than time_since_valid_location since the last fused location
             mutate(time_from_fused = timestamp - first(timestamp)) %>%
-            filter(provider == "fused" | (time_from_fused < (1000 * 60 * time_since_valid_location))) %>%
+            filter(provider %in% providers_to_keep | (time_from_fused < (1000 * 60 * time_since_valid_location))) %>%
             # Summarise the period to resample for
             summarise(limit = max(timestamp), timestamp = first(timestamp), double_latitude = first(double_latitude), double_longitude = first(double_longitude),
                         double_bearing=first(double_bearing), double_speed = first(double_speed), double_altitude=first(double_altitude), provider=first(provider),  

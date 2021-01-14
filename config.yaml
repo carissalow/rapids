@@ -232,20 +232,21 @@ PHONE_LIGHT:
 # See https://www.rapids.science/latest/features/phone-locations/
 PHONE_LOCATIONS:
   TABLE: locations
-  LOCATIONS_TO_USE: FUSED_RESAMPLED # ALL, GPS OR FUSED_RESAMPLED  
+  LOCATIONS_TO_USE: ALL_RESAMPLED # ALL, GPS, ALL_RESAMPLED, OR FUSED_RESAMPLED
   FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
   FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION: 720 # minutes, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
   PROVIDERS:
     DORYAB:
       COMPUTE: False
       FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
-      DBSCAN_EPS: 100 # meters
+      ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
+      DBSCAN_EPS: 10 # meters
       DBSCAN_MINSAMPLES: 5
       THRESHOLD_STATIC : 1 # km/h
       MAXIMUM_GAP_ALLOWED: 300
       MINUTES_DATA_USED: False
       SAMPLING_FREQUENCY: 0
-      CLUSTER_ON: TIME_SEGMENT # PARTICIPANT_DATASET,TIME_SEGMENT
+      CLUSTER_ON: PARTICIPANT_DATASET # PARTICIPANT_DATASET,TIME_SEGMENT
       CLUSTERING_ALGORITHM: DBSCAN #DBSCAN,OPTICS  
       SRC_FOLDER: "doryab" # inside src/features/phone_locations
       SRC_LANGUAGE: "python"
