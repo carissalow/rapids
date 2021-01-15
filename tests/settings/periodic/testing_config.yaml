@@ -191,7 +191,7 @@ PHONE_CONVERSATION:
     IOS: plugin_studentlife_audio
   PROVIDERS:
     RAPIDS:
-      COMPUTE: false
+      COMPUTE: TRUE
       FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
     "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
     "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
@@ -224,7 +224,7 @@ PHONE_LIGHT:
   TABLE: light
   PROVIDERS:
     RAPIDS:
-      COMPUTE: false
+      COMPUTE: TRUE
       FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
       SRC_FOLDER: "rapids" # inside src/features/phone_light
       SRC_LANGUAGE: "python"
