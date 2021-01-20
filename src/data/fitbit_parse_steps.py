@@ -17,33 +17,34 @@ def parseStepsData(steps_data, fitbit_data_type):
     # Parse JSON into individual records
     for record in steps_data.fitbit_data:
         record = json.loads(record)  # Parse text into JSON
-        curr_date = datetime.strptime(record["activities-steps"][0]["dateTime"], "%Y-%m-%d")
-        
-        # Parse summary data
-        if fitbit_data_type == "summary":
+        if "activities-steps" in record.keys():
+            curr_date = datetime.strptime(record["activities-steps"][0]["dateTime"], "%Y-%m-%d")
 
-            row_summary = (device_id,
-                record["activities-steps"][0]["value"],
-                curr_date,
-                0)
-            
-            records.append(row_summary)
+            # Parse summary data
+            if fitbit_data_type == "summary":
 
-        # Parse intraday data
-        if fitbit_data_type == "intraday":
-            dataset = record["activities-steps-intraday"]["dataset"]
-            for data in dataset:
-                d_time = datetime.strptime(data["time"], '%H:%M:%S').time()
-                d_datetime = datetime.combine(curr_date, d_time)
-
-                row_intraday = (device_id,
-                    data["value"],
-                    d_datetime,
+                row_summary = (device_id,
+                    record["activities-steps"][0]["value"],
+                    curr_date,
                     0)
 
-                records.append(row_intraday)
+                records.append(row_summary)
+
+            # Parse intraday data
+            if (fitbit_data_type == "intraday") and ("activities-steps-intraday" in record.keys()):
+                dataset = record["activities-steps-intraday"]["dataset"]
+                for data in dataset:
+                    d_time = datetime.strptime(data["time"], '%H:%M:%S').time()
+                    d_datetime = datetime.combine(curr_date, d_time)
+
+                    row_intraday = (device_id,
+                        data["value"],
+                        d_datetime,
+                        0)
+
+                    records.append(row_intraday)
     
-        parsed_data = pd.DataFrame(data=records, columns=STEPS_COLUMNS)
+    parsed_data = pd.DataFrame(data=records, columns=STEPS_COLUMNS)
 
     return parsed_data
 
