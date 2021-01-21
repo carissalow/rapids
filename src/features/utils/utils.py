@@ -94,7 +94,7 @@ def fetch_provider_features(provider, provider_key, sensor_key, sensor_data_file
                     if not "local_segment" in features.columns:
                         raise ValueError("The dataframe returned by the " + sensor_key + " provider '" + provider_key + "' is missing the 'local_segment' column added by the 'filter_data_by_segment()' function. Check the provider script is using such function and is not removing 'local_segment' by accident (" + code_path + ")\n  The 'local_segment' column is used to index a provider's features (each row corresponds to a different time segment instance (e.g. 2020-01-01, 2020-01-02, 2020-01-03, etc.)")
                     features.columns = ["{}{}".format("" if col.startswith("local_segment") else (sensor_key + "_"+ provider_key + "_"), col) for col in features.columns]
-                    sensor_features = sensor_features.merge(features, how="outer")
+                    sensor_features = pd.concat([sensor_features, features], axis=0, sort=False)
     else:
             for feature in provider["FEATURES"]:
                     sensor_features[feature] = None
