@@ -1,6 +1,7 @@
 rapids_log_tag =  "RAPIDS:"
 
 def filter_data_by_segment(data, time_segment):
+    data.dropna(subset=["assigned_segments"], inplace=True)
     if(data.shape[0] == 0): # data is empty
         data["local_segment"] = data["timestamps_segment"] = None
         return data
