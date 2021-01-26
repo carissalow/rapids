@@ -228,3 +228,14 @@
 
 ???+ done "Solution"
     In RAPIDS v0.1.0 we replaced `RMySQL` R package with `RMariaDB`, this error means your R virtual environment is out of date, to update it run `snakemake -j1 renv_restore`
+    
+## Unrecognized output timezone "America/New_York"
+???+ failure "Problem"
+When running rapids with R 4.0.3 on Mac, an error associated with time zone may occur.
+```bash
+Error in C_force_tz(time, tz = tzone, roll):
+   CCTZ: Unrecognized output timezone: "America/New_York"
+Calls: get_timestamp_filter ... .parse_date_time -> .strptime -> force_tz -> C_force_tz
+```
+???+ done "Solution"
+   This is because R timezone library is not set. Please add `Sys.setenv(“TZDIR” = file.path(R.home(), “share”, “zoneinfo”))` to the file active.R in renv folder to set the timezone library. 
