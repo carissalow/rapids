@@ -1,8 +1,17 @@
 # Change Log
 
-## next version v0.4.0
+## v0.4.0
 - Add four new phone sensors that can be used for PHONE_DATA_YIELD
 - Add code so new feature providers can be added for the new four sensors
+- Add new clustering algorithm (OPTICS) for Doryab features
+- Update default EPS parameter for Doryab location clustering
+- Add clearer error message for invalid phone data yield sensors
+- Add ALL_RESAMPLED flag and accuracy limit for location features
+- Add FAQ about null characters in phone tables
+- Reactivate light and wifi tests and update testing docs
+- Fix bug when parsing Fitbit steps data
+- Fix bugs when merging features from empty time segments
+- Fix minor issues in the documentation
 ## v0.3.2
 - Update docker and linux instructions to use RSPM binary repo for for faster installation
 - Update CI to create a release on a tagged push that passes the tests
