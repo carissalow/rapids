@@ -37,7 +37,7 @@ When you are done with this configuration, go to [executing RAPIDS](../execution
       MY_GROUP
     ```
 !!! hint
-        If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, you can connect to a MySQL database in your host machine using the `host.docker.internal` instead of `127.0.0.1` or `localhost`
+        If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, you can connect to a MySQL database in your host machine using `host.docker.internal` instead of `127.0.0.1` or `localhost`. In a Linux host you need to run our docker container using `docker run --network="host" -d moshiresearch/rapids:latest` and then `127.0.0.1` will point to your host machine.
 !!! note
     - You can ignore this step if you are only processing Fitbit data in CSV files.
     - RAPIDS only supports MySQL/MariaDB databases. If you would like to add support for a different database engine get in touch and we can discuss how to implement it.

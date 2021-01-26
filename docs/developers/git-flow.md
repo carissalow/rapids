@@ -23,29 +23,29 @@ git commit -m "Add my new feature" # use a concise description
 ```
 1. Integrate your new feature to `develop`
 
-=== "Internal Developer"
-    You are an internal developer if you have writing permissions to the repository.
-    
-    Most feature branches are never pushed to the repo, only do so if you expect that its development will take days (to avoid losing your work if you computer is damaged). Otherwise follow the following instructions to locally rebase your feature branch into `develop` and push those rebased changes online.
+    === "Internal Developer"
+        You are an internal developer if you have writing permissions to the repository.
+        
+        Most feature branches are never pushed to the repo, only do so if you expect that its development will take days (to avoid losing your work if you computer is damaged). Otherwise follow the following instructions to locally rebase your feature branch into `develop` and push those rebased changes online.
 
-    ```bash
-    git checkout feature/feature1
-    git fetch origin develop
-    git rebase -i develop
-    git checkout develop
-    git merge --no-ff feature/feature1 # (use the default merge message)
-    git push origin develop
-    git branch -d feature/feature1
-    ```
+        ```bash
+        git checkout feature/feature1
+        git fetch origin develop
+        git rebase -i develop
+        git checkout develop
+        git merge --no-ff feature/feature1 # (use the default merge message)
+        git push origin develop
+        git branch -d feature/feature1
+        ```
 
-=== "External Developer"
-    You are an external developer if you do NOT have writing permissions to the repository.
+    === "External Developer"
+        You are an external developer if you do NOT have writing permissions to the repository.
 
-    Push your feature branch online
-    ```bash
-    git push --set-upstream origin feature/external-test
-    ```
-    Then open a pull request to the `develop` branch using Github's GUI
+        Push your feature branch online
+        ```bash
+        git push --set-upstream origin feature/external-test
+        ```
+        Then open a pull request to the `develop` branch using Github's GUI
 
 ## Release a New Version
 

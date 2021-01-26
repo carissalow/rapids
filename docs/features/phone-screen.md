@@ -47,8 +47,9 @@ Features description for `[PHONE_SCREEN][PROVIDERS][RAPIDS]`:
 |avgduration               |minutes           |Average duration of all unlock episodes.
 |stdduration               |minutes           |Standard deviation duration of all unlock episodes.
 |countepisode              |episodes          |Number of all unlock episodes
-<!-- |episodepersensedminutes   |episodes/minute   |The ratio between the total number of episodes in an epoch divided by the total time (minutes) the phone was sensing data. -->
 |firstuseafter             |minutes           |Minutes until the first unlock episode.
+
+<!-- |episodepersensedminutes   |episodes/minute   |The ratio between the total number of episodes in an epoch divided by the total time (minutes) the phone was sensing data. -->
 
 !!! note "Assumptions/Observations"
     1. In Android, `lock` events can happen right after an `off` event, after a few seconds of an `off` event, or never happen depending on the phone\'s settings, therefore, an `unlock` episode is defined as the time between an `unlock` and a `off` event. In iOS, `on` and `off` events do not exist, so an `unlock` episode is defined as the time between an `unlock` and a `lock` event.
