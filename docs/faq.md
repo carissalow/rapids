@@ -231,7 +231,7 @@
     
 ## Unrecognized output timezone "America/New_York"
 ???+ failure "Problem"
-When running rapids with R 4.0.3 on Mac, an error associated with time zone may occur.
+When running RAPIDS with R 4.0.3 on MacOS on M1, an error associated with time zone may occur.
 ```bash
 Error in C_force_tz(time, tz = tzone, roll):
    CCTZ: Unrecognized output timezone: "America/New_York"
