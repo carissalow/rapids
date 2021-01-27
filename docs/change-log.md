@@ -1,5 +1,7 @@
 # Change Log
 
+## v0.4.1
+- Fix bug when no error message was displayed for an empty `[PHONE_DATA_YIELD][SENSORS]` when resampling location data
 ## v0.4.0
 - Add four new phone sensors that can be used for PHONE_DATA_YIELD
 - Add code so new feature providers can be added for the new four sensors

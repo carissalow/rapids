@@ -201,11 +201,11 @@ if isinstance(config["PHONE_AWARE_LOG"]["PROVIDERS"], dict):
 
 for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
     if config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["COMPUTE"]:
-        if config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"] == "FUSED_RESAMPLED":
+        if config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"] in ["FUSED_RESAMPLED","ALL_RESAMPLED"]:
             if "PHONE_LOCATIONS" in config["PHONE_DATA_YIELD"]["SENSORS"]:
                 files_to_compute.extend(expand("data/interim/{pid}/phone_yielded_timestamps.csv", pid=config["PIDS"]))
             else:
-                raise ValueError("Error: Add PHONE_LOCATIONS (and as many PHONE_SENSORS as you have) to [PHONE_DATA_YIELD][SENSORS] in config.yaml. This is necessary to compute phone_yielded_timestamps (time when the smartphone was sensing data) which is used to resample fused location data (RESAMPLED_FUSED)")
+                raise ValueError("Error: Add PHONE_LOCATIONS (and as many PHONE_SENSORS as you have) to [PHONE_DATA_YIELD][SENSORS] in config.yaml. This is necessary to compute phone_yielded_timestamps (time when the smartphone was sensing data) which is used to resample fused location data (ALL_RESAMPLED and RESAMPLED_FUSED)")
 
         files_to_compute.extend(expand("data/raw/{pid}/phone_locations_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed.csv", pid=config["PIDS"]))
