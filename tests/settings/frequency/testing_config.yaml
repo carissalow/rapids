@@ -138,7 +138,7 @@ PHONE_BATTERY:
   EPISODE_THRESHOLD_BETWEEN_ROWS: 30 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: FALSE
       FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
       SRC_FOLDER: "rapids" # inside src/features/phone_battery
       SRC_LANGUAGE: "python"
@@ -175,7 +175,7 @@ PHONE_CALLS:
   TABLE: calls
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False #TRUE
+      COMPUTE: TRUE
       CALL_TYPES: [missed, incoming, outgoing]
       FEATURES:
         missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
@@ -191,7 +191,7 @@ PHONE_CONVERSATION:
     IOS: plugin_studentlife_audio
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE 
+      COMPUTE: TRUE
       FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
     "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
     "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
