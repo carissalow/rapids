@@ -138,7 +138,7 @@ PHONE_BATTERY:
   EPISODE_THRESHOLD_BETWEEN_ROWS: 30 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: TRUE
       FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
       SRC_FOLDER: "rapids" # inside src/features/phone_battery
       SRC_LANGUAGE: "python"
@@ -148,7 +148,7 @@ PHONE_BLUETOOTH:
   TABLE: bluetooth
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE 
+      COMPUTE: TRUE
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/phone_bluetooth
       SRC_LANGUAGE: "r"
@@ -175,7 +175,7 @@ PHONE_CALLS:
   TABLE: calls
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE 
+      COMPUTE: TRUE
       CALL_TYPES: [missed, incoming, outgoing]
       FEATURES:
         missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
@@ -265,7 +265,7 @@ PHONE_MESSAGES:
   TABLE: messages
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE 
+      COMPUTE: TRUE
       MESSAGES_TYPES : [received, sent]
       FEATURES: 
         received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
@@ -292,7 +292,7 @@ PHONE_WIFI_CONNECTED:
   TABLE: "sensor_wifi"
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE 
+      COMPUTE: TRUE
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/phone_wifi_connected
       SRC_LANGUAGE: "r"
@@ -302,7 +302,7 @@ PHONE_WIFI_VISIBLE:
   TABLE: "wifi"
   PROVIDERS:
     RAPIDS:
-      COMPUTE: TRUE 
+      COMPUTE: TRUE
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_FOLDER: "rapids" # inside src/features/phone_wifi_visible
       SRC_LANGUAGE: "r"
