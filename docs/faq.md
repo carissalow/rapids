@@ -231,11 +231,30 @@
     
 ## Unrecognized output timezone "America/New_York"
 ???+ failure "Problem"
-When running RAPIDS with R 4.0.3 on MacOS on M1, lubridate may throw an error associated with the timezone.
-```bash
-Error in C_force_tz(time, tz = tzone, roll):
-   CCTZ: Unrecognized output timezone: "America/New_York"
-Calls: get_timestamp_filter ... .parse_date_time -> .strptime -> force_tz -> C_force_tz
-```
+    When running RAPIDS with R 4.0.3 on MacOS on M1, lubridate may throw an error associated with the timezone.
+    ```bash
+    Error in C_force_tz(time, tz = tzone, roll):
+       CCTZ: Unrecognized output timezone: "America/New_York"
+    Calls: get_timestamp_filter ... .parse_date_time -> .strptime -> force_tz -> C_force_tz
+    ```
 ???+ done "Solution"
    This is because R timezone library is not set. Please add `Sys.setenv(“TZDIR” = file.path(R.home(), “share”, “zoneinfo”))` to the file active.R in renv folder to set the timezone library. For further details on how to test if `TZDIR` is properly set, please refer to `https://github.com/tidyverse/lubridate/issues/928#issuecomment-720059233`. 
+   
+## Unimplemented MAX_NO_FIELD_TYPES
+???+ failure "Problem"
+    You get the following error when downloading Fitbit data:
+    ```bash
+    Error: Unimplemented MAX_NO_FIELD_TYPES
+    Execution halted
+    ```
+???+ done "Solution"
+    At the moment RMariaDB [cannot handle](https://github.com/r-dbi/RMariaDB/issues/127) MySQL columns of JSON type. Change the type of your Fitbit data column to `longtext` (note that the content will not change and will still be a JSON object just interpreted as a string).
+    
+## Running RAPIDS on Apple Silicon M1 Mac
+???+ failure "Problem"
+     You get the following error when installing pandoc or running rapids:
+     ```bash
+     MoSHI/rapids/renv/staging/1/00LOCK-KernSmooth/00new/KernSmooth/libs/KernSmooth.so: mach-0, but wrong architecture
+     ```
+???+ done "Solution"
+    All softwares need to be Intel version. In order to install Intel software via brew command, you need to install intel homebrew first. Turn on the Rosetta in the terminal, then use the installation command on Homebrew website to install homebrew. The Intel homebrew should be installed in `/usr/local/bin/brew `, you can check which brew you are using by typing `which brew`. Then using this Intel homebrew to install all other software and packages. 
