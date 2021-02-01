@@ -1,0 +1,168 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+description: RAPIDS configuration schema
+required:
+  - DATABASE_GROUP
+  - TIMEZONE
+  - CREATE_PARTICIPANT_FILES
+  - PHONE_CALLS
+  - PHONE_KEYBOARD
+  - PHONE_LOCATIONS
+
+definitions:
+  PROVIDER:
+    type: object
+    required: [COMPUTE, SRC_FOLDER, SRC_LANGUAGE, FEATURES]
+    properties:
+      COMPUTE:
+        type: boolean
+      FEATURES:
+        type: [array, object]
+      SRC_FOLDER:
+        type: string
+      SRC_LANGUAGE:
+        type: string
+        enum: [python, r]
+  
+properties:
+  DATABASE_GROUP:
+    type: string
+
+  TIMEZONE:
+    type: string
+  
+  CREATE_PARTICIPANT_FILES:
+    type: object
+    required: [SOURCE]
+    properties:
+      SOURCE:
+        type: object
+        required: [TYPE]
+        properties:
+          TYPE:
+            type: string
+            enum: [AWARE_DEVICE_TABLE, CSV_FILE]
+          DATABASE_GROUP:
+            type: string
+          CSV_FILE_PATH:
+            type: string
+            pattern: "^.*\\.csv$"
+          TIMEZONE:
+            type: string
+      PHONE_SECTION:
+        type: object
+        properties:
+          ADD:
+            type: boolean
+          DEVICE_ID_COLUMN:
+            type: string
+          IGNORED_DEVICE_IDS:
+            type: array
+            items:
+              type: string
+      FITBIT_SECTION:
+        properties:
+          ADD:
+            type: boolean
+          DEVICE_ID_COLUMN:
+            type: string
+          IGNORED_DEVICE_IDS:
+            type: array
+            items:
+              type: string
+
+  PHONE_CALLS:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE: 
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+                - $ref: "#/definitions/PROVIDER"
+                - properties:
+                    CALL_TYPES:
+                      type: array
+                      items:
+                        type: string
+                        enum: [missed, incoming, outgoing]
+                    FEATURES: 
+                      type: object
+                      required: [missed, incoming, outgoing]
+                      properties:
+                        missed:
+                          type: array
+                          uniqueItems: True
+                          items:
+                            type:
+                              string
+                            enum: [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
+                        incoming:
+                          type: array
+                          uniqueItems: True
+                          items:
+                            type:
+                              string
+                            enum: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+                        outgoing:
+                          type: array
+                          uniqueItems: True
+                          items:
+                            type:
+                              string
+                            enum: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+        additionalProperties:
+          $ref: "#/definitions/PROVIDER"
+
+  PHONE_KEYBOARD:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE: 
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        additionalProperties: 
+          $ref: "#/definitions/PROVIDER"
+
+  PHONE_LOCATIONS:
+    type: object
+    required: [TABLE, LOCATIONS_TO_USE, FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD, PROVIDERS]
+    properties:
+      TABLE: 
+        type: string
+      LOCATIONS_TO_USE:
+        type: string
+        enum: [ALL, GPS, ALL_RESAMPLED, FUSED_RESAMPLED]
+      FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD:
+        type: integer
+        exclusiveMinimum: 0
+      FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION:
+        type: integer
+        exclusiveMinimum: 0
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          DORYAB:
+            allOf:
+                - $ref: "#/definitions/PROVIDER"
+                - properties:
+                    FEATURES: 
+                      type: array
+                      uniqueItems: True
+                      items:
+                        type: string
+                        enum: [locationvariance,loglocationvariance,totaldistance,averagespeed,varspeed,circadianmovement,numberofsignificantplaces,numberlocationtransitions,radiusgyration,timeattop1location,timeattop2location,timeattop3location,movingtostaticratio,outlierstimepercent,maxlengthstayatclusters,minlengthstayatclusters,meanlengthstayatclusters,stdlengthstayatclusters,locationentropy,normalizedlocationentropy]
+                    ACCURACY_LIMIT:
+                      type: integer
+                      exclusiveMinimum: 0
+        additionalProperties:
+          $ref: "#/definitions/PROVIDER"
+
+
+
+
+
+
