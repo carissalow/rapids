@@ -257,4 +257,4 @@
      MoSHI/rapids/renv/staging/1/00LOCK-KernSmooth/00new/KernSmooth/libs/KernSmooth.so: mach-0, but wrong architecture
      ```
 ???+ done "Solution"
-    All softwares need to be Intel version. In order to install Intel software via brew command, you need to install intel homebrew first. Turn on the Rosetta in the terminal, then use the installation command on Homebrew website to install homebrew. The Intel homebrew should be installed in `/usr/local/bin/brew `, you can check which brew you are using by typing `which brew`. Then using this Intel homebrew to install all other software and packages. 
+    As of Feb 2020 in M1 macs, R needs to be installed via brew under Rosetta (x86 arch) due to some incompatibility with selected R libraries. To do this, run your terminal [via Rosetta](https://www.youtube.com/watch?v=nv2ylxro7rM&t=138s), then proceed with the usual brew installation command. x86 homebrew should be installed in `/usr/local/bin/brew `, you can check which brew you are using by typing `which brew`. Then use x86 homebrew to install R and restore RAPIDS packages (`renv_restore`). 
