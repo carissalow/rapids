@@ -146,6 +146,10 @@ elif column_format == "PLAIN_TEXT":
 else:
     raise ValueError("column_format can only be one of ['JSON', 'PLAIN_TEXT'].")
 
+# discard rows with restinghr = 0
+if fitbit_data_type == "summary":
+    parsed_data = parsed_data[(parsed_data["heartrate_daily_restinghr"] != "0") & (parsed_data["heartrate_daily_restinghr"] != 0)]
+
 # Only keep dates in the range of [local_start_date, local_end_date)
 if not pd.isnull(local_start_date) and not pd.isnull(local_end_date):
     parsed_data = parsed_data.loc[(parsed_data["local_date_time"] >= local_start_date) & (parsed_data["local_date_time"] < local_end_date)]
