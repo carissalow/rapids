@@ -26,6 +26,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
             # for discharge episodes
             battery_discharge_episodes = battery_episodes[(battery_episodes["battery_status"] == 3) | (battery_episodes["battery_status"] == 4)]
+            battery_discharge_episodes = battery_discharge_episodes[battery_discharge_episodes['battery_consumption_rate'] !=0 ]
             battery_discharge_features = pd.DataFrame()
             if "countdischarge" in features_to_compute:
                 battery_discharge_features["countdischarge"] = battery_discharge_episodes.groupby(["local_segment"])["episode_id"].count()
@@ -38,6 +39,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
             # for charge episodes
             battery_charge_episodes = battery_episodes[(battery_episodes["battery_status"] == 2) | (battery_episodes["battery_status"] == 5)]
+            battery_charge_episodes = battery_charge_episodes[battery_charge_episodes['battery_consumption_rate'] !=0 ]
             battery_charge_features = pd.DataFrame()
             if "countcharge" in features_to_compute:
                 battery_charge_features["countcharge"] = battery_charge_episodes.groupby(["local_segment"])["episode_id"].count()
