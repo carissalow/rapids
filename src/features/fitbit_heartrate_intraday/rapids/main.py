@@ -55,10 +55,11 @@ def extractHRFeaturesFromIntradayData(heartrate_intraday_data, features, time_se
 
             # get number of minutes in each heart rate zone
             for feature_name in list(set(["minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]) & set(features)):
-                heartrate_zone = heartrate_intraday_data[heartrate_intraday_data["heartrate_zone"] == feature_name[17:-4]]
+                heartrate_zone = heartrate_intraday_data[heartrate_intraday_data["heartrate_zone"] == feature_name[9:-4]]
                 heartrate_intraday_features[feature_name] = heartrate_zone.groupby(["local_segment"])["device_id"].count() / num_rows_per_minute
                 heartrate_intraday_features.fillna(value={feature_name: 0}, inplace=True)
-        heartrate_intraday_features.reset_index(inplace=True)
+            
+            heartrate_intraday_features.reset_index(inplace=True)
 
     return heartrate_intraday_features
 
