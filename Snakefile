@@ -1,4 +1,6 @@
+from snakemake.utils import validate
 configfile: "config.yaml"
+validate(config, "tools/config.schema.yaml")
 include: "rules/common.smk"
 include: "rules/renv.smk"
 include: "rules/preprocessing.smk"
