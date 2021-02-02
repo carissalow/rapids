@@ -33,6 +33,7 @@ As a tutorial, we will add a new provider for `PHONE_ACCELEROMETER` called `VEGA
     - Phone Screen
     - Phone WiFI Connected
     - Phone WiFI Visible
+    - Fitbit Data Yield
     - Fitbit Heart Rate Summary
     - Fitbit Heart Rate Intraday
     - Fitbit Sleep Summary
