@@ -1,5 +1,14 @@
 # Change Log
 
+## v0.4.2
+- Update battery testing
+- Fix location processing bug when certain columns don't exist
+- Fix HR intraday bug when minutesonZONE features were 0 
+- Update FAQs
+- Fix HR summary bug when restinghr=0 (ignore those rows)
+- Fix ROG, location entropy and normalized entropy in Doryab location provider
+- Remove sampling frequency dependance in Doryab location provider
+- Update documentation of Doryab location provider
 ## v0.4.1
 - Fix bug when no error message was displayed for an empty `[PHONE_DATA_YIELD][SENSORS]` when resampling location data
 ## v0.4.0
