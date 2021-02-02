@@ -215,6 +215,15 @@ for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
         files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
+for provider in config["FITBIT_DATA_YIELD"]["PROVIDERS"].keys():
+    if config["FITBIT_DATA_YIELD"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_intraday_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_intraday_parsed.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/fitbit_data_yield.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
+
 for provider in config["FITBIT_HEARTRATE_SUMMARY"]["PROVIDERS"].keys():
     if config["FITBIT_HEARTRATE_SUMMARY"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_summary_raw.csv", pid=config["PIDS"]))

@@ -9,6 +9,7 @@
 - Fix ROG, location entropy and normalized entropy in Doryab location provider
 - Remove sampling frequency dependance in Doryab location provider
 - Update documentation of Doryab location provider
+- Add new `FITBIT_DATA_YIELD` `RAPIDS` provider
 ## v0.4.1
 - Fix bug when no error message was displayed for an empty `[PHONE_DATA_YIELD][SENSORS]` when resampling location data
 ## v0.4.0
