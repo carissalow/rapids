@@ -14,7 +14,6 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     dbscan_minsamples = provider["DBSCAN_MINSAMPLES"]
     threshold_static = provider["THRESHOLD_STATIC"]
     maximum_gap_allowed = provider["MAXIMUM_GAP_ALLOWED"]
-    sampling_frequency = provider["SAMPLING_FREQUENCY"]
     cluster_on = provider["CLUSTER_ON"]
     clustering_algorithm = provider["CLUSTERING_ALGORITHM"]
     
@@ -55,9 +54,6 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
             location_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
         else:
             location_features = pd.DataFrame()
-
-            if sampling_frequency == 0:
-                sampling_frequency = getSamplingFrequency(location_data)
 
             if "minutesdataused" in features_to_compute:
                 for localDate in location_data["local_segment"].unique():
@@ -116,7 +112,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
             
             if "radiusgyration" in features_to_compute:
                 for localDate in stationaryLocations['local_segment'].unique():
-                    location_features.loc[localDate,"radiusgyration"] = radius_of_gyration(stationaryLocations[stationaryLocations['local_segment']==localDate],sampling_frequency)
+                    location_features.loc[localDate,"radiusgyration"] = radius_of_gyration(stationaryLocations[stationaryLocations['local_segment']==localDate])
 
             preComputedTimeArray = pd.DataFrame()
             for localDate in stationaryLocations["local_segment"].unique():
@@ -181,8 +177,8 @@ def len_stay_timeattopn(locationData):
     if locationData is None or len(locationData) == 0:
         return  (None, None, None,None, None, None, None)
 
-    calculationDf = locationData[locationData["location_label"] >= 1][['location_label','timeInSeconds']]
-    calculationDf[calculationDf['timeInSeconds'] >= 300]['timeInSeconds'] = 60
+    calculationDf = locationData[locationData["location_label"] >= 1][['location_label','timeInSeconds']].copy()
+    calculationDf.loc[calculationDf.timeInSeconds >= 300,'timeInSeconds'] = 60
     timeArray = calculationDf.groupby('location_label')['timeInSeconds'].sum().reset_index()['timeInSeconds'].sort_values(ascending=False)/60
     
     if len(timeArray) > 2:
@@ -360,7 +356,7 @@ def number_location_transitions(locationData):
 
     return df[df['boolCol'] == False].shape[0] - 1
 
-def radius_of_gyration(locationData,sampling_frequency):
+def radius_of_gyration(locationData):
     if locationData is None or len(locationData) == 0:
         return None
     # Center is the centroid, not the home location
@@ -373,10 +369,10 @@ def radius_of_gyration(locationData,sampling_frequency):
         distance = haversine(clusters_centroid.loc[labels].double_longitude,clusters_centroid.loc[labels].double_latitude,
                     centroid_all_clusters.double_longitude,centroid_all_clusters.double_latitude) ** 2
         
-        time_in_cluster = locationData[locationData["location_label"]==labels].shape[0]* sampling_frequency
+        time_in_cluster = locationData[locationData["location_label"]==labels]['timeInSeconds'].sum()
         rog = rog + (time_in_cluster * distance)
     
-    time_all_clusters = valid_clusters.shape[0] * sampling_frequency
+    time_all_clusters = valid_clusters['timeInSeconds'].sum()
     if time_all_clusters == 0:
         return 0
     final_rog = (1/time_all_clusters) * rog
@@ -400,7 +396,7 @@ def location_entropy(locationData):
     clusters = locationData[locationData["location_label"] >= 1]  # remove outliers/ cluster noise
     if len(clusters) > 0:
         # Get percentages for each location
-        percents = clusters["location_label"].value_counts(normalize=True)
+        percents = clusters.groupby(['location_label'])['timeInSeconds'].sum() / clusters['timeInSeconds'].sum()
         entropy = -1 * percents.map(lambda x: x * np.log(x)).sum()
         return entropy
     else:
@@ -416,10 +412,7 @@ def location_entropy_normalized(locationData):
     num_clusters = len(unique_clusters)
     if num_clusters == 0 or len(locationData) == 0 or entropy is None:
         return None
+    elif np.log(num_clusters)==0:
+        return None
     else:
-        return entropy / num_clusters
-
-
-def getSamplingFrequency(locationData):
-
-    return (locationData.timestamp.diff()/(1000*60)).median()
+        return entropy / np.log(num_clusters)
