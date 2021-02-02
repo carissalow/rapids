@@ -415,7 +415,7 @@ EMPATICA_TEMPERATURE:
       SRC_LANGUAGE: "python"
 
 EMPATICA_ELECTRODERMAL_ACTIVITY:
-  TABLE: temp
+  TABLE: eda
   PROVIDERS:
     DBDP:
       COMPUTE: True
@@ -445,7 +445,7 @@ EMPATICA_TAGS:
   TABLE: tags
   PROVIDERS:
     DBDP:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: []
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
