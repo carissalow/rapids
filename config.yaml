@@ -155,7 +155,7 @@ PHONE_BLUETOOTH:
       SRC_FOLDER: "rapids" # inside src/features/phone_bluetooth
       SRC_LANGUAGE: "r"
     DORYAB:
-      COMPUTE: FALSE
+      COMPUTE: False
       FEATURES: 
         ALL: 
             DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
