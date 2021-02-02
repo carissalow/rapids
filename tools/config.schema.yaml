@@ -127,6 +127,17 @@ properties:
         additionalProperties: 
           $ref: "#/definitions/PROVIDER"
 
+  PHONE_LIGHT:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE:
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        additionalProperties:
+          $ref: "#/definitions/PROVIDER"
+
   PHONE_LOCATIONS:
     type: object
     required: [TABLE, LOCATIONS_TO_USE, FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD, PROVIDERS]
@@ -160,6 +171,47 @@ properties:
                       exclusiveMinimum: 0
         additionalProperties:
           $ref: "#/definitions/PROVIDER"
+    
+  PHONE_MESSAGES:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties: 
+      TABLE: 
+        type: string
+      PROVIDER:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allof:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                MESSAGES_TYPES:
+                  type: array
+                  uniqueItems: True
+                  items:
+                    type: string
+                    enum: ["received", "sent"]
+                FEATURES:
+                  type: object
+                  required: [received, sent]
+                  properties:
+                    received:
+                      type: array
+                      uniqueItems: True
+                      items:
+                        type: string
+                        enum: ["count", "distinctcontacts", "timefirstmessage", "timelastmessage", "countmostfrequentcontact"]
+                    
+                    sent:
+                      type: array
+                      uniqueItems: True
+                      items:
+                        type: string 
+                        enum: ["count", "distinctcontacts", "timefirstmessage", "timelastmessage", "countmostfrequentcontact"]
+
+
+
+
 
 
 

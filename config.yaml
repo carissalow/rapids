@@ -265,7 +265,7 @@ PHONE_MESSAGES:
   TABLE: messages
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       MESSAGES_TYPES : [received, sent]
       FEATURES: 
         received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
