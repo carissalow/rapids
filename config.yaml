@@ -400,8 +400,8 @@ EMPATICA_HEARTRATE:
   TABLE: hr
   PROVIDERS:
     DBDP:
-      COMPUTE: True
-      FEATURES: []
+      COMPUTE: False
+      FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr"]
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
 
