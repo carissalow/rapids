@@ -391,8 +391,8 @@ EMPATICA_ACCELEROMETER:
   TABLE: acc
   PROVIDERS:
     DBDP:
-      COMPUTE: True
-      FEATURES: []
+      COMPUTE: False
+      FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
       SRC_FOLDER: "dbdp" # inside src/features/empatica_accelerometer
       SRC_LANGUAGE: "python"
 
