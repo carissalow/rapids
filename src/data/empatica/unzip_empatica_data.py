@@ -13,7 +13,7 @@ warning = True
 with ZipFile(snakemake.input[0], 'r') as zipFile:
     listOfFileNames = zipFile.namelist()
     for fileName in listOfFileNames:
-        if fileName.endswith(sensor_csv):
+        if fileName == sensor_csv:
             with open(snakemake.output[0], 'wb') as outputFile:
                 outputFile.write(zipFile.read(fileName))
                 warning = False
