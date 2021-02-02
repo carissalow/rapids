@@ -16,7 +16,7 @@ local({
   on.exit(Sys.unsetenv("RENV_R_INITIALIZING"), add = TRUE)
 
   # set timezone library 
-  Sys.setenv("TZDIR" = file.path(R.home(), "share", "zoneinfo"))  
+  #Sys.setenv("TZDIR" = file.path(R.home(), "share", "zoneinfo"))  
 
   # signal that we've consented to use renv
   options(renv.consent = TRUE)
