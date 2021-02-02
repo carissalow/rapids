@@ -7,7 +7,7 @@ TIMEZONE: &timezone
   America/New_York
 
 # See https://www.rapids.science/latest/setup/configuration/#participant-files
-PIDS: [e01]
+PIDS: [e03]
 
 # See https://www.rapids.science/latest/setup/configuration/#automatic-creation-of-participant-files
 CREATE_PARTICIPANT_FILES:
@@ -436,8 +436,8 @@ EMPATICA_HEARTRATE:
   TABLE: hr
   PROVIDERS:
     DBDP:
-      COMPUTE: True
-      FEATURES: []
+      COMPUTE: False
+      FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr"]
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
 
@@ -445,7 +445,7 @@ EMPATICA_TEMPERATURE:
   TABLE: temp
   PROVIDERS:
     DBDP:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: []
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
@@ -454,7 +454,7 @@ EMPATICA_ELECTRODERMAL_ACTIVITY:
   TABLE: eda
   PROVIDERS:
     DBDP:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: []
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
@@ -463,7 +463,7 @@ EMPATICA_BLOOD_VOLUME_PULSE:
   TABLE: bvp
   PROVIDERS:
     DBDP:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: []
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
@@ -472,7 +472,7 @@ EMPATICA_INTER_BEAT_INTERVAL:
   TABLE: ibi
   PROVIDERS:
     DBDP:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: []
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
