@@ -13,7 +13,8 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     dbscan_eps = provider["DBSCAN_EPS"]
     dbscan_minsamples = provider["DBSCAN_MINSAMPLES"]
     threshold_static = provider["THRESHOLD_STATIC"]
-    maximum_gap_allowed = provider["MAXIMUM_GAP_ALLOWED"]
+    maximum_gap_allowed = provider["MAXIMUM_ROW_GAP"]
+    maximum_row_duration = provider["MAXIMUM_ROW_DURATION"]
     cluster_on = provider["CLUSTER_ON"]
     clustering_algorithm = provider["CLUSTERING_ALGORITHM"]
     
@@ -116,7 +117,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
             preComputedTimeArray = pd.DataFrame()
             for localDate in stationaryLocations["local_segment"].unique():
-                top1,top2,top3,smax,smin,sstd,smean = len_stay_timeattopn(stationaryLocations[stationaryLocations["local_segment"]==localDate])
+                top1,top2,top3,smax,smin,sstd,smean = len_stay_timeattopn(stationaryLocations[stationaryLocations["local_segment"]==localDate],maximum_gap_allowed,maximum_row_duration)
                 preComputedTimeArray.loc[localDate,"timeattop1"] = top1
                 preComputedTimeArray.loc[localDate,"timeattop2"] = top2
                 preComputedTimeArray.loc[localDate,"timeattop3"] = top3
@@ -173,12 +174,12 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
     return location_features
 
-def len_stay_timeattopn(locationData):
+def len_stay_timeattopn(locationData,maximum_gap_allowed,maximum_row_duration):
     if locationData is None or len(locationData) == 0:
         return  (None, None, None,None, None, None, None)
 
     calculationDf = locationData[locationData["location_label"] >= 1][['location_label','timeInSeconds']].copy()
-    calculationDf.loc[calculationDf.timeInSeconds >= 300,'timeInSeconds'] = 60
+    calculationDf.loc[calculationDf.timeInSeconds >= maximum_gap_allowed,'timeInSeconds'] = maximum_row_duration
     timeArray = calculationDf.groupby('location_label')['timeInSeconds'].sum().reset_index()['timeInSeconds'].sort_values(ascending=False)/60
     
     if len(timeArray) > 2:
