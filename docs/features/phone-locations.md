@@ -121,7 +121,7 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 |totaldistance                                                |meters        |Total distance travelled in a time segment using the haversine formula.
 |averagespeed                                                 |km/hr         |Average speed in a time segment considering only the instances labeled as Moving.
 |varspeed                                                      |km/hr         |Speed variance in a time segment considering only the instances labeled as Moving. 
-|circadianmovement                                              |-             | \"It encodes the extent to which a person's location patterns follow a 24-hour circadian cycle.\" [Doryab et al.](../../citation#doryab-locations).
+|{--circadianmovement--}                                              |-             | Not suggested for use at the moment, see Observations below. \"It encodes the extent to which a person's location patterns follow a 24-hour circadian cycle.\" [Doryab et al.](../../citation#doryab-locations).
 |numberofsignificantplaces                                    |places        |Number of significant locations visited. It is calculated using the DBSCAN/OPTICS clustering algorithm which takes in EPS and MIN_SAMPLES as parameters to identify clusters. Each cluster is a significant place.
 |numberlocationtransitions                                    |transitions   |Number of movements between any two clusters in a time segment.
 |radiusgyration                                               |meters        |Quantifies the area covered by a participant
@@ -142,8 +142,8 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
     **Significant Locations Identified**
     Significant locations are determined using DBSCAN clustering on locations that a patient visit over the course of the period of data collection.
 
-    **The Circadian Calculation**
-    For a detailed description of how this is calculated, see [Canzian et al](../../citation#doryab-locations).
+    **Circadian Movement Calculation**
+    Note Feb 3 2021. It seems the implementation of this feature is not correct, we suggest not to use this feature until a fix is in place. For a detailed description of how this should be calculated, see [Saeb et al](https://pubmed.ncbi.nlm.nih.gov/28344895/).
 
     **Fine Tuning Clustering Parameters**
     Based on an experiment where we collected fused location data for 7 days with a mean accuracy of 86 & SD of 350.874635, we determined that `EPS/MAX_EPS`=100 produced closer clustering results to reality. Higher values (>100) missed out some significant places like a short grocery visit while lower values (<100) picked up traffic lights and stop signs while driving as significant locations. We recommend you set `EPS` based on the accuracy of your location data (the more accurate your data is, the lower you should be able to set EPS).

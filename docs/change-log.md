@@ -10,6 +10,7 @@
 - Remove sampling frequency dependance in Doryab location provider
 - Update documentation of Doryab location provider
 - Add new `FITBIT_DATA_YIELD` `RAPIDS` provider
+- Deprecate Doryab circadian movement feature until it is fixed
 ## v0.4.1
 - Fix bug when no error message was displayed for an empty `[PHONE_DATA_YIELD][SENSORS]` when resampling location data
 ## v0.4.0
