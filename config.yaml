@@ -153,7 +153,7 @@ PHONE_BLUETOOTH:
       SRC_FOLDER: "rapids" # inside src/features/phone_bluetooth
       SRC_LANGUAGE: "r"
     DORYAB:
-      COMPUTE: FALSE
+      COMPUTE: False
       FEATURES: 
         ALL: 
             DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
@@ -191,7 +191,7 @@ PHONE_CONVERSATION:
     IOS: plugin_studentlife_audio
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
     "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
     "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",

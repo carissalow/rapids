@@ -22,6 +22,31 @@ definitions:
       SRC_LANGUAGE:
         type: string
         enum: [python, r]
+
+  DORYAB_BLUETOOTH_FEATURE:
+    type: object
+    required: [DEVICES, SCANS_MOST_FREQUENT_DEVICE, SCANS_LEAST_FREQUENT_DEVICE]
+    properties:
+      DEVICES:
+        type: array
+        uniqueItems: True
+        items:
+          type: string
+          enum: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+      SCANS_MOST_FREQUENT_DEVICE:
+        type: array
+        uniqueItems: True
+        items:
+          type: string
+          enum: ["withinsegments", "acrosssegments", "acrossdataset"]
+      SCANS_LEASE_FREQUENT_DEVICE:
+        type: array
+        uniqueItems: True
+        items:
+          type: string
+          enum: ["withinsegments", "acrosssegments", "acrossdataset"]
+
+    
   
 properties:
   DATABASE_GROUP:
@@ -70,6 +95,45 @@ properties:
             items:
               type: string
 
+  PHONE_BLUETOOTH:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE:
+        type: string
+      PROVIDERS:
+        properties:
+          type: ["null", object]
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+          DORYAB:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    type: object
+                    required: [ALL, OWN, OTHERS]
+                    properties:
+                      ALL: 
+                        allOf:
+                          - $ref: "#/definitions/DORYAB_BLUETOOTH_FEATURE"
+                      OWN:
+                        allOf:
+                          - $ref: "#/definitions/DORYAB_BLUETOOTH_FEATURE"
+                      OTHERS:
+                        allOf:
+                          - $ref: "#/definitions/DORYAB_BLUETOOTH_FEATURE"
+        additionalProperties:
+          $ref: "#/definitions/PROVIDER"
+
+                      
   PHONE_CALLS:
     type: object
     required: [TABLE, PROVIDERS]
@@ -116,6 +180,70 @@ properties:
         additionalProperties:
           $ref: "#/definitions/PROVIDER"
 
+  PHONE_CONVERSATION:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE:
+        type: object
+        required: [ANDROID, IOS]
+        properties:
+          ANDROID:
+            type: string
+          IOS:
+            type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    items:
+                      type: string
+                      enum: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
+    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
+    "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
+    "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
+    "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
+    "unknownexpectedfraction","countconversation"]
+                  PECORDING_MINUTES: 
+                    type: integer
+                  PAUSED_MINUTES:
+                    type: integer
+        additionalProperties: 
+          $ref: "#/definitions/PROVIDER"
+  
+  PHONE_DATA_YIELD:
+    type: object
+    required: [SENSORS, PROVIDERS]
+    properties:
+      SENSORS:
+        type: ["null", array]
+        items:
+          type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: [ratiovalidyieldedminutes, ratiovalidyieldedhours]
+                  MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS:
+                    type: number
+                    minimum: 0
+                    maximum: 1
+        additionalProperties: 
+          $ref: "#/definitions/PROVIDER"
+                  
+
+
   PHONE_KEYBOARD:
     type: object
     required: [TABLE, PROVIDERS]
@@ -135,7 +263,17 @@ properties:
         type: string
       PROVIDERS:
         type: ["null", object]
-        additionalProperties:
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
+        additionalProperties: 
           $ref: "#/definitions/PROVIDER"
 
   PHONE_LOCATIONS:
@@ -178,36 +316,109 @@ properties:
     properties: 
       TABLE: 
         type: string
-      PROVIDER:
+      PROVIDERS:
         type: ["null", object]
         properties:
           RAPIDS:
             allOf:
               - $ref: "#/definitions/PROVIDER"
               - properties:
-                MESSAGES_TYPES:
-                  type: array
-                  uniqueItems: True
-                  items:
-                    type: string
-                    enum: ["received", "sent"]
-                FEATURES:
-                  type: object
-                  required: [received, sent]
-                  properties:
-                    received:
-                      type: array
-                      uniqueItems: True
-                      items:
-                        type: string
-                        enum: ["count", "distinctcontacts", "timefirstmessage", "timelastmessage", "countmostfrequentcontact"]
-                    
-                    sent:
-                      type: array
-                      uniqueItems: True
-                      items:
-                        type: string 
-                        enum: ["count", "distinctcontacts", "timefirstmessage", "timelastmessage", "countmostfrequentcontact"]
+                  MESSAGES_TYPES:
+                    type: array
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["received", "sent"]
+                  FEATURES:
+                    type: object
+                    required: [received, sent]
+                    properties:
+                      received:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["count", "distinctcontacts", "timefirstmessage", "timelastmessage", "countmostfrequentcontact"]
+                      
+                      sent:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string 
+                          enum: ["count", "distinctcontacts", "timefirstmessage", "timelastmessage", "countmostfrequentcontact"]
+    
+  PHONE_SCREEN:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE: 
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  REFERENCE_HOUR_FIRST_USE: 
+                    type: integer
+                  IGNORE_EPISODES_SHORTER_THAN:
+                    type: integer
+                    minimum: 0
+                  IGNORE_EPISODES_LONGER_THAN:
+                    type: integer
+                    minimum: 0
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"] 
+                  EPISODE_TYPES:
+                    type: array
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["unlock"]
+
+  PHONE_WIFI_CONNECTED:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE: 
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    items:
+                      type: string
+                      enum: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+        additionalProperties: 
+          $ref: "#/definitions/PROVIDER"
+  
+  PHONE_WIFI_VISIBLE:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE:
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+        additionalProperties: 
+          $ref: "#/definitions/PROVIDER"
+                
+                  
+
+
+
 
 
 
