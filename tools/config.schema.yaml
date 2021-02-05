@@ -45,9 +45,44 @@ definitions:
         items:
           type: string
           enum: ["withinsegments", "acrosssegments", "acrossdataset"]
-
-    
   
+  APPLICATION_CATEGORIES_FEATURE:
+        type: object
+        required: [CATALOGUE_SOURCE, CATALOGUE_FILE, UPDATE_CATALOGUE_FILE, SCRAPE_MISSING_CATEGORIES]
+        properties:
+          CATALOGUE_SOURCE:
+            type: string
+          CATALOGUE_FILE: 
+            type: string
+            pattern: "^.*\\.csv$"
+          UPDATE_CATALOGUE_FILE:
+            type: boolean
+          SCRAPE_MISSING_CATEGORIES:
+            type: boolean
+
+  DATA_CONFIGURATION:
+    type: object
+    required: [SOURCE, TIMEZONE]
+    properties:
+      SOURCE: 
+        type: object
+        required: [TYPE, DATABASE_GROUP, DEVICE_ID_COLUMN]
+        properties:
+          TYPE:
+            type: string
+          DATABASE_GROUP:
+            type: string
+          DEVICE_ID_COLUMN:
+            type: string
+      TIMEZONE:
+        type: object
+        required: [TYPE, VALUE]
+        properties:
+          TYPE:
+            type: string
+          VALUE:
+            type: string
+    
 properties:
   DATABASE_GROUP:
     type: string
@@ -95,6 +130,228 @@ properties:
             items:
               type: string
 
+  PHONE_DATA_CONFIGURATION:
+    allOf:
+      - $ref: "#/definitions/DATA_CONFIGURATION"
+
+  PHONE_ACCELEROMETER:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE:
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES: 
+                    type: array
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
+          PANDA:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  VALID_SENSED_MINUTES: 
+                    type: boolean
+                  FEATURES:
+                    type: object
+                    required: [exertional_activity_episode, nonexertional_activity_episode]
+                    properties:
+                      exertional_activity_episode: 
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
+                      nonexertional_activity_episode:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
+        additionalProperties: 
+            $ref: "#/definitions/PROVIDER"
+
+  PHONE_ACTIVITY_RECOGNITION:
+    type: object
+    required: [TABLE, EPISODE_THRESHOLD_BETWEEN_ROWS, PROVIDERS]
+    properties:
+      TABLE:
+        type: object
+        required: [ANDROID, IOS]
+        properties:
+          ANDROID: 
+            type: string
+          IOS: 
+            type: string
+      EPISODE_THRESHOLD_BETWEENROWS:
+        type: integer
+        maximum: 5
+        minimum: 0
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["count", "mostcommonactivity", "countuniqueactivities", "durationstationary", "durationmobile", "durationvehicle"]
+                  ACTIVITY_CLASSES:
+                    type: object
+                    required: [STATIONARY, MOBILE, VEHICLE]
+                    properties:
+                      STATIONARY: 
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["still", "tilting"]
+                      MOBILE: 
+                        type: array
+                        uniqueItems: True
+                        items:  
+                          type: string
+                          enum: ["on_foot", "walking", "running", "on_bicycle"]
+                      VEHICLE:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["in_vehicle"]
+        additionalProperties: 
+            $ref: "#/definitions/PROVIDER"
+        
+
+
+
+  PHONE_APPLICATIONS_CRASHES:
+    type: object
+    required: [TABLE, APPLICATION_CATEGORIES, PROVIDERS]
+    properties:
+      TABLE: 
+        type: string
+      APPLICATION_CATEGORIES:
+        allOf:
+          - $ref: "#/definitions/APPLICATION_CATEGORIES_FEATURE"
+      PROVIDERS:
+        additionalProperties: 
+            $ref: "#/definitions/PROVIDER"
+
+  PHONE_APPLICATIONS_FOREGROUND:
+    type: object
+    required: [TABLE, APPLICATION_CATEGORIES, PROVIDERS]
+    properties:
+      TABLE:
+        type: string
+      APPLICATION_CATEGORIES:
+        allOf:
+          - $ref: "#/definitions/APPLICATION_CATEGORIES_FEATURE"
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS: 
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  SINGLE_CATEGORIES: 
+                    type: array
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["all", "email"]
+                  MULTIPLE_CATEGORIES:
+                    type: object
+                    required: [social, entertainment]
+                    properties:
+                      social:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["socialnetworks", "socialmediatools"]
+                      entertainment:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
+                  EXCLUDED_CATEGORIES:
+                    type: ["null", array]
+                    uniqueItems: True
+                    items:
+                      type: string
+                  EXCLUDED_APPS: 
+                    type: array
+                    uniqueItems: true
+                    items:
+                      type: string
+                      enum: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+
+  PHONE_APPLICATIONS_NOTIFICATIONS:
+    type: object
+    required: [TABLE, APPLICATION_CATEGORIES, PROVIDERS]
+    properties:
+      TABLE:
+        type: string
+      APPLICATION_CATEGORIES:
+        allOf:
+          - $ref: "#/definitions/APPLICATION_CATEGORIES_FEATURE"
+      PROVIDERS:
+        type: ["null", object]
+        additionalProperties: 
+            $ref: "#/definitions/PROVIDER"
+
+  PHONE_AWARE_LOG:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE: 
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        additionalProperties: 
+            $ref: "#/definitions/PROVIDER"
+        
+  PHONE_BATTERY:
+    type: object
+    required: [TABLE, PROVIDERS, EPISODE_THRESHOLD_BETWEEN_ROWS]
+    properties:
+      TABLE:
+        type: string
+      EPISODE_THRESHOLD_BETWEEN_ROWS:
+        type: integer
+        maximum: 30
+        minimum: 0
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
+        additionalProperties:
+          $ref: "#/definitions/PROVIDER"
+
   PHONE_BLUETOOTH:
     type: object
     required: [TABLE, PROVIDERS]
@@ -102,8 +359,8 @@ properties:
       TABLE:
         type: string
       PROVIDERS:
+        type: ["null", object]
         properties:
-          type: ["null", object]
           RAPIDS:
             allOf:
               - $ref: "#/definitions/PROVIDER"
@@ -242,8 +499,6 @@ properties:
         additionalProperties: 
           $ref: "#/definitions/PROVIDER"
                   
-
-
   PHONE_KEYBOARD:
     type: object
     required: [TABLE, PROVIDERS]
@@ -414,11 +669,12 @@ properties:
               - $ref: "#/definitions/PROVIDER"
         additionalProperties: 
           $ref: "#/definitions/PROVIDER"
-                
-                  
 
-
-
+  FITBIT_DATA_CONFIGURATION:
+    allOf:
+      - $ref: "#/definitions/DATA_CONFIGURATION"
+  
+  
 
 
 

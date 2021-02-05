@@ -191,7 +191,7 @@ PHONE_CONVERSATION:
     IOS: plugin_studentlife_audio
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
     "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
     "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
