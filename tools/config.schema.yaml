@@ -465,7 +465,7 @@ properties:
     "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
     "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
     "unknownexpectedfraction","countconversation"]
-                  PECORDING_MINUTES: 
+                  RECORDING_MINUTES: 
                     type: integer
                   PAUSED_MINUTES:
                     type: integer
