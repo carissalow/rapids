@@ -673,15 +673,183 @@ properties:
   FITBIT_DATA_CONFIGURATION:
     allOf:
       - $ref: "#/definitions/DATA_CONFIGURATION"
+      - properties:
+          SOURCE:
+            properties:
+              COLUMN_FORMAT: 
+                type: string
+
+  FITBIT_HEARTRATE_SUMMARY:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE:
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+                - $ref: "#/definitions/PROVIDER"
+                - properties:
+                    FEATURES:
+                      uniqueItems: True
+                      items:
+                        type: string
+                        enum: ["maxrestinghr", "minrestinghr", "avgrestinghr", "medianrestinghr", "moderestinghr", "stdrestinghr", "diffmaxmoderestinghr", "diffminmoderestinghr", "entropyrestinghr"]
+
+  FITBIT_HEARTRATE_INTRADAY:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE:
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
+        additionalProperties: 
+          $ref: "#/definitions/PROVIDER"
+
+  FITBIT_SLEEP_SUMMARY:
+    type: object
+    required: [TABLE, SLEEP_EPISODE_TIMESTAMP, PROVIDERS]
+    properties:
+      TABLE:
+        type: string
+      SLEEP_EPISODE_TIMESTAMP:
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["countepisode", "avgefficiency", "sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgdurationafterwakeup", "avgdurationasleep", "avgdurationawake", "avgdurationtofallasleep", "avgdurationinbed"]
+                  SLEEP_TYPES:
+                    type: array
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["main", "nap", "all"]
+        additionalProperties: 
+          $ref: "#/definitions/PROVIDER"
   
+  FITBIT_STEPS_SUMMARY:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE:
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES: 
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["maxsumsteps", "minsumsteps", "avgsumsteps", "mediansumsteps", "stdsumsteps"]
   
+  FITBIT_STEPS_INTRADAY:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE: 
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    required: [STEPS, SEDENTARY_BOUT, ACTIVE_BOUT]
+                    properties:
+                      STEPS:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["sum", "max", "min", "avg", "std"]
+                      SEDENTARY_BOUT:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+                      ACTIVE_BOUT:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+                  THRESHOLD_ACTIVE_BOUT: 
+                    type: integer
+                    minimum: 0
+                  INCLUDE_ZERO_STEP_ROWS:
+                    type: boolean    
 
+  HISTOGRAM_PHONE_DATA_YIELD:
+    type: object
+    required: [PLOT]
+    properties:
+      PLOT:
+        type: boolean
+  
+  HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT:
+    type: object
+    required: [PLOT]
+    properties:
+      PLOT:
+        type: boolean
+  
+  HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT:
+    type: object
+    required: [PLOT]
+    properties:
+      PLOT:
+        type: boolean
+  
+  HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT:
+    type: object
+    required: [PLOT, SENSORS]
+    properties:
+      PLOT:
+        type: boolean
+      SENSORS:
+        type: array
+        uniqueItems: True
+        items:
+          type: string
+          enum: ["PHONE_ACCELEROMETER", "PHONE_ACTIVITY_RECOGNITION", "PHONE_APPLICATIONS_FOREGROUND", "PHONE_BATTERY", "PHONE_BLUETOOTH", "PHONE_CALLS", "PHONE_CONVERSATION", "PHONE_LIGHT", "PHONE_LOCATIONS", "PHONE_MESSAGES", "PHONE_SCREEN", "PHONE_WIFI_CONNECTED", "PHONE_WIFI_VISIBLE"]
 
-
-
-
-
-
-
-
-
+  HEATMAP_FEATURE_CORRELATION_MATRIX:
+    type: object
+    required: [PLOT, MIN_ROWS_RATIO, CORR_THRESHOLD, CORR_METHOD]
+    properties:
+      PLOT: 
+        type: boolean
+      MIN_ROWS_RATIOS:
+        type: number
+      CORR_THRESHOLD: 
+        type: number
+      CORR_METHOD:
+        type: string
