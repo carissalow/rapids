@@ -1,5 +1,7 @@
 # Change Log
 
+## v0.4.3
+- Fix bug when any of the rows from any sensor do not belong a time segment
 ## v0.4.2
 - Update battery testing
 - Fix location processing bug when certain columns don't exist

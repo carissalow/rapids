@@ -29,7 +29,7 @@ get_segment_dates <- function(data, local_timezone, day_type, delay){
 
 assign_rows_to_segments <- function(nested_data, nested_inferred_time_segments){
   nested_data <- nested_data %>% mutate(assigned_segments = "")
-  for(i in 1:nrow(nested_inferred_time_segments)) {
+  for(i in seq_len(nrow(nested_inferred_time_segments))) {
     segment <- nested_inferred_time_segments[i,]
     nested_data$assigned_segments <- ifelse(segment$segment_start_ts<= nested_data$timestamp & segment$segment_end_ts >= nested_data$timestamp,
                                             stringi::stri_c(nested_data$assigned_segments, segment$segment_id, sep = "|"), nested_data$assigned_segments)
