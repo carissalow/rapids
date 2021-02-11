@@ -26,3 +26,7 @@ div[data-md-component=announce]>div#announce-msg>a{
     color: var(--md-typeset-a-color);
     text-decoration: underline;
 }
+
+.md-typeset table:not([class]) th {
+    min-width: 0rem;
+}

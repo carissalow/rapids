@@ -5,8 +5,8 @@ Sensor parameters description for `[FITBIT_SLEEP_INTRADAY]`:
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
 |`[TABLE]`| Database table name or file path where the sleep intraday data is stored. The configuration keys in [Device Data Source Configuration](../../setup/configuration/#device-data-source-configuration) control whether this parameter is interpreted as table or file.
-|`[INCLUDE_EPISODES_LATER_THAN]`| Earliest time of episodes to be included for sleep intraday feature extraction. It is a number ranged from 0 (midnight) to 1439 (23:59) which denotes the number of minutes after midnight. If a segment is longer than one day, this value is for every day.
-|`[REFERENCE_TIME]`| The reference point from which the `[ROUTINE]` features are to be computed. Chosen from `MIDNIGHT` and `START_OF_THE_SEGMENT`, default is `MIDNIGHT`.
+|`[INCLUDE_EPISODES_LATER_THAN]`| All sleep episodes that started after this time will be included in the feature computation. It is a number ranging from 0 (midnight) to 1439 (23:59) which denotes the number of minutes after midnight. If a segment is longer than one day, this value is for every day.
+|`[REFERENCE_TIME]`| The reference point from which the `[ROUTINE]` features are to be computed. Chosen from `MIDNIGHT` and `START_OF_THE_SEGMENT`, default is `MIDNIGHT`. If you have multiple time segments per day it might be more informative to set this flag to `START_OF_THE_SEGMENT`.
 
 The format of the column(s) containing the Fitbit sensor data can be `JSON` or `PLAIN_TEXT`. The data in `JSON` format is obtained directly from the Fitbit API. We support `PLAIN_TEXT` in case you already parsed your data and don't have access to your participants' Fitbit accounts anymore. If your data is in `JSON` format then summary and intraday data come packed together. 
 
@@ -60,68 +60,69 @@ Parameters description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS]`:
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
 |`[COMPUTE]`                                  | Set to `True` to extract `FITBIT_SLEEP_INTRADAY` features from the `RAPIDS` provider|
 |`[FEATURES]`                                 |         Features to be computed from sleep intraday data, see table below           |
-|`[SLEEP_LEVELS]`                             | Fitbit’s sleep API Version 1 only provides `CLASSIC` record. However, Version 1.2 provides 2 types of records: `CLASSIC` and `STAGES`. While `CLASSIC` contains 3 sleep levels (`awake`, `restless`, and `asleep`), `STAGES` contains 4 sleep levels (`wake`, `deep`, `light`, `rem`). To make it consistent, RAPIDS grouped them into 2 sleep levels: `awake` (`CLASSIC`: `awake` and `restless`; `STAGES`: `wake`) and `asleep` (`CLASSIC`: `asleep`; `STAGES`: `deep`, `light`, and `rem`).
-|`[SLEEP_TYPES]`                              | Types of sleep to be included in the feature extraction computation. Fitbit provides 2 types of sleep: main, nap.
+|`[SLEEP_LEVELS]`                             | Fitbit’s sleep API Version 1 only provides `CLASSIC` records. However, Version 1.2 provides 2 types of records: `CLASSIC` and `STAGES`. `STAGES` is only available in devices with a heart rate sensor and even those devices will fail to report it if the battery is low or the device is not tight enough. While `CLASSIC` contains 3 sleep levels (`awake`, `restless`, and `asleep`), `STAGES` contains 4 sleep levels (`wake`, `deep`, `light`, `rem`). To make it consistent, RAPIDS grouped them into 2 `UNIFIED` sleep levels: `awake` (`CLASSIC`: `awake` and `restless`; `STAGES`: `wake`) and `asleep` (`CLASSIC`: `asleep`; `STAGES`: `deep`, `light`, and `rem`).
+|`[SLEEP_TYPES]`                              | Types of sleep to be included in the feature extraction computation. Fitbit provides 2 types of sleep: `main`, `nap`.
 
 
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` LEVELS_AND_TYPES:
+Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS][LEVELS_AND_TYPES]`:
 
-|Feature                    |Units          |Description                                                  |
+|Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    |Units          |Description                                                  |
 |-------------------------- |-------------- |-------------------------------------------------------------|
-|countepisode[LEVEL][TYPE]  |episodes       |Number of [LEVEL][TYPE] sleep episodes. [LEVEL] is chosen from `[SLEEP_LEVELS]` (e.g. awakeclassic) and [TYPE] is chosen from `[SLEEP_TYPES]` (e.g. main). Both [LEVEL] and [TYPE] can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which denotes all levels or all types are considered.
-|sumduration[LEVEL][TYPE]   |minutes        |Total duration of all [LEVEL][TYPE] sleep episodes. [LEVEL] is chosen from `[SLEEP_LEVELS]` (e.g. awakeclassic) and [TYPE] is chosen from `[SLEEP_TYPES]` (e.g. main). Both [LEVEL] and [TYPE] can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which denotes all levels or all types are considered.
-|maxduration[LEVEL][TYPE]   |minutes        | Longest duration of any [LEVEL][TYPE] sleep episode. [LEVEL] is chosen from `[SLEEP_LEVELS]` (e.g. awakeclassic) and [TYPE] is chosen from `[SLEEP_TYPES]` (e.g. main). Both [LEVEL] and [TYPE] can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which denotes all levels or all types are considered.
-|minduration[LEVEL][TYPE]   |minutes        | Shortest duration of any [LEVEL][TYPE] sleep episode. [LEVEL] is chosen from `[SLEEP_LEVELS]` (e.g. awakeclassic) and [TYPE] is chosen from `[SLEEP_TYPES]` (e.g. main). Both [LEVEL] and [TYPE] can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which denotes all levels or all types are considered.
-|avgduration[LEVEL][TYPE]   |minutes        | Average duration of all [LEVEL][TYPE] sleep episodes. [LEVEL] is chosen from `[SLEEP_LEVELS]` (e.g. awakeclassic) and [TYPE] is chosen from `[SLEEP_TYPES]` (e.g. main). Both [LEVEL] and [TYPE] can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which denotes all levels or all types are considered.
-|stdduration[LEVEL][TYPE]   |minutes        | Standard deviation duration of all [LEVEL][TYPE] sleep episodes. [LEVEL] is chosen from `[SLEEP_LEVELS]` (e.g. awakeclassic) and [TYPE] is chosen from `[SLEEP_TYPES]` (e.g. main). Both [LEVEL] and [TYPE] can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which denotes all levels or all types are considered.
+|countepisode`[LEVEL][TYPE]` |episodes       |Number of `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]`can also be `all` when ``LEVELS_AND_TYPES_COMBINING_ALL`` is True, which groups all `CLASSIC`, `STAGE`, `UNIFIED` levels and both sleep types.
+|sumduration`[LEVEL][TYPE]`  |minutes        |Total duration of all `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which groups all `CLASSIC`, `STAGE`, `UNIFIED` levels and both sleep types.
+|maxduration`[LEVEL][TYPE]`  |minutes        | Longest duration of any `[LEVEL][TYPE]`sleep episode. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which groups all `CLASSIC`, `STAGE`, `UNIFIED` levels and both sleep types.
+|minduration`[LEVEL][TYPE]`  |minutes        | Shortest duration of any `[LEVEL][TYPE]`sleep episode. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which groups all `CLASSIC`, `STAGE`, `UNIFIED` levels and both sleep types.
+|avgduration`[LEVEL][TYPE]`  |minutes        | Average duration of all `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which groups all `CLASSIC`, `STAGE`, `UNIFIED` levels and both sleep types.
+|stdduration`[LEVEL][TYPE]`  |minutes        | Standard deviation duration of all `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which groups all `CLASSIC`, `STAGE`, `UNIFIED` levels and both sleep types.
 
 
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS ACROSS_LEVELS:
+Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[ACROSS_LEVELS]`:
 
-|Feature                    |Units          |Description                                                  |
+|Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    |Units |Description                                                        |
 |-------------------------- |-------------- |-------------------------------------------------------------|
-|ratiocount[LEVEL]          |-              |Ratio of countepisode[LEVEL]all to countepisodeallall. [LEVEL] is chosen from `[SLEEP_LEVELS]` (e.g. awakeclassic)
-|ratioduration[LEVEL]       |-              |Ratio of sumduration[LEVEL]all to sumdurationallall. [LEVEL] is chosen from `[SLEEP_LEVELS]` (e.g. awakeclassic)
+|ratiocount`[LEVEL]`         |-|Ratio between the **count** of episodes of a single sleep `[LEVEL]` and the **count** of all episodes of all levels during both `main` and `nap` sleep types. This answers the question: what percentage of all `wake`, `deep`, `light`, and `rem` episodes were `rem`? (e.g., $countepisode[remstages][all] / countepisode[all][all]$)
+|ratioduration`[LEVEL]`      |-|Ratio between the **duration** of episodes of a single sleep `[LEVEL]` and the **duration** of all episodes of all levels during both `main` and `nap` sleep types. This answers the question: what percentage of all `wake`, `deep`, `light`, and `rem` time was `rem`? (e.g., $sumduration[remstages][all] / sumduration[all][all]$)
 
 
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS ACROSS_TYPES:
+Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[ACROSS_TYPES]`:
 
-|Feature                    |Units          |Description                                                  |
+|Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    |Units          |Description                                                  |
 |-------------------------- |-------------- |-------------------------------------------------------------|
-|ratiocountmain             |-              |Ratio of countepisodeallmain to countepisodeallall
-|ratiodurationmain          |-              |Ratio of sumdurationallmain to sumdurationallall
+|ratiocountmain             |-              |Ratio between the **count** of all `main` episodes (independently of the levels inside) divided by the **count** of all `main` and `nap` episodes. This answers the question: what percentage of all sleep episodes (`main` and `nap`) were `main`? We do not provide the ratio for `nap` because is complementary. ($countepisode[all][main] / countepisode[all][all]$)
+|ratiodurationmain          |-              |Ratio between the **duration** of all `main` episodes (independently of the levels inside) divided by the **duration** of all `main` and `nap` episodes. This answers the question: what percentage of all sleep time (`main` and `nap`) was `main`? We do not provide the ratio for `nap` because is complementary. ($sumduration[all][main] / sumduration[all][all]$)
 
 
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS WITHIN_LEVELS:
+Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[WITHIN_LEVELS]`:
+
+|Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                           |Units          |Description                                                  |
+|--------------------------------- |-------------- |-------------------------------------------------------------|
+|ratiocount`[TYPE]`within`[LEVEL]`    |-              |Ratio between the **count** of episodes of a single sleep `[LEVEL]` during `main` sleep divided by the **count** of episodes of a single sleep `[LEVEL]` during `main` **and** `nap`. This answers the question: are `rem` episodes more frequent during `main` than `nap` sleep? We do not provide the ratio for `nap` because is complementary. ($countepisode[remstages][main] / countepisode[remstages][all]$)
+|ratioduration`[TYPE]`within`[LEVEL]` |-              |Ratio between the **duration** of episodes of a single sleep `[LEVEL]` during `main` sleep divided by the **duration** of episodes of a single sleep `[LEVEL]` during `main` **and** `nap`. This answers the question: is `rem` time more frequent during `main` than `nap` sleep? We do not provide the ratio for `nap` because is complementary. ($countepisode[remstages][main] / countepisode[remstages][all]$)
+
+
+Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[WITHIN_TYPES]`:
+
+|Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Units|Description|
+| - |- | - |
+|ratiocount`[LEVEL]`within`[TYPE]`    |-|Ratio between the **count** of episodes of a single sleep `[LEVEL]` and the **count** of all episodes of all levels during either `main` or `nap` sleep types. This answers the question: what percentage of all `wake`, `deep`, `light`, and `rem` episodes were `rem` during `main`/`nap` sleep time? (e.g., $countepisode[remstages][main] / countepisode[all][main]$)
+|ratioduration`[LEVEL]`within`[TYPE]` |-|Ratio between the **duration** of episodes of a single sleep `[LEVEL]` and the **duration** of all episodes of all levels during either `main` or `nap` sleep types. This answers the question: what percentage of all `wake`, `deep`, `light`, and `rem` time was `rem` during `main`/`nap` sleep time? (e.g., $sumduration[remstages][main] / sumduration[all][main]$)
+
+
+Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS][ROUTINE]`:
 
 |Feature                           |Units          |Description                                                  |
 |--------------------------------- |-------------- |-------------------------------------------------------------|
-|ratiocount[TYPE]within[LEVEL]     |-              |Ratio of countepisode[LEVEL][TYPE] to countepisode[LEVEL]all. [TYPE] is chosen from `[SLEEP_TYPES]` (e.g. main) and [LEVEL] is chosen from `[SLEEP_LEVELS]` (e.g. awakeclassic).
-|ratioduration[TYPE]within[LEVEL]  |-              |Ratio of sumduration[LEVEL][TYPE] to sumduration[LEVEL]all. [TYPE] is chosen from `[SLEEP_TYPES]` (e.g. main) and [LEVEL] is chosen from `[SLEEP_LEVELS]` (e.g. awakeclassic).
-
-
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS WITHIN_TYPES:
-
-|Feature                           |Units          |Description                                                  |
-|--------------------------------- |-------------- |-------------------------------------------------------------|
-|ratiocount[LEVEL]within[TYPE]     |-              |Ratio of countepisode[LEVEL][TYPE] to countepisodeall[TYPE]. [LEVEL] is chosen from `[SLEEP_LEVELS]` (e.g. awakeclassic) and [TYPE] is chosen from `[SLEEP_TYPES]` (e.g. main).
-|ratioduration[LEVEL]within[TYPE]  |-              |Ratio of sumduration[LEVEL][TYPE] to sumdurationall[TYPE]. [LEVEL] is chosen from `[SLEEP_LEVELS]` (e.g. awakeclassic) and [TYPE] is chosen from `[SLEEP_TYPES]` (e.g. main).
-
-
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` ROUTINE:
-
-|Feature                           |Units          |Description                                                  |
-|--------------------------------- |-------------- |-------------------------------------------------------------|
-|starttimefirstmainsleep           |minutes        |Start time in minutes (based on `REFERENCE_TIME`) of the first main sleep episode after `INCLUDE_EPISODES_LATER_THAN`.
-|endtimelastmainsleep              |minutes        |End time in minutes (based on `REFERENCE_TIME`) of the last main sleep episode after `INCLUDE_EPISODES_LATER_THAN`.
-|starttimefirstnap                 |minutes        |Start time in minutes (based on `REFERENCE_TIME`) of the first nap episode after `INCLUDE_EPISODES_LATER_THAN`.
-|endtimelastnap                    |minutes        |End time in minutes (based on `REFERENCE_TIME`) of the last nap episode after `INCLUDE_EPISODES_LATER_THAN`.
+|starttimefirstmainsleep           |minutes        |Start time (in minutes since `REFERENCE_TIME`) of the first main sleep episode after `INCLUDE_EPISODES_LATER_THAN`.
+|endtimelastmainsleep              |minutes        |End time (in minutes since `REFERENCE_TIME`) of the last main sleep episode after `INCLUDE_EPISODES_LATER_THAN`.
+|starttimefirstnap                 |minutes        |Start time (in minutes since `REFERENCE_TIME`) of the first nap episode after `INCLUDE_EPISODES_LATER_THAN`.
+|endtimelastnap                    |minutes        |End time (in minutes since `REFERENCE_TIME`) of the last nap episode after `INCLUDE_EPISODES_LATER_THAN`.
 
 
 
 
 
 !!! note "Assumptions/Observations"
-    
+    1. Deleting values from `[SLEEP_LEVELS]` or `[SLEEP_TYPES]` will only change the features you receive from `[LEVELS_AND_TYPES]`. For example if `STAGES` only contains `[rem, light]` you will not receive `countepisode[wake|deep][TYPE]` or sum, max, min, avg, or std `duration`. These values will not influence `RATIOS` or `ROUTINE` features.
+    2. Any `[LEVEL]` grouping is done within the elements of each class `CLASSIC`, `STAGES`, and `UNIFIED`. That is, we never combine `CLASSIC` or `STAGES` types to compute features when `LEVELS_AND_TYPES_COMBINING_ALL` is True or when computing `RATIOS`.
     
 
