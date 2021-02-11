@@ -714,7 +714,32 @@ properties:
           SOURCE:
             properties:
               COLUMN_FORMAT: 
-                type: string
+                  type: string
+                  enum: ["JSON", "PLAIN_TEXT"]
+  
+  FITBIT_DATA_YIELD:
+    type: object
+    required: [SENSOR, PROVIDERS]
+    properties:
+      SENSOR:
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+                - $ref: "#/definitions/PROVIDER"
+                - properties:
+                    FEATURES:
+                      uniqueItems: True
+                      items:
+                        type: string
+                        enum: ["ratiovalidyieldedminutes", "ratiovalidyieldedhours"]
+                    MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS:
+                      type: number
+                      minimum: 0
+                      maximum: 1
+
 
   FITBIT_HEARTRATE_SUMMARY:
     type: object
