@@ -37,6 +37,7 @@ As a tutorial, we will add a new provider for `PHONE_ACCELEROMETER` called `VEGA
     - Fitbit Heart Rate Summary
     - Fitbit Heart Rate Intraday
     - Fitbit Sleep Summary
+    - Fitbit Sleep Intraday
     - Fitbit Steps Summary
     - Fitbit Steps Intraday
 
