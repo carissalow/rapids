@@ -268,23 +268,19 @@ properties:
                     uniqueItems: True
                     items:
                       type: string
-                      enum: ["all", "email"]
                   MULTIPLE_CATEGORIES:
                     type: object
-                    required: [social, entertainment]
                     properties:
                       social:
                         type: array
                         uniqueItems: True
                         items:
                           type: string
-                          enum: ["socialnetworks", "socialmediatools"]
                       entertainment:
                         type: array
                         uniqueItems: True
                         items:
                           type: string
-                          enum: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
                   EXCLUDED_CATEGORIES:
                     type: ["null", array]
                     uniqueItems: True
@@ -295,7 +291,6 @@ properties:
                     uniqueItems: true
                     items:
                       type: string
-                      enum: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
                   FEATURES:
                     uniqueItems: True
                     items:
@@ -335,7 +330,7 @@ properties:
         type: string
       EPISODE_THRESHOLD_BETWEEN_ROWS:
         type: integer
-        maximum: 30
+        maximum: 1440
         minimum: 0
       PROVIDERS:
         type: ["null", object]
@@ -467,8 +462,12 @@ properties:
     "unknownexpectedfraction","countconversation"]
                   RECORDING_MINUTES: 
                     type: integer
+                    minimum: 1
+                    maximum: 1440
                   PAUSED_MINUTES:
                     type: integer
+                    minimum: 1
+                    maximum: 1440
         additionalProperties: 
           $ref: "#/definitions/PROVIDER"
   
@@ -480,6 +479,7 @@ properties:
         type: ["null", array]
         items:
           type: string
+          enum: ["PHONE_ACCELEROMETER", "PHONE_ACTIVITY_RECOGNITION", "PHONE_APPLICATIONS_FOREGROUND", "PHONE_BATTERY", "PHONE_BLUETOOTH", "PHONE_CALLS", "PHONE_CONVERSATION", "PHONE_LIGHT", "PHONE_LOCATIONS", "PHONE_MESSAGES", "PHONE_SCREEN", "PHONE_WIFI_CONNECTED", "PHONE_WIFI_VISIBLE"]
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -562,6 +562,40 @@ properties:
                     ACCURACY_LIMIT:
                       type: integer
                       exclusiveMinimum: 0
+                    DBSCAN_EPS:
+                      type: integer
+                    DBSCAN_MINSAMPLES:
+                      type: integer
+                    THRESHOLD_STATIC:
+                      type: integer
+                    MAXIMUM_GAP_ALLOWED:
+                      type: integer
+                    MINUTES_DATA_USED:
+                      type: boolean
+                    SAMPLING_FREQUENCY:
+                      type: integer
+                    CLUSTER_ON:
+                      type: string
+                    CLUSTERING_ALGORITHM:
+                      type: string
+                    
+          BARNETT:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    type: array
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","circdnrtn","wkenddayrtn"]
+                  ACCURACY_LIMIT:
+                    type: integer
+                    exclusiveMinimum: 0
+                  TIMEZONE:
+                    type: string
+                  MINUTES_DATA_USED:
+                    type: boolean
         additionalProperties:
           $ref: "#/definitions/PROVIDER"
     
@@ -617,6 +651,8 @@ properties:
               - properties:
                   REFERENCE_HOUR_FIRST_USE: 
                     type: integer
+                    minimum: 0
+                    maximum: 23
                   IGNORE_EPISODES_SHORTER_THAN:
                     type: integer
                     minimum: 0
@@ -649,6 +685,7 @@ properties:
               - $ref: "#/definitions/PROVIDER"
               - properties:
                   FEATURES:
+                    uniqueItems: True
                     items:
                       type: string
                       enum: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
@@ -727,6 +764,7 @@ properties:
         type: string
       SLEEP_EPISODE_TIMESTAMP:
         type: string
+        enum: ["start", "end"]
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -847,9 +885,14 @@ properties:
     properties:
       PLOT: 
         type: boolean
-      MIN_ROWS_RATIOS:
+      MIN_ROWS_RATIO:
         type: number
+        minimum: 0
+        maximum: 1
       CORR_THRESHOLD: 
         type: number
+        minimum: 0
+        maximum: 1
       CORR_METHOD:
         type: string
+        enum: ["pearson", "kendall", "spearman"]
