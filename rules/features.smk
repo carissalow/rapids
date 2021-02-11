@@ -504,6 +504,32 @@ rule phone_wifi_visible_r_features:
     script:
         "../src/features/entry.R"
 
+rule fitbit_data_yield_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_DATA_YIELD"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_data_yield"
+    output:
+        "data/interim/{pid}/fitbit_data_yield_features/fitbit_data_yield_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule fitbit_data_yield_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_DATA_YIELD"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_data_yield"
+    output:
+        "data/interim/{pid}/fitbit_data_yield_features/fitbit_data_yield_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R" 
+
 rule fitbit_heartrate_summary_python_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_heartrate_summary_parsed_with_datetime.csv",

@@ -104,7 +104,8 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 | `[DBSCAN_EPS]`             | The maximum distance in meters between two samples for one to be considered as in the neighborhood of the other. This is not a maximum bound on the distances of points within a cluster. This is the most important DBSCAN parameter to choose appropriately for your data set and distance function.
 | `[DBSCAN_MINSAMPLES]`      | The number of samples (or total weight) in a neighborhood for a point to be considered as a core point of a cluster. This includes the point itself.
 | `[THRESHOLD_STATIC]`       | It is the threshold value in km/hr which labels a row as Static or Moving.
-| `[MAXIMUM_GAP_ALLOWED]`   | The maximum gap (in seconds) allowed between any two consecutive rows for them to be considered part of the same displacement. If this threshold is too high, it can throw speed and distance calculations off for periods when the the phone was not sensing.
+| `[MAXIMUM_ROW_GAP]`   | The maximum gap (in seconds) allowed between any two consecutive rows for them to be considered part of the same displacement. If this threshold is too high, it can throw speed and distance calculations off for periods when the the phone was not sensing.
+| `[MAXIMUM_ROW_DURATION]`  | The time difference between any two consecutive rows `A` and `B` is considered as the time a participant spent in `A`. If this difference is bigger than MAXIMUM_ROW_GAP we will substitute it with `MAXIMUM_ROW_DURATION`.
 | `[MINUTES_DATA_USED]`     | Set to `True` to include an extra column in the final location feature file containing the number of minutes used to compute the features on each time segment. Use this for quality control purposes, the more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
 | `[SAMPLING_FREQUENCY]`     | Expected time difference between any two location rows in minutes. If set to `0`, the sampling frequency will be inferred automatically as the median of all the differences between any two consecutive row timestamps (recommended if you are using `FUSED_RESAMPLED` data). This parameter impacts all the time calculations.
 | `[CLUSTER_ON]`             | Set this flag to `PARTICIPANT_DATASET` to create clusters based on the entire participant's dataset or to `TIME_SEGMENT` to create clusters based on all the instances of the corresponding time segment (e.g. all mornings).
@@ -120,15 +121,15 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 |totaldistance                                                |meters        |Total distance travelled in a time segment using the haversine formula.
 |averagespeed                                                 |km/hr         |Average speed in a time segment considering only the instances labeled as Moving.
 |varspeed                                                      |km/hr         |Speed variance in a time segment considering only the instances labeled as Moving. 
-|circadianmovement                                              |-             | \"It encodes the extent to which a person's location patterns follow a 24-hour circadian cycle.\" [Doryab et al.](../../citation#doryab-locations).
-|numberofsignificantplaces                                    |places        |Number of significant locations visited. It is calculated using the DBSCAN clustering algorithm which takes in EPS and MIN_SAMPLES as parameters to identify clusters. Each cluster is a significant place.
+|{--circadianmovement--}                                              |-             | Not suggested for use at the moment, see Observations below. \"It encodes the extent to which a person's location patterns follow a 24-hour circadian cycle.\" [Doryab et al.](../../citation#doryab-locations).
+|numberofsignificantplaces                                    |places        |Number of significant locations visited. It is calculated using the DBSCAN/OPTICS clustering algorithm which takes in EPS and MIN_SAMPLES as parameters to identify clusters. Each cluster is a significant place.
 |numberlocationtransitions                                    |transitions   |Number of movements between any two clusters in a time segment.
 |radiusgyration                                               |meters        |Quantifies the area covered by a participant
 |timeattop1location                                           |minutes       |Time spent at the most significant location.
 |timeattop2location                                           |minutes       |Time spent at the 2nd most significant location.
 |timeattop3location                                           |minutes       |Time spent at the 3rd most significant location. 
-|movingtostaticratio                                          | -   |  Ratio between stationary time and total location sensed time. A lat/long coordinate pair is labelled as stationary if it’s speed (distance/time) to the next coordinate pair is less than 1km/hr. A higher value represents a more stationary routine. These times are computed by multiplying the number of rows by `[SAMPLING_FREQUENCY]`
-|outlierstimepercent                                          | -   | Ratio between the time spent in non-significant clusters divided by the time spent in all clusters (total location sensed time). A higher value represents more time spent in non-significant clusters. These times are computed by multiplying the number of rows by `[SAMPLING_FREQUENCY]`
+|movingtostaticratio                                          | -   |  Ratio between stationary time and total location sensed time. A lat/long coordinate pair is labelled as stationary if it’s speed (distance/time) to the next coordinate pair is less than 1km/hr. A higher value represents a more stationary routine. These times are computed using timeInSeconds feature.
+|outlierstimepercent                                          | -   | Ratio between the time spent in non-significant clusters divided by the time spent in all clusters (total location sensed time). A higher value represents more time spent in non-significant clusters. These times are computed using timeInSeconds feature.
 |maxlengthstayatclusters                                      |minutes       |Maximum time spent in a cluster (significant location).
 |minlengthstayatclusters                                      |minutes       |Minimum time spent in a cluster (significant location).
 |meanlengthstayatclusters                                     |minutes       |Average time spent in a cluster (significant location).
@@ -141,8 +142,11 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
     **Significant Locations Identified**
     Significant locations are determined using DBSCAN clustering on locations that a patient visit over the course of the period of data collection.
 
-    **The Circadian Calculation**
-    For a detailed description of how this is calculated, see [Canzian et al](../../citation#doryab-locations).
+    **Circadian Movement Calculation**
+    Note Feb 3 2021. It seems the implementation of this feature is not correct, we suggest not to use this feature until a fix is in place. For a detailed description of how this should be calculated, see [Saeb et al](https://pubmed.ncbi.nlm.nih.gov/28344895/).
 
     **Fine Tuning Clustering Parameters**
     Based on an experiment where we collected fused location data for 7 days with a mean accuracy of 86 & SD of 350.874635, we determined that `EPS/MAX_EPS`=100 produced closer clustering results to reality. Higher values (>100) missed out some significant places like a short grocery visit while lower values (<100) picked up traffic lights and stop signs while driving as significant locations. We recommend you set `EPS` based on the accuracy of your location data (the more accurate your data is, the lower you should be able to set EPS).
+
+    **Duration Calculation**
+    To calculate the time duration component for our features, we compute the difference between the timestamps of consecutive rows to take into account sampling rate variability. If this time difference is larger than a threshold (300 seconds by default) we replace it with a maximum duration (60 seconds by default, i.e. we assume a participant spent at least 60 seconds in their last known location)

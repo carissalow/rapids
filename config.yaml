@@ -238,14 +238,14 @@ PHONE_LOCATIONS:
   PROVIDERS:
     DORYAB:
       COMPUTE: False
-      FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
+      FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed", "numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy"]
       ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
       DBSCAN_EPS: 10 # meters
       DBSCAN_MINSAMPLES: 5
       THRESHOLD_STATIC : 1 # km/h
-      MAXIMUM_GAP_ALLOWED: 300
+      MAXIMUM_ROW_GAP: 300
+      MAXIMUM_ROW_DURATION: 60
       MINUTES_DATA_USED: False
-      SAMPLING_FREQUENCY: 0
       CLUSTER_ON: PARTICIPANT_DATASET # PARTICIPANT_DATASET,TIME_SEGMENT
       CLUSTERING_ALGORITHM: DBSCAN #DBSCAN,OPTICS  
       SRC_FOLDER: "doryab" # inside src/features/phone_locations
@@ -325,6 +325,18 @@ FITBIT_DATA_CONFIGURATION:
     VALUE: *timezone
 
 # Sensors ------
+
+# See https://www.rapids.science/latest/features/fitbit-data-yield/
+FITBIT_DATA_YIELD:
+  SENSOR: FITBIT_HEARTRATE_INTRADAY
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: [ratiovalidyieldedminutes, ratiovalidyieldedhours]
+      MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 # 0 to 1 representing the number of minutes with at least
+      SRC_LANGUAGE: "r"
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_data_yield
+
 
 # See https://www.rapids.science/latest/features/fitbit-heartrate-summary/
 FITBIT_HEARTRATE_SUMMARY:

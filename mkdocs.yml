@@ -99,6 +99,7 @@ nav:
         - Phone WiFI Connected: features/phone-wifi-connected.md
         - Phone WiFI Visible: features/phone-wifi-visible.md
       - Fitbit:
+        - Fitbit Data Yield: features/fitbit-data-yield.md
         - Fitbit Heart Rate Summary: features/fitbit-heartrate-summary.md
         - Fitbit Heart Rate Intraday: features/fitbit-heartrate-intraday.md
         - Fitbit Sleep Summary: features/fitbit-sleep-summary.md

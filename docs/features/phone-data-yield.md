@@ -68,8 +68,8 @@ Features description for `[PHONE_DATA_YIELD][PROVIDERS][RAPIDS]`:
 
 |Feature                    |Units      |Description|
 |-------------------------- |---------- |---------------------------|
-|ratiovalidyieldedminutes       |rows    | The ratio between the number of valid minutes and the duration in minutes of a time segment.
-|ratiovalidyieldedhours      |lux     | The ratio between the number of valid hours and the duration in hours of a time segment. If the time segment is shorter than 1 hour this feature will always be 1.
+|ratiovalidyieldedminutes   |-          | The ratio between the number of valid minutes and the duration in minutes of a time segment.
+|ratiovalidyieldedhours     |-          | The ratio between the number of valid hours and the duration in hours of a time segment. If the time segment is shorter than 1 hour this feature will always be 1.
 
 
 !!! note "Assumptions/Observations"
