@@ -127,7 +127,7 @@ properties:
 
   CREATE_PARTICIPANT_FILES:
     type: object
-    required: [SOURCE]
+    required: [SOURCE, PHONE_SECTION, FITBIT_SECTION]
     properties:
       SOURCE:
         type: object
@@ -228,9 +228,9 @@ properties:
             type: string
           IOS: 
             type: string
-      EPISODE_THRESHOLD_BETWEENROWS:
+      EPISODE_THRESHOLD_BETWEEN_ROWS:
         type: integer
-        maximum: 5
+        maximum: 1440
         minimum: 0
       PROVIDERS:
         type: ["null", object]
