@@ -1,7 +1,6 @@
 import pandas as pd
 from scipy.stats import entropy
 
-
 def statsFeatures(heartrate_data, features, heartrate_features):
     col_name = "heartrate"
     if "sumhr" in features:

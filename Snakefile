@@ -262,7 +262,6 @@ for provider in config["EMPATICA_HEARTRATE"]["PROVIDERS"].keys():
             files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
             files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
-
 for provider in config["EMPATICA_TEMPERATURE"]["PROVIDERS"].keys():
     if config["EMPATICA_TEMPERATURE"]["PROVIDERS"][provider]["COMPUTE"]:
         for pid in config["PIDS"]:
