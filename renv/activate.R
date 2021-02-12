@@ -16,6 +16,7 @@ local({
   # signal that we're loading renv during R startup
   Sys.setenv("RENV_R_INITIALIZING" = "true")
   on.exit(Sys.unsetenv("RENV_R_INITIALIZING"), add = TRUE)
+  Sys.setenv("TZDIR" = file.path(R.home(), "share", "zoneinfo"))
 
   # signal that we've consented to use renv
   options(renv.consent = TRUE)
