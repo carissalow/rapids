@@ -5,6 +5,7 @@ required:
   - TIMEZONE
   - PIDS
   - CREATE_PARTICIPANT_FILES
+  - TIME_SEGMENTS
   - PHONE_DATA_CONFIGURATION
   - PHONE_ACCELEROMETER
   - PHONE_ACTIVITY_RECOGNITION
@@ -165,8 +166,18 @@ properties:
             items:
               type: string
 
-
-
+  TIME_SEGMENTS:
+    type: object
+    required: [TYPE, FILE, INCLUDE_PAST_PERIODIC_SEGMENTS]
+    properties:
+      TYPE:
+        type: string
+        enum: ["FREQUENCY", "PERIODIC", "EVENT"]
+      FILE: 
+        type: string
+        pattern: "^.*\\.csv$"
+      INCLUDE_PAST_PERIODIC_SEGMENTS: 
+        type: boolean
 
   PHONE_DATA_CONFIGURATION:
     allOf:
