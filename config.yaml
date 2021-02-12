@@ -410,7 +410,7 @@ EMPATICA_TEMPERATURE:
   PROVIDERS:
     DBDP:
       COMPUTE: False
-      FEATURES: []
+      FEATURES: ["maxtemp", "mintemp", "avgtemp", "mediantemp", "modetemp", "stdtemp", "diffmaxmodetemp", "diffminmodetemp", "entropytemp"]
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
 
@@ -419,7 +419,7 @@ EMPATICA_ELECTRODERMAL_ACTIVITY:
   PROVIDERS:
     DBDP:
       COMPUTE: False
-      FEATURES: []
+      FEATURES: ["maxeda", "mineda", "avgeda", "medianeda", "modeeda", "stdeda", "diffmaxmodeeda", "diffminmodeeda", "entropyeda"]
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
 
@@ -428,7 +428,7 @@ EMPATICA_BLOOD_VOLUME_PULSE:
   PROVIDERS:
     DBDP:
       COMPUTE: False
-      FEATURES: []
+      FEATURES: ["maxbvp", "minbvp", "avgbvp", "medianbvp", "modebvp", "stdbvp", "diffmaxmodebvp", "diffminmodebvp", "entropybvp"]
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
 
@@ -437,7 +437,7 @@ EMPATICA_INTER_BEAT_INTERVAL:
   PROVIDERS:
     DBDP:
       COMPUTE: False
-      FEATURES: []
+      FEATURES: ["maxibi", "minibi", "avgibi", "medianibi", "modeibi", "stdibi", "diffmaxmodeibi", "diffminmodeibi", "entropyibi"]
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
 
