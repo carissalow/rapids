@@ -3,10 +3,38 @@ description: RAPIDS configuration schema
 required:
   - DATABASE_GROUP
   - TIMEZONE
+  - PIDS
   - CREATE_PARTICIPANT_FILES
+  - PHONE_DATA_CONFIGURATION
+  - PHONE_ACCELEROMETER
+  - PHONE_ACTIVITY_RECOGNITION
+  - PHONE_APPLICATIONS_CRASHES
+  - PHONE_APPLICATIONS_FOREGROUND
+  - PHONE_APPLICATIONS_NOTIFICATIONS
+  - PHONE_AWARE_LOG
+  - PHONE_BATTERY
+  - PHONE_BLUETOOTH
   - PHONE_CALLS
+  - PHONE_CONVERSATION
+  - PHONE_DATA_YIELD
   - PHONE_KEYBOARD
   - PHONE_LOCATIONS
+  - PHONE_MESSAGES
+  - PHONE_SCREEN
+  - PHONE_WIFI_CONNECTED
+  - PHONE_WIFI_VISIBLE
+  - FITBIT_DATA_CONFIGURATION
+  - FITBIT_DATA_YIELD
+  - FITBIT_HEARTRATE_SUMMARY
+  - FITBIT_HEARTRATE_INTRADAY
+  - FITBIT_SLEEP_SUMMARY
+  - FITBIT_STEPS_SUMMARY
+  - FITBIT_STEPS_INTRADAY
+  - HISTOGRAM_PHONE_DATA_YIELD
+  - HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT
+  - HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT
+  - HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT
+  - HEATMAP_FEATURE_CORRELATION_MATRIX
 
 definitions:
   PROVIDER:
@@ -52,6 +80,7 @@ definitions:
         properties:
           CATALOGUE_SOURCE:
             type: string
+            enum: ["FILE", "GOOGLE"]
           CATALOGUE_FILE: 
             type: string
             pattern: "^.*\\.csv$"
@@ -90,6 +119,12 @@ properties:
   TIMEZONE:
     type: string
   
+  PIDS:
+    type: array
+    uniqueItems: True
+    items:
+      type: string
+
   CREATE_PARTICIPANT_FILES:
     type: object
     required: [SOURCE]
@@ -129,6 +164,9 @@ properties:
             type: array
             items:
               type: string
+
+
+
 
   PHONE_DATA_CONFIGURATION:
     allOf:
@@ -231,9 +269,6 @@ properties:
         additionalProperties: 
             $ref: "#/definitions/PROVIDER"
         
-
-
-
   PHONE_APPLICATIONS_CRASHES:
     type: object
     required: [TABLE, APPLICATION_CATEGORIES, PROVIDERS]
@@ -270,17 +305,11 @@ properties:
                       type: string
                   MULTIPLE_CATEGORIES:
                     type: object
-                    properties:
-                      social:
-                        type: array
-                        uniqueItems: True
-                        items:
-                          type: string
-                      entertainment:
-                        type: array
-                        uniqueItems: True
-                        items:
-                          type: string
+                    additionalProperties: 
+                       type: array
+                       uniqueItems: True
+                       items:
+                        type: string
                   EXCLUDED_CATEGORIES:
                     type: ["null", array]
                     uniqueItems: True
@@ -564,20 +593,27 @@ properties:
                       exclusiveMinimum: 0
                     DBSCAN_EPS:
                       type: integer
+                      exclusiveMinimum: 0
                     DBSCAN_MINSAMPLES:
                       type: integer
+                      exclusiveMinimum: 0
                     THRESHOLD_STATIC:
                       type: integer
-                    MAXIMUM_GAP_ALLOWED:
+                      exclusiveMinimum: 0
+                    MAXIMUM_ROW_GAP:
                       type: integer
+                      exclusiveMinimum: 0
+                    MAXIMUM_ROW_DURATION:
+                      type: integer
+                      exclusiveMinimum: 0
                     MINUTES_DATA_USED:
                       type: boolean
-                    SAMPLING_FREQUENCY:
-                      type: integer
                     CLUSTER_ON:
                       type: string
+                      enum: ["PARTICIPANT_DATASET", "TIME_SEGMENT"]
                     CLUSTERING_ALGORITHM:
                       type: string
+                      enum: ["DBSCAN", "OPTICS"]
                     
           BARNETT:
             allOf:
@@ -723,6 +759,7 @@ properties:
     properties:
       SENSOR:
         type: string
+        enum: ["FITBIT_HEARTRATE_INTRADAY"]
       PROVIDERS:
         type: ["null", object]
         properties:
