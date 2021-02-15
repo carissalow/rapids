@@ -246,7 +246,7 @@ rule fitbit_readable_datetime:
 from pathlib import Path
 rule unzip_empatica_data:
     input:
-        input_file = Path(config["EMPATICA_DATA_CONFIGURATION"]["SOURCE"]["FOLDER"]) / Path("{pid}{suffix}.zip"),
+        input_file = Path(config["EMPATICA_DATA_CONFIGURATION"]["SOURCE"]["FOLDER"]) / Path("{pid}") / Path("{suffix}.zip"),
         participant_file = "data/external/participant_files/{pid}.yaml"
     params:
         sensor = "{sensor}"

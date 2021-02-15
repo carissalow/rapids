@@ -367,18 +367,19 @@ for provider in config["EMPATICA_INTER_BEAT_INTERVAL"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
         files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
-for provider in config["EMPATICA_TAGS"]["PROVIDERS"].keys():
-    if config["EMPATICA_TAGS"]["PROVIDERS"][provider]["COMPUTE"]:
-        for pid in config["PIDS"]:
-            suffixes = get_zip_suffixes(pid)
-            files_to_compute.extend(expand("data/raw/{pid}/empatica_tags_unzipped_{suffix}.csv", pid=pid, suffix=suffixes))
-            files_to_compute.extend(expand("data/raw/{pid}/empatica_tags_raw_{suffix}.csv", pid=pid, suffix=suffixes))
-        files_to_compute.extend(expand("data/raw/{pid}/empatica_tags_joined.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/raw/{pid}/empatica_tags_with_datetime.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/interim/{pid}/empatica_tags_features/empatica_tags_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["EMPATICA_TAGS"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
-        files_to_compute.extend(expand("data/processed/features/{pid}/empatica_tags.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
-        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
+if isinstance(config["EMPATICA_TAGS"]["PROVIDERS"], dict):
+    for provider in config["EMPATICA_TAGS"]["PROVIDERS"].keys():
+        if config["EMPATICA_TAGS"]["PROVIDERS"][provider]["COMPUTE"]:
+            for pid in config["PIDS"]:
+                suffixes = get_zip_suffixes(pid)
+                files_to_compute.extend(expand("data/raw/{pid}/empatica_tags_unzipped_{suffix}.csv", pid=pid, suffix=suffixes))
+                files_to_compute.extend(expand("data/raw/{pid}/empatica_tags_raw_{suffix}.csv", pid=pid, suffix=suffixes))
+            files_to_compute.extend(expand("data/raw/{pid}/empatica_tags_joined.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/raw/{pid}/empatica_tags_with_datetime.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/empatica_tags_features/empatica_tags_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["EMPATICA_TAGS"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+            files_to_compute.extend(expand("data/processed/features/{pid}/empatica_tags.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+            files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 # Visualization for Data Exploration
 if config["HISTOGRAM_PHONE_DATA_YIELD"]["PLOT"]:
