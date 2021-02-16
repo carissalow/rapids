@@ -53,7 +53,7 @@ def extractBVPFeaturesFromIntradayData(bvp_intraday_data, features, time_segment
             # get stats of bvp
             bvp_intraday_features = statsFeatures(bvp_intraday_data, features, bvp_intraday_features)
 
-        bvp_intraday_features.reset_index(inplace=True)
+            bvp_intraday_features.reset_index(inplace=True)
 
     return bvp_intraday_features
 

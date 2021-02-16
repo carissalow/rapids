@@ -53,7 +53,7 @@ def extractEDAFeaturesFromIntradayData(eda_intraday_data, features, time_segment
             # get stats of eda
             eda_intraday_features = statsFeatures(eda_intraday_data, features, eda_intraday_features)
 
-        eda_intraday_features.reset_index(inplace=True)
+            eda_intraday_features.reset_index(inplace=True)
 
     return eda_intraday_features
 

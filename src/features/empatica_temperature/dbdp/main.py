@@ -53,7 +53,7 @@ def extractTempFeaturesFromIntradayData(temperature_intraday_data, features, tim
             # get stats of temperature
             temperature_intraday_features = statsFeatures(temperature_intraday_data, features, temperature_intraday_features)
 
-        temperature_intraday_features.reset_index(inplace=True)
+            temperature_intraday_features.reset_index(inplace=True)
 
     return temperature_intraday_features
 

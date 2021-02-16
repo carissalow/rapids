@@ -53,7 +53,7 @@ def extractHRFeaturesFromIntradayData(heartrate_intraday_data, features, time_se
             # get stats of heartrate
             heartrate_intraday_features = statsFeatures(heartrate_intraday_data, features, heartrate_intraday_features)
 
-        heartrate_intraday_features.reset_index(inplace=True)
+            heartrate_intraday_features.reset_index(inplace=True)
 
     return heartrate_intraday_features
 

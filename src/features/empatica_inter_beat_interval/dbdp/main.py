@@ -53,7 +53,7 @@ def extractIBIFeaturesFromIntradayData(ibi_intraday_data, features, time_segment
             # get stats of ibi
             ibi_intraday_features = statsFeatures(ibi_intraday_data, features, ibi_intraday_features)
 
-        ibi_intraday_features.reset_index(inplace=True)
+            ibi_intraday_features.reset_index(inplace=True)
 
     return ibi_intraday_features
 
