@@ -4,6 +4,34 @@ Along with the continued development and the addition of new sensors and feature
 
 The following is a list of the sensors that testing is currently available.
 
+
+| Sensor                        | Provider | Periodic | Frequency | Event |
+|-------------------------------|----------|----------|-----------|-------|
+| Phone Accelerometer           | Panda    | N        | N         | N     |
+| Phone Accelerometer           | RAPIDS   | N        | N         | N     |
+| Phone Activity Recognition    | RAPIDS   | N        | N         | N     |
+| Phone Applications Foreground | RAPIDS   | N        | N         | N     |
+| Phone Battery                 | RAPIDS   | Y        | N         | N     |
+| Phone Bluetooth               | Doryab   | N        | N         | N     |
+| Phone Bluetooth               | RAPIDS   | Y        | Y         | Y     |
+| Phone Calls                   | RAPIDS   | Y        | Y         | N     |
+| Phone Conversation            | RAPIDS   | Y        | Y         | N     |
+| Phone Data Yield              | RAPIDS   | N        | N         | N     |
+| Phone Light                   | RAPIDS   | Y        | Y         | N     |
+| Phone Locations               | Doryab   | N        | N         | N     |
+| Phone Locations               | Barnett  | N        | N         | N     |
+| Phone Messages                | RAPIDS   | Y        | Y         | N     |
+| Phone Screen                  | RAPIDS   | N        | N         | N     |
+| Phone WiFi Connected          | RAPIDS   | Y        | Y         | N     |
+| Phone WiFi Visible            | RAPIDS   | Y        | Y         | N     |
+| Fitbit Data Yield             | RAPIDS   | N        | N         | N     |
+| Fitbit Heart Rate Summary     | RAPIDS   | N        | N         | N     |
+| Fitbit Heart Rate Intraday    | RAPIDS   | N        | N         | N     |
+| Fitbit Sleep Summary          | RAPIDS   | N        | N         | N     |
+| Fitbit Steps Summary          | RAPIDS   | N        | N         | N     |
+| Fitbit Steps Intraday         | RAPIDS   | N        | N         | N     |
+
+
 ## Messages (SMS)
 
 -   The raw message data file contains data for 2 separate days.
