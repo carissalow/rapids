@@ -368,7 +368,7 @@ rule phone_light_r_features:
 
 rule phone_locations_python_features:
     input:
-        sensor_data = "data/interim/{pid}/phone_locations_processed_with_datetime.csv",
+        sensor_data = "data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_LOCATIONS"]["PROVIDERS"][wildcards.provider_key.upper()],

@@ -110,6 +110,7 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 | `[SAMPLING_FREQUENCY]`     | Expected time difference between any two location rows in minutes. If set to `0`, the sampling frequency will be inferred automatically as the median of all the differences between any two consecutive row timestamps (recommended if you are using `FUSED_RESAMPLED` data). This parameter impacts all the time calculations.
 | `[CLUSTER_ON]`             | Set this flag to `PARTICIPANT_DATASET` to create clusters based on the entire participant's dataset or to `TIME_SEGMENT` to create clusters based on all the instances of the corresponding time segment (e.g. all mornings).
 | `[CLUSTERING_ALGORITHM]`   | The original Doryab et al implementation uses `DBSCAN`, `OPTICS` is also available with similar (but not identical) clustering results and lower memory consumption.
+| `[RADIUS_FOR_HOME]`        | The distance from the center of the home location coordinates which can be accepted as part of home.
 
 
 Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
@@ -136,6 +137,7 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 |stdlengthstayatclusters                                      |minutes       |Standard deviation of time spent in a cluster (significant location).
 |locationentropy                                              |nats          |Shannon Entropy computed over the row count of each cluster (significant location), it will be higher the more rows belong to a cluster (i.e. the more time a participant spent at a significant location).
 |normalizedlocationentropy                                    |nats          |Shannon Entropy computed over the row count of each cluster (significant location) divided by the number of clusters, it will be higher the more rows belong to a cluster (i.e. the more time a participant spent at a significant location).
+|timeathome                                                   |minutes       | Time spent at home which is calculated by filtering the data between 12 am and 6 am, then applying clustering algorithm, finding the center of the biggest cluster and considering it as home coordinates.
 
 
 !!! note "Assumptions/Observations"

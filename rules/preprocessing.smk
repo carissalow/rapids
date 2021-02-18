@@ -139,6 +139,19 @@ rule phone_locations_processed_with_datetime:
     script:
         "../src/data/readable_datetime.R"
 
+rule phone_locations_processed_with_datetime_with_home:
+    input:
+        sensor_input = "data/interim/{pid}/phone_locations_processed_with_datetime.csv"
+    params:
+        dbscan_eps = config["PHONE_LOCATIONS"]["HOME_INFERENCE"]["DBSCAN_EPS"],
+        dbscan_minsamples = config["PHONE_LOCATIONS"]["HOME_INFERENCE"]["DBSCAN_MINSAMPLES"],
+        threshold_static = config["PHONE_LOCATIONS"]["HOME_INFERENCE"]["THRESHOLD_STATIC"],
+        clustering_algorithm = config["PHONE_LOCATIONS"]["HOME_INFERENCE"]["CLUSTERING_ALGORITHM"]
+    output: 
+        "data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv"
+    script:
+        "../src/data/infer_home_location.py"
+
 rule resample_episodes:
     input:
         "data/interim/{pid}/{sensor}_episodes.csv"
