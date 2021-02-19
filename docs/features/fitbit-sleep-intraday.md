@@ -159,51 +159,78 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS][ROUTINE]`:
 
 Parameters description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][PRICE]`:
 
-|Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
+|Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 |`[COMPUTE]`                                  | Set to `True` to extract `FITBIT_SLEEP_INTRADAY` features from the `PRICE` provider                                      |
-|`[FEATURES]`                                 |         Features to be computed from sleep intraday data, see table below                                                |
-|`[INCLUDE_EPISODES_INTERSECTING]`            | This parameter contains 2 values: `[START_TIME]` and `[LENGTH]`. Only `main` sleep episodes end later than `[START_TIME]` or start before `[START_TIME]` + `[LENGTH]` are considered. Both `[START_TIME]` and `[LENGTH]` are in minutes. `[START_TIME]` is a number ranging from 0 (midnight) to 1439 (23:59) which denotes the number of minutes after midnight. `[LENGTH]` is a number less than 1440 (24 hours).  |
+|`[FEATURES]`                                 |         Features to be computed from sleep intraday data, see table below   
+|`[DAY_TYPE]`                                             | The features of this provider can be computed using daily averages/medians that were extracted on `WEEKEND` days only, `WEEK` days only, or `ALL` days|
+|`[INCLUDE_EPISODES_INTERSECTING]`            | This parameter contains 2 values: `[START_TIME]` and `[LENGTH]`. Only `main` sleep episodes that ended later than `[START_TIME]` or start before `[START_TIME]` + `[LENGTH]` are taken into account to compute the features described below. Both `[START_TIME]` and `[LENGTH]` are in minutes. `[START_TIME]` is a number ranging from 0 (midnight) to 1439 (23:59) which denotes the number of minutes after midnight. `[LENGTH]` is a number smaller than 1440 (24 hours).  |
 
 
 Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][PRICE]`:
 
-|Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                  |Units          |Description                                                  |
+|Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                  |Units          |Description                                                  |
 |------------------------------------- |----------------- |-------------------------------------------------------------|
-|avgratioawaketoinbedmain`[DAY_TYPE]`  |-                 | For each day, ratio between awake duration and in bed duration of `main` sleep episodes (ratioawaketoinbedmain) could be calculated. This feature is the average value of the selected `DAY_TYPE` days' (weekend, weekday, or both) ratioawaketoinbedmain features during a `time_segment`.
-|avgstarttimeofepisodemain`[DAY_TYPE]` |minutes           | For each day, start time of `main` sleep episodes (starttimeofepisodemain) could be calculated. This feature is the average value of the selected `DAY_TYPE` days' (weekend, weekday, or both) starttimeofepisodemain features during a `time_segment`.
-|avgendtimeofepisodemain`[DAY_TYPE]`   |minutes           | For each day, end time of `main` sleep episodes (endtimeofepisodemain) could be calculated. This feature is the average value of the selected `DAY_TYPE` days' (weekend, weekday, or both) endtimeofepisodemain features during a `time_segment`.
-|avgmidpointofepisodemain`[DAY_TYPE]`  |minutes           | For each day, the average of the start time and end time of `main` sleep episodes (midpointofepisodemain) could be calculated. This feature is the average value of the selected `DAY_TYPE` days' (weekend, weekday, or both) midpointofepisodemain features during a `time_segment`.
-|socialjetlag                          |minutes           | Number of minutes later to go to bed during the weekends than during the weekdays: avgstarttimeofepisodemain`[weekend]` - avgstarttimeofepisodemain`[weekday]`
-|meanssdstarttimeofepisodemain         |minutes squared   | For each day, start time of `main` sleep episodes (starttimeofepisodemain) could be calculated. This feature is the mean successive squared difference of starttimeofepisodemain features: calculate the squared difference between two consecutive days' starttimeofepisodemain features and then compute the average value across those squared differences.
-|meanssdendtimeofepisodemain           |minutes squared   | For each day, end time of `main` sleep episodes (endtimeofepisodemain) could be calculated. This feature is the mean successive squared difference of endtimeofepisodemain features: calculate the squared difference between two consecutive days' endtimeofepisodemain features and then compute the average value across those squared differences.
-|meanssdmidpointofepisodemain          |minutes squared   | For each day, the average of the start time and end time of `main` sleep episodes (midpointofepisodemain) could be calculated. This feature is the mean successive squared difference of midpointofepisodemain features: calculate the squared difference between two consecutive days' midpointofepisodemain features and then compute the average value across those squared differences.
-|medianssdstarttimeofepisodemain       |minutes squared   | For each day, start time of `main` sleep episodes (starttimeofepisodemain) could be calculated. This feature is the median successive squared difference of starttimeofepisodemain features: calculate the squared difference between two consecutive days' starttimeofepisodemain features and then get the median of those squared differences.
-|medianssdendtimeofepisodemain         |minutes squared   | For each day, end time of `main` sleep episodes (endtimeofepisodemain) could be calculated. This feature is the median successive squared difference of endtimeofepisodemain features: calculate the squared difference between two consecutive days' endtimeofepisodemain features and then get the median of those squared differences.
-|medianssdmidpointofepisodemain        |minutes squared   | For each day, the average of the start time and end time of `main` sleep episodes (midpointofepisodemain) could be calculated. This feature is the median successive squared difference of midpointofepisodemain features: calculate the squared difference between two consecutive days' midpointofepisodemain features and then get the median of those squared differences.
+|avgratioawaketoinbedmain`[DAY_TYPE]`  |-                 | Average daily ratio between daily awake time and in-bed time inferred from `main` sleep episodes. An sleep episode can have `CLASSIC` or `STAGES` levels, awake time is formed by the `[awake, restless]` `CLASSIC` levels and the `[wake]` `STAGES` level. In turn, in-bed time is the total duration of all `main` sleep episodes for each day. You can include daily ratios that were computed on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
+|avgstarttimeofepisodemain`[DAY_TYPE]` |minutes           | Average start time of the first `main` sleep episode of each day in a time segment. You can include daily start times from episodes detected on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
+|avgendtimeofepisodemain`[DAY_TYPE]`   |minutes           |  Average end time of the last `main` sleep episode of each day in a time segment. You can include daily end times from episodes detected on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
+|avgmidpointofepisodemain`[DAY_TYPE]`  |minutes           |  Average mid time between the start of the first `main` sleep episode and the end of the last `main` sleep episode of each day in a time segment. You can include episodes detected on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
+|socialjetlag                          |minutes           | Difference in minutes between the avgstarttimeofepisodemain (bed time) of weekends and weekdays. 
+|meanssdstarttimeofepisodemain         |minutes squared   | Same as `avgstarttimeofepisodemain[DAY_TYPE]` but the average is computed over the squared differences of each pair of consecutive start times.
+|meanssdendtimeofepisodemain           |minutes squared   | Same as `avgendtimeofepisodemain[DAY_TYPE]` but the average is computed over the squared differences of each pair of consecutive end times.
+|meanssdmidpointofepisodemain          |minutes squared   | Same as `avgmidpointofepisodemain[DAY_TYPE]` but the average is computed over the squared differences of each pair of consecutive mid times.
+|medianssdstarttimeofepisodemain       |minutes squared   | Same as `avgstarttimeofepisodemain[DAY_TYPE]` but the median is computed over the squared differences of each pair of consecutive start times.
+|medianssdendtimeofepisodemain         |minutes squared   | Same as `avgendtimeofepisodemain[DAY_TYPE]` but the median is computed over the squared differences of each pair of consecutive end times.
+|medianssdmidpointofepisodemain        |minutes squared   | Same as `avgmidpointofepisodemain[DAY_TYPE]` but the median is computed over the squared differences of each pair of consecutive mid times.
 
 
 
 !!! note "Assumptions/Observations"
+    1. These features are based on descriptive statistics computed across daily values (start/end/mid times of sleep episodes). This is the reason why they are only available on time segments that are longer than 24 hours (we need at least 1 day to get the average).
     1. Even though Fitbit provides 2 types of sleep episodes (`main` and `nap`), only `main` sleep episodes are considered.
-    2. All the time related features are the number of minutes since `[INCLUDE_EPISODES_INTERSECTING][START_TIME]`.
-    2. `main` sleep episodes end later than `[START_TIME]` or start before `[START_TIME]` + `[LENGTH]` are regraded as the same day's sleep episodes even if it started yesterday and ended today. For example: 
+    2. We sum 24 to any start or bed times that happen *after* midnight so they can be averaged with other values happening *before* midnight.
+    2. `main` sleep episodes belong to the day they start at and are only included in the feature computation if they start or end (overlap) between `[START_TIME]` and `[START_TIME]` + `[LENGTH]`. For example: 
         
-        - Original `main` sleep episodes: (start datetime 2021-02-01 12:00, end datetime 2021-02-01 15:00), (start datetime 2021-02-01 21:00, end datetime 2021-02-02 03:00), (start datetime 2021-02-02 05:00, end datetime 2021-02-02 08:00), (start datetime 2021-02-02 11:00, end datetime 2021-02-02 14:00). 
+        If we process the following `main` sleep episodes: 
+
+        | episode |start|end|
+        |-|-|-|
+        |1|2021-02-01 12:00|2021-02-01 15:00|
+        |2|2021-02-01 21:00|2021-02-02 03:00|
+        |3|2021-02-02 05:00|2021-02-02 08:00|
+        |4|2021-02-02 11:00|2021-02-02 14:00|
+        |5|2021-02-02 19:00|2021-02-03 06:00|
+
+        And our parameters:
+
+        - `[INCLUDE_EPISODES_INTERSECTING][START_TIME]` = 1320 (today's 22:00)
+
+        - `[INCLUDE_EPISODES_INTERSECTING][LENGTH]` = 720 (tomorrow's 10:00, or 22:00 + 12 hours)
         
-        - Parameters of our settings: `[INCLUDE_EPISODES_INTERSECTING][START_TIME]` is 1320 (today's 22:00) and `[INCLUDE_EPISODES_INTERSECTING][LENGTH]` is 720 (12*60, end time: today's 22:00 + 12h = tomorrow's 10:00). 
-        
-        - On 2021-02-01, the following two `main` episodes will be considered: (start datetime 2021-02-01 21:00, end datetime 2021-02-02 03:00), (start datetime 2021-02-02 05:00, end datetime 2021-02-02 08:00).
+        Only sleep episodes 2, 3,and 5 would be considered.
 
-    3. Daily features will be extracted first. Then features of each segments will be generated according to the related daily features. Let's continue with the above example, the following daily features on 2021-02-01 will be extracted first:
+    3. All `main` sleep episodes are chunked within the requested [time segments](../../setup/configuration/#time-segments) which need to be at least 24 hours or more long (1, 2, 3, 7 days, etc.). Then, daily features will be extracted and averaged across the length of the time segment, for example:
+    
+        The daily features extracted on 2021-02-01 will be:
 
-        - starttimeofepisodemain (bedtime) is -60 (2021-02-01 21:00 - 2021-02-01 22:00 = -1 hour = -60 minutes)
+        - starttimeofepisodemain (bedtime) is `21 * 60` (episode 2 start time 2021-02-01 21:00)
 
-        - endtimeofepisodemain (waketime) is 600 (2021-02-02 08:00 - 2021-02-01 22:00 = 10 hours = 600 minutes)
+        - endtimeofepisodemain (wake time) is `32 * 60 `(episode 3 end time 2021-02-02 08:00 + 24)
 
-        - midpointofepisodemain (midpoint_sleep) is 270 ( (-60+600)/2 = 270 minutes, same as 2021-02-02 02:30)
+        - midpointofepisodemain (midpoint sleep) is `[(32 * 60) - (21 * 60)] / 2`
 
-        - ratioawaketoinbedmain (proportion_awake) is based on sleep levels
+
+        The daily features extracted on 2021-02-02 will be:
+
+        - starttimeofepisodemain (bedtime) is `19 * 60` (episode 5 start time 2021-02-01 19:00)
+
+        - endtimeofepisodemain (wake time) is `30 * 60 `(episode 5 end time 2021-02-03 06:00 + 24)
+
+        - midpointofepisodemain (midpoint sleep) is `[(30 * 60) - (19 * 60)] / 2`
+
+        And `avgstarttimeofepisodemain[DAY_TYPE]` will be `([21 * 60] + [19 * 60]) / 2` 
+
+
     
 
 
