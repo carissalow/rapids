@@ -379,6 +379,32 @@ FITBIT_SLEEP_SUMMARY:
       SRC_FOLDER: "rapids" # inside src/features/fitbit_sleep_summary
       SRC_LANGUAGE: "python"
 
+# See https://www.rapids.science/latest/features/fitbit-sleep-intraday/
+FITBIT_SLEEP_INTRADAY:
+  TABLE: fitbit_data
+  INCLUDE_SLEEP_LATER_THAN: &include_sleep_later_than
+    0 # a number ranged from 0 (midnight) to 1439 (23:59)
+  REFERENCE_TIME: &reference_time
+    MIDNIGHT # chosen from "MIDNIGHT" and "START_OF_THE_SEGMENT"
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES:    
+        LEVELS_AND_TYPES_COMBINING_ALL: True
+        LEVELS_AND_TYPES: [countepisode, sumduration, maxduration, minduration, avgduration, medianduration, stdduration]
+        RATIOS_TYPE: [count, duration]
+        RATIOS_SCOPE: [ACROSS_LEVELS, ACROSS_TYPES, WITHIN_LEVELS, WITHIN_TYPES]
+        ROUTINE: [starttimefirstmainsleep, endtimelastmainsleep, starttimefirstnap, endtimelastnap]
+      SLEEP_LEVELS: 
+        CLASSIC: [awake, restless, asleep]
+        STAGES: [wake, deep, light, rem]
+        UNIFIED: [awake, asleep]
+      SLEEP_TYPES: [main, nap]
+      INCLUDE_SLEEP_LATER_THAN: *include_sleep_later_than
+      REFERENCE_TIME: *reference_time
+      SRC_FOLDER: "rapids" # inside src/features/fitbit_sleep_intraday
+      SRC_LANGUAGE: "python"
+
 # See https://www.rapids.science/latest/features/fitbit-steps-summary/
 FITBIT_STEPS_SUMMARY:
   TABLE: steps_summary

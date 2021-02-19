@@ -5,7 +5,7 @@ Sensor parameters description for `[FITBIT_SLEEP_INTRADAY]`:
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
 |`[TABLE]`| Database table name or file path where the sleep intraday data is stored. The configuration keys in [Device Data Source Configuration](../../setup/configuration/#device-data-source-configuration) control whether this parameter is interpreted as table or file.
-|`[INCLUDE_EPISODES_LATER_THAN]`| All sleep episodes that started after this time will be included in the feature computation. It is a number ranging from 0 (midnight) to 1439 (23:59) which denotes the number of minutes after midnight. If a segment is longer than one day, this value is for every day.
+|`[INCLUDE_SLEEP_LATER_THAN]`| All resampled sleep rows (bin interval: one minute) that started after this time will be included in the feature computation. It is a number ranging from 0 (midnight) to 1439 (23:59) which denotes the number of minutes after midnight. If a segment is longer than one day, this value is for every day.
 |`[REFERENCE_TIME]`| The reference point from which the `[ROUTINE]` features are to be computed. Chosen from `MIDNIGHT` and `START_OF_THE_SEGMENT`, default is `MIDNIGHT`. If you have multiple time segments per day it might be more informative to set this flag to `START_OF_THE_SEGMENT`.
 
 The format of the column(s) containing the Fitbit sensor data can be `JSON` or `PLAIN_TEXT`. The data in `JSON` format is obtained directly from the Fitbit API. We support `PLAIN_TEXT` in case you already parsed your data and don't have access to your participants' Fitbit accounts anymore. If your data is in `JSON` format then summary and intraday data come packed together. 
@@ -23,7 +23,14 @@ We provide examples of the input format that RAPIDS expects, note that both exam
         |a748ee1a-1d0b-4ae9-9074-279a2b6ba524     |{"sleep": [{"awakeCount": 1, "awakeDuration": 3, "awakeningsCount": 8, "dateOfSleep": "2020-10-09", "duration": 19320000, "efficiency": 96, "endTime": "2020-10-09T05:57:30.000", "isMainSleep": true, "logId": 14161136803, "minuteData": [{"dateTime": "00:35:30", "value": "2"}, {"dateTime": "00:36:30", "value": "1"}, {"dateTime": "00:37:30", "value": "1"},...], "minutesAfterWakeup": 0, "minutesAsleep": 309, "minutesAwake": 13, "minutesToFallAsleep": 0, "restlessCount": 7, "restlessDuration": 10, "startTime": "2020-10-09T00:35:30.000", "timeInBed": 322}], "summary": {"totalMinutesAsleep": 309, "totalSleepRecords": 1, "totalTimeInBed": 322}}
     
     === "PLAIN_TEXT"
-        Will update this section later.
+
+        All columns are mandatory, however, all except `local_date_time` and `duration` can be empty if you don't have that data. Just have in mind that some features might be inaccurate or empty as `type_episode_id`, `level`, `is_main_sleep`, and `type` are used for sleep episodes extraction. `type_episode_id` is based on where it is extracted: if it is extracted from the 1st "minutesData" block, the `type_episode_id` field will be 0. Similarly, the kth block will be k-1.
+
+        |type_episode_id  |local_date_time     |duration  |level      |is_main_sleep  |type           |
+        |---------------- |------------------- |--------- |---------- |-------------- |-------------- |
+        |0                |2020-10-07 15:55:00 |60        |awake      |0              |classic        |
+        |0                |2020-10-07 15:56:00 |60        |awake      |0              |classic        |
+        |0                |2020-10-07 15:57:00 |60        |restless   |0              |classic        |
 
 ??? example "Example of the structure of source data with Fitbit’s sleep API Version 1.2"
 
@@ -36,7 +43,14 @@ We provide examples of the input format that RAPIDS expects, note that both exam
         |a748ee1a-1d0b-4ae9-9074-279a2b6ba524     |{"sleep":[{"dateOfSleep":"2020-10-12","duration":28980000,"efficiency":93,"endTime":"2020-10-12T09:34:30.000","infoCode":0,"isMainSleep":true,"levels":{"data":[{"dateTime":"2020-10-12T01:31:00.000","level":"wake","seconds":600},{"dateTime":"2020-10-12T01:41:00.000","level":"light","seconds":60},{"dateTime":"2020-10-12T01:42:00.000","level":"deep","seconds":2340},...], "summary":{"deep":{"count":4,"minutes":63,"thirtyDayAvgMinutes":59},"light":{"count":27,"minutes":257,"thirtyDayAvgMinutes":364},"rem":{"count":5,"minutes":94,"thirtyDayAvgMinutes":58},"wake":{"count":24,"minutes":69,"thirtyDayAvgMinutes":95}}},"logId":26589710673,"minutesAfterWakeup":0,"minutesAsleep":415,"minutesAwake":68,"minutesToFallAsleep":0,"startTime":"2020-10-12T01:31:00.000","timeInBed":483,"type":"stages"}],"summary":{"stages":{"deep":63,"light":257,"rem":94,"wake":69},"totalMinutesAsleep":415,"totalSleepRecords":1,"totalTimeInBed":483}}
     
     === "PLAIN_TEXT"
-        Will update this section later.
+
+        All columns are mandatory, however, all except `local_date_time` and `duration` can be empty if you don't have that data. Just have in mind that some features might be inaccurate or empty as `type_episode_id`, `level`, `is_main_sleep`, and `type` are used for sleep episodes extraction. `type_episode_id` is based on where it is extracted: if it is extracted from the 1st "data" and "shortData" block, the `type_episode_id` field will be 0. Similarly, the kth block will be k-1.
+
+        |type_episode_id  |local_date_time     |duration  |level      |is_main_sleep  |type           |
+        |---------------- |------------------- |--------- |---------- |-------------- |-------------- |
+        |0                |2020-10-10 15:36:30 |60        |restless   |1              |stages         |
+        |0                |2020-10-10 15:37:30 |660       |asleep     |1              |stages         |
+        |0                |2020-10-10 15:48:30 |60        |restless   |1              |stages         |
 
 ## RAPIDS provider
 
@@ -45,10 +59,10 @@ We provide examples of the input format that RAPIDS expects, note that both exam
 
 !!! info "File Sequence"
     ```bash
-    # [might update this section later]
     - data/raw/{pid}/fitbit_sleep_intraday_raw.csv
     - data/raw/{pid}/fitbit_sleep_intraday_parsed.csv
-    - data/raw/{pid}/fitbit_sleep_intraday_parsed_with_datetime.csv
+    - data/interim/{pid}/fitbit_sleep_intraday_episodes_resampled.csv
+    - data/interim/{pid}/fitbit_sleep_intraday_episodes_resampled_with_datetime.csv
     - data/interim/{pid}/fitbit_sleep_intraday_features/fitbit_sleep_intraday_{language}_{provider_key}.csv
     - data/processed/features/{pid}/fitbit_sleep_intraday.csv
     ```
@@ -67,13 +81,14 @@ Parameters description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS]`:
 Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS][LEVELS_AND_TYPES]`:
 
 |Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    |Units          |Description                                                  |
-|-------------------------- |-------------- |-------------------------------------------------------------|
-|countepisode`[LEVEL][TYPE]` |episodes       |Number of `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]`can also be `all` when ``LEVELS_AND_TYPES_COMBINING_ALL`` is True, which groups all `CLASSIC`, `STAGE`, `UNIFIED` levels and both sleep types.
-|sumduration`[LEVEL][TYPE]`  |minutes        |Total duration of all `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which groups all `CLASSIC`, `STAGE`, `UNIFIED` levels and both sleep types.
-|maxduration`[LEVEL][TYPE]`  |minutes        | Longest duration of any `[LEVEL][TYPE]`sleep episode. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which groups all `CLASSIC`, `STAGE`, `UNIFIED` levels and both sleep types.
-|minduration`[LEVEL][TYPE]`  |minutes        | Shortest duration of any `[LEVEL][TYPE]`sleep episode. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which groups all `CLASSIC`, `STAGE`, `UNIFIED` levels and both sleep types.
-|avgduration`[LEVEL][TYPE]`  |minutes        | Average duration of all `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which groups all `CLASSIC`, `STAGE`, `UNIFIED` levels and both sleep types.
-|stdduration`[LEVEL][TYPE]`  |minutes        | Standard deviation duration of all `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which groups all `CLASSIC`, `STAGE`, `UNIFIED` levels and both sleep types.
+|------------------------------- |-------------- |-------------------------------------------------------------|
+|countepisode`[LEVEL][TYPE]`     |episodes       |Number of `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]`and `[TYPE]` can also be `all` when ``LEVELS_AND_TYPES_COMBINING_ALL`` is True, which ignores the levels and groups by sleep types.
+|sumduration`[LEVEL][TYPE]`      |minutes        |Total duration of all `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]` and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which ignores the levels and groups by sleep types.
+|maxduration`[LEVEL][TYPE]`      |minutes        | Longest duration of any `[LEVEL][TYPE]`sleep episode. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]` and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which ignores the levels and groups by sleep types.
+|minduration`[LEVEL][TYPE]`      |minutes        | Shortest duration of any `[LEVEL][TYPE]`sleep episode. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]` and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which ignores the levels and groups by sleep types.
+|avgduration`[LEVEL][TYPE]`      |minutes        | Average duration of all `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]` and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which ignores the levels and groups by sleep types.
+|medianduration`[LEVEL][TYPE]`   |minutes        | Median duration of all `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]` and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which ignores the levels and groups by sleep types.
+|stdduration`[LEVEL][TYPE]`      |minutes        | Standard deviation duration of all `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]` and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which ignores the levels and groups by sleep types.
 
 
 Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[ACROSS_LEVELS]`:
@@ -122,7 +137,7 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS][ROUTINE]`:
 
 
 !!! note "Assumptions/Observations"
-    1. Deleting values from `[SLEEP_LEVELS]` or `[SLEEP_TYPES]` will only change the features you receive from `[LEVELS_AND_TYPES]`. For example if `STAGES` only contains `[rem, light]` you will not receive `countepisode[wake|deep][TYPE]` or sum, max, min, avg, or std `duration`. These values will not influence `RATIOS` or `ROUTINE` features.
+    1. Deleting values from `[SLEEP_LEVELS]` or `[SLEEP_TYPES]` will only change the features you receive from `[LEVELS_AND_TYPES]`. For example if `STAGES` only contains `[rem, light]` you will not receive `countepisode[wake|deep][TYPE]` or sum, max, min, avg, median, or std `duration`. These values will not influence `RATIOS` or `ROUTINE` features.
     2. Any `[LEVEL]` grouping is done within the elements of each class `CLASSIC`, `STAGES`, and `UNIFIED`. That is, we never combine `CLASSIC` or `STAGES` types to compute features when `LEVELS_AND_TYPES_COMBINING_ALL` is True or when computing `RATIOS`.
     
 
