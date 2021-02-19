@@ -28,7 +28,7 @@ def featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, sle
 
 def mergeSleepEpisodes(sleep_data, cols_for_groupby):
     
-    sleep_episodes = pd.DataFrame(columns=["local_segment", "duration", "start_timestamp", "end_timestamp", "local_start_date_time", "local_end_date_time", "start_minutes"])
+    sleep_episodes = pd.DataFrame(columns=["local_segment", "duration", "start_timestamp", "end_timestamp", "local_start_date_time", "local_end_date_time"])
 
     if cols_for_groupby and (not sleep_data.empty):
         sleep_data = sleep_data.groupby(by=cols_for_groupby)
@@ -37,7 +37,6 @@ def mergeSleepEpisodes(sleep_data, cols_for_groupby):
         sleep_episodes["end_timestamp"] = sleep_data["end_timestamp"].last()
         sleep_episodes["local_start_date_time"] = sleep_data["local_start_date_time"].first()
         sleep_episodes["local_end_date_time"] = sleep_data["local_end_date_time"].last()
-        sleep_episodes["start_minutes"] = sleep_data["start_minutes"].first()
     
         sleep_episodes.reset_index(inplace=True, drop=False)
 
@@ -174,7 +173,7 @@ def singleSleepTypeRoutineFeatures(sleep_intraday_data, routine, reference_time,
     if "starttimefirst" + sleep_type in routine:
         grouped_first = sleep_intraday_data.groupby(["local_segment"]).first()
         if reference_time == "MIDNIGHT":
-            sleep_intraday_features["starttimefirst" + sleep_type] = grouped_first["start_minutes"]
+            sleep_intraday_features["starttimefirst" + sleep_type] = grouped_first["local_start_date_time"].apply(lambda x: x.hour * 60 + x.minute + x.second / 60)
         elif reference_time == "START_OF_THE_SEGMENT":
             sleep_intraday_features["starttimefirst" + sleep_type] = (grouped_first["start_timestamp"] - grouped_first["segment_start_timestamp"]) / (60 * 1000)
         else:
@@ -237,6 +236,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
     start_minutes = sleep_intraday_data.groupby("start_timestamp").first()["local_time"].apply(lambda x: int(x.split(":")[0]) * 60 + int(x.split(":")[1]) + int(x.split(":")[2]) / 60).to_frame().rename(columns={"local_time": "start_minutes"}).reset_index()
     sleep_intraday_data = sleep_intraday_data.merge(start_minutes, on="start_timestamp", how="left")
     sleep_intraday_data = sleep_intraday_data[sleep_intraday_data["start_minutes"] >= include_sleep_later_than]
+    del sleep_intraday_data["start_minutes"]
 
     sleep_intraday_data = filter_data_by_segment(sleep_intraday_data, time_segment)
 
