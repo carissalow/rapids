@@ -7,7 +7,7 @@ TIMEZONE: &timezone
   America/New_York
 
 # See https://www.rapids.science/latest/setup/configuration/#participant-files
-PIDS: [e03]
+PIDS: [test01]
 
 # See https://www.rapids.science/latest/setup/configuration/#automatic-creation-of-participant-files
 CREATE_PARTICIPANT_FILES:
@@ -21,9 +21,11 @@ CREATE_PARTICIPANT_FILES:
     DEVICE_ID_COLUMN: device_id # column name
     IGNORED_DEVICE_IDS: []
   FITBIT_SECTION:
-    ADD: TRUE
+    ADD: FALSE
     DEVICE_ID_COLUMN: device_id # column name
     IGNORED_DEVICE_IDS: []
+  EMPATICA_SECTION:
+    ADD: FALSE
 
 # See https://www.rapids.science/latest/setup/configuration/#time-segments
 TIME_SEGMENTS: &time_segments
@@ -417,12 +419,11 @@ EMPATICA_DATA_CONFIGURATION:
     TYPE: ZIP_FILE
     FOLDER: data/external/empatica
   TIMEZONE: 
-    TYPE: SINGLE # Fitbit devices don't support time zones so we read this data in the timezone indicated by VALUE 
+    TYPE: SINGLE # Empatica devices don't support time zones so we read this data in the timezone indicated by VALUE 
     VALUE: *timezone
 
 # Sensors ------
 
-# See https://www.rapids.science/latest/features/fitbit-heartrate-summary/
 EMPATICA_ACCELEROMETER:
   TABLE: ACC
   PROVIDERS:

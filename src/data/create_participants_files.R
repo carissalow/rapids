@@ -13,6 +13,7 @@ phone_device_id_column = config$PHONE_SECTION$DEVICE_ID_COLUMN
 fitbit_device_id_column = config$FITBIT_SECTION$DEVICE_ID_COLUMN
 add_phone_section = config$PHONE_SECTION$ADD
 add_fitbit_section = config$FITBIT_SECTION$ADD
+add_empatica_section = config$EMPATICA_SECTION$ADD
 phone_ignored = config$PHONE_SECTION$IGNORED_DEVICE_IDS
 fitbit_ignored = config$FITBIT_SECTION$IGNORED_DEVICE_IDS
 
@@ -54,6 +55,7 @@ participants %>%
   pwalk(function(add_phone_section, add_fitbit_section, phone_device_id_column, fitbit_device_id_column, ...) {
     empty_phone <- c("PHONE:", "  DEVICE_IDS:", "  PLATFORMS:","  LABEL:", "  START_DATE:", "  END_DATE:")
     empty_fitbit <- c("FITBIT:", "  DEVICE_IDS:", "  LABEL:", "  START_DATE:", "  END_DATE:")
+    empty_empatica <- c("EMPATICA:", "  LABEL:", "  START_DATE:", "  END_DATE:")
     row <- tibble(...)
     lines <- c()
     start_date = if_else(is.na(row$start_date), "", row$start_date)
@@ -70,6 +72,12 @@ participants %>%
                                paste("  LABEL:",row$label), paste("  START_DATE:", start_date), paste("  END_DATE:", end_date)))
     } else
       lines <- append(lines, empty_fitbit)
+
+    if(add_empatica_section == TRUE){
+      lines <- append(lines, c("EMPATICA:",
+                               paste("  LABEL:",row$label), paste("  START_DATE:", start_date), paste("  END_DATE:", end_date)))
+    } else
+      lines <- append(lines, empty_empatica)
     
     file_connection <- file(paste0("./data/external/participant_files/", row$pid, ".yaml"))
     writeLines(lines, file_connection)
