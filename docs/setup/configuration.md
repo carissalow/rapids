@@ -18,6 +18,8 @@ When you are done with this configuration, go to [executing RAPIDS](../execution
 ---
 ## Database credentials
 
+Only follow this step if you are processing smartphone or Fitbit data stored in a database. For reference, we list below the data sources RAPIDS support for each type of device.
+
 1. Create an empty file called `#!bash .env` in your RAPIDS root directory
 2. Add the following lines and replace your database-specific  credentials (user, password, host, and database):
 
@@ -30,17 +32,27 @@ When you are done with this configuration, go to [executing RAPIDS](../execution
   database=MY_DATABASE
   ```
 
-!!! warning
-    The label `MY_GROUP` is arbitrary but it has to match the following `config.yaml` key:
+??? warning "What is `[MY_GROUP]`?"
+    The label `[MY_GROUP]` is arbitrary but it has to match the following `config.yaml` key:
     ```yaml
     DATABASE_GROUP: &database_group
       MY_GROUP
     ```
-!!! hint
-        If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, you can connect to a MySQL database in your host machine using `host.docker.internal` instead of `127.0.0.1` or `localhost`. In a Linux host you need to run our docker container using `docker run --network="host" -d moshiresearch/rapids:latest` and then `127.0.0.1` will point to your host machine.
-!!! note
-    - You can ignore this step if you are only processing Fitbit data in CSV files.
+
+??? hint "Connecting to localhost (host machine) from inside our docker container"
+    If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, you can connect to a MySQL database in your host machine using `host.docker.internal` instead of `127.0.0.1` or `localhost`. In a Linux host you need to run our docker container using `docker run --network="host" -d moshiresearch/rapids:latest` and then `127.0.0.1` will point to your host machine.
+
+??? hint "Data sources supported for each device type"
+    | Device | Database | CSV Files | Zip files
+    |--|--|--|--|
+    | Smartphone| Yes (MySQL) | No | No |
+    | Fitbit| Yes (MySQL) | Yes | No |
+    | Empatica| No | No | Yes |
+
     - RAPIDS only supports MySQL/MariaDB databases. If you would like to add support for a different database engine get in touch and we can discuss how to implement it.
+    - Fitbit data can be processed as the JSON object produced by Fitbit's API (recommended) or in a parsed tabular fashion.
+    - Empatica devices produce a zip file with a CSV file per sensor which can be processed directly in RAPIDS.
+    
 ---
 
 ## Timezone of your study
@@ -64,16 +76,13 @@ Support coming soon.
 
 Participant files link together multiple devices (smartphones and wearables) to specific participants and identify them throughout RAPIDS. You can create these files manually or [automatically](#automatic-creation-of-participant-files). Participant files are stored in `data/external/participant_files/pxx.yaml` and follow a unified [structure](#structure-of-participants-files).
 
-!!! note
+??? important "Remember to modify the `config.yaml` file with your PIDS"
     The list `PIDS` in `config.yaml` needs to have the participant file names of the people you want to process. For example, if you created `p01.yaml`, `p02.yaml` and `p03.yaml` files in `/data/external/participant_files/ `, then `PIDS` should be:
     ```yaml
     PIDS: [p01, p02, p03] 
     ```
 
-!!! tip
-    Attribute *values* of the `[PHONE]` and `[FITBIT]` sections in every participant file are optional which allows you to analyze data from participants that only carried smartphones, only Fitbit devices, or both.
-
-??? hint "Optional: Migrating participants files with the old format"
+??? info "Optional: Migrating participants files with the old format"
     If you were using the pre-release version of RAPIDS with participant files in plain text (as opposed to yaml), you can run the following command and your old files will be converted into yaml files stored in `data/external/participant_files/`
 
     ```bash
@@ -82,9 +91,11 @@ Participant files link together multiple devices (smartphones and wearables) to 
 
 ### Structure of participants files
 
-!!! example "Example of the structure of a participant file"
+??? example "Example of the structure of a participant file"
 
-    In this example, the participant used an android phone, an ios phone, and a fitbit device throughout the study between Apr 23rd 2020 and Oct 28th 2020
+    In this example, the participant used an android phone, an ios phone, a fitbit device, and a Empatica device throughout the study between Apr 23rd 2020 and Oct 28th 2020
+
+     If your participants didn't use a `[PHONE]`, `[FITBIT]` or `[EMPATICA]` device, it is not necessary to include that section in their participant file. In other words, you can analyse data from 1 or more devices per participant.
 
     ```yaml
     PHONE:
@@ -98,30 +109,41 @@ Participant files link together multiple devices (smartphones and wearables) to 
       LABEL: test01
       START_DATE: 2020-04-23
       END_DATE: 2020-10-28
+    EMPATICA: # Empatica doesn't have a device_id because the devices produce zip files per participant
+      LABEL: test01
+      START_DATE: 2020-04-23
+      END_DATE: 2020-10-28
     ```
 
-**For `[PHONE]`**
+=== "[PHONE]"
 
-| Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description                                                                                                                                                                                                                                                                                                                                |
-|-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `[DEVICE_IDS]` | An array of the strings that uniquely identify each smartphone, you can have more than one for when participants changed phones in the middle of the study, in this case, data from all their devices will be joined and relabeled with the last 1 on this list.                                                                           |
-| `[PLATFORMS]`  | An array that specifies the OS of each smartphone in  `[DEVICE_IDS]` , use a combination of  `android`  or  `ios`  (we support participants that changed platforms in the middle of your study!). If you have an  `aware_device`  table in your database you can set  `[PLATFORMS]: [multiple]`  and RAPIDS will infer them automatically. |
-| `[LABEL]`      | A string that is used in reports and visualizations.                                                                                                                                                                                                                                                                                       |
-| `[START_DATE]` | A string with format  `YYY-MM-DD` . Only data collected  *after*  this date will be included in the analysis                                                                                                                                                                                                                               |
-| `[END_DATE]`   | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis                                                                                                                                                                                                                              |
+    | Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description                                                                                                                                                                                                                                                                                                                                |
+    |-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | `[DEVICE_IDS]` | An array of the strings that uniquely identify each smartphone, you can have more than one for when participants changed phones in the middle of the study, in this case, data from all their devices will be joined and relabeled with the last 1 on this list.                                                                           |
+    | `[PLATFORMS]`  | An array that specifies the OS of each smartphone in  `[DEVICE_IDS]` , use a combination of  `android`  or  `ios`  (we support participants that changed platforms in the middle of your study!). If you have an  `aware_device`  table in your database you can set  `[PLATFORMS]: [multiple]`  and RAPIDS will infer them automatically. |
+    | `[LABEL]`      | A string that is used in reports and visualizations.                                                                                                                                                                                                                                                                                       |
+    | `[START_DATE]` | A string with format  `YYY-MM-DD` . Only data collected  *after*  this date will be included in the analysis                                                                                                                                                                                                                               |
+    | `[END_DATE]`   | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis                                                                                                                                                                                                                              |
 
-**For `[FITBIT]`**
+=== "[FITBIT]"
 
-| Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              | Description                                                                                               |
-|------------------|-----------------------------------------------------------------------------------------------------------|
-| `[DEVICE_IDS]`   | An array of the strings that uniquely identify each Fitbit, you can have more than one in case the participant changed devices in the middle of the study, in this case, data from all devices will be joined and relabeled with the last  `device_id`  on this list. |
-| `[LABEL]`        | A string that is used in reports and visualizations.                                                                                                                                                                                                                  |
-| `[START_DATE]`   | A string with format  `YYY-MM-DD` . Only data collected  *after*  this date will be included in the analysis                                                                                                                                                          |
-| `[END_DATE]`     | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis                                                                                                                                                         |
+    | Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              | Description                                                                                               |
+    |------------------|-----------------------------------------------------------------------------------------------------------|
+    | `[DEVICE_IDS]`   | An array of the strings that uniquely identify each Fitbit, you can have more than one in case the participant changed devices in the middle of the study, in this case, data from all devices will be joined and relabeled with the last  `device_id`  on this list. |
+    | `[LABEL]`        | A string that is used in reports and visualizations.                                                                                                                                                                                                                  |
+    | `[START_DATE]`   | A string with format  `YYY-MM-DD` . Only data collected  *after*  this date will be included in the analysis                                                                                                                                                          |
+    | `[END_DATE]`     | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis                                                                                                                                                         |
 
+=== "[EMPATICA]"
+
+    | Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              | Description                                                                                               |
+    |------------------|-----------------------------------------------------------------------------------------------------------|
+    | `[LABEL]`        | A string that is used in reports and visualizations.                                                                                                                                                                                                                  |
+    | `[START_DATE]`   | A string with format  `YYY-MM-DD` . Only data collected  *after*  this date will be included in the analysis                                                                                                                                                          |
+    | `[END_DATE]`     | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis    
 ### Automatic creation of participant files
 
-You have two options a) use the `aware_device` table in your database or b) use a CSV file. In either case, in your `config.yaml`, set `[PHONE_SECTION][ADD]` or `[FITBIT_SECTION][ADD]` to `TRUE` depending on what devices you used in your study. Set `[DEVICE_ID_COLUMN]` to the name of the column that uniquely identifies each device and include any device ids you want to ignore in `[IGNORED_DEVICE_IDS]`.
+You have two options a) use the `aware_device` table in your database or b) use a CSV file. In either case, in your `config.yaml`, set the devices (`PHONE`, `FITBIT`, `EMPATICA`) `[ADD]` flag to `TRUE` depending on what devices you used in your study. Set `[DEVICE_ID_COLUMN]` to the name of the column that uniquely identifies each device  (only for `PHONE` and `FITBIT`).
 
 === "aware_device table"
 
@@ -139,9 +161,11 @@ You have two options a) use the `aware_device` table in your database or b) use 
         DEVICE_ID_COLUMN: device_id # column name
         IGNORED_DEVICE_IDS: []
       FITBIT_SECTION:
-        ADD: TRUE # or FALSE
+        ADD: FALSE # or FALSE
         DEVICE_ID_COLUMN: fitbit_id # column name
         IGNORED_DEVICE_IDS: []
+      EMPATICA_SECTION: # Empatica doesn't have a device_id column because the devices produce zip files per participant
+        ADD: FALSE # or FALSE
     ```
 
     Then run 
@@ -166,9 +190,11 @@ You have two options a) use the `aware_device` table in your database or b) use 
         DEVICE_ID_COLUMN: device_id # column name
         IGNORED_DEVICE_IDS: []
       FITBIT_SECTION:
-        ADD: TRUE # or FALSE
+        ADD: FALSE # or FALSE
         DEVICE_ID_COLUMN: fitbit_id # column name
         IGNORED_DEVICE_IDS: []
+      EMPATICA_SECTION: # Empatica doesn't have a device_id column because the devices produce zip files per participant
+        ADD: FALSE # or FALSE
     ```
     Your CSV file (`[SOURCE][CSV_FILE_PATH]`) should have the following columns but you can omit any values you don't have on each column:
 
@@ -370,7 +396,7 @@ Time segments (or epochs) are the time windows on which you want to extract beha
 --- 
 ## Device Data Source Configuration
 
-You might need to modify the following config keys in your `config.yaml` depending on what devices your participants used and where you are storing your data. You can ignore `[PHONE_DATA_CONFIGURATION]` or `[FITBIT_DATA_CONFIGURATION]` if you are not working with either devices.
+You might need to modify the following config keys in your `config.yaml` depending on what devices your participants used and where you are storing your data (ignore the sections of devices you did not use).
 
 === "Phone"
 
@@ -425,6 +451,46 @@ You might need to modify the following config keys in your `config.yaml` dependi
       | `[SOURCE]` `[DEVICE_ID_COLUMN]` | A column that contains strings that uniquely identify Fitbit devices.                                                                                                |
       | `[TIMEZONE]` `[TYPE]`             | Only `SINGLE` is supported  (Fitbit devices always store data in local time).                                                                                 |
       | `[TIMEZONE]` `[VALUE]`            | `*timezone`  points to the value defined before in  [Timezone of your study](#timezone-of-your-study)                                             |
+
+=== "Empatica"
+
+    The relevant `config.yaml` section looks like this by default:
+
+    ```yaml
+    SOURCE: 
+      TYPE: ZIP_FILE
+      FOLDER: data/external/empatica
+    TIMEZONE: 
+      TYPE: SINGLE # Empatica devices don't support time zones so we read this data in the timezone indicated by VALUE 
+      VALUE: *timezone
+
+    ```
+
+    **Parameters for `[EMPATICA_DATA_CONFIGURATION]`**
+
+    | Key                  | Description                                                                                                                |
+    |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+    | `[SOURCE] [TYPE]`             | Only `ZIP_FILE` is supported (Empatica devices save sensor data in CSV files that are zipped together).|
+    | `[SOURCE] [FOLDER]` | The relative path to a folder containing one folder per participant. The name of a participant folder should match their pid in `config[PIDS]`, for example `p01`. Each participant folder can have one or more zip files with any name; in other words, the sensor data contained in those zip files belongs to a single participant. The zip files are [automatically](https://support.empatica.com/hc/en-us/articles/201608896-Data-export-and-formatting-from-E4-connect-) generated by Empatica and have a CSV file per sensor (`ACC`, `HR`, `TEMP`, `EDA`, `BVP`, `TAGS`). All CSV files of the same type contained in one or more zip files are uncompressed, parsed, sorted by timestamp, and joinned together.|
+    | `[TIMEZONE] [TYPE]`             | Only `SINGLE` is supported for now                                                                                                |
+    | `[TIMEZONE] [VALUE]`            | `*timezone`  points to the value defined before in  [Timezone of your study](#timezone-of-your-study)          |
+
+    ??? example "Example of an EMPATICA FOLDER"
+        In the file tree below, we want to process the data of three participants: `p01`, `p02`, and `p03`. `p01` has two zip files, `p02` has only one zip file, and `p03` has three zip files. Each zip will have a CSV file per sensor that are joinned together and process by RAPIDS. These zip files are generated by Empatica.
+        ```bash
+        data/ # this folder exists in the root RAPIDS folder
+          external/
+            empatica/
+              p01/
+                file1.zip
+                file2.zip
+              p02/
+                aaaa.zip
+              p03/
+                t1.zip
+                t2.zip
+                t3.zip
+        ```
 
 ---
 

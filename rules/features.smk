@@ -2,7 +2,7 @@ rule join_features_from_providers:
     input:
         sensor_features = find_features_files
     wildcard_constraints:
-        sensor_key = '(phone|fitbit).*'
+        sensor_key = '(phone|fitbit|empatica).*'
     output:
         "data/processed/features/{pid}/{sensor_key}.csv"
     script:
@@ -675,3 +675,185 @@ rule merge_sensor_features_for_all_participants:
         "data/processed/features/all_participants/all_sensor_features.csv"
     script:
         "../src/features/utils/merge_sensor_features_for_all_participants.R"
+
+rule empatica_accelerometer_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_accelerometer_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_ACCELEROMETER"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_accelerometer"
+    output:
+        "data/interim/{pid}/empatica_accelerometer_features/empatica_accelerometer_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule empatica_accelerometer_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_accelerometer_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_ACCELEROMETER"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_accelerometer"
+    output:
+        "data/interim/{pid}/empatica_accelerometer_features/empatica_accelerometer_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
+rule empatica_heartrate_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_heartrate_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_HEARTRATE"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_heartrate"
+    output:
+        "data/interim/{pid}/empatica_heartrate_features/empatica_heartrate_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule empatica_heartrate_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_heartrate_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_HEARTRATE"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_heartrate"
+    output:
+        "data/interim/{pid}/empatica_heartrate_features/empatica_heartrate_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
+rule empatica_temperature_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_temperature_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_TEMPERATURE"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_temperature"
+    output:
+        "data/interim/{pid}/empatica_temperature_features/empatica_temperature_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule empatica_temperature_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_temperature_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_TEMPERATURE"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_temperature"
+    output:
+        "data/interim/{pid}/empatica_temperature_features/empatica_temperature_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
+rule empatica_electrodermal_activity_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_electrodermal_activity_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_ELECTRODERMAL_ACTIVITY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_electrodermal_activity"
+    output:
+        "data/interim/{pid}/empatica_electrodermal_activity_features/empatica_electrodermal_activity_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule empatica_electrodermal_activity_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_electrodermal_activity_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_ELECTRODERMAL_ACTIVITY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_electrodermal_activity"
+    output:
+        "data/interim/{pid}/empatica_electrodermal_activity_features/empatica_electrodermal_activity_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
+rule empatica_blood_volume_pulse_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_blood_volume_pulse_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_BLOOD_VOLUME_PULSE"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_blood_volume_pulse"
+    output:
+        "data/interim/{pid}/empatica_blood_volume_pulse_features/empatica_blood_volume_pulse_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule empatica_blood_volume_pulse_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_blood_volume_pulse_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_BLOOD_VOLUME_PULSE"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_blood_volume_pulse"
+    output:
+        "data/interim/{pid}/empatica_blood_volume_pulse_features/empatica_blood_volume_pulse_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
+rule empatica_inter_beat_interval_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_inter_beat_interval_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_INTER_BEAT_INTERVAL"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_inter_beat_interval"
+    output:
+        "data/interim/{pid}/empatica_inter_beat_interval_features/empatica_inter_beat_interval_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule empatica_inter_beat_interval_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_inter_beat_interval_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_INTER_BEAT_INTERVAL"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_inter_beat_interval"
+    output:
+        "data/interim/{pid}/empatica_inter_beat_interval_features/empatica_inter_beat_interval_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
+rule empatica_tags_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_tags_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_TAGS"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_tags"
+    output:
+        "data/interim/{pid}/empatica_tags_features/empatica_tags_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule empatica_tags_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/empatica_tags_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["EMPATICA_TAGS"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "empatica_tags"
+    output:
+        "data/interim/{pid}/empatica_tags_features/empatica_tags_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"

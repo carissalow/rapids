@@ -242,3 +242,51 @@ rule fitbit_readable_datetime:
         "data/raw/{pid}/fitbit_{sensor}_{fitbit_data_type}_parsed_with_datetime.csv"
     script:
         "../src/data/readable_datetime.R"
+
+from pathlib import Path
+rule unzip_empatica_data:
+    input:
+        input_file = Path(config["EMPATICA_DATA_CONFIGURATION"]["SOURCE"]["FOLDER"]) / Path("{pid}") / Path("{suffix}.zip"),
+        participant_file = "data/external/participant_files/{pid}.yaml"
+    params:
+        sensor = "{sensor}"
+    output:
+        sensor_output = "data/raw/{pid}/empatica_{sensor}_unzipped_{suffix}.csv"
+    script:
+        "../src/data/empatica/unzip_empatica_data.py"
+
+rule extract_empatica_data:
+    input:
+        input_file = "data/raw/{pid}/empatica_{sensor}_unzipped_{suffix}.csv",
+        participant_file = "data/external/participant_files/{pid}.yaml"
+    params:
+        data_configuration = config["EMPATICA_DATA_CONFIGURATION"],
+        sensor = "{sensor}",
+        table = lambda wildcards: config["EMPATICA_" + str(wildcards.sensor).upper()]["TABLE"],
+    output:
+        sensor_output = "data/raw/{pid}/empatica_{sensor}_raw_{suffix}.csv"
+    script:
+        "../src/data/empatica/extract_empatica_data.py"
+
+
+rule join_empatica_data:
+    input:
+        input_files = get_all_raw_empatica_sensor_files,
+    output:
+        sensor_output = "data/raw/{pid}/empatica_{sensor}_joined.csv"
+    script:
+        "../src/data/empatica/join_empatica_data.R"
+
+rule empatica_readable_datetime:
+    input:
+        sensor_input = "data/raw/{pid}/empatica_{sensor}_joined.csv",
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
+    params:
+        timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
+        fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+    output:
+        "data/raw/{pid}/empatica_{sensor}_with_datetime.csv"
+    script:
+        "../src/data/readable_datetime.R"

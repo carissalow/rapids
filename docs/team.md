@@ -68,6 +68,16 @@ If you are interested in contributing feel free to submit a pull request or cont
 ??? abstract "About"
     - [Linkedin Profile](https://www.linkedin.com/in/ysefidgar/)
 
+###  Joe Kim 
+
+??? abstract "About"
+    - [Personal Website](https://www.juseongjoekim.com/)
+
+###  Brinnae Bent
+
+??? abstract "About"
+    - [Personal Website](https://runsdata.org/)
+
 ## Advisors
 
 ### Afsaneh Doryab

@@ -15,7 +15,7 @@ def optional_steps_sleep_input(wildcards):
 def input_merge_sensor_features_for_individual_participants(wildcards):
     feature_files = []
     for config_key in config.keys():
-        if config_key.startswith(("PHONE", "FITBIT")) and "PROVIDERS" in config[config_key] and isinstance(config[config_key]["PROVIDERS"], dict):
+        if config_key.startswith(("PHONE", "FITBIT", "EMPATICA")) and "PROVIDERS" in config[config_key] and isinstance(config[config_key]["PROVIDERS"], dict):
             for provider_key, provider in config[config_key]["PROVIDERS"].items():
                 if "COMPUTE" in provider.keys() and provider["COMPUTE"]:
                     feature_files.append("data/processed/features/{pid}/" + config_key.lower() + ".csv")
@@ -30,3 +30,15 @@ def get_phone_sensor_names():
                     phone_sensor_names.append(config_key)
     return phone_sensor_names
 
+from pathlib import Path
+def get_zip_suffixes(pid):
+    zipfiles = list((Path("data/external/empatica/") / Path(pid)).rglob("*.zip"))
+    suffixes = []
+    for zipfile in zipfiles:
+        suffixes.append(zipfile.stem)
+    return suffixes
+
+def get_all_raw_empatica_sensor_files(wildcards):
+    suffixes = get_zip_suffixes(wildcards.pid)
+    files = ["data/raw/{}/empatica_{}_raw_{}.csv".format(wildcards.pid, wildcards.sensor, suffix) for suffix in suffixes]
+    return(files)

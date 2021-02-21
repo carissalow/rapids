@@ -1,6 +1,6 @@
 # Behavioral Features Introduction
 
-Every phone or Fitbit sensor has a corresponding config section in `config.yaml`, these sections follow a similar structure and we'll use `PHONE_ACCELEROMETER` as an example to explain this structure.
+Every device sensor has a corresponding config section in `config.yaml`, these sections follow a similar structure and we'll use `PHONE_ACCELEROMETER` as an example to explain this structure.
 
 !!! hint
     - We recommend reading this page if you are using RAPIDS for the first time

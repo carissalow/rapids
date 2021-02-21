@@ -1,10 +1,9 @@
 # Add New Features
 
 !!! hint
-    We recommend reading the [Behavioral Features Introduction](../feature-introduction/) before reading this page
-
-!!! hint
-    You won't have to deal with time zones, dates, times, data cleaning or preprocessing. The data that RAPIDS pipes to your feature extraction code is ready to process.
+    - We recommend reading the [Behavioral Features Introduction](../feature-introduction/) before reading this page.
+    - You can implement new features in Python or R scripts.
+    - You won't have to deal with time zones, dates, times, data cleaning or preprocessing. The data that RAPIDS pipes to your feature extraction code is ready to process.
 
 ## New Features for Existing Sensors
 
@@ -18,6 +17,8 @@ As a tutorial, we will add a new provider for `PHONE_ACCELEROMETER` called `VEGA
 
 ??? info "Existing Sensors"
     An existing sensor is any of the phone or Fitbit sensors with a configuration entry in `config.yaml`:
+
+    Smartphone (AWARE)
 
     - Phone Accelerometer
     - Phone Activity Recognition
@@ -33,12 +34,25 @@ As a tutorial, we will add a new provider for `PHONE_ACCELEROMETER` called `VEGA
     - Phone Screen
     - Phone WiFI Connected
     - Phone WiFI Visible
+
+    Fitbit
+
     - Fitbit Data Yield
     - Fitbit Heart Rate Summary
     - Fitbit Heart Rate Intraday
     - Fitbit Sleep Summary
     - Fitbit Steps Summary
     - Fitbit Steps Intraday
+
+    Empatica
+
+    - Empatica Accelerometer
+    - Empatica Heart Rate
+    - Empatica Temperature
+    - Empatica Electrodermal Activity
+    - Empatica Blood Volume Pulse
+    - Empatica Inter Beat Interval
+    - Empatica Tags
 
 
 ### Modify the `config.yaml` file

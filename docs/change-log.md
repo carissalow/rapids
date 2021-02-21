@@ -1,5 +1,9 @@
 # Change Log
 
+## Next release
+- Add support for Empatica devices (all sensors)
+- Add logo
+- Move Citation page to the Setup section
 ## v0.4.3
 - Fix bug when any of the rows from any sensor do not belong a time segment
 ## v0.4.2

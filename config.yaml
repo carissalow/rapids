@@ -21,9 +21,11 @@ CREATE_PARTICIPANT_FILES:
     DEVICE_ID_COLUMN: device_id # column name
     IGNORED_DEVICE_IDS: []
   FITBIT_SECTION:
-    ADD: TRUE
+    ADD: FALSE
     DEVICE_ID_COLUMN: device_id # column name
     IGNORED_DEVICE_IDS: []
+  EMPATICA_SECTION:
+    ADD: FALSE
 
 # See https://www.rapids.science/latest/setup/configuration/#time-segments
 TIME_SEGMENTS: &time_segments
@@ -407,6 +409,78 @@ FITBIT_STEPS_INTRADAY:
 #       COMPUTE: False
 #       FEATURES: []
 
+
+########################################################################################################################
+#                                                 EMPATICA                                                             #
+########################################################################################################################
+
+EMPATICA_DATA_CONFIGURATION:
+  SOURCE: 
+    TYPE: ZIP_FILE
+    FOLDER: data/external/empatica
+  TIMEZONE: 
+    TYPE: SINGLE # Empatica devices don't support time zones so we read this data in the timezone indicated by VALUE 
+    VALUE: *timezone
+
+# Sensors ------
+
+EMPATICA_ACCELEROMETER:
+  TABLE: ACC
+  PROVIDERS:
+    DBDP:
+      COMPUTE: False
+      FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
+      SRC_FOLDER: "dbdp" # inside src/features/empatica_accelerometer
+      SRC_LANGUAGE: "python"
+
+EMPATICA_HEARTRATE:
+  TABLE: HR
+  PROVIDERS:
+    DBDP:
+      COMPUTE: False
+      FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr"]
+      SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
+      SRC_LANGUAGE: "python"
+
+EMPATICA_TEMPERATURE:
+  TABLE: TEMP
+  PROVIDERS:
+    DBDP:
+      COMPUTE: False
+      FEATURES: ["maxtemp", "mintemp", "avgtemp", "mediantemp", "modetemp", "stdtemp", "diffmaxmodetemp", "diffminmodetemp", "entropytemp"]
+      SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
+      SRC_LANGUAGE: "python"
+
+EMPATICA_ELECTRODERMAL_ACTIVITY:
+  TABLE: EDA
+  PROVIDERS:
+    DBDP:
+      COMPUTE: False
+      FEATURES: ["maxeda", "mineda", "avgeda", "medianeda", "modeeda", "stdeda", "diffmaxmodeeda", "diffminmodeeda", "entropyeda"]
+      SRC_FOLDER: "dbdp" # inside src/features/empatica_electrodermal_activity
+      SRC_LANGUAGE: "python"
+
+EMPATICA_BLOOD_VOLUME_PULSE:
+  TABLE: BVP
+  PROVIDERS:
+    DBDP:
+      COMPUTE: False
+      FEATURES: ["maxbvp", "minbvp", "avgbvp", "medianbvp", "modebvp", "stdbvp", "diffmaxmodebvp", "diffminmodebvp", "entropybvp"]
+      SRC_FOLDER: "dbdp" # inside src/features/empatica_blood_volume_pulse
+      SRC_LANGUAGE: "python"
+
+EMPATICA_INTER_BEAT_INTERVAL:
+  TABLE: IBI
+  PROVIDERS:
+    DBDP:
+      COMPUTE: False
+      FEATURES: ["maxibi", "minibi", "avgibi", "medianibi", "modeibi", "stdibi", "diffmaxmodeibi", "diffminmodeibi", "entropyibi"]
+      SRC_FOLDER: "dbdp" # inside src/features/inter_beat_interval
+      SRC_LANGUAGE: "python"
+
+EMPATICA_TAGS:
+  TABLE: TAGS
+  PROVIDERS:  # None implemented yet
 
 
 ########################################################################################################################

@@ -14,6 +14,14 @@ If you used RAPIDS, please cite [this paper](https://preprints.jmir.org/preprint
     DOI: 10.2196/preprints.23246
     URL: https://preprints.jmir.org/preprint/23246
 
+## DBDP (all Empatica sensors)
+
+If you computed features using the provider  `[DBDP]` of any of the Empatica sensors (accelerometer, heart rate, temperature, EDA, BVP, IBI, tags) cite [this paper](https://www.cambridge.org/core/journals/journal-of-clinical-and-translational-science/article/digital-biomarker-discovery-pipeline-an-open-source-software-platform-for-the-development-of-digital-biomarkers-using-mhealth-and-wearables-data/A6696CEF138247077B470F4800090E63) in addition to RAPIDS.
+
+!!! cite "Bent et al. citation"
+    Bent, B., Wang, K., Grzesiak, E., Jiang, C., Qi, Y., Jiang, Y., Cho, P., Zingler, K., Ogbeide, F.I., Zhao, A., Runge, R., Sim, I., Dunn, J. (2020). The Digital Biomarker Discovery Pipeline: An open source software platform for the development of digital biomarkers using mHealth and wearables data. Journal of Clinical and Translational Science, 1-28. doi:10.1017/cts.2020.511
+
+
 ## Panda (accelerometer)
 
 If you computed accelerometer features using the provider  `[PHONE_ACCLEROMETER][PANDA]` cite [this paper](https://pubmed.ncbi.nlm.nih.gov/31657854/) in addition to RAPIDS.
