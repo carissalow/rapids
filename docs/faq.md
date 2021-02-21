@@ -230,6 +230,7 @@
     In RAPIDS v0.1.0 we replaced `RMySQL` R package with `RMariaDB`, this error means your R virtual environment is out of date, to update it run `snakemake -j1 renv_restore`
     
 ## Unrecognized output timezone "America/New_York"
+
 ???+ failure "Problem"
     When running RAPIDS with R 4.0.3 on MacOS on M1, lubridate may throw an error associated with the timezone.
     ```bash
@@ -241,6 +242,7 @@
    This is because R timezone library is not set. Please add `Sys.setenv(“TZDIR” = file.path(R.home(), “share”, “zoneinfo”))` to the file active.R in renv folder to set the timezone library. For further details on how to test if `TZDIR` is properly set, please refer to `https://github.com/tidyverse/lubridate/issues/928#issuecomment-720059233`. 
    
 ## Unimplemented MAX_NO_FIELD_TYPES
+
 ???+ failure "Problem"
     You get the following error when downloading Fitbit data:
     ```bash
@@ -251,6 +253,7 @@
     At the moment RMariaDB [cannot handle](https://github.com/r-dbi/RMariaDB/issues/127) MySQL columns of JSON type. Change the type of your Fitbit data column to `longtext` (note that the content will not change and will still be a JSON object just interpreted as a string).
     
 ## Running RAPIDS on Apple Silicon M1 Mac
+
 ???+ failure "Problem"
      You get the following error when installing pandoc or running rapids:
      ```bash

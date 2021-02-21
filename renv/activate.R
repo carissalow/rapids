@@ -15,8 +15,8 @@ local({
   Sys.setenv("RENV_R_INITIALIZING" = "true")
   on.exit(Sys.unsetenv("RENV_R_INITIALIZING"), add = TRUE)
   
-  # Uncomment the line below line if you are using an M1 Mac
-  # Sys.setenv("TZDIR" = file.path(R.home(), "share", "zoneinfo"))
+  if(grepl("Darwin", Sys.info()["sysname"], fixed = TRUE) & grepl("ARM64", Sys.info()["version"], fixed = TRUE)) # M1 Macs
+    Sys.setenv("TZDIR" = file.path(R.home(), "share", "zoneinfo"))
 
   # signal that we've consented to use renv
   options(renv.consent = TRUE)

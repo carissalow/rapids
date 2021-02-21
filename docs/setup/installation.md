@@ -48,7 +48,13 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         If you installed RAPIDS using Docker for Windows on Windows 10, the container will have [limits](https://stackoverflow.com/questions/43460770/docker-windows-container-memory-limit) on the amount of RAM it can use. If you find that RAPIDS crashes due to running out of memory, [increase](https://stackoverflow.com/a/56583203/6030343) this limit.
 
 === "MacOS"
-    We tested these instructions in Catalina
+    We tested these instructions in Catalina and Big Sur
+
+    ??? info "M1 Macs"
+        RAPIDS can run on M1 Macs, the only changes as of Feb 21, 2021 are:
+
+        - R needs to be installed via brew under Rosetta (x86 arch) due to incompatibility issues with some R libraries. To do this, run your terminal [via Rosetta](https://www.youtube.com/watch?v=nv2ylxro7rM&t=138s), then proceed with the usual brew installation command. Use x86 brew to install R and restore RAPIDS' packages (`snakemake -j1 renv_install & snakemake -j1 renv_restore`). 
+        - There is a bug related to timezone codes. We set the correct `TZ_DIR` in `renv/activate.R` (line #19) `Sys.setenv("TZDIR" = file.path(R.home(), "share", "zoneinfo"))` (RAPIDS does this automatically).
 
     1.  Install [brew](https://brew.sh/)
 
