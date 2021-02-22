@@ -75,7 +75,7 @@ PHONE_ACTIVITY_RECOGNITION:
   TABLE: 
     ANDROID: plugin_google_activity_recognition
     IOS: plugin_ios_activity_recognition
-  EPISODE_THRESHOLD_BETWEEN_ROWS: 5 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
+  EPISODE_THRESHOLD_BETWEEN_ROWS: 5 # minutes. Max time difference for two consecutive rows to be considered within the same AR episode.
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -212,7 +212,7 @@ PHONE_DATA_YIELD:
     RAPIDS:
       COMPUTE: False
       FEATURES: [ratiovalidyieldedminutes, ratiovalidyieldedhours]
-      MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 # 0 to 1 representing the number of minutes with at least
+      MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 # 0 to 1, minimum percentage of valid minutes in an hour to be considered valid.
       SRC_LANGUAGE: "r"
       SRC_FOLDER: "rapids" # inside src/features/phone_data_yield
 
@@ -335,7 +335,7 @@ FITBIT_DATA_YIELD:
     RAPIDS:
       COMPUTE: False
       FEATURES: [ratiovalidyieldedminutes, ratiovalidyieldedhours]
-      MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 # 0 to 1 representing the number of minutes with at least
+      MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 #  0 to 1, minimum percentage of valid minutes in an hour to be considered valid.
       SRC_LANGUAGE: "r"
       SRC_FOLDER: "rapids" # inside src/features/fitbit_data_yield
 

@@ -68,7 +68,7 @@ definitions:
         items:
           type: string
           enum: ["withinsegments", "acrosssegments", "acrossdataset"]
-      SCANS_LEASE_FREQUENT_DEVICE:
+      SCANS_LEAST_FREQUENT_DEVICE:
         type: array
         uniqueItems: True
         items:
@@ -182,6 +182,13 @@ properties:
   PHONE_DATA_CONFIGURATION:
     allOf:
       - $ref: "#/definitions/DATA_CONFIGURATION"
+      - properties:
+          SOURCE:
+            type: object
+            properties:
+              TYPE:
+                type: string
+                enum: [DATABASE]
 
   PHONE_ACCELEROMETER:
     type: object
@@ -321,6 +328,11 @@ properties:
                        uniqueItems: True
                        items:
                         type: string
+                  SINGLE_APPS: 
+                    type: array
+                    uniqueItems: True
+                    items:
+                      type: string
                   EXCLUDED_CATEGORIES:
                     type: ["null", array]
                     uniqueItems: True
@@ -519,7 +531,7 @@ properties:
         type: ["null", array]
         items:
           type: string
-          enum: ["PHONE_ACCELEROMETER", "PHONE_ACTIVITY_RECOGNITION", "PHONE_APPLICATIONS_FOREGROUND", "PHONE_BATTERY", "PHONE_BLUETOOTH", "PHONE_CALLS", "PHONE_CONVERSATION", "PHONE_LIGHT", "PHONE_LOCATIONS", "PHONE_MESSAGES", "PHONE_SCREEN", "PHONE_WIFI_CONNECTED", "PHONE_WIFI_VISIBLE"]
+          enum: ["PHONE_ACCELEROMETER", "PHONE_ACTIVITY_RECOGNITION", "PHONE_APPLICATIONS_CRASHES", "PHONE_APPLICATIONS_FOREGROUND", "PHONE_APPLICATIONS_NOTIFICATIONS", "PHONE_AWARE_LOG", "PHONE_BATTERY", "PHONE_BLUETOOTH", "PHONE_CALLS", "PHONE_CONVERSATION", "PHONE_KEYBOARD", "PHONE_LIGHT", "PHONE_LOCATIONS", "PHONE_MESSAGES", "PHONE_SCREEN", "PHONE_WIFI_CONNECTED", "PHONE_WIFI_VISIBLE"]
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -751,6 +763,12 @@ properties:
           RAPIDS:
             allOf:
               - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
         additionalProperties: 
           $ref: "#/definitions/PROVIDER"
 
@@ -760,6 +778,9 @@ properties:
       - properties:
           SOURCE:
             properties:
+              TYPE:
+                type: string
+                enum: [DATABASE, FILES]
               COLUMN_FORMAT: 
                   type: string
                   enum: ["JSON", "PLAIN_TEXT"]
