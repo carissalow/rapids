@@ -30,6 +30,7 @@ markdown_extensions:
     - pymdownx.tilde
     - attr_list
     - pymdownx.keys
+    - def_list
 extra:
   version:
     method: mike
@@ -125,6 +126,7 @@ nav:
     - Documentation: developers/documentation.md
     - Testing: developers/testing.md
     - Test cases: developers/test-cases.md
+    - Validation schema of config.yaml: developers/validation-schema-config.md
   - Others:
     - Migrating from beta: migrating-from-old-versions.md
     - Code of Conduct: code_of_conduct.md
