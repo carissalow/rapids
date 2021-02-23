@@ -126,7 +126,7 @@ nav:
     - Documentation: developers/documentation.md
     - Testing: developers/testing.md
     - Test cases: developers/test-cases.md
-    - Configuration Schema: developers/config_schema.md
+    - Validation schema of config.yaml: developers/validation-schema-config.md
   - Others:
     - Migrating from beta: migrating-from-old-versions.md
     - Code of Conduct: code_of_conduct.md
