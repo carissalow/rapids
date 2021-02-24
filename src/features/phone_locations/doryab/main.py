@@ -17,13 +17,14 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     maximum_row_duration = provider["MAXIMUM_ROW_DURATION"]
     cluster_on = provider["CLUSTER_ON"]
     clustering_algorithm = provider["CLUSTERING_ALGORITHM"]
+    radius_from_home = provider["RADIUS_FOR_HOME"]
     
     minutes_data_used = provider["MINUTES_DATA_USED"]
     if(minutes_data_used):
             requested_features.append("minutesdataused")
 
     # name of the features this function can compute
-    base_features_names = ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy","minutesdataused"]    
+    base_features_names = ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy","minutesdataused","timeathome"]    
     # the subset of requested features this function can compute
     features_to_compute = list(set(requested_features) & set(base_features_names))
 
@@ -170,6 +171,11 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
                 for localDate in stationaryLocations['local_segment'].unique():
                     location_features.loc[localDate,"normalizedlocationentropy"] = location_entropy_normalized(stationaryLocations[stationaryLocations['local_segment']==localDate])
             
+            if "timeathome" in features_to_compute:
+                calculationDf = stationaryLocations[['local_segment','distancefromhome','timeInSeconds']].copy()
+                calculationDf.loc[calculationDf.timeInSeconds >= maximum_gap_allowed,'timeInSeconds'] = maximum_row_duration
+                location_features["timeathome"] = calculationDf[calculationDf["distancefromhome"] <= radius_from_home].groupby("local_segment")["timeInSeconds"].sum()/60
+
             location_features = location_features.reset_index()
 
     return location_features

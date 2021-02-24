@@ -89,6 +89,7 @@ These features are based on the original implementation by [Doryab et al.](../..
     - data/raw/{pid}/phone_locations_raw.csv
     - data/interim/{pid}/phone_locations_processed.csv
     - data/interim/{pid}/phone_locations_processed_with_datetime.csv
+    - data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv
     - data/interim/{pid}/phone_locations_features/phone_locations_{language}_{provider_key}.csv
     - data/processed/features/{pid}/phone_locations.csv
     ```
@@ -110,6 +111,7 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 | `[SAMPLING_FREQUENCY]`     | Expected time difference between any two location rows in minutes. If set to `0`, the sampling frequency will be inferred automatically as the median of all the differences between any two consecutive row timestamps (recommended if you are using `FUSED_RESAMPLED` data). This parameter impacts all the time calculations.
 | `[CLUSTER_ON]`             | Set this flag to `PARTICIPANT_DATASET` to create clusters based on the entire participant's dataset or to `TIME_SEGMENT` to create clusters based on all the instances of the corresponding time segment (e.g. all mornings).
 | `[CLUSTERING_ALGORITHM]`   | The original Doryab et al implementation uses `DBSCAN`, `OPTICS` is also available with similar (but not identical) clustering results and lower memory consumption.
+| `[RADIUS_FOR_HOME]`        | All location coordinates within this distance (meters) from the home location coordinates are considered a home stay (see `timeathome` feature).
 
 
 Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
@@ -136,6 +138,7 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 |stdlengthstayatclusters                                      |minutes       |Standard deviation of time spent in a cluster (significant location).
 |locationentropy                                              |nats          |Shannon Entropy computed over the row count of each cluster (significant location), it will be higher the more rows belong to a cluster (i.e. the more time a participant spent at a significant location).
 |normalizedlocationentropy                                    |nats          |Shannon Entropy computed over the row count of each cluster (significant location) divided by the number of clusters, it will be higher the more rows belong to a cluster (i.e. the more time a participant spent at a significant location).
+|timeathome                                                   |minutes       | Time spent at home (see Observations below for a description on how we compute home).
 
 
 !!! note "Assumptions/Observations"
@@ -150,3 +153,6 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 
     **Duration Calculation**
     To calculate the time duration component for our features, we compute the difference between the timestamps of consecutive rows to take into account sampling rate variability. If this time difference is larger than a threshold (300 seconds by default) we replace it with a maximum duration (60 seconds by default, i.e. we assume a participant spent at least 60 seconds in their last known location)
+
+    **Home location**
+    Home is calculated using all location data of a participant between 12 am and 6 am, then applying a clustering algorithm (`DB_SCAN` or `OPTICS`), and considering the center of the biggest cluster as the home coordinates for that participant.
