@@ -14,20 +14,6 @@ def distance_to_degrees(d):
     d = d / 60
     return d
 
-origDf = pd.read_csv(snakemake.input[0])
-filteredDf = filterDatafromDf(origDf)
-dbscan_eps = snakemake.params["dbscan_eps"]
-dbscan_minsamples = snakemake.params["dbscan_minsamples"]
-threshold_static = snakemake.params["threshold_static"]
-clustering_algorithm = snakemake.params["clustering_algorithm"]
-
-if clustering_algorithm == "DBSCAN":
-    hyperparameters = {'eps' : distance_to_degrees(dbscan_eps), 'min_samples': dbscan_minsamples}
-elif clustering_algorithm == "OPTICS":
-    hyperparameters = {'max_eps': distance_to_degrees(dbscan_eps), 'min_samples': 2, 'metric':'euclidean', 'cluster_method' : 'dbscan'} 
-else:
-    raise ValueError("config[PHONE_LOCATIONS][HOME_INFERENCE][CLUSTERING ALGORITHM] only accepts DBSCAN or OPTICS but you provided ",clustering_algorithm)
-
 def cluster_and_label(df,clustering_algorithm,threshold_static,**kwargs):
     """
 
@@ -120,6 +106,22 @@ def haversine(lon1,lat1,lon2,lat2):
     r = 6371 # Radius of earth in kilometers. Use 3956 for miles
 
     return (r * 2 * np.arcsin(np.sqrt(a)) * 1000)
+
+# Infer a participants home location
+
+origDf = pd.read_csv(snakemake.input[0])
+filteredDf = filterDatafromDf(origDf)
+dbscan_eps = snakemake.params["dbscan_eps"]
+dbscan_minsamples = snakemake.params["dbscan_minsamples"]
+threshold_static = snakemake.params["threshold_static"]
+clustering_algorithm = snakemake.params["clustering_algorithm"]
+
+if clustering_algorithm == "DBSCAN":
+    hyperparameters = {'eps' : distance_to_degrees(dbscan_eps), 'min_samples': dbscan_minsamples}
+elif clustering_algorithm == "OPTICS":
+    hyperparameters = {'max_eps': distance_to_degrees(dbscan_eps), 'min_samples': 2, 'metric':'euclidean', 'cluster_method' : 'dbscan'} 
+else:
+    raise ValueError("config[PHONE_LOCATIONS][HOME_INFERENCE][CLUSTERING ALGORITHM] only accepts DBSCAN or OPTICS but you provided ",clustering_algorithm)
 
 filteredDf = cluster_and_label(filteredDf,clustering_algorithm,threshold_static,**hyperparameters)
 
