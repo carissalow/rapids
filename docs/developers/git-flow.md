@@ -5,47 +5,100 @@ We use the `develop/master` variation of the [OneFlow](https://www.endoflineblog
 ## Add New Features
 We use feature (topic) branches to implement new features
 
-1. Pull the latest develop 
-```bash
-git checkout develop
-git pull
-```
-1. Create your feature branch
-```bash
-git checkout -b feature/feature1
-```
-1. Add, modify or delete the necessary files to add your new feature
-1. Update the [change log](../../change-log) (`docs/change-log.md`)
-2. Stage and commit your changes using VS Code git GUI or the following commands
-```bash
-git add modified-file1 modified-file2
-git commit -m "Add my new feature" # use a concise description
-```
-1. Integrate your new feature to `develop`
+=== "Internal Developer"
+    You are an internal developer if you have writing permissions to the repository.
+    
+    Most feature branches are never pushed to the repo, only do so if you expect that its development will take days (to avoid losing your work if you computer is damaged). Otherwise follow the following instructions to locally rebase your feature branch into `develop` and push those rebased changes online.
 
-    === "Internal Developer"
-        You are an internal developer if you have writing permissions to the repository.
-        
-        Most feature branches are never pushed to the repo, only do so if you expect that its development will take days (to avoid losing your work if you computer is damaged). Otherwise follow the following instructions to locally rebase your feature branch into `develop` and push those rebased changes online.
+    **Starting your feature branch**
 
-        ```bash
-        git checkout feature/feature1
-        git fetch origin develop
-        git rebase -i develop
-        git checkout develop
-        git merge --no-ff feature/feature1 # (use the default merge message)
-        git push origin develop
-        git branch -d feature/feature1
-        ```
+    1. Pull the latest develop 
+    ```bash
+    git checkout develop
+    git pull
+    ```
+    1. Create your feature branch
+    ```bash
+    git checkout -b feature/feature1
+    ```
+    1. Add, modify or delete the necessary files to add your new feature
+    1. Update the [change log](../../change-log) (`docs/change-log.md`)
+    2. Stage and commit your changes using VS Code git GUI or the following commands
+    ```bash
+    git add modified-file1 modified-file2
+    git commit -m "Add my new feature" # use a concise description
+    ```
 
-    === "External Developer"
-        You are an external developer if you do NOT have writing permissions to the repository.
+    **Merging back your feature branch**
 
-        Push your feature branch online
-        ```bash
-        git push --set-upstream origin feature/external-test
-        ```
-        Then open a pull request to the `develop` branch using Github's GUI
+    If your changes took time to be implemented it is possible that there are new commits in our `develop` branch, so we need to rebase your feature branch.
+
+    1. Fetch the latest changes to develop
+    ```bash
+    git fetch origin develop
+    ```
+
+    1. Rebase your feature branch
+    ```bash
+    git checkout feature/feature1
+    git rebase -i develop
+    ```
+
+    1. Integrate your new feature to `develop`
+    ```bash
+    git checkout develop
+    git merge --no-ff feature/feature1 # (use the default merge message)
+    git push origin develop
+    git branch -d feature/feature1
+    ```
+
+=== "External Developer"
+    You are an external developer if you do NOT have writing permissions to the repository.
+
+    **Starting your feature branch**
+
+    1. Fork and clone our repository on Github
+    1. Switch to the latest develop 
+    ```bash
+    git checkout develop
+    ```
+    1. Create your feature branch
+    ```bash
+    git checkout -b feature/external-test
+    ```
+    1. Add, modify or delete the necessary files to add your new feature
+    2. Stage and commit your changes using VS Code git GUI or the following commands
+    ```bash
+    git add modified-file1 modified-file2
+    git commit -m "Add my new feature" # use a concise description
+    ```
+    
+    **Merging back your feature branch**
+    
+    If your changes took time to be implemented, it is possible that there are new commits in our `develop` branch, so we need to rebase your feature branch.
+
+    1. Add our repo as another `remote`
+    ```bash
+    git remote add upstream https://github.com/carissalow/rapids/
+    ```
+
+    1. Fetch the latest changes to develop
+    ```bash
+    git fetch upstream develop 
+    ```
+    
+    1. Rebase your feature branch
+    ```bash
+    git checkout feature/external-test
+    git rebase -i develop
+    ```
+    
+    1. Push your feature branch online
+    ```bash
+    git push --set-upstream origin feature/external-test
+    ```
+    
+    1. Open a pull request to the `develop` branch using Github's GUI
 
 ## Release a New Version
 
