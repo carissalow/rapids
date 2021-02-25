@@ -11,7 +11,7 @@ The following is a list of the sensors that testing is currently available.
 | Phone Accelerometer           | RAPIDS   | N        | N         | N     |
 | Phone Activity Recognition    | RAPIDS   | N        | N         | N     |
 | Phone Applications Foreground | RAPIDS   | N        | N         | N     |
-| Phone Battery                 | RAPIDS   | Y        | N         | N     |
+| Phone Battery                 | RAPIDS   | Y        | Y         | N     |
 | Phone Bluetooth               | Doryab   | N        | N         | N     |
 | Phone Bluetooth               | RAPIDS   | Y        | Y         | Y     |
 | Phone Calls                   | RAPIDS   | Y        | Y         | N     |
