@@ -29,6 +29,7 @@ required:
   - FITBIT_HEARTRATE_SUMMARY
   - FITBIT_HEARTRATE_INTRADAY
   - FITBIT_SLEEP_SUMMARY
+  - FITBIT_SLEEP_INTRADAY
   - FITBIT_STEPS_SUMMARY
   - FITBIT_STEPS_INTRADAY
   - HISTOGRAM_PHONE_DATA_YIELD
@@ -894,6 +895,136 @@ properties:
                       type: string
                       enum: ["main", "nap", "all"]
         additionalProperties: 
+          $ref: "#/definitions/PROVIDER"
+  
+  FITBIT_SLEEP_INTRADAY:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE:
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    type: object
+                    required: [LEVELS_AND_TYPES_COMBINING_ALL, LEVELS_AND_TYPES, RATIOS_TYPE, RATIOS_SCOPE, ROUTINE]
+                    properties:
+                      LEVELS_AND_TYPES_COMBINING_ALL:
+                        type: boolean
+                      LEVELS_AND_TYPES:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: [countepisode, sumduration, maxduration, minduration, avgduration, medianduration, stdduration]
+                      RATIOS_TYPE:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: [count, duration]
+                      RATIOS_SCOPE:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: [ACROSS_LEVELS, ACROSS_TYPES, WITHIN_LEVELS, WITHIN_TYPES]
+                      ROUTINE:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: [starttimefirstmainsleep, endtimelastmainsleep, starttimefirstnap, endtimelastnap]
+                  SLEEP_LEVELS:
+                    type: object
+                    required: [CLASSIC, STAGES, UNIFIED]
+                    properties:
+                      CLASSIC:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: [awake, restless, asleep]
+                      STAGES:
+                        type: array
+                        uniqueItems: True
+                        items:  
+                          type: string
+                          enum: [wake, deep, light, rem]
+                      UNIFIED:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: [awake, asleep]
+                  SLEEP_TYPES:
+                    type: array
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: [main, nap]
+                  INCLUDE_SLEEP_LATER_THAN:
+                      type: number
+                      minimum: 0
+                      maximum: 1439
+                  REFERENCE_TIME:
+                    type: string
+                    enum: [MIDNIGHT, START_OF_THE_SEGMENT]
+          PRICE:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: [avgduration, avgratioduration, avgstarttimeofepisodemain, avgendtimeofepisodemain, avgmidpointofepisodemain, "stdstarttimeofepisodemain", "stdendtimeofepisodemain", "stdmidpointofepisodemain", socialjetlag, meanssdstarttimeofepisodemain, meanssdendtimeofepisodemain, meanssdmidpointofepisodemain, medianssdstarttimeofepisodemain, medianssdendtimeofepisodemain, medianssdmidpointofepisodemain]
+                  SLEEP_LEVELS:
+                    type: object
+                    required: [CLASSIC, STAGES, UNIFIED]
+                    properties:
+                      CLASSIC:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: [awake, restless, asleep]
+                      STAGES:
+                        type: array
+                        uniqueItems: True
+                        items:  
+                          type: string
+                          enum: [wake, deep, light, rem]
+                      UNIFIED:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: [awake, asleep]
+                  DAY_TYPES:
+                    type: array
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: [WEEKEND, WEEK, ALL]
+                  GROUP_EPISODES_WITHIN:
+                    type: object
+                    required: [START_TIME, LENGTH]
+                    properties:
+                      START_TIME:
+                        type: number
+                        minimum: 0
+                        maximum: 1439
+                      LENGTH:
+                        type: number
+                        minimum: 0
+                        maximum: 1440
+        additionalProperties:
           $ref: "#/definitions/PROVIDER"
   
   FITBIT_STEPS_SUMMARY:
