@@ -23,13 +23,13 @@ We provide examples of the input format that RAPIDS expects, note that both exam
     
     === "PLAIN_TEXT"
 
-        All columns are mandatory, however, all except `local_date_time` and `duration` can be empty if you don't have that data. Just have in mind that some features might be inaccurate or empty as `type_episode_id`, `level`, `is_main_sleep`, and `type` are used for sleep episodes extraction. `type_episode_id` is based on where it is extracted: if it is extracted from the 1st "minutesData" block, the `type_episode_id` field will be 0. Similarly, the kth block will be k-1.
+        All columns are mandatory, however, all except `device_id`, `local_date_time` and `duration` can be empty if you don't have that data. Just have in mind that some features might be inaccurate or empty as `type_episode_id`, `level`, `is_main_sleep`, and `type` are used for sleep episodes extraction. `type_episode_id` is based on where it is extracted: if it is extracted from the 1st "minutesData" block, the `type_episode_id` field will be 0. Similarly, the kth block will be k-1. Actually, you only need to make sure rows extracted from the same "minutesData" block are assigned with the same unique `type_episode_id` value.
 
-        |type_episode_id  |local_date_time     |duration  |level      |is_main_sleep  |type           |
-        |---------------- |------------------- |--------- |---------- |-------------- |-------------- |
-        |0                |2020-10-07 15:55:00 |60        |awake      |0              |classic        |
-        |0                |2020-10-07 15:56:00 |60        |awake      |0              |classic        |
-        |0                |2020-10-07 15:57:00 |60        |restless   |0              |classic        |
+        |device_id                             |type_episode_id  |local_date_time     |duration  |level      |is_main_sleep  |type           |
+        |------------------------------------  |---------------- |------------------- |--------- |---------- |-------------- |-------------- |
+        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524  |0                |2020-10-07 15:55:00 |60        |awake      |0              |classic        |
+        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524  |0                |2020-10-07 15:56:00 |60        |awake      |0              |classic        |
+        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524  |0                |2020-10-07 15:57:00 |60        |restless   |0              |classic        |
 
 ??? example "Example of the structure of source data with Fitbit’s sleep API Version 1.2"
 
@@ -43,16 +43,16 @@ We provide examples of the input format that RAPIDS expects, note that both exam
     
     === "PLAIN_TEXT"
 
-        All columns are mandatory, however, all except `local_date_time` and `duration` can be empty if you don't have that data. Just have in mind that some features might be inaccurate or empty as `type_episode_id`, `level`, `is_main_sleep`, and `type` are used for sleep episodes extraction. `type_episode_id` is based on where it is extracted: if it is extracted from the 1st "data" and "shortData" block, the `type_episode_id` field will be 0. Similarly, the kth block will be k-1.
+        All columns are mandatory, however, all except `device_id`, `local_date_time` and `duration` can be empty if you don't have that data. Just have in mind that some features might be inaccurate or empty as `type_episode_id`, `level`, `is_main_sleep`, and `type` are used for sleep episodes extraction. `type_episode_id` is based on where it is extracted: if it is extracted from the 1st "data" and "shortData" block, the `type_episode_id` field will be 0. Similarly, the kth block will be k-1. Actually, you only need to make sure rows extracted from the same "minutesData" block are assigned with the same unique `type_episode_id` value.
 
-        |type_episode_id  |local_date_time     |duration  |level      |is_main_sleep  |type           |
-        |---------------- |------------------- |--------- |---------- |-------------- |-------------- |
-        |0                |2020-10-10 15:36:30 |60        |restless   |0              |classic        |
-        |0                |2020-10-10 15:37:30 |660       |asleep     |0              |classic        |
-        |0                |2020-10-10 15:48:30 |60        |restless   |0              |classic        |
-        |...              |...                 |...       |...        |...            |...            |
-        |1                |2020-10-10 01:46:30 |420       |light      |1              |stages         |
-        |1                |2020-10-10 01:53:30 |1230      |deep       |1              |stages         |
+        |device_id                              |type_episode_id  |local_date_time     |duration  |level      |is_main_sleep  |type           |
+        |------------------------------------   |---------------- |------------------- |--------- |---------- |-------------- |-------------- |
+        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |0                |2020-10-10 15:36:30 |60        |restless   |0              |classic        |
+        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |0                |2020-10-10 15:37:30 |660       |asleep     |0              |classic        |
+        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |0                |2020-10-10 15:48:30 |60        |restless   |0              |classic        |
+        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |...              |...                 |...       |...        |...            |...            |
+        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |1                |2020-10-10 01:46:30 |420       |light      |1              |stages         |
+        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |1                |2020-10-10 01:53:30 |1230      |deep       |1              |stages         |
 
 ## RAPIDS provider
 
