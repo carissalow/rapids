@@ -181,6 +181,9 @@ def price_features(sensor_data_files, time_segment, provider, filter_data_by_seg
     features_fullnames = featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, day_types_to_compute)
     sleep_intraday_features = pd.DataFrame(columns=features_fullnames)
 
+    if sleep_intraday_data.empty:
+        return sleep_intraday_features
+    
     # Filter by segemnts and chunk episodes
     sleep_intraday_data = filter_data_by_segment(sleep_intraday_data, time_segment)
 
