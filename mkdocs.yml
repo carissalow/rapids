@@ -105,6 +105,7 @@ nav:
         - Fitbit Heart Rate Summary: features/fitbit-heartrate-summary.md
         - Fitbit Heart Rate Intraday: features/fitbit-heartrate-intraday.md
         - Fitbit Sleep Summary: features/fitbit-sleep-summary.md
+        - Fitbit Sleep Intraday: features/fitbit-sleep-intraday.md
         - Fitbit Steps Summary: features/fitbit-steps-summary.md
         - Fitbit Steps Intraday: features/fitbit-steps-intraday.md
       - Empatica:

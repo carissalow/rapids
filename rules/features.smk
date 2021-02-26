@@ -660,6 +660,40 @@ rule fitbit_sleep_summary_r_features:
     script:
         "../src/features/entry.R"
 
+rule resample_sleep_episodes:
+    input:
+        "data/raw/{pid}/fitbit_sleep_intraday_parsed.csv"
+    output:
+        "data/interim/{pid}/fitbit_sleep_intraday_episodes_resampled.csv"
+    script:
+        "../src/features/utils/resample_episodes.R"
+
+rule fitbit_sleep_intraday_python_features:
+    input:
+        sensor_data = "data/interim/{pid}/fitbit_sleep_intraday_episodes_resampled_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_sleep_intraday"
+    output:
+        "data/interim/{pid}/fitbit_sleep_intraday_features/fitbit_sleep_intraday_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule fitbit_sleep_intraday_r_features:
+    input:
+        sensor_data = "data/interim/{pid}/fitbit_sleep_intraday_episodes_resampled_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_sleep_intraday"
+    output:
+        "data/interim/{pid}/fitbit_sleep_intraday_features/fitbit_sleep_intraday_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
 rule merge_sensor_features_for_individual_participants:
     input:
         feature_files = input_merge_sensor_features_for_individual_participants
