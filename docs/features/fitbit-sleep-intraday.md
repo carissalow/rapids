@@ -5,8 +5,7 @@ Sensor parameters description for `[FITBIT_SLEEP_INTRADAY]`:
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
 |`[TABLE]`| Database table name or file path where the sleep intraday data is stored. The configuration keys in [Device Data Source Configuration](../../setup/configuration/#device-data-source-configuration) control whether this parameter is interpreted as table or file.
-|`[INCLUDE_SLEEP_LATER_THAN]`| All resampled sleep rows (bin interval: one minute) that started after this time will be included in the feature computation. It is a number ranging from 0 (midnight) to 1439 (23:59) which denotes the number of minutes after midnight. If a segment is longer than one day, this value is for every day.
-|`[REFERENCE_TIME]`| The reference point from which the `[ROUTINE]` features are to be computed. Chosen from `MIDNIGHT` and `START_OF_THE_SEGMENT`, default is `MIDNIGHT`. If you have multiple time segments per day it might be more informative to set this flag to `START_OF_THE_SEGMENT`.
+
 
 The format of the column(s) containing the Fitbit sensor data can be `JSON` or `PLAIN_TEXT`. The data in `JSON` format is obtained directly from the Fitbit API. We support `PLAIN_TEXT` in case you already parsed your data and don't have access to your participants' Fitbit accounts anymore. If your data is in `JSON` format then summary and intraday data come packed together. 
 
@@ -48,9 +47,12 @@ We provide examples of the input format that RAPIDS expects, note that both exam
 
         |type_episode_id  |local_date_time     |duration  |level      |is_main_sleep  |type           |
         |---------------- |------------------- |--------- |---------- |-------------- |-------------- |
-        |0                |2020-10-10 15:36:30 |60        |restless   |1              |stages         |
-        |0                |2020-10-10 15:37:30 |660       |asleep     |1              |stages         |
-        |0                |2020-10-10 15:48:30 |60        |restless   |1              |stages         |
+        |0                |2020-10-10 15:36:30 |60        |restless   |0              |classic        |
+        |0                |2020-10-10 15:37:30 |660       |asleep     |0              |classic        |
+        |0                |2020-10-10 15:48:30 |60        |restless   |0              |classic        |
+        |...              |...                 |...       |...        |...            |...            |
+        |1                |2020-10-10 01:46:30 |420       |light      |1              |stages         |
+        |1                |2020-10-10 01:53:30 |1230      |deep       |1              |stages         |
 
 ## RAPIDS provider
 
@@ -76,6 +78,8 @@ Parameters description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS]`:
 |`[FEATURES]`                                 |         Features to be computed from sleep intraday data, see table below           |
 |`[SLEEP_LEVELS]`                             | Fitbit’s sleep API Version 1 only provides `CLASSIC` records. However, Version 1.2 provides 2 types of records: `CLASSIC` and `STAGES`. `STAGES` is only available in devices with a heart rate sensor and even those devices will fail to report it if the battery is low or the device is not tight enough. While `CLASSIC` contains 3 sleep levels (`awake`, `restless`, and `asleep`), `STAGES` contains 4 sleep levels (`wake`, `deep`, `light`, `rem`). To make it consistent, RAPIDS grouped them into 2 `UNIFIED` sleep levels: `awake` (`CLASSIC`: `awake` and `restless`; `STAGES`: `wake`) and `asleep` (`CLASSIC`: `asleep`; `STAGES`: `deep`, `light`, and `rem`).
 |`[SLEEP_TYPES]`                              | Types of sleep to be included in the feature extraction computation. Fitbit provides 2 types of sleep: `main`, `nap`.
+|`[INCLUDE_SLEEP_LATER_THAN]`| All resampled sleep rows (bin interval: one minute) that started after this time will be included in the feature computation. It is a number ranging from 0 (midnight) to 1439 (23:59) which denotes the number of minutes after midnight. If a segment is longer than one day, this value is for every day.
+|`[REFERENCE_TIME]`| The reference point from which the `[ROUTINE]` features are to be computed. Chosen from `MIDNIGHT` and `START_OF_THE_SEGMENT`, default is `MIDNIGHT`. If you have multiple time segments per day it might be more informative to set this flag to `START_OF_THE_SEGMENT`.
 
 
 Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS][LEVELS_AND_TYPES]`:
@@ -163,18 +167,23 @@ Parameters description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][PRICE]`:
 |----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 |`[COMPUTE]`                                  | Set to `True` to extract `FITBIT_SLEEP_INTRADAY` features from the `PRICE` provider                                      |
 |`[FEATURES]`                                 |         Features to be computed from sleep intraday data, see table below   
-|`[DAY_TYPE]`                                             | The features of this provider can be computed using daily averages/medians that were extracted on `WEEKEND` days only, `WEEK` days only, or `ALL` days|
-|`[INCLUDE_EPISODES_INTERSECTING]`            | This parameter contains 2 values: `[START_TIME]` and `[LENGTH]`. Only `main` sleep episodes that ended later than `[START_TIME]` or start before `[START_TIME]` + `[LENGTH]` are taken into account to compute the features described below. Both `[START_TIME]` and `[LENGTH]` are in minutes. `[START_TIME]` is a number ranging from 0 (midnight) to 1439 (23:59) which denotes the number of minutes after midnight. `[LENGTH]` is a number smaller than 1440 (24 hours).  |
+|`[SLEEP_LEVELS]`                             | Fitbit’s sleep API Version 1 only provides `CLASSIC` records. However, Version 1.2 provides 2 types of records: `CLASSIC` and `STAGES`. `STAGES` is only available in devices with a heart rate sensor and even those devices will fail to report it if the battery is low or the device is not tight enough. While `CLASSIC` contains 3 sleep levels (`awake`, `restless`, and `asleep`), `STAGES` contains 4 sleep levels (`wake`, `deep`, `light`, `rem`). To make it consistent, RAPIDS grouped them into 2 `UNIFIED` sleep levels: `awake` (`CLASSIC`: `awake` and `restless`; `STAGES`: `wake`) and `asleep` (`CLASSIC`: `asleep`; `STAGES`: `deep`, `light`, and `rem`).
+|`[DAY_TYPE]`                                 | The features of this provider can be computed using daily averages/standard deviations that were extracted on `WEEKEND` days only, `WEEK` days only, or `ALL` days|
+|`[GROUP_EPISODES_WITHIN]`                    | This parameter contains 2 values: `[START_TIME]` and `[LENGTH]`. Only `main` sleep episodes that intersect or contain the period between [`START_TIME`, `START_TIME` + `LENGTH`] are taken into account to compute the features described below. Both `[START_TIME]` and `[LENGTH]` are in minutes. `[START_TIME]` is a number ranging from 0 (midnight) to 1439 (23:59) which denotes the number of minutes after midnight. `[LENGTH]` is a number smaller than 1440 (24 hours).  |
 
 
 Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][PRICE]`:
 
 |Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                  |Units          |Description                                                  |
 |------------------------------------- |----------------- |-------------------------------------------------------------|
-|avgratioawaketoinbedmain`[DAY_TYPE]`  |-                 | Average daily ratio between daily awake time and in-bed time inferred from `main` sleep episodes. An sleep episode can have `CLASSIC` or `STAGES` levels, awake time is formed by the `[awake, restless]` `CLASSIC` levels and the `[wake]` `STAGES` level. In turn, in-bed time is the total duration of all `main` sleep episodes for each day. You can include daily ratios that were computed on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
+|avgduration`[LEVEL]`main`[DAY_TYPE]`             |minutes           | Average duration of daily `LEVEL` sleep episodes. You can include daily average that were computed on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
+|avgratioduration`[LEVEL]`withinmain`[DAY_TYPE]`  |-                 | Average ratio between daily `LEVEL` time and in-bed time inferred from `main` sleep episodes. `LEVEL` is one of `SLEEP_LEVELS` (e.g. awake-classic or rem-stages). In-bed time is the total duration of all `main` sleep episodes for each day. You can include daily ratios that were computed on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
 |avgstarttimeofepisodemain`[DAY_TYPE]` |minutes           | Average start time of the first `main` sleep episode of each day in a time segment. You can include daily start times from episodes detected on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
-|avgendtimeofepisodemain`[DAY_TYPE]`   |minutes           |  Average end time of the last `main` sleep episode of each day in a time segment. You can include daily end times from episodes detected on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
-|avgmidpointofepisodemain`[DAY_TYPE]`  |minutes           |  Average mid time between the start of the first `main` sleep episode and the end of the last `main` sleep episode of each day in a time segment. You can include episodes detected on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
+|avgendtimeofepisodemain`[DAY_TYPE]`   |minutes           | Average end time of the last `main` sleep episode of each day in a time segment. You can include daily end times from episodes detected on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
+|avgmidpointofepisodemain`[DAY_TYPE]`  |minutes           | Average mid time between the start of the first `main` sleep episode and the end of the last `main` sleep episode of each day in a time segment. You can include episodes detected on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
+|stdstarttimeofepisodemain`[DAY_TYPE]` |minutes           | Standard deviation of start time of the first `main` sleep episode of each day in a time segment. You can include daily start times from episodes detected on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
+|stdendtimeofepisodemain`[DAY_TYPE]`   |minutes           | Standard deviation of end time of the last `main` sleep episode of each day in a time segment. You can include daily end times from episodes detected on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
+|stdmidpointofepisodemain`[DAY_TYPE]`  |minutes           | Standard deviation of mid time between the start of the first `main` sleep episode and the end of the last `main` sleep episode of each day in a time segment. You can include episodes detected on weekend days, week days or both depending on the value of the `DAY_TYPE` flag.
 |socialjetlag                          |minutes           | Difference in minutes between the avgstarttimeofepisodemain (bed time) of weekends and weekdays. 
 |meanssdstarttimeofepisodemain         |minutes squared   | Same as `avgstarttimeofepisodemain[DAY_TYPE]` but the average is computed over the squared differences of each pair of consecutive start times.
 |meanssdendtimeofepisodemain           |minutes squared   | Same as `avgendtimeofepisodemain[DAY_TYPE]` but the average is computed over the squared differences of each pair of consecutive end times.
