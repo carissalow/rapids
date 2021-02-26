@@ -400,6 +400,20 @@ FITBIT_SLEEP_INTRADAY:
       REFERENCE_TIME: MIDNIGHT # chosen from "MIDNIGHT" and "START_OF_THE_SEGMENT"
       SRC_FOLDER: "rapids" # inside src/features/fitbit_sleep_intraday
       SRC_LANGUAGE: "python"
+  
+    PRICE:
+      COMPUTE: False
+      FEATURES: [avgduration, avgratioduration, avgstarttimeofepisodemain, avgendtimeofepisodemain, avgmidpointofepisodemain, "stdstarttimeofepisodemain", "stdendtimeofepisodemain", "stdmidpointofepisodemain", socialjetlag, meanssdstarttimeofepisodemain, meanssdendtimeofepisodemain, meanssdmidpointofepisodemain, medianssdstarttimeofepisodemain, medianssdendtimeofepisodemain, medianssdmidpointofepisodemain]
+      SLEEP_LEVELS:
+        CLASSIC: [awake, restless, asleep]
+        STAGES: [wake, deep, light, rem]
+        UNIFIED: [awake, asleep]
+      DAY_TYPES: [WEEKEND, WEEK, ALL]
+      GROUP_EPISODES_WITHIN: # by default: today's 6pm to tomorrow's noon
+        START_TIME: 1080 # number of minutes after the midnight (18:00) 18*60
+        LENGTH: 1080 # in minutes (18 hours) 18*60
+      SRC_FOLDER: "price" # inside src/features/fitbit_sleep_intraday
+      SRC_LANGUAGE: "python"
 
 # See https://www.rapids.science/latest/features/fitbit-steps-summary/
 FITBIT_STEPS_SUMMARY:
