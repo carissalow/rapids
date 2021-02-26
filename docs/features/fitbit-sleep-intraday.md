@@ -196,19 +196,31 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][PRICE]`:
 
 !!! note "Assumptions/Observations"
     1. These features are based on descriptive statistics computed across daily values (start/end/mid times of sleep episodes). This is the reason why they are only available on time segments that are longer than 24 hours (we need at least 1 day to get the average).
-    1. Even though Fitbit provides 2 types of sleep episodes (`main` and `nap`), only `main` sleep episodes are considered.
-    2. We sum 24 to any start or bed times that happen *after* midnight so they can be averaged with other values happening *before* midnight.
-    2. `main` sleep episodes belong to the day they start at and are only included in the feature computation if they start or end (overlap) between `[START_TIME]` and `[START_TIME]` + `[LENGTH]`. For example: 
+    2. Even though Fitbit provides 2 types of sleep episodes (`main` and `nap`), only `main` sleep episodes are considered.
+    3. How do we assign sleep episodes to specific dates?
+    
+        `START_TIME` and `LENGTH` control the dates that sleep episodes belong to. For a pair of `[START_TIME]` and `[LENGTH]`, sleep episodes (blue boxes) can only be placed at the following places:
+
+        <figure>
+            <img src="../../img/features_fitbit_sleep_intraday.png" max-width="100%" />
+            <figcaption>Relationship between sleep episodes and the given times`([START_TIME], [LENGTH])`</figcaption>
+        </figure>
+
+        - If the end time of a sleep episode is before `[START_TIME]`, it will belong to the day before its start date (e.g. sleep episode #1).
+
+        - if (1) the start time or the end time of a sleep episode are between (overlap) `[START_TIME]` and `[START_TIME] + [LENGTH]` or (2) the start time is before `[START_TIME]` and the end time is after `[START_TIME] + [LENGTH]`, it will belong to its start date (e.g. sleep episode #2, #3, #4, #5).
+
+        - If the start time of a sleep episode is after `START_TIME] + [LENGTH]`, it will belong to the day after its start date (e.g. sleep episode #6).
         
-        If we process the following `main` sleep episodes: 
+        Only `main` sleep episodes that intersect or contain the period between `[START_TIME]` and `[START_TIME] + [LENGTH]` will be included in the feature computation. If we process the following `main` sleep episodes: 
 
         | episode |start|end|
         |-|-|-|
         |1|2021-02-01 12:00|2021-02-01 15:00|
-        |2|2021-02-01 21:00|2021-02-02 03:00|
-        |3|2021-02-02 05:00|2021-02-02 08:00|
+        |2|2021-02-01 21:00|2021-02-02 03:00|02-01
+        |3|2021-02-02 05:00|2021-02-02 08:00|02-01
         |4|2021-02-02 11:00|2021-02-02 14:00|
-        |5|2021-02-02 19:00|2021-02-03 06:00|
+        |5|2021-02-02 19:00|2021-02-03 06:00|02-02
 
         And our parameters:
 
@@ -217,8 +229,10 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][PRICE]`:
         - `[INCLUDE_EPISODES_INTERSECTING][LENGTH]` = 720 (tomorrow's 10:00, or 22:00 + 12 hours)
         
         Only sleep episodes 2, 3,and 5 would be considered.
+    
+    4. Time related features represent the number of minutes between the start/end/midpoint of sleep episodes and the assigned day's midnight.
 
-    3. All `main` sleep episodes are chunked within the requested [time segments](../../setup/configuration/#time-segments) which need to be at least 24 hours or more long (1, 2, 3, 7 days, etc.). Then, daily features will be extracted and averaged across the length of the time segment, for example:
+    5. All `main` sleep episodes are chunked within the requested [time segments](../../setup/configuration/#time-segments) which need to be at least 24 hours or more long (1, 2, 3, 7 days, etc.). Then, daily features will be extracted and averaged across the length of the time segment, for example:
     
         The daily features extracted on 2021-02-01 will be:
 
@@ -226,7 +240,7 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][PRICE]`:
 
         - endtimeofepisodemain (wake time) is `32 * 60 `(episode 3 end time 2021-02-02 08:00 + 24)
 
-        - midpointofepisodemain (midpoint sleep) is `[(32 * 60) - (21 * 60)] / 2`
+        - midpointofepisodemain (midpoint sleep) is `[(21 * 60) + (32 * 60)] / 2`
 
 
         The daily features extracted on 2021-02-02 will be:
@@ -235,7 +249,7 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][PRICE]`:
 
         - endtimeofepisodemain (wake time) is `30 * 60 `(episode 5 end time 2021-02-03 06:00 + 24)
 
-        - midpointofepisodemain (midpoint sleep) is `[(30 * 60) - (19 * 60)] / 2`
+        - midpointofepisodemain (midpoint sleep) is `[(19 * 60) + (30 * 60)] / 2`
 
         And `avgstarttimeofepisodemain[DAY_TYPE]` will be `([21 * 60] + [19 * 60]) / 2` 
 

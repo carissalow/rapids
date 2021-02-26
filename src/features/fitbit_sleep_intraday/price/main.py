@@ -223,7 +223,7 @@ def price_features(sensor_data_files, time_segment, provider, filter_data_by_seg
     main_sleep_episodes["start_minutes"] = main_sleep_episodes[["start_minutes", "fake_date_delta"]].apply(lambda row: row["start_minutes"] - 24 * 60 * row["fake_date_delta"], axis=1)
     main_sleep_episodes["end_minutes"] = main_sleep_episodes["start_minutes"] + main_sleep_episodes["durationinbed"]
     
-    # We keep a sleep episode that intersets or contains the period between [START_TIME, START_TIME + LENGTH], aka [daily_start_time, daily_end_time].
+    # We keep a sleep episode that intersects or contains the period between [START_TIME, START_TIME + LENGTH], aka [daily_start_time, daily_end_time].
     main_sleep_episodes = main_sleep_episodes.query("(start_minutes >= @daily_start_time and start_minutes < @daily_end_time) or (end_minutes > @daily_start_time and end_minutes <= @daily_end_time) or (start_minutes <= @daily_start_time and end_minutes >= @daily_end_time)")
     
     # Sort main sleep episodes based on fake_date and start_minutes
