@@ -42,9 +42,8 @@ TIME_SEGMENTS: &time_segments
 # See https://www.rapids.science/latest/setup/configuration/#device-data-source-configuration
 PHONE_DATA_CONFIGURATION:
   SOURCE: 
-    TYPE: DATABASE
+    TYPE: aware_mysql
     DATABASE_GROUP: *database_group
-    DEVICE_ID_COLUMN: device_id # column name
   TIMEZONE: 
     TYPE: SINGLE
     VALUE: *timezone

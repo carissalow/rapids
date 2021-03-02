@@ -1,0 +1,18 @@
+PHONE_ACCELEROMETER:
+  ANDROID:
+    COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DOUBLE_VALUES_0: double_values_0
+      DOUBLE_VALUES_1: double_values_1
+      DOUBLE_VALUES_2: double_values_2
+    MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DOUBLE_VALUES_0: double_values_0
+      DOUBLE_VALUES_1: double_values_1
+      DOUBLE_VALUES_2: double_values_2
+    MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
+

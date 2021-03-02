@@ -3,11 +3,11 @@
 
 You need to follow these steps to configure your RAPIDS deployment before you can extract behavioral features
 
-1. Add your [database credentials](#database-credentials)
+0. Verify RAPIDS can process your [data streams](#supported-data-streams)
 2. Choose the [timezone of your study](#timezone-of-your-study)
 3. Create your [participants files](#participant-files)
 4. Select what [time segments](#time-segments) you want to extract features on
-5. Modify your [device data source configuration](#device-data-source-configuration)
+5. Configure your [data streams](#data-stream-configuration)
 6. Select what [sensors and features](#sensor-and-features-to-process) you want to process
 
 When you are done with this configuration, go to [executing RAPIDS](../execution).
@@ -16,59 +16,37 @@ When you are done with this configuration, go to [executing RAPIDS](../execution
     Every time you see `config["KEY"]` or `[KEY]` in these docs we are referring to the corresponding key in the `config.yaml` file.
 
 ---
-## Database credentials
 
-Only follow this step if you are processing smartphone or Fitbit data stored in a database. For reference, we list below the data sources RAPIDS support for each type of device.
+## Supported data streams
 
-1. Create an empty file called `#!bash .env` in your RAPIDS root directory
-2. Add the following lines and replace your database-specific  credentials (user, password, host, and database):
+A data stream refers to sensor data collected using a specific type of **device** with a specific **format** and stored in a specific **container**. For example, the `aware_mysql` data stream handles smartphone data (**device**) collected with the [AWARE Framework](https://awareframework.com/) (**format**) stored in a MySQL database (**container**).
 
-  ``` yaml
-  [MY_GROUP]
-  user=MY_USER
-  password=MY_PASSWORD
-  host=MY_HOST
-  port=3306
-  database=MY_DATABASE
-  ```
-
-??? warning "What is `[MY_GROUP]`?"
-    The label `[MY_GROUP]` is arbitrary but it has to match the following `config.yaml` key:
-    ```yaml
-    DATABASE_GROUP: &database_group
-      MY_GROUP
-    ```
-
-??? hint "Connecting to localhost (host machine) from inside our docker container"
-    If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, you can connect to a MySQL database in your host machine using `host.docker.internal` instead of `127.0.0.1` or `localhost`. In a Linux host you need to run our docker container using `docker run --network="host" -d moshiresearch/rapids:latest` and then `127.0.0.1` will point to your host machine.
-
-??? hint "Data sources supported for each device type"
-    | Device | Database | CSV Files | Zip files
-    |--|--|--|--|
-    | Smartphone| Yes (MySQL) | No | No |
-    | Fitbit| Yes (MySQL) | Yes | No |
-    | Empatica| No | No | Yes |
-
-    - RAPIDS only supports MySQL/MariaDB databases. If you would like to add support for a different database engine get in touch and we can discuss how to implement it.
-    - Fitbit data can be processed as the JSON object produced by Fitbit's API (recommended) or in a parsed tabular fashion.
-    - Empatica devices produce a zip file with a CSV file per sensor which can be processed directly in RAPIDS.
-    
----
+Check the table in [introduction to data streams](../../datastreams/data-streams-introduction) to know what data streams we support. If your data stream is supported, continue with to the next configuration section. If you want to implement a new data stream, follow this tutorial to [add support for new data streams](../../datastreams/add-new-data-streams). If you have read the tutorial but have questions, get in touch by email or in Slack.
 
 ## Timezone of your study
 
 ### Single timezone
 
-If your study only happened in a single time zone, select the appropriate code form this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) and change the following config key. Double check your timezone code pick, for example US Eastern Time is `America/New_York` not `EST`
+If your study only happened in a single time zone or you want to ignore short trips of your participants to different time zones, select the appropriate code form this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) and change the following config key. Double check your timezone code pick, for example US Eastern Time is `America/New_York` not `EST`
 
 ``` yaml
-TIMEZONE: &timezone
-  America/New_York
+TIMEZONE: 
+    TYPE: SINGLE
+    TZCODE: America/New_York
 ```
 
 ### Multiple timezones
 
-Support coming soon.
+If you have the timestamps when participants' devices changed to a new time zone, follow these instructions
+
+TODO more info
+
+``` yaml
+TIMEZONE: 
+    TYPE: MULTIPLE
+    TZCODE: America/New_York
+    MULTIPLE_TZCODES_FILE: path_to/csv.file
+```
 
 ---
 
@@ -120,7 +98,7 @@ Participant files link together multiple devices (smartphones and wearables) to 
     | Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description                                                                                                                                                                                                                                                                                                                                |
     |-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
     | `[DEVICE_IDS]` | An array of the strings that uniquely identify each smartphone, you can have more than one for when participants changed phones in the middle of the study, in this case, data from all their devices will be joined and relabeled with the last 1 on this list.                                                                           |
-    | `[PLATFORMS]`  | An array that specifies the OS of each smartphone in  `[DEVICE_IDS]` , use a combination of  `android`  or  `ios`  (we support participants that changed platforms in the middle of your study!). If you have an  `aware_device`  table in your database you can set  `[PLATFORMS]: [multiple]`  and RAPIDS will infer them automatically. |
+    | `[PLATFORMS]`  | An array that specifies the OS of each smartphone in  `[DEVICE_IDS]` , use a combination of  `android`  or  `ios`  (we support participants that changed platforms in the middle of your study!). You can set `[PLATFORMS]: [infer]`  and RAPIDS will infer them automatically (each phone data stream infer this differently, e.g. `aware_mysql` uses the `aware_device` table). |
     | `[LABEL]`      | A string that is used in reports and visualizations.                                                                                                                                                                                                                                                                                       |
     | `[START_DATE]` | A string with format  `YYY-MM-DD` . Only data collected  *after*  this date will be included in the analysis                                                                                                                                                                                                                               |
     | `[END_DATE]`   | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis                                                                                                                                                                                                                              |
@@ -143,84 +121,62 @@ Participant files link together multiple devices (smartphones and wearables) to 
     | `[END_DATE]`     | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis    
 ### Automatic creation of participant files
 
-You have two options a) use the `aware_device` table in your database or b) use a CSV file. In either case, in your `config.yaml`, set the devices (`PHONE`, `FITBIT`, `EMPATICA`) `[ADD]` flag to `TRUE` depending on what devices you used in your study. Set `[DEVICE_ID_COLUMN]` to the name of the column that uniquely identifies each device  (only for `PHONE` and `FITBIT`).
+You can use a CSV file with a row per participant to automatically create participant files. 
 
-=== "aware_device table"
-
-    Set the following keys in your `config.yaml`
-
-    ```yaml
-    CREATE_PARTICIPANT_FILES:
-      SOURCE:
-        TYPE: AWARE_DEVICE_TABLE
-        DATABASE_GROUP: *database_group
-        CSV_FILE_PATH: ""
-        TIMEZONE: *timezone
-      PHONE_SECTION:
-        ADD: TRUE # or FALSE
-        DEVICE_ID_COLUMN: device_id # column name
-        IGNORED_DEVICE_IDS: []
-      FITBIT_SECTION:
-        ADD: FALSE # or FALSE
-        DEVICE_ID_COLUMN: fitbit_id # column name
-        IGNORED_DEVICE_IDS: []
-      EMPATICA_SECTION: # Empatica doesn't have a device_id column because the devices produce zip files per participant
-        ADD: FALSE # or FALSE
+??? "`AWARE_DEVICE_TABLE` was deprecated"
+    In previous versions of RAPIDS, you could create participant files automatically using the `aware_device` table. We deprecated this option but you can still achieve the same results if you export the output of the following SQL query as a CSV file and follow the instructions below:
+    
+    ```sql
+    SELECT device_id, device_id as fitbit_id, CONCAT("p", _id) as pid, if(brand = "iPhone", "ios", "android") as platform, CONCAT("p", _id)  as label, DATE_FORMAT(FROM_UNIXTIME((timestamp/1000)- 86400), "%Y-%m-%d") as start_date, CURRENT_DATE as end_date from aware_device order by _id;
     ```
 
-    Then run 
+In your `config.yaml`:
 
-    ```bash
-    snakemake -j1 create_participants_files
+1. Set `CSV_FILE_PATH` to a CSV file path that complies with the specs described below
+2. Set the devices (`PHONE`, `FITBIT`, `EMPATICA`) `[ADD]` flag to `TRUE` depending on what devices you used in your study.
+3. Set `[DEVICE_ID_COLUMN]` to the name of the column in your CSV file that uniquely identifies each device  (only for `PHONE` and `FITBIT`).
+
+```yaml
+CREATE_PARTICIPANT_FILES:
+  CSV_FILE_PATH: "your_path/to_your.csv"
+  PHONE_SECTION:
+    ADD: TRUE # or FALSE
+    DEVICE_ID_COLUMN: device_id # column name
+    IGNORED_DEVICE_IDS: []
+  FITBIT_SECTION:
+    ADD: FALSE # or FALSE
+    DEVICE_ID_COLUMN: fitbit_id # column name
+    IGNORED_DEVICE_IDS: []
+  EMPATICA_SECTION: # Empatica doesn't have a device_id column because the devices produce zip files per participant
+    ADD: FALSE # or FALSE
+```
+
+Your CSV file (`[CSV_FILE_PATH]`) should have the following columns (headers) but the values within each column can be empty:
+
+| Column           | Description                                                                                               |
+|------------------|-----------------------------------------------------------------------------------------------------------|
+| phone device id  | The name of this column has to match `[PHONE_SECTION][DEVICE_ID_COLUMN]`. Separate multiple ids with `;`  |
+| fitbit device id | The name of this column has to match `[FITBIT_SECTION][DEVICE_ID_COLUMN]`. Separate multiple ids with `;`  |
+| pid              | Unique identifiers with the format pXXX (your participant files will be named with this string)            |
+| platform         | Use `android`, `ios` or `infer` as explained above, separate values with `;`            |
+| label            | A human readable string that is used in reports and visualizations.                                       |
+| start_date       | A string with format `YYY-MM-DD`. |
+| end_date         | A string with format `YYY-MM-DD`. |
+
+!!! example
+    We added white spaces to this example to make it easy to read but you don't have to.
+
+    ```csv
+    device_id                                                                ,fitbit_id ,pid ,label ,platform    ,start_date ,end_date
+    a748ee1a-1d0b-4ae9-9074-279a2b6ba524;dsadas-2324-fgsf-sdwr-gdfgs4rfsdf43 ,fitbit1   ,p01 ,julio ,android;ios ,2020-01-01 ,2021-01-01
+    4c4cf7a1-0340-44bc-be0f-d5053bf7390c                                     ,fitbit2   ,p02 ,meng  ,ios         ,2021-01-01 ,2022-01-01
     ```
 
-=== "CSV file"
+Then run 
 
-    Set the following keys in your `config.yaml`. 
-
-    ```yaml
-    CREATE_PARTICIPANT_FILES:
-      SOURCE:
-        TYPE: CSV_FILE
-        DATABASE_GROUP: ""
-        CSV_FILE_PATH: "your_path/to_your.csv"
-        TIMEZONE: *timezone
-      PHONE_SECTION:
-        ADD: TRUE # or FALSE
-        DEVICE_ID_COLUMN: device_id # column name
-        IGNORED_DEVICE_IDS: []
-      FITBIT_SECTION:
-        ADD: FALSE # or FALSE
-        DEVICE_ID_COLUMN: fitbit_id # column name
-        IGNORED_DEVICE_IDS: []
-      EMPATICA_SECTION: # Empatica doesn't have a device_id column because the devices produce zip files per participant
-        ADD: FALSE # or FALSE
-    ```
-    Your CSV file (`[SOURCE][CSV_FILE_PATH]`) should have the following columns but you can omit any values you don't have on each column:
-
-    | Column           | Description                                                                                               |
-    |------------------|-----------------------------------------------------------------------------------------------------------|
-    | phone device id  | The name of this column has to match `[PHONE_SECTION][DEVICE_ID_COLUMN]`. Separate multiple ids with `;`  |
-    | fitbit device id | The name of this column has to match `[FITBIT_SECTION][DEVICE_ID_COLUMN]`. Separate multiple ids with `;`  |
-    | pid              | Unique identifiers with the format pXXX (your participant files will be named with this string            |
-    | platform         | Use `android`, `ios` or `multiple` as explained above, separate values with `;`            |
-    | label            | A human readable string that is used in reports and visualizations.                                       |
-    | start_date       | A string with format `YYY-MM-DD`. |
-    | end_date         | A string with format `YYY-MM-DD`. |
-
-    !!! example
-
-        ```csv
-        device_id,pid,label,platform,start_date,end_date,fitbit_id
-        a748ee1a-1d0b-4ae9-9074-279a2b6ba524;dsadas-2324-fgsf-sdwr-gdfgs4rfsdf43,p01,julio,android;ios,2020-01-01,2021-01-01,fitbit1
-        4c4cf7a1-0340-44bc-be0f-d5053bf7390c,p02,meng,ios,2021-01-01,2022-01-01,fitbit2
-        ```
-
-    Then run 
-
-    ```bash
-    snakemake -j1 create_participants_files
-    ```
+```bash
+snakemake -j1 create_participants_files
+```
 
 ---
 
@@ -394,63 +350,163 @@ Time segments (or epochs) are the time windows on which you want to extract beha
     survey2,1584291600000,2H,1H,-1,klj34oi2-8frk-2343-21kk-324ljklewlr3
     ```
 --- 
-## Device Data Source Configuration
+## Data Stream Configuration
 
-You might need to modify the following config keys in your `config.yaml` depending on what devices your participants used and where you are storing your data (ignore the sections of devices you did not use).
+Modify the following keys in your `config.yaml` depending on the [data stream](../../datastreams/data-streams-introduction) you want to process.
 
 === "Phone"
 
-    The relevant `config.yaml` section looks like this by default:
+    Set `[PHONE_DATA_STREAMS][TYPE]` to the smartphone data stream you want to process (e.g. `aware_mysql`) and configure its parameters (e.g. `[DATABASE_GROUP]`). Ignore the parameters of streams you are not using (e.g. `[FOLDER]` of `aware_csv`).
 
     ```yaml
-    PHONE_DATA_CONFIGURATION:
-      SOURCE: 
-        TYPE: DATABASE
-        DATABASE_GROUP: *database_group
-        DEVICE_ID_COLUMN: device_id # column name
-      TIMEZONE: 
-        TYPE: SINGLE # SINGLE (MULTIPLE support coming soon)
-        VALUE: *timezone
-
+    PHONE_DATA_STREAMS:
+      TYPE: aware_mysql
+      aware_mysql:
+        DATABASE_GROUP: MY_GROUP
+      aware_csv:
+        FOLDER: data/external/aware_csv
     ```
 
-    **Parameters for `[PHONE_DATA_CONFIGURATION]`**
+    === "aware_mysql"
 
-    | Key                  | Description                                                                                                                |
-    |---------------------|----------------------------------------------------------------------------------------------------------------------------|
-    | `[SOURCE] [TYPE]`             | Only `DATABASE` is supported (phone data will be pulled from a database)                                                   |
-    | `[SOURCE] [DATABASE_GROUP]`   | `*database_group`  points to the value defined before in  [Database credentials](#database-credentials)    |
-    | `[SOURCE] [DEVICE_ID_COLUMN]` | A column that contains strings that uniquely identify smartphones. For data collected with AWARE this is usually  `device_id` |
-    | `[TIMEZONE] [TYPE]`             | Only `SINGLE` is supported for now                                                                                                |
-    | `[TIMEZONE] [VALUE]`            | `*timezone`  points to the value defined before in  [Timezone of your study](#timezone-of-your-study)          |
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
+
+        ??? info "Setting up a DATABASE_GROUP and its connection credentials"
+
+            1. If you haven't done so, create an empty file called `#!bash .env` in your RAPIDS root directory: `./.env`
+            2. Add the following lines to `./.env` and replace your database-specific credentials (user, password, host, and database):
+                1. Note that the label `[MY_GROUP]` is arbitrary but it has to match `[PHONE_DATA_STREAMS][aware_mysql] [DATABASE_GROUP]`
+
+              ``` yaml
+              [MY_GROUP]
+              user=MY_USER
+              password=MY_PASSWORD
+              host=MY_HOST
+              port=3306
+              database=MY_DATABASE
+              ```
+
+            ??? hint "Connecting to localhost (host machine) from inside our docker container"
+                If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, you can connect to a MySQL database in your host machine using `host.docker.internal` instead of `127.0.0.1` or `localhost`. In a Linux host you need to run our docker container using `docker run --network="host" -d moshiresearch/rapids:latest` and then `127.0.0.1` will point to your host machine.
+            ---
+
+
+    === "aware_csv"
+
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[FOLDER]`   | Folder where you have to place a CSV file **per** phone sensor. Each file has to contain all the data from every participant you want to process.     |
+
+
+
 
 === "Fitbit"
 
-    The relevant `config.yaml` section looks like this by default:
+    Set `[FITBIT_DATA_STREAMS][TYPE]` to the Fitbit data stream you want to process (e.g. `fitbitjson_mysql`) and configure its parameters (e.g. `[DATABASE_GROUP]`). 
+    
+    Ignore the parameters of streams you are not using (e.g. `[FOLDER]` of `aware_csv`).
 
-      ```yaml
-      FITBIT_DATA_CONFIGURATION:
-        SOURCE: 
-          TYPE: DATABASE # DATABASE or FILES (set each [FITBIT_SENSOR][TABLE] attribute with a table name or a file path accordingly)
-          COLUMN_FORMAT: JSON # JSON or PLAIN_TEXT
-          DATABASE_GROUP: *database_group
-          DEVICE_ID_COLUMN: device_id # column name
-        TIMEZONE: 
-          TYPE: SINGLE # Fitbit devices don't support time zones so we read this data in the timezone indicated by VALUE 
-          VALUE: *timezone
 
-      ```
+    ```yaml
+    FITBIT_DATA_STREAMS:
+      TYPE: fitbitjson_mysql
 
-      **Parameters for For `[FITBIT_DATA_CONFIGURATION]`**
+      fitbitjson_mysql:
+        DATABASE_GROUP: MY_GROUP
+        COLUMN_MAPPINGS_READY: False
 
-      | Key                         | Description                                                                                                                                                       |
-      |------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-      | `[SOURCE]` `[TYPE]`             | `DATABASE` or `FILES`  (set each `[FITBIT_SENSOR]` `[TABLE]` attribute accordingly with a table name or a file path)                                                                                         |
-      | `[SOURCE]` `[COLUMN_FORMAT]`    | `JSON` or `PLAIN_TEXT`. Column format of the source data. If you pulled your data directly from the Fitbit API the column containing the sensor data will be in `JSON` format                                   |
-      | `[SOURCE]` `[DATABASE_GROUP]`   | `*database_group`  points to the value defined before in  [Database credentials](#database-credentials). Only used if  `[TYPE]`  is  `DATABASE` . |
-      | `[SOURCE]` `[DEVICE_ID_COLUMN]` | A column that contains strings that uniquely identify Fitbit devices.                                                                                                |
-      | `[TIMEZONE]` `[TYPE]`             | Only `SINGLE` is supported  (Fitbit devices always store data in local time).                                                                                 |
-      | `[TIMEZONE]` `[VALUE]`            | `*timezone`  points to the value defined before in  [Timezone of your study](#timezone-of-your-study)                                             |
+      fitbitjson_csv:
+        FOLDER: data/external/fitbit_csv
+        COLUMN_MAPPINGS_READY: False
+
+      fitbitparsed_mysql:
+        DATABASE_GROUP: MY_GROUP
+        COLUMN_MAPPINGS_READY: False
+        
+      fitbitparsed_csv:
+        FOLDER: data/external/fitbit_csv
+        COLUMN_MAPPINGS_READY: False
+
+    ```
+
+    === "fitbitjson_mysql"
+
+        This data stream process Fitbit data inside a JSON column as obtained from the Fitbit API and stored in a MySQL database.
+
+
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
+        | `[COLUMN_MAPPINGS_READY]`   | Set this to `True` after you have modified this stream's `format.yaml` column mappings to match your raw data column names: [`fitbitjson_mysql`](../../datastreams/fitbitjson-mysql#format)   |
+
+        ??? info "Setting up a DATABASE_GROUP and its connection credentials"
+
+            1. If you haven't done so, create an empty file called `#!bash .env` in your RAPIDS root directory: `./.env`
+            2. Add the following lines to `./.env` and replace your database-specific credentials (user, password, host, and database):
+                1. Note that the label `[MY_GROUP]` is arbitrary but it has to match `[FITBIT_DATA_STREAMS][fitbitjson_mysql] [DATABASE_GROUP]`
+
+              ``` yaml
+              [MY_GROUP]
+              user=MY_USER
+              password=MY_PASSWORD
+              host=MY_HOST
+              port=3306
+              database=MY_DATABASE
+              ```
+
+            ??? hint "Connecting to localhost (host machine) from inside our docker container"
+                If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, you can connect to a MySQL database in your host machine using `host.docker.internal` instead of `127.0.0.1` or `localhost`. In a Linux host you need to run our docker container using `docker run --network="host" -d moshiresearch/rapids:latest` and then `127.0.0.1` will point to your host machine.
+            ---
+
+    === "fitbitjson_csv"
+
+        This data stream process Fitbit data inside a JSON column as obtained from the Fitbit API and stored in a CSV file.
+
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[FOLDER]`   | Folder where you have to place a CSV file **per** Fitbit sensor. Each file has to contain all the data from every participant you want to process.     |
+        | `[COLUMN_MAPPINGS_READY]`   | Set this to `True` after you have modified this stream's `format.yaml` column mappings to match your raw data column names: [`fitbitjson_csv`](../../datastreams/fitbitjson-csv#format)   |
+
+
+    === "fitbitparsed_mysql"
+
+        This data stream process Fitbit data stored in multiple columns after being parsed from the JSON column returned by Fitbit API and stored in a MySQL database.
+        
+
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
+        | `[COLUMN_MAPPINGS_READY]`   | Set this to `True` after you have modified this stream's `format.yaml` column mappings to match your raw data column names: [`fitbitparsed_mysql`](../../datastreams/fitbitparsed-mysql#format)   |
+
+        ??? info "Setting up a DATABASE_GROUP and its connection credentials"
+
+            1. If you haven't done so, create an empty file called `#!bash .env` in your RAPIDS root directory: `./.env`
+            2. Add the following lines to `./.env` and replace your database-specific credentials (user, password, host, and database):
+                1. Note that the label `[MY_GROUP]` is arbitrary but it has to match `[FITBIT_DATA_STREAMS][fitbitparsed_mysql] [DATABASE_GROUP]`
+
+              ``` yaml
+              [MY_GROUP]
+              user=MY_USER
+              password=MY_PASSWORD
+              host=MY_HOST
+              port=3306
+              database=MY_DATABASE
+              ```
+
+            ??? hint "Connecting to localhost (host machine) from inside our docker container"
+                If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, you can connect to a MySQL database in your host machine using `host.docker.internal` instead of `127.0.0.1` or `localhost`. In a Linux host you need to run our docker container using `docker run --network="host" -d moshiresearch/rapids:latest` and then `127.0.0.1` will point to your host machine.
+            ---
+        
+    === "fitbitparsed_csv"
+
+        This data stream process Fitbit data stored in multiple columns (plain text) after being parsed from the JSON column returned by Fitbit API and stored in a CSV file.
+
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[FOLDER]`   | Folder where you have to place a CSV file **per** Fitbit sensor. Each file has to contain all the data from every participant you want to process.     |
+        | `[COLUMN_MAPPINGS_READY]`   | Set this to `True` after you have modified this stream's `format.yaml` column mappings to match your raw data column names: [`fitbitparsed_csv`](../../datastreams/fitbitparsed-csv#format)   |
 
 === "Empatica"
 

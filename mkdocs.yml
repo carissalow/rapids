@@ -79,6 +79,18 @@ nav:
   - Example Workflows:
     - Minimal: workflow-examples/minimal.md
     - Analysis: workflow-examples/analysis.md
+  - Data Streams:
+      - Introduction: datastreams/data-streams-introduction.md
+      - Phone:
+        - aware_mysql: datastreams/aware-mysql.md
+        - Mandatory Phone Format: datastreams/mandatory-phone-format.md
+      - Fitbit:
+        - fitbitjson_mysql: datastreams/fitbitjson-mysql.md
+        - fitbitparsed_mysql: datastreams/fitbitparsed-mysql.md
+        - fitbitjson_csv: datastreams/fitbitjson-csv.md
+        - fitbitparsed_csv: datastreams/fitbitparsed-csv.md
+        - Mandatory Fitbit Format: datastreams/mandatory-phone-format.md
+      - Add New Data Streams: datastreams/add-new-data-streams.md
   - Behavioral Features:
       - Introduction: features/feature-introduction.md
       - Phone:

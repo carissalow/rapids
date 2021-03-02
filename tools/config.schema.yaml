@@ -97,13 +97,11 @@ definitions:
     properties:
       SOURCE: 
         type: object
-        required: [TYPE, DATABASE_GROUP, DEVICE_ID_COLUMN]
+        required: [TYPE, DATABASE_GROUP]
         properties:
           TYPE:
             type: string
           DATABASE_GROUP:
-            type: string
-          DEVICE_ID_COLUMN:
             type: string
       TIMEZONE:
         type: object
@@ -189,7 +187,7 @@ properties:
             properties:
               TYPE:
                 type: string
-                enum: [DATABASE]
+                enum: [aware_mysql]
 
   PHONE_ACCELEROMETER:
     type: object

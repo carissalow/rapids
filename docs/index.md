@@ -2,7 +2,9 @@
 
 Reproducible Analysis Pipeline for Data Streams (RAPIDS) allows you to process smartphone and wearable data to [extract](features/feature-introduction.md) and [create](features/add-new-features.md) **behavioral features** (a.k.a. digital biomarkers), [visualize](visualizations/data-quality-visualizations.md) mobile sensor data and [structure](workflow-examples/analysis.md) your analysis into reproducible workflows.
 
-RAPIDS is open source, documented, modular, tested, and reproducible. At the moment we support smartphone data collected with [AWARE](https://awareframework.com/), wearable data from Fitbit devices, and wearable data from Empatica devices (in collaboration with the [DBDP](https://dbdp.org/)).
+RAPIDS is open source, documented, modular, tested, and reproducible. At the moment we support smartphone data, and wearable data from Fitbit devices, and Empatica devices (these in collaboration with the [DBDP](https://dbdp.org/)).
+
+Read the [introduction to data streams](../../datastreams/data-streams-introduction) for more information on what data streams we support, and this tutorial to [add support for new data streams](../../datastreams/add-new-data-streams) for smartphones or Fitbits (formats/containers).
 
 !!! tip
     :material-slack: Questions or feedback can be posted on the \#rapids channel in AWARE Framework\'s [slack](http://awareframework.com:3000/). 

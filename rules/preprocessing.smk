@@ -24,14 +24,11 @@ rule create_participants_files:
         "../src/data/create_participants_files.R"
 
 rule download_phone_data:
-    input:
-        "data/external/participant_files/{pid}.yaml"
+    input: unpack(download_phone_data_input_with_mutation_scripts)
     params:
-        source = config["PHONE_DATA_CONFIGURATION"]["SOURCE"],
+        data_configuration = config["PHONE_DATA_CONFIGURATION"],
         sensor = "phone_" + "{sensor}",
-        table = lambda wildcards: config["PHONE_" + str(wildcards.sensor).upper()]["TABLE"],
-        timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-        aware_multiplatform_tables = config["PHONE_ACTIVITY_RECOGNITION"]["TABLE"]["ANDROID"] + "," + config["PHONE_ACTIVITY_RECOGNITION"]["TABLE"]["IOS"] + "," + config["PHONE_CONVERSATION"]["TABLE"]["ANDROID"] + "," + config["PHONE_CONVERSATION"]["TABLE"]["IOS"],
+        tables = lambda wildcards: config["PHONE_" + str(wildcards.sensor).upper()]["TABLE"],
     output:
         "data/raw/{pid}/phone_{sensor}_raw.csv"
     script:

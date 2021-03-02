@@ -1,20 +1,14 @@
 source("renv/activate.R")
-source("src/data/unify_utils.R")
-library(RMariaDB)
-library(stringr)
-library("dplyr", warn.conflicts = F)
-library(readr)
-library(yaml)
-library(lubridate)
-options(scipen=999)
 
-validate_deviceid_platforms <- function(device_ids, platforms){
-  if(length(device_ids) == 1){
-    if(length(platforms) > 1 || (platforms != "android" && platforms != "ios"))
-      stop(paste0("If you have 1 device_id, its platform should be 'android' or 'ios' but you typed: '", paste0(platforms, collapse = ","), "'. Participant file: ", participant))
-  } else if(length(device_ids) > 1 && length(platforms) == 1){
-    if(platforms != "android" && platforms != "ios" && platforms != "multiple")
-      stop(paste0("If you have more than 1 device_id, platform should be 'android', 'ios' OR 'multiple' but you typed: '", paste0(platforms, collapse = "s,"), "'. Participant file: ", participant))
+library(yaml)
+library(dplyr)
+library(readr)
+# we use reticulate but only load it if we are going to use it to minimize the case when old RAPIDS deployments need to update ther renv
+
+validate_deviceid_platforms <- function(device_ids, platforms, participant){
+  if(length(device_ids) > 1 && length(platforms) == 1){
+    if(platforms != "android" && platforms != "ios" && platforms != "infer")
+      stop(paste0("If you have more than 1 device_id, platform should be 'android', 'ios' OR 'infer' but you typed: '", paste0(platforms, collapse = "s,"), "'. Participant file: ", participant))
   } else if(length(device_ids) > 1 && length(platforms) > 1){
     if(length(device_ids) != length(platforms))
       stop(paste0("The number of device_ids should match the number of platforms. Participant file:", participant))
@@ -23,85 +17,123 @@ validate_deviceid_platforms <- function(device_ids, platforms){
   }
 }
 
-is_multiplaform_participant <- function(dbEngine, device_ids, platforms){
-  # Multiple android and ios platforms or the same platform (android, ios) for multiple devices
-  if((length(device_ids) > 1 && length(platforms) > 1) || (length(device_ids) > 1 && length(platforms) == 1 && (platforms == "android" || platforms == "ios"))){
-    return(TRUE)
-  }
-  # Multiple platforms for multiple devices, we search the platform for every device in the aware_device table
-  if(length(device_ids) > 1 && length(platforms) == 1 && platforms == "multiple"){
-    devices_platforms <- dbGetQuery(dbEngine, paste0("SELECT device_id,brand FROM aware_device WHERE device_id IN ('", paste0(device_ids, collapse = "','"), "')"))
-    platforms <- devices_platforms %>% distinct(brand) %>% pull(brand)
-    # Android phones have different brands so we check that we got at least two different platforms and one of them is iPhone
-    if(length(platforms) > 1 && "iPhone" %in% platforms){
-      return(TRUE)
+validate_inferred_os <- function(source_download_file, participant_file, device, device_os){
+  if(!is.na(device_os) && device_os != "android" && device_os != "ios")
+    stop(paste0("We tried to infer the OS for ", device, " but 'infer_device_os' function inside '",source_download_file,"' returned '",device_os,"' instead of 'android' or 'ios'. You can assign the OS manually in the participant file or report this bug on GitHub.\nParticipant file ", participant_file))
+}
+
+mutate_data <- function(scripts, data){
+  for(script in scripts){
+    if(grepl("\\.(R)$", script)){
+      myEnv <- new.env()    
+      source(script, local=myEnv)
+      attach(myEnv, name="sourced_scripts_rapids")
+      if(exists("main", myEnv)){
+        message(paste("Applying mutation script", script))
+        data <- main(data)
+      } else{
+        stop(paste0("The following mutation script does not have main function: ", script))
+      }
+      # rm(list = ls(envir = myEnv), envir = myEnv, inherits = FALSE)
+      detach("sourced_scripts_rapids")
+    } else{ # python
+      library(reticulate)
+      module <- gsub(pattern = "\\.py$", "", basename(script))
+      script_functions <- import_from_path(module, path = dirname(script))
+      if(py_has_attr(script_functions, "main")){
+        message(paste("Applying mutation script", script))
+        data <- script_functions$main(data)
+      } else{
+        stop(paste0("The following mutation script does not have a main function: ", script))
+      }
     }
   }
-  return(FALSE)
+
+  return(data)
 }
 
-get_timestamp_filter <- function(device_ids, participant, timezone){
-    # Read start and end date from the participant file to filter data within that range
-    start_date <- ymd_hms(paste(participant$PHONE$START_DATE,"00:00:00"), tz=timezone, quiet=TRUE)
-    end_date <- ymd_hms(paste(participant$PHONE$END_DATE, "23:59:59"), tz=timezone, quiet=TRUE)
-    start_timestamp = as.numeric(start_date) * 1000
-    end_timestamp = as.numeric(end_date) * 1000
-    if(is.na(start_timestamp)){
-      message(paste("PHONE[START_DATE] was not provided or failed to parse (", participant$PHONE$START_DATE,"), all data for", paste0(device_ids, collapse=","),"is returned"))
-      return("")
-    }else if(is.na(end_timestamp)){
-      message(paste("PHONE[END_DATE] was not provided or failed to parse (", participant$PHONE$END_DATE,"), all data for", paste0(device_ids, collapse=","),"is returned"))
-      return("")
-    } else if(start_timestamp > end_timestamp){
-      stop(paste("Start date has to be before end date in PHONE[TIME_SPAN] (",start_date,",", date(end_date),"), all data for", paste0(device_ids, collapse=","),"is returned"))
-      return("")
-    } else {
-      message(paste("Filtering data between", start_date, "and", end_date, "in", timezone, "for",paste0(device_ids, collapse=",")))
-      return(paste0("AND timestamp BETWEEN ", start_timestamp, " AND ", end_timestamp))
-    }
+rename_columns <- function(name_maps, data){
+  for(name in names(name_maps))
+    data <- data %>% rename(!!tolower(name) := name_maps[[name]])
+  return(data)
 }
 
-participant_file <- snakemake@input[[1]]
-source <- snakemake@params[["source"]]
-group <- source$DATABASE_GROUP
-table <- snakemake@params[["table"]]
-sensor <- snakemake@params[["sensor"]]
-timezone <- snakemake@params[["timezone"]]
-aware_multiplatform_tables <- str_split(snakemake@params[["aware_multiplatform_tables"]], ",")[[1]]
-sensor_file <- snakemake@output[[1]]
+validate_expected_columns_mapping <- function(schema, rapids_schema, sensor, rapids_schema_file){
+  android_columns <- names(schema[[sensor]][["ANDROID"]][["COLUMN_MAPPINGS"]])
+  android_columns <- android_columns[(android_columns != "FLAG_AS_EXTRA")]
 
-participant <- read_yaml(participant_file)
-if(! "PHONE" %in% names(participant)){
-  stop(paste("The following participant file does not have a PHONE section, create one manually or automatically (see the docs):", participant_file))
-}
-device_ids <- participant$PHONE$DEVICE_IDS
-unified_device_id <- tail(device_ids, 1)
-platforms <- participant$PHONE$PLATFORMS
-validate_deviceid_platforms(device_ids, platforms)
-timestamp_filter <- get_timestamp_filter(device_ids, participant, timezone)
+  ios_columns <- names(schema[[sensor]][["IOS"]][["COLUMN_MAPPINGS"]])
+  ios_columns <- ios_columns[(ios_columns != "FLAG_AS_EXTRA")]
+  rapids_columns <- rapids_schema[[sensor]]
 
-dbEngine <- dbConnect(MariaDB(), default.file = "./.env", group = group)
-
-if(is_multiplaform_participant(dbEngine, device_ids, platforms)){
-  sensor_data <- unify_raw_data(dbEngine, table, sensor, timestamp_filter, aware_multiplatform_tables, device_ids, platforms)
-}else {
-  # table has two elements for conversation and activity recognition (they store data on a different table for ios and android)
-  if(length(table) > 1)
-    table <- table[[toupper(platforms[1])]]
-  query <- paste0("SELECT * FROM ", table, " WHERE ",source$DEVICE_ID_COLUMN," IN ('", paste0(device_ids, collapse = "','"), "')", timestamp_filter)
-  sensor_data <- dbGetQuery(dbEngine, query) %>%
-    rename(device_id = source$DEVICE_ID_COLUMN)
+  if(is.null(rapids_columns))
+    stop(paste(sensor, " columns are not listed in RAPIDS' column specification. If you are adding support for a new phone sensor, add any mandatory columns in ", rapids_schema_file))
+  if(length(setdiff(rapids_columns, android_columns)) > 0)
+    stop(paste(sensor," mappings are missing one or more mandatory columns for ANDROID. The missing column mappings are for ", paste(setdiff(rapids_columns, android_columns), collapse=","),"in", rapids_schema_file))
+  if(length(setdiff(rapids_columns, ios_columns)) > 0)
+    stop(paste(sensor," mappings are missing one or more mandatory columns for IOS. The missing column mappings are for ", paste(setdiff(rapids_columns, ios_columns), collapse=","),"in", rapids_schema_file))
+  if(length(setdiff(android_columns, rapids_columns)) > 0)
+    stop(paste(sensor," mappings have one or more columns than required for ANDROID, add them as FLAG_AS_EXTRA instead. The extra column mappings are for ", paste(setdiff(android_columns, rapids_columns), collapse=","),"in", rapids_schema_file))
+  if(length(setdiff(ios_columns, rapids_columns)) > 0)
+    stop(paste(sensor," mappings have one or more columns than required for IOS, add them as FLAG_AS_EXTRA instead. The extra column mappings are for ", paste(setdiff(ios_columns, rapids_columns), collapse=","),"in", rapids_schema_file))
 }
 
-sensor_data <- sensor_data %>% arrange(timestamp)
+download_phone_data <- function(){
+  participant_file <- snakemake@input[["participant_file"]]
+  source_schema_file <- snakemake@input[["source_schema_file"]]
+  rapids_schema_file <- snakemake@input[["rapids_schema_file"]]
+  source_download_file <- snakemake@input[["source_download_file"]]
+  data_configuration <- snakemake@params[["data_configuration"]]
+  tables <- snakemake@params[["tables"]]
+  sensor <- toupper(snakemake@params[["sensor"]])
+  output_data_file <- snakemake@output[[1]]
 
-# Unify device_id
-sensor_data <- sensor_data %>% mutate(device_id = unified_device_id)
+  source(source_download_file)
 
-# Removing blob_feature conversation column (it's loaded as a list column that crashes write_csv)
-sensor_data <- sensor_data %>% select(-any_of("blob_feature"))
-# Droping duplicates on all columns except for _id or id
-sensor_data <- sensor_data %>% distinct(!!!syms(setdiff(names(sensor_data), c("_id", "id"))))
+  participant_data <- read_yaml(participant_file)
+  schema <- read_yaml(source_schema_file)
+  rapids_schema <- read_yaml(rapids_schema_file)
+  devices <- participant_data$PHONE$DEVICE_IDS
+  device_oss <- participant_data$PHONE$PLATFORMS
+  device_oss <- replace(device_oss, device_oss == "multiple", "infer") # support multiple for retro compatibility
+  validate_deviceid_platforms(devices, device_oss, participant_file)
 
-write_csv(sensor_data, sensor_file)
-dbDisconnect(dbEngine)
+  if(length(device_oss) == 1)
+    device_oss <- rep(device_oss, length(devices))
+
+  validate_expected_columns_mapping(schema, rapids_schema, sensor, rapids_schema_file)
+  # ANDROID or IOS COLUMN_MAPPINGS are guaranteed to be the same at this point (see validate_expected_columns_mapping function)
+  expected_columns <- tolower(names(schema[[sensor]][["ANDROID"]][["COLUMN_MAPPINGS"]]))
+  expected_columns <- expected_columns[(expected_columns != "flag_extra")]
+  participant_data <- setNames(data.frame(matrix(ncol = length(expected_columns), nrow = 0)), expected_columns)
+
+  for(idx in seq_along(devices)){ #TODO remove length
+    
+    device <- devices[idx]
+    message(paste0("\nProcessing ", sensor, " for ", device))
+    device_os <- ifelse(device_oss[idx] == "infer", infer_device_os(data_configuration, device), device_oss[idx])
+    validate_inferred_os(basename(source_download_file), participant_file, device, device_os)
+    os_table <- ifelse(length(tables) > 1, tables[[toupper(device_os)]], tables) # some sensor tables have a different name for android and ios    
+
+    columns_to_download <- schema[[sensor]][[toupper(device_os)]][["COLUMN_MAPPINGS"]]
+    columns_to_download <- columns_to_download[(columns_to_download != "FLAG_TO_MUTATE")]
+    data <- download_data(data_configuration, device, os_table, columns_to_download)
+    
+    # Rename all COLUMN_MAPPINGS except those mapped as FLAG_AS_EXTRA or FLAG_TO_MUTATE
+    columns_to_rename <- schema[[sensor]][[toupper(device_os)]][["COLUMN_MAPPINGS"]]
+    columns_to_rename <- (columns_to_rename[(columns_to_rename != "FLAG_TO_MUTATE" & names(columns_to_rename) != "FLAG_AS_EXTRA")])
+    renamed_data <- rename_columns(columns_to_rename, data)
+    
+    mutation_scripts <- schema[[sensor]][[toupper(device_os)]][["MUTATION_SCRIPTS"]]
+    mutated_data <- mutate_data(mutation_scripts, renamed_data)
+
+    if(length(setdiff(expected_columns, colnames(mutated_data))) > 0)
+      stop(paste("The mutated data for", device, "is missing these columns expected by RAPIDS: [", paste(setdiff(expected_columns, colnames(mutated_data)), collapse=","),"]. One ore more mutation scripts in [", sensor,"][",toupper(device_os), "]","[MUTATION_SCRIPTS] are removing or not adding these columns"))
+    participant_data <- rbind(participant_data, mutated_data)
+      
+  }
+
+  write_csv(participant_data, output_data_file)
+}
+
+download_phone_data()
