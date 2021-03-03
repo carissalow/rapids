@@ -151,7 +151,6 @@ for provider in config["PHONE_CONVERSATION"]["PROVIDERS"].keys():
     if config["PHONE_CONVERSATION"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/phone_conversation_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/phone_conversation_with_datetime.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/raw/{pid}/phone_conversation_with_datetime_unified.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_conversation_features/phone_conversation_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_CONVERSATION"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_conversation.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))

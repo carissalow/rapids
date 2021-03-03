@@ -36,3 +36,25 @@ PHONE_ACTIVITY_RECOGNITION:
     MUTATION_SCRIPTS:
       - "src/data/streams/mutations/phone/aware/activity_recogniton_ios_unification.R"
 
+PHONE_CONVERSATION:
+  ANDROID:
+    COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DATATYPE: datatype
+      DOUBLE_ENERGY: double_energy
+      INFERENCE: inference
+      DOUBLE_CONVO_START: double_convo_start
+      DOUBLE_CONVO_END: double_convo_end
+    MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DATATYPE: datatype
+      DOUBLE_ENERGY: double_energy
+      INFERENCE: inference
+      DOUBLE_CONVO_START: double_convo_start
+      DOUBLE_CONVO_END: double_convo_end
+    MUTATION_SCRIPTS: 
+      - "src/data/streams/mutations/phone/aware/conversation_ios_timestamp.R"

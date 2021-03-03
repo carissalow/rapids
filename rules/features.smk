@@ -290,7 +290,7 @@ rule calls_r_features:
 
 rule conversation_python_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_conversation_with_datetime_unified.csv",
+        sensor_data = "data/raw/{pid}/phone_conversation_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CONVERSATION"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -303,7 +303,7 @@ rule conversation_python_features:
 
 rule conversation_r_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_conversation_with_datetime_unified.csv",
+        sensor_data = "data/raw/{pid}/phone_conversation_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CONVERSATION"]["PROVIDERS"][wildcards.provider_key.upper()],
