@@ -63,7 +63,6 @@ for provider in config["PHONE_ACTIVITY_RECOGNITION"]["PROVIDERS"].keys():
     if config["PHONE_ACTIVITY_RECOGNITION"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/phone_activity_recognition_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/phone_activity_recognition_with_datetime.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/raw/{pid}/phone_activity_recognition_with_datetime_unified.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_activity_recognition_episodes.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_activity_recognition_episodes_resampled.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_activity_recognition_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))

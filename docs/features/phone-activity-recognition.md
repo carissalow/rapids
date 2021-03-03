@@ -18,7 +18,6 @@ Sensor parameters description for `[PHONE_ACTIVITY_RECOGNITION]`:
     ```bash
     - data/raw/{pid}/phone_activity_recognition_raw.csv
     - data/raw/{pid}/phone_activity_recognition_with_datetime.csv
-    - data/raw/{pid}/phone_activity_recognition_with_datetime_unified.csv
     - data/interim/{pid}/phone_activity_recognition_episodes.csv
     - data/interim/{pid}/phone_activity_recognition_episodes_resampled.csv
     - data/interim/{pid}/phone_activity_recognition_episodes_resampled_with_datetime.csv

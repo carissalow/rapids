@@ -62,9 +62,9 @@ rule phone_accelerometer_r_features:
 
 rule activity_recognition_episodes:
     input:
-        sensor_data = "data/raw/{pid}/phone_activity_recognition_with_datetime_unified.csv"
+        sensor_data = "data/raw/{pid}/phone_activity_recognition_with_datetime.csv"
     params:
-        episode_threshold_between_rows = config["PHONE_BATTERY"]["EPISODE_THRESHOLD_BETWEEN_ROWS"]
+        episode_threshold_between_rows = config["PHONE_ACTIVITY_RECOGNITION"]["EPISODE_THRESHOLD_BETWEEN_ROWS"]
     output:
         "data/interim/{pid}/phone_activity_recognition_episodes.csv"
     script:

@@ -16,3 +16,23 @@ PHONE_ACCELEROMETER:
       DOUBLE_VALUES_2: double_values_2
     MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
 
+PHONE_ACTIVITY_RECOGNITION:
+  ANDROID:
+    COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      ACTIVITY_TYPE: activity_type
+      ACTIVITY_NAME: activity_name
+      CONFIDENCE: confidence
+    MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      ACTIVITY_TYPE: FLAG_TO_MUTATE
+      ACTIVITY_NAME: FLAG_TO_MUTATE
+      CONFIDENCE: confidence
+      FLAG_AS_EXTRA: activities
+    MUTATION_SCRIPTS:
+      - "src/data/streams/mutations/phone/aware/activity_recogniton_ios_unification.R"
+
