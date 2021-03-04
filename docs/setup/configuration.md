@@ -4,9 +4,9 @@
 You need to follow these steps to configure your RAPIDS deployment before you can extract behavioral features
 
 0. Verify RAPIDS can process your [data streams](#supported-data-streams)
-2. Choose the [timezone of your study](#timezone-of-your-study)
 3. Create your [participants files](#participant-files)
 4. Select what [time segments](#time-segments) you want to extract features on
+2. Choose the [timezone of your study](#timezone-of-your-study)
 5. Configure your [data streams](#data-stream-configuration)
 6. Select what [sensors and features](#sensor-and-features-to-process) you want to process
 
@@ -21,32 +21,7 @@ When you are done with this configuration, go to [executing RAPIDS](../execution
 
 A data stream refers to sensor data collected using a specific type of **device** with a specific **format** and stored in a specific **container**. For example, the `aware_mysql` data stream handles smartphone data (**device**) collected with the [AWARE Framework](https://awareframework.com/) (**format**) stored in a MySQL database (**container**).
 
-Check the table in [introduction to data streams](../../datastreams/data-streams-introduction) to know what data streams we support. If your data stream is supported, continue with to the next configuration section. If you want to implement a new data stream, follow this tutorial to [add support for new data streams](../../datastreams/add-new-data-streams). If you have read the tutorial but have questions, get in touch by email or in Slack.
-
-## Timezone of your study
-
-### Single timezone
-
-If your study only happened in a single time zone or you want to ignore short trips of your participants to different time zones, select the appropriate code form this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) and change the following config key. Double check your timezone code pick, for example US Eastern Time is `America/New_York` not `EST`
-
-``` yaml
-TIMEZONE: 
-    TYPE: SINGLE
-    TZCODE: America/New_York
-```
-
-### Multiple timezones
-
-If you have the timestamps when participants' devices changed to a new time zone, follow these instructions
-
-TODO more info
-
-``` yaml
-TIMEZONE: 
-    TYPE: MULTIPLE
-    TZCODE: America/New_York
-    MULTIPLE_TZCODES_FILE: path_to/csv.file
-```
+Check the table in [introduction to data streams](../../datastreams/data-streams-introduction) to know what data streams we support. If your data stream is supported, continue to the next configuration section. If you want to implement a new data stream, follow this tutorial to [add support for new data streams](../../datastreams/add-new-data-streams). If you have read the tutorial but have questions, get in touch by email or in Slack.
 
 ---
 
@@ -350,6 +325,114 @@ Time segments (or epochs) are the time windows on which you want to extract beha
     survey2,1584291600000,2H,1H,-1,klj34oi2-8frk-2343-21kk-324ljklewlr3
     ```
 --- 
+
+## Timezone of your study
+
+### Single timezone
+
+If your study only happened in a single time zone or you want to ignore short trips of your participants to different time zones, select the appropriate code form this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) and change the following config key. Double-check your timezone code pick, for example, US Eastern Time is `America/New_York` not `EST`
+
+``` yaml
+TIMEZONE: 
+    TYPE: SINGLE
+    TZCODE: America/New_York
+```
+
+### Multiple timezones
+
+If your participants lived on different time zones or they travelled across time zones, and you know when participants' devices were in a specific time zone, RAPIDS can use this data to process your data streams with the correct date-time. You need to provide RAPIDS with the time zone data in a CSV file (`[TZCODES_FILE]`) in the format described below.
+
+``` yaml
+TIMEZONE: 
+    TYPE: MULTIPLE
+    SINGLE:
+      TZCODE: America/New_York
+    MULTIPLE:
+      TZCODES_FILE: path_to/time_zones_csv.file
+      IF_MISSING_TZCODE: STOP
+      DEFAULT: America/New_York
+      FITBIT: 
+        ALLOW_MULTIPLE_TZ_PER_DEVICE: False
+        INFER_FROM_SMARTPHONE_TZ: False
+```
+
+Parameters for `[TIMEZONE]`
+
+|Parameter &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description |
+|--|--|
+|`[TYPE]`| Either `SINGLE` or `MULTIPLE` as explained above |
+|`[SINGLE][TZCODE]`| The time zone code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to be used across all devices |
+|`[MULTIPLE][TZCODES_FILE]`| A CSV file containing the time and code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) visited by each device in the study. Multiple devices can be linked to the same person, read more in [Participants Files](#participant-files) |
+|`[MULTIPLE][IF_MISSING_TZCODE]`| When a device is missing from `[TZCODES_FILE]` Set this flag to `STOP` to stop RAPIDS execution and show an error, or to `USE_DEFAULT` to assign the time zone specified in `[DEFAULT]` to any such devices  |
+|`[MULTIPLE][FITBIT][ALLOW_MULTIPLE_TZ_PER_DEVICE]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more 
+time zone, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
+|`[MULTIPLE][FITBIT][INFER_FROM_SMARTPHONE_TZ]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more 
+time zone, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
+
+??? info "Format of `TZCODES_FILE`"
+    `TZCODES_FILE` has three columns and a row for each time zone a device visited (a device can be a smartphone or wearable (Fitbit/Empatica)):
+
+    |Column | Description |
+    |--|--|
+    |`device_id`|A string that uniquely identifies a smartphone or wearable|
+    |`tz_code`| A string with the appropriate code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) that represents the time zone where the `device` sensed data|
+    |`timestamp`| A UNIX timestamp indicating when was the first time this `device_id` sensed data in `tz_code`|
+
+    ```csv
+    device_id,                            tz_code,              timestamp
+    13dbc8a3-dae3-4834-823a-4bc96a7d459d, America/New_York,     1587500000000
+    13dbc8a3-dae3-4834-823a-4bc96a7d459d, America/Mexico_City,  1587600000000
+    13dbc8a3-dae3-4834-823a-4bc96a7d459d, America/Los_Angeles,  1587700000000
+    65sa66a5-2d2d-4524-946v-44ascbv4sad7, Europe/Amsterdam,     1587100000000
+    65sa66a5-2d2d-4524-946v-44ascbv4sad7, Europe/Berlin,        1587200000000
+    65sa66a5-2d2d-4524-946v-44ascbv4sad7, Europe/Amsterdam,     1587300000000
+    ```
+
+    Using this file, RAPDIS will create time zone intervals per device, for example for `13dbc8a3-dae3-4834-823a-4bc96a7d459d`:
+
+    -  Interval 1 `[1587500000000, 1587599999999]` for `America/New_York`
+    -  Interval 2 `[1587600000000, 1587699999999]` for `America/Mexico_City`
+    -  Interval 3 `[1587700000000, now]` for `America/Los_Angeles`
+
+    Any sensor data row from a device will be assigned a timezone if it falls within that interval, for example:
+
+    - A screen row sensed at `1587533333333` will be assigned to `America/New_York` because it falls within Interval 1
+    - A screen row sensed at `1587400000000` will be discarded because it was logged outside any interval.
+
+??? note "What happens if participant X lives in Los Angeles but participant Y lives in Amsterdam and they both stayed there during my study?"
+    Add a row per participant and set timestamp to `0`:
+    ```csv
+    device_id,                            tz_code,              timestamp
+    13dbc8a3-dae3-4834-823a-4bc96a7d459d, America/Los_Angeles,  0
+    65sa66a5-2d2d-4524-946v-44ascbv4sad7, Europe/Amsterdam,     0
+    ```
+
+??? note "What happens if I forget to add a timezone for one or more devices?"
+    It depends on `[IF_MISSING_TZCODE]`. 
+    
+    If `[IF_MISSING_TZCODE]` is set to `STOP`, RAPIDS will stop its execution and show you an error message.
+
+    If `[IF_MISSING_TZCODE]` is set to `USE_DEFAULT`, it will assign the time zone specified in `[DEFAULT]` to any devices with missing time zone information in `[TZCODES_FILE]`. This is helpful if only a few of your participants had multiple timezones and you don't want to specify the same time zone for the rest.
+
+??? note "How does RAPIDS handle Fitbit devices?"
+    Fitbit devices are not time zone aware and they always log data with a local date-time string. 
+
+    - When none of the Fitbit devices in your study changed time zones (e.g., `p01` was always in New York and `p02` as always in Amsterdam), you can set a single time zone per Fitbit device id along with a timestamp 0 (you can still assign multiple time zones to smartphone device ids)
+    ```csv
+    device_id, tz_code,              timestamp
+    fitbit123, America/New_York,     0
+    fitbit999, Europe/Amsterdam,     0
+    ```
+
+    - On the other hand, when at least one of your Fitbit devices changed time zones **AND** you want RAPIDS to take into account these changes, you need to set `[ALLOW_MULTIPLE_TZ_PER_DEVICE]` to `True`. **You have to manually allow this option because you need to be aware it can produce inaccurate features around the times when time zones changed**. This is because we cannot know exactly when the Fitbit device detected and processed the time zone change.
+
+        If you want to `ALLOW_MULTIPLE_TZ_PER_DEVICE` you will need to add any time zone changes per device in the `TZCODES_FILE` as explained above. You could obtain this data by hand but if your participants also used a smartphone during your study, you can use their time zone logs. Recall that in RAPIDS every participant is represented with a participant file `pXX.yaml`, this file links together multiple devices and we will use it to know what smartphone time zone data should be applied to Fitbit devices. Thus set `INFER_FROM_SMARTPHONE_TZ` to `TRUE`, if you have included smartphone time zone data in your `TZCODE_FILE` and you want to make a participant's Fitbit data time zone aware with their respective smartphone data.
+
+??? note "How does RAPIDS handle Empatica devices?"
+    Empatica devices do not have a device id, since the raw data can only be exported in zip files per device that are saved in a folder per participant (e.g. `data/external/empatica/{pid}`).
+
+    Therefore, in your `TZCODES_FILE`, use the participant's ids (PIDs) instead of the device's ids. Remember a person could have used one or more devices with different device ids, but every person only gets a single PID (e.g. `p01`, a.k.a the name of their participant file `p01.yaml`).
+---
 ## Data Stream Configuration
 
 Modify the following keys in your `config.yaml` depending on the [data stream](../../datastreams/data-streams-introduction) you want to process.
