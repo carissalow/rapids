@@ -113,12 +113,12 @@ def statsOfDailyFeatures(daily_features, day_type, sleep_levels, intraday_featur
 
     return sleep_intraday_features
 
-def socialJetLagFeature(daily_features, sleep_intraday_features): 
+def socialJetLagFeature(daily_features, sleep_intraday_features):
     daily_features_weekend = daily_features[daily_features["is_weekend"] == 1]
-    sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features_weekend[["local_segment","starttimeofepisodemain"]].groupby("local_segment")["starttimeofepisodemain"].mean().to_frame().rename(columns={"starttimeofepisodemain": "helper_weekend"})], axis=1)
+    sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features_weekend[["local_segment","midpointofepisodemain"]].groupby("local_segment")["midpointofepisodemain"].mean().to_frame().rename(columns={"midpointofepisodemain": "helper_weekend"})], axis=1)
     
     daily_features_weekday = daily_features[daily_features["is_weekend"] == 0]
-    sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features_weekday[["local_segment","starttimeofepisodemain"]].groupby("local_segment")["starttimeofepisodemain"].mean().to_frame().rename(columns={"starttimeofepisodemain": "helper_weekday"})], axis=1)
+    sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features_weekday[["local_segment","midpointofepisodemain"]].groupby("local_segment")["midpointofepisodemain"].mean().to_frame().rename(columns={"midpointofepisodemain": "helper_weekday"})], axis=1)
 
     sleep_intraday_features["socialjetlag"] = sleep_intraday_features["helper_weekend"] - sleep_intraday_features["helper_weekday"]
 

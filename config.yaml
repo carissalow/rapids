@@ -381,7 +381,7 @@ FITBIT_SLEEP_SUMMARY:
 
 # See https://www.rapids.science/latest/features/fitbit-sleep-intraday/
 FITBIT_SLEEP_INTRADAY:
-  TABLE: fitbit_data
+  TABLE: sleep_intraday
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
