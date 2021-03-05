@@ -38,7 +38,7 @@ def chunk_episodes(sensor_episodes):
     sensor_episodes = sensor_episodes.drop_duplicates(subset=["start_timestamp", "end_timestamp", "local_segment"], keep="first")
 
     # Delete useless columns
-    for drop_col in ["utc_date_time", "local_date_time", "local_date", "local_time", "local_hour", "local_minute"]:
+    for drop_col in ["local_date_time", "local_date", "local_time", "local_hour", "local_minute"]:
         del sensor_episodes[drop_col]
     
     # Avoid SettingWithCopyWarning

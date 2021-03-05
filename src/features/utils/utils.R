@@ -15,7 +15,7 @@ filter_data_by_segment <- function(data, time_segment){
 }
 
 chunk_episodes <- function(sensor_episodes){
-  columns_to_drop <- c("^timestamp$", "utc_date_time", "local_date_time", "local_date", "local_time", "local_hour", "local_minute", "segment_start", "segment_end" )
+  columns_to_drop <- c("^timestamp$","local_date_time", "local_date", "local_time", "local_hour", "local_minute", "segment_start", "segment_end" )
 
   chunked_episodes <- sensor_episodes %>% 
     separate(col = timestamps_segment,

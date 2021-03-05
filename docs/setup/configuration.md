@@ -21,7 +21,7 @@ When you are done with this configuration, go to [executing RAPIDS](../execution
 
 A data stream refers to sensor data collected using a specific type of **device** with a specific **format** and stored in a specific **container**. For example, the `aware_mysql` data stream handles smartphone data (**device**) collected with the [AWARE Framework](https://awareframework.com/) (**format**) stored in a MySQL database (**container**).
 
-Check the table in [introduction to data streams](../../datastreams/data-streams-introduction) to know what data streams we support. If your data stream is supported, continue to the next configuration section. If you want to implement a new data stream, follow this tutorial to [add support for new data streams](../../datastreams/add-new-data-streams). If you have read the tutorial but have questions, get in touch by email or in Slack.
+Check the table in [introduction to data streams](../../datastreams/data-streams-introduction) to know what data streams we support. If your data stream is supported, continue to the next configuration section, **you will use its label later in this guide** (e.g. `aware_mysql`). If your steam is not supported but you want to implement it, follow this tutorial to [add support for new data streams](../../datastreams/add-new-data-streams) and get in touch by email or in Slack if you have any questions.
 
 ---
 
@@ -350,7 +350,7 @@ TIMEZONE:
     MULTIPLE:
       TZCODES_FILE: path_to/time_zones_csv.file
       IF_MISSING_TZCODE: STOP
-      DEFAULT: America/New_York
+      DEFAULT_TZCODE: America/New_York
       FITBIT: 
         ALLOW_MULTIPLE_TZ_PER_DEVICE: False
         INFER_FROM_SMARTPHONE_TZ: False
@@ -363,7 +363,7 @@ Parameters for `[TIMEZONE]`
 |`[TYPE]`| Either `SINGLE` or `MULTIPLE` as explained above |
 |`[SINGLE][TZCODE]`| The time zone code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to be used across all devices |
 |`[MULTIPLE][TZCODES_FILE]`| A CSV file containing the time and code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) visited by each device in the study. Multiple devices can be linked to the same person, read more in [Participants Files](#participant-files) |
-|`[MULTIPLE][IF_MISSING_TZCODE]`| When a device is missing from `[TZCODES_FILE]` Set this flag to `STOP` to stop RAPIDS execution and show an error, or to `USE_DEFAULT` to assign the time zone specified in `[DEFAULT]` to any such devices  |
+|`[MULTIPLE][IF_MISSING_TZCODE]`| When a device is missing from `[TZCODES_FILE]` Set this flag to `STOP` to stop RAPIDS execution and show an error, or to `USE_DEFAULT` to assign the time zone specified in `[DEFAULT_TZCODE]` to any such devices  |
 |`[MULTIPLE][FITBIT][ALLOW_MULTIPLE_TZ_PER_DEVICE]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more 
 time zone, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
 |`[MULTIPLE][FITBIT][INFER_FROM_SMARTPHONE_TZ]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more 
@@ -375,11 +375,11 @@ time zone, and you want RAPIDS to take into account this in its feature computat
     |Column | Description |
     |--|--|
     |`device_id`|A string that uniquely identifies a smartphone or wearable|
-    |`tz_code`| A string with the appropriate code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) that represents the time zone where the `device` sensed data|
-    |`timestamp`| A UNIX timestamp indicating when was the first time this `device_id` sensed data in `tz_code`|
+    |`tzcode`| A string with the appropriate code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) that represents the time zone where the `device` sensed data|
+    |`timestamp`| A UNIX timestamp indicating when was the first time this `device_id` sensed data in `tzcode`|
 
     ```csv
-    device_id,                            tz_code,              timestamp
+    device_id,                            tzcode,              timestamp
     13dbc8a3-dae3-4834-823a-4bc96a7d459d, America/New_York,     1587500000000
     13dbc8a3-dae3-4834-823a-4bc96a7d459d, America/Mexico_City,  1587600000000
     13dbc8a3-dae3-4834-823a-4bc96a7d459d, America/Los_Angeles,  1587700000000
@@ -402,7 +402,7 @@ time zone, and you want RAPIDS to take into account this in its feature computat
 ??? note "What happens if participant X lives in Los Angeles but participant Y lives in Amsterdam and they both stayed there during my study?"
     Add a row per participant and set timestamp to `0`:
     ```csv
-    device_id,                            tz_code,              timestamp
+    device_id,                            tzcode,              timestamp
     13dbc8a3-dae3-4834-823a-4bc96a7d459d, America/Los_Angeles,  0
     65sa66a5-2d2d-4524-946v-44ascbv4sad7, Europe/Amsterdam,     0
     ```
@@ -412,14 +412,14 @@ time zone, and you want RAPIDS to take into account this in its feature computat
     
     If `[IF_MISSING_TZCODE]` is set to `STOP`, RAPIDS will stop its execution and show you an error message.
 
-    If `[IF_MISSING_TZCODE]` is set to `USE_DEFAULT`, it will assign the time zone specified in `[DEFAULT]` to any devices with missing time zone information in `[TZCODES_FILE]`. This is helpful if only a few of your participants had multiple timezones and you don't want to specify the same time zone for the rest.
+    If `[IF_MISSING_TZCODE]` is set to `USE_DEFAULT`, it will assign the time zone specified in `[DEFAULT_TZCODE]` to any devices with missing time zone information in `[TZCODES_FILE]`. This is helpful if only a few of your participants had multiple timezones and you don't want to specify the same time zone for the rest.
 
 ??? note "How does RAPIDS handle Fitbit devices?"
     Fitbit devices are not time zone aware and they always log data with a local date-time string. 
 
     - When none of the Fitbit devices in your study changed time zones (e.g., `p01` was always in New York and `p02` as always in Amsterdam), you can set a single time zone per Fitbit device id along with a timestamp 0 (you can still assign multiple time zones to smartphone device ids)
     ```csv
-    device_id, tz_code,              timestamp
+    device_id, tzcode,              timestamp
     fitbit123, America/New_York,     0
     fitbit999, Europe/Amsterdam,     0
     ```

@@ -43,6 +43,7 @@ get_screen_episodes <- function(screen){
     # Only keep consecutive 3,0 pairs (UNLOCK, OFF)
     filter( (screen_status == 3 & lead(screen_status) == 0) | (screen_status == 0 & lag(screen_status) == 3) ) %>%
     summarise(episode = "unlock",
+              device_id = first(device_id),
               screen_sequence = toString(screen_status),
               start_timestamp = first(timestamp),
               end_timestamp = last(timestamp)) %>% 
@@ -55,7 +56,8 @@ get_screen_episodes <- function(screen){
 }
 
 if(nrow(screen) < 2){
-  episodes <- data.frame(episode = character(), 
+  episodes <- data.frame(device_id = character(),,
+                                episode = character(), 
                                 screen_sequence = character(),
                                 start_timestamp = character(),
                                 end_timestamp = character())

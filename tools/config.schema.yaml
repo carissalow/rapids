@@ -117,7 +117,38 @@ properties:
     type: string
 
   TIMEZONE:
-    type: string
+    type: object
+    required: [TYPE, SINGLE, MULTIPLE]
+    properties:
+      TYPE:
+        type: string
+        enum: ["MULTIPLE", "SINGLE"]
+      SINGLE:
+        type: object
+        required: [TZCODE]
+        properties:
+          TZCODE:
+            type: string
+      MULTIPLE:
+        type: object
+        required: [TZCODES_FILE, IF_MISSING_TZCODE, DEFAULT_TZCODE, FITBIT]
+        properties:
+          TZCODES_FILE:
+            type: string
+            pattern: "^.*\\.csv$"
+          IF_MISSING_TZCODE:
+            type: string
+            enum: [USE_DEFAULT]
+          DEFAULT_TZCODE:
+            type: string
+          FITBIT:
+            type: object
+            required: [ALLOW_MULTIPLE_TZ_PER_DEVICE, INFER_FROM_SMARTPHONE_TZ]
+            properties:
+              ALLOW_MULTIPLE_TZ_PER_DEVICE:
+                type: boolean
+              INFER_FROM_SMARTPHONE_TZ:
+                type: boolean
   
   PIDS:
     type: array
@@ -666,8 +697,9 @@ properties:
                   ACCURACY_LIMIT:
                     type: integer
                     exclusiveMinimum: 0
-                  TIMEZONE:
+                  IF_MULTIPLE_TIMEZONES:
                     type: string
+                    enum: [USE_MOST_COMMON]
                   MINUTES_DATA_USED:
                     type: boolean
         additionalProperties:

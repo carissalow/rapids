@@ -2,7 +2,7 @@ library("tidyverse")
 library("lubridate", warn.conflicts = F)
 options(scipen=999)
 
-day_type_delay <- function(day_type, include_past_periodic_segments){
+day_type_delay <- function(time_segments, day_type, include_past_periodic_segments){
   delay <- time_segments %>% mutate(length_duration = duration(length)) %>%  filter(repeats_on == day_type) %>% arrange(-length_duration) %>% pull(length_duration) %>% first()
   return(if_else(is.na(delay) | include_past_periodic_segments == FALSE, duration("0days"), delay))
 }
@@ -90,10 +90,10 @@ assign_to_time_segment <- function(sensor_data, time_segments, time_segments_typ
     # We need to take into account segment start dates that could include the first day of data
     time_segments <- time_segments %>% mutate(length_duration = duration(length))
     every_day_delay <- duration("0days")
-    wday_delay <- day_type_delay("wday", include_past_periodic_segments)
-    mday_delay <- day_type_delay("mday", include_past_periodic_segments)
-    qday_delay <- day_type_delay("qday", include_past_periodic_segments)
-    yday_delay <- day_type_delay("yday", include_past_periodic_segments)
+    wday_delay <- day_type_delay(time_segments, "wday", include_past_periodic_segments)
+    mday_delay <- day_type_delay(time_segments, "mday", include_past_periodic_segments)
+    qday_delay <- day_type_delay(time_segments, "qday", include_past_periodic_segments)
+    yday_delay <- day_type_delay(time_segments, "yday", include_past_periodic_segments)
     
     sensor_data <- sensor_data %>%
       group_by(local_timezone) %>% 

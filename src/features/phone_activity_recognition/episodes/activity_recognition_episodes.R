@@ -16,10 +16,11 @@ if(nrow(activity_recognition) > 0){
          type_diff = c(1, diff(activity_type)),
          episode_id = cumsum(type_diff != 0 | time_diff > (episode_threshold_between_rows))) %>% 
   group_by(episode_id) %>%
-  summarise(activity_name = first(activity_name), activity_type = first(activity_type), start_timestamp=first(start_timestamp), end_timestamp = last(end_timestamp))
+  summarise(device_id = first(device_id), activity_name = first(activity_name), activity_type = first(activity_type), start_timestamp=first(start_timestamp), end_timestamp = last(end_timestamp))
 
 } else {
-  ar_episodes <- data.frame(start_timestamp = numeric(), 
+  ar_episodes <- data.frame(device_id = character(),
+                            start_timestamp = numeric(), 
                             end_timestamp = numeric(),
                             episode_id = numeric(),
                             activity_type = numeric(),

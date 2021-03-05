@@ -63,16 +63,19 @@ rule compute_time_segments:
 rule phone_readable_datetime:
     input:
         sensor_input = "data/raw/{pid}/phone_{sensor}_raw.csv",
-        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv",
+        pid_file = "data/external/participant_files/{pid}.yaml",
+        tzcodes_file = input_tzcodes_file,
     params:
-        timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
-        fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
+        device_type = "phone",
+        timezone_parameters = config["TIMEZONE"],
+        pid = "{pid}",
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/raw/{pid}/phone_{sensor}_with_datetime.csv"
     script:
-        "../src/data/readable_datetime.R"
+        "../src/data/datetime/readable_datetime.R"
 
 rule phone_yielded_timestamps:
     input:
@@ -87,16 +90,19 @@ rule phone_yielded_timestamps:
 rule phone_yielded_timestamps_with_datetime:
     input:
         sensor_input = "data/interim/{pid}/phone_yielded_timestamps.csv",
-        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv",
+        pid_file = "data/external/participant_files/{pid}.yaml",
+        tzcodes_file = input_tzcodes_file,
     params:
-        timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
-        fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
+        device_type = "phone",
+        timezone_parameters = config["TIMEZONE"],
+        pid = "{pid}",
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv"
     script:
-        "../src/data/readable_datetime.R"
+        "../src/data/datetime/readable_datetime.R"
 
 rule unify_ios_android:
     input:
@@ -125,16 +131,19 @@ rule process_phone_locations_types:
 rule phone_locations_processed_with_datetime:
     input:
         sensor_input = "data/interim/{pid}/phone_locations_processed.csv",
-        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv",
+        pid_file = "data/external/participant_files/{pid}.yaml",
+        tzcodes_file = input_tzcodes_file,
     params:
-        timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
-        fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
+        device_type = "phone",
+        timezone_parameters = config["TIMEZONE"],
+        pid = "{pid}",
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/interim/{pid}/phone_locations_processed_with_datetime.csv"
     script:
-        "../src/data/readable_datetime.R"
+        "../src/data/datetime/readable_datetime.R"
 
 rule phone_locations_processed_with_datetime_with_home:
     input:
@@ -160,16 +169,20 @@ rule resample_episodes:
 rule resample_episodes_with_datetime:
     input:
         sensor_input = "data/interim/{pid}/{sensor}_episodes_resampled.csv",
-        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv",
+        pid_file = "data/external/participant_files/{pid}.yaml",
+        tzcodes_file = input_tzcodes_file,
     params:
-        timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
-        fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
+        device_type = lambda wildcards: wildcards.sensor.split("_")[0],
+        timezone_parameters = config["TIMEZONE"],
+        pid = "{pid}",
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/interim/{pid}/{sensor}_episodes_resampled_with_datetime.csv"
     script:
-        "../src/data/readable_datetime.R"
+        "../src/data/datetime/readable_datetime.R"
+
 
 rule phone_application_categories:
     input:

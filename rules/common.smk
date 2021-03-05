@@ -67,3 +67,13 @@ def download_phone_data_input_with_mutation_scripts(wilcards):
                     raise ValueError("Mutate scripts can only be Python or R scripts (.py, .R).\n   Instead we got {script} in \n   [{sensor}][{device_os}] of {schema}".format(script=script, sensor=sensor, device_os=device_os, schema=input.get("source_schema_file")))
                 input["mutationscript"+str(idx)] = script
     return input
+
+def input_tzcodes_file(wilcards):
+    from pathlib import Path
+    if config["TIMEZONE"]["TYPE"] == "MULTIPLE":
+        if not config["TIMEZONE"]["MULTIPLE"]["TZCODES_FILE"].lower().endswith(".csv"):
+            raise ValueError("[TIMEZONE][MULTIPLE][TZCODES_FILE] should point to a CSV file, instead you typed: " + config["TIMEZONE"]["MULTIPLE"]["TZCODES_FILE"])
+        if not Path(config["TIMEZONE"]["MULTIPLE"]["TZCODES_FILE"]).exists():
+            raise ValueError("[TIMEZONE][MULTIPLE][TZCODES_FILE] should point to a CSV file, the file in the path you typed does not exist: " + config["TIMEZONE"]["MULTIPLE"]["TZCODES_FILE"])
+        return [config["TIMEZONE"]["MULTIPLE"]["TZCODES_FILE"]]
+    return []

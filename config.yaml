@@ -33,7 +33,17 @@ TIME_SEGMENTS: &time_segments
   FILE: "data/external/timesegments_periodic.csv"
   INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, see docs
 
-
+TIMEZONE: 
+    TYPE: MULTIPLE
+    SINGLE:
+      TZCODE: America/New_York
+    MULTIPLE:
+      TZCODES_FILE: data/external/multiple_timezones_example.csv
+      IF_MISSING_TZCODE: USE_DEFAULT
+      DEFAULT_TZCODE: America/Los_Angeles
+      FITBIT: 
+        ALLOW_MULTIPLE_TZ_PER_DEVICE: False
+        INFER_FROM_SMARTPHONE_TZ: False
 
 ########################################################################################################################
 #                                                 PHONE                                                                #
@@ -263,7 +273,7 @@ PHONE_LOCATIONS:
       COMPUTE: False
       FEATURES: ["hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","circdnrtn","wkenddayrtn"]
       ACCURACY_LIMIT: 51 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
-      TIMEZONE: *timezone
+      IF_MULTIPLE_TIMEZONES: USE_MOST_COMMON
       MINUTES_DATA_USED: False # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
       SRC_FOLDER: "barnett" # inside src/features/phone_locations
       SRC_LANGUAGE: "r"
