@@ -282,6 +282,15 @@ PHONE_MESSAGES:
       SRC_LANGUAGE: "r"
       SRC_FOLDER: "rapids" # inside src/features/phone_messages
 
+PHONE_PLUGIN_SENTIMENTAL:
+  TABLE: plugin_sentimental_study_data
+  PROVIDERS:
+    WWBP:
+      COMPUTE: False
+      FEATURES: []
+      SRC_FOLDER: "wwbp"
+      SRC_LANGUAGE: "python"
+
 # See https://www.rapids.science/latest/features/phone-screen/
 PHONE_SCREEN:
   TABLE: screen

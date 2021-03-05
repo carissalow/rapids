@@ -418,6 +418,32 @@ rule phone_messages_r_features:
     script:
         "../src/features/entry.R"
 
+rule phone_plugin_sentimental_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/phone_plugin_sentimental_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_PLUGIN_SENTIMENTAL"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_plugin_sentimental"
+    output:
+        "data/interim/{pid}/phone_plugin_sentimental_features/phone_plugin_sentimental_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule phone_plugin_sentimental_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/plugin_sentimental_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["PHONE_PLUGIN_SENTIMENTAL"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "phone_plugin_sentimental"
+    output:
+        "data/interim/{pid}/phone_plugin_sentimental_features/phone_plugin_sentimental_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
 rule screen_episodes:
     input:
         screen = "data/raw/{pid}/phone_screen_with_datetime_unified.csv"

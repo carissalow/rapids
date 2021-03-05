@@ -218,6 +218,15 @@ for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
         files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
+for provider in config["PHONE_PLUGIN_SENTIMENTAL"]["PROVIDERS"].keys():
+    if config["PHONE_PLUGIN_SENTIMENTAL"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/phone_plugin_sentimental_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/phone_plugin_sentimental_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/phone_plugin_sentimental_features/phone_plugin_sentimental_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_PLUGIN_SENTIMENTAL"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/phone_plugin_sentimental.csv", pid=config["PIDS"],))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
+
 for provider in config["FITBIT_DATA_YIELD"]["PROVIDERS"].keys():
     if config["FITBIT_DATA_YIELD"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_intraday_raw.csv", pid=config["PIDS"]))
