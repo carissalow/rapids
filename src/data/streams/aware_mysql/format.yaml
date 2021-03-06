@@ -41,7 +41,6 @@ PHONE_CONVERSATION:
     COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
-      DATATYPE: datatype
       DOUBLE_ENERGY: double_energy
       INFERENCE: inference
       DOUBLE_CONVO_START: double_convo_start
@@ -51,7 +50,6 @@ PHONE_CONVERSATION:
     COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
-      DATATYPE: datatype
       DOUBLE_ENERGY: double_energy
       INFERENCE: inference
       DOUBLE_CONVO_START: double_convo_start

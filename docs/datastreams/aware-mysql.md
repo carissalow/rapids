@@ -20,6 +20,8 @@ The yaml file that describes the format of this data stream is at:
 src/data/streams/aware_mysql/format.yaml
 ```
 
+Stream columns named `FLAG_TO_MUTATE` means they are extracted from the `FLAG_AS_EXTRA` RAPIDS column. You can refer to [OS complex mapping](../../datastreams/add-new-data-streams/#os-complex-mapping) section for detailed information.
+
 !!! hint
     The mappings in this stream (RAPIDS/Stream) are the same names because AWARE data was the first stream RAPIDS supported, meaning that it considers AWARE column names the default.
 
@@ -44,3 +46,71 @@ src/data/streams/aware_mysql/format.yaml
     === "IOS"
     
         Same as ANDROID
+
+??? info "PHONE_ACTIVITY_RECOGNITION"
+
+    === "ANDROID"
+    
+        **COLUMN_MAPPINGS**
+
+        | RAPIDS column   | Stream column   |
+        |-----------------|-----------------|
+        | TIMESTAMP       | timestamp       |
+        | DEVICE_ID       | device_id       |
+        | ACTIVITY_TYPE   | activity_type   |
+        | ACTIVITY_NAME   | activity_name   |
+        | CONFIDENCE      | confidence      |
+
+        **MUTATION_SCRIPTS**
+
+        None
+
+    === "IOS"
+
+        **COLUMN_MAPPINGS**
+
+        | RAPIDS column   | Stream column   |
+        |-----------------|-----------------|
+        | TIMESTAMP       | timestamp       |
+        | DEVICE_ID       | device_id       |
+        | ACTIVITY_TYPE   | FLAG_TO_MUTATE  |
+        | ACTIVITY_NAME   | FLAG_TO_MUTATE  |
+        | CONFIDENCE      | confidence      |
+        | FLAG_AS_EXTRA   | activities      |
+
+        **MUTATION_SCRIPTS**
+        
+        ```bash
+        src/data/streams/mutations/phone/aware/activity_recogniton_ios_unification.R
+        ```
+
+??? info "PHONE_CONVERSATION"
+
+    === "ANDROID"
+    
+        **COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | DOUBLE_ENERGY        | double_energy       |
+        | INFERENCE            | inference           |
+        | DOUBLE_CONVO_START   | double_convo_start  |
+        | DOUBLE_CONVO_END     | double_convo_end    |
+
+        **MUTATION_SCRIPTS**
+
+        None
+
+    === "IOS"
+
+        **COLUMN_MAPPINGS**
+
+        Same as ANDROID
+
+        **MUTATION_SCRIPTS**
+        
+        ```bash
+        src/data/streams/mutations/phone/aware/conversation_ios_timestamp.R
+        ```

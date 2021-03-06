@@ -364,10 +364,8 @@ Parameters for `[TIMEZONE]`
 |`[SINGLE][TZCODE]`| The time zone code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to be used across all devices |
 |`[MULTIPLE][TZCODES_FILE]`| A CSV file containing the time and code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) visited by each device in the study. Multiple devices can be linked to the same person, read more in [Participants Files](#participant-files) |
 |`[MULTIPLE][IF_MISSING_TZCODE]`| When a device is missing from `[TZCODES_FILE]` Set this flag to `STOP` to stop RAPIDS execution and show an error, or to `USE_DEFAULT` to assign the time zone specified in `[DEFAULT_TZCODE]` to any such devices  |
-|`[MULTIPLE][FITBIT][ALLOW_MULTIPLE_TZ_PER_DEVICE]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more 
-time zone, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
-|`[MULTIPLE][FITBIT][INFER_FROM_SMARTPHONE_TZ]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more 
-time zone, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
+|`[MULTIPLE][FITBIT][ALLOW_MULTIPLE_TZ_PER_DEVICE]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more time zone, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
+|`[MULTIPLE][FITBIT][INFER_FROM_SMARTPHONE_TZ]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more time zone, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
 
 ??? info "Format of `TZCODES_FILE`"
     `TZCODES_FILE` has three columns and a row for each time zone a device visited (a device can be a smartphone or wearable (Fitbit/Empatica)):

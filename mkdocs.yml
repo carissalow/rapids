@@ -89,7 +89,7 @@ nav:
         - fitbitparsed_mysql: datastreams/fitbitparsed-mysql.md
         - fitbitjson_csv: datastreams/fitbitjson-csv.md
         - fitbitparsed_csv: datastreams/fitbitparsed-csv.md
-        - Mandatory Fitbit Format: datastreams/mandatory-phone-format.md
+        - Mandatory Fitbit Format: datastreams/mandatory-fitbit-format.md
       - Add New Data Streams: datastreams/add-new-data-streams.md
   - Behavioral Features:
       - Introduction: features/feature-introduction.md
