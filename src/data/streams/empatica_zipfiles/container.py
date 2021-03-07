@@ -1,10 +1,12 @@
+from zipfile import ZipFile
+import warnings
+from pathlib import Path
 import pandas as pd
 from pandas.core import indexing
 import yaml
-
 import csv
 from collections import OrderedDict
-
+from io import BytesIO, StringIO
 
 def processAcceleration(x, y, z):
     x = float(x)
@@ -15,8 +17,8 @@ def processAcceleration(x, y, z):
 
 def readFile(file, dtype):
     dict = OrderedDict()
-
-    with open(file, 'rt') as csvfile:
+    # file is an in-memory buffer
+    with file as csvfile:
         if dtype in ('electrodermal_activity', 'temperature', 'heartrate', 'blood_volume_pulse'):
             reader = csv.reader(csvfile, delimiter='\n')
         elif dtype == 'accelerometer':
@@ -40,7 +42,10 @@ def readFile(file, dtype):
     return dict
 
 
-def extract_empatica_data(sensor_data_file, output_file, start_date, end_date, timezone, sensor):
+def extract_empatica_data(data,  sensor):
+    sensor_data_file = BytesIO(data).getvalue().decode('utf-8')
+    sensor_data_file = StringIO(sensor_data_file)
+
     # read sensor data
     if sensor in ('electrodermal_activity', 'temperature', 'heartrate', 'blood_volume_pulse'):
         ddict = readFile(sensor_data_file, sensor)
@@ -68,27 +73,41 @@ def extract_empatica_data(sensor_data_file, output_file, start_date, end_date, t
         raise ValueError(
             "sensor can only be one of ['electrodermal_activity','temperature','heartrate','blood_volume_pulse','accelerometer','inter_beat_interval'].")
 
-    # filter based on given start and end date
-    start_date_utc = pd.Timestamp(start_date, tz=timezone).timestamp()
-    end_date_utc = pd.Timestamp(end_date, tz=timezone).timestamp()
-    df = df[start_date_utc:end_date_utc]
-
     # format timestamps
     df.index *= 1000
     df.index = df.index.astype(int)
+    return(df)
 
-    # output csv file
-    df.to_csv(output_file)
+def pull_data(data_configuration, device, sensor, columns_to_download):
+    sensor = sensor[9:].lower()
+    sensor_short_name = {"accelerometer":"ACC",
+                "temperature":"TEMP",
+                "tags":"tags",
+                "heartrate":"HR",
+                "inter_beat_interval":"IBI",
+                "blood_volume_pulse":"BVP",
+                "electrodermal_activity":"EDA"}
 
+    sensor_csv = sensor_short_name[sensor] + '.csv'
+    warning = True
+    participant_data = pd.DataFrame(columns=columns_to_download.values())
+    participant_data.set_index('timestamp', inplace=True)
 
-sensor_data_file = snakemake.input[0]
-output_file = snakemake.output[0]
-with open(snakemake.input[1], "r", encoding="utf-8") as f:
-    participant_file = yaml.safe_load(f)
+    for zipfile in list((Path(data_configuration["FOLDER"]) / Path(device)).rglob("*.zip")):
+        print("Extracting {} data from {} for {}".format(sensor, zipfile, device))
+        with ZipFile(zipfile, 'r') as zipFile:
+            listOfFileNames = zipFile.namelist()
+            for fileName in listOfFileNames:
+                if fileName == sensor_csv:
+                    participant_data = pd.concat([participant_data, extract_empatica_data(zipFile.read(fileName),  sensor)], axis=0)
+                    warning = False
+            if warning:
+                warnings.warn("We could not find a zipped file for {} in {} (we tried to find {})".format(sensor, zipFile, sensor_csv))
+    
+    participant_data.sort_index(inplace=True, ascending=True)
+    participant_data.reset_index(inplace=True)
+    participant_data.drop_duplicates(subset='timestamp', keep='first',inplace=True)
+    participant_data["device_id"] = device
+    return(participant_data)
 
-start_date = participant_file["EMPATICA"]["START_DATE"]
-end_date = participant_file["EMPATICA"]["END_DATE"]
-timezone = snakemake.params["data_configuration"]["TIMEZONE"]["VALUE"]
-sensor = snakemake.params["sensor"]
-
-extract_empatica_data(sensor_data_file, output_file, start_date, end_date, timezone, sensor)
+# print(pull_data({'FOLDER': 'data/external/empatica'}, "e01", "EMPATICA_accelerometer", {'TIMESTAMP': 'timestamp', 'DEVICE_ID': 'device_id', 'DOUBLE_VALUES_0': 'x', 'DOUBLE_VALUES_1': 'y', 'DOUBLE_VALUES_2': 'z'}))

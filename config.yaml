@@ -466,13 +466,12 @@ FITBIT_STEPS_INTRADAY:
 #                                                 EMPATICA                                                             #
 ########################################################################################################################
 
-EMPATICA_DATA_CONFIGURATION:
-  SOURCE: 
-    TYPE: ZIP_FILE
+EMPATICA_DATA_STREAMS:
+  USE: empatica_zipfiles
+  
+  # AVAILABLE:
+  empatica_zipfiles: 
     FOLDER: data/external/empatica
-  TIMEZONE: 
-    TYPE: SINGLE # Empatica devices don't support time zones so we read this data in the timezone indicated by VALUE 
-    VALUE: *timezone
 
 # Sensors ------
 

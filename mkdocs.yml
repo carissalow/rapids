@@ -24,6 +24,8 @@ markdown_extensions:
     - pymdownx.mark
     - pymdownx.smartsymbols
     - pymdownx.superfences
+    - pymdownx.snippets:
+        check_paths: True
     - pymdownx.tabbed
     - pymdownx.tasklist:
         custom_checkbox: True

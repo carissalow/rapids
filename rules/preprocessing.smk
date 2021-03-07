@@ -266,50 +266,30 @@ rule fitbit_readable_datetime:
     script:
         "../src/data/readable_datetime.R"
 
-from pathlib import Path
-rule unzip_empatica_data:
-    input:
-        input_file = Path(config["EMPATICA_DATA_CONFIGURATION"]["SOURCE"]["FOLDER"]) / Path("{pid}") / Path("{suffix}.zip"),
-        participant_file = "data/external/participant_files/{pid}.yaml"
+rule pull_empatica_data:
+    input: unpack(pull_empatica_data_input_with_mutation_scripts)
     params:
-        sensor = "{sensor}"
+        data_configuration = config["EMPATICA_DATA_STREAMS"][config["EMPATICA_DATA_STREAMS"]["USE"]],
+        sensor = "empatica_" + "{sensor}",
+        pid = "{pid}"
     output:
-        sensor_output = "data/raw/{pid}/empatica_{sensor}_unzipped_{suffix}.csv"
+        "data/raw/{pid}/empatica_{sensor}_raw.csv"
     script:
-        "../src/data/empatica/unzip_empatica_data.py"
-
-rule extract_empatica_data:
-    input:
-        input_file = "data/raw/{pid}/empatica_{sensor}_unzipped_{suffix}.csv",
-        participant_file = "data/external/participant_files/{pid}.yaml"
-    params:
-        data_configuration = config["EMPATICA_DATA_CONFIGURATION"],
-        sensor = "{sensor}",
-        table = lambda wildcards: config["EMPATICA_" + str(wildcards.sensor).upper()]["TABLE"],
-    output:
-        sensor_output = "data/raw/{pid}/empatica_{sensor}_raw_{suffix}.csv"
-    script:
-        "../src/data/empatica/extract_empatica_data.py"
-
-
-rule join_empatica_data:
-    input:
-        input_files = get_all_raw_empatica_sensor_files,
-    output:
-        sensor_output = "data/raw/{pid}/empatica_{sensor}_joined.csv"
-    script:
-        "../src/data/empatica/join_empatica_data.R"
+        "../src/data/pull_empatica_data.R"
 
 rule empatica_readable_datetime:
     input:
-        sensor_input = "data/raw/{pid}/empatica_{sensor}_joined.csv",
-        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
+        sensor_input = "data/raw/{pid}/empatica_{sensor}_raw.csv",
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv",
+        pid_file = "data/external/participant_files/{pid}.yaml",
+        tzcodes_file = input_tzcodes_file,
     params:
-        timezones = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["TYPE"],
-        fixed_timezone = config["PHONE_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
+        device_type = "empatica",
+        timezone_parameters = config["TIMEZONE"],
+        pid = "{pid}",
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/raw/{pid}/empatica_{sensor}_with_datetime.csv"
     script:
-        "../src/data/readable_datetime.R"
+        "../src/data/datetime/readable_datetime.R"
