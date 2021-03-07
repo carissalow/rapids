@@ -1,5 +1,25 @@
 # if you need a new package, you should add it with renv::install(package) so your renv venv is updated
 library(RMariaDB)
+library(yaml)
+
+#' @description
+#' Auxiliary function to parse the connection credentials from a specifc group in ./credentials.yaml
+#' You can reause most of this function if you are connection to a DB or Web API.
+#' It's OK to delete this function if you don't need credentials, e.g., you are pulling data from a CSV for example.
+#' @param group the yaml key containing the credentials to connect to a database
+#' @preturn dbEngine a database engine (connection) ready to perform queries
+get_db_engine <- function(group){
+  # The working dir is aways RAPIDS root folder, so your credentials file is always /credentials.yaml
+  credentials <- read_yaml("./credentials.yaml")
+  if(!group %in% names(credentials))
+    stop(paste("The credentials group",group, "does not exist in ./credentials.yaml. The only groups that exist in that file are:", paste(names(credentials), collapse = ",")))
+  dbEngine <- dbConnect(MariaDB(), db = credentials[[group]][["database"]],
+                                    username = credentials[[group]][["user"]],
+                                    password = credentials[[group]][["password"]],
+                                    host = credentials[[group]][["host"]],
+                                    port = credentials[[group]][["port"]])
+  return(dbEngine)
+}
 
 # This file gets executed for each PHONE_SENSOR of each participant
 # If you are connecting to a database the env file containing its credentials is available at "./.env"
@@ -18,9 +38,7 @@ library(RMariaDB)
 #' @return The OS the device ran, "android" or "ios"
 
 infer_device_os <- function(data_configuration, device){
-  group <- data_configuration$SOURCE$DATABASE_GROUP # specified DB credentials group in config.yaml
-  
-  dbEngine <- dbConnect(MariaDB(), default.file = "./.env", group = group)
+  dbEngine <- get_db_engine(data_configuration$SOURCE$DATABASE_GROUP)
   query <- paste0("SELECT device_id,brand FROM aware_device WHERE device_id = '", device, "'")
   message(paste0("Executing the following query to infer phone OS: ", query)) 
   os <- dbGetQuery(dbEngine, query)
@@ -44,10 +62,7 @@ infer_device_os <- function(data_configuration, device){
 #' @return A dataframe with the sensor data for device
 
 download_data <- function(data_configuration, device, sensor_container, columns){
-  group <- data_configuration$SOURCE$DATABASE_GROUP
-  dbEngine <- dbConnect(MariaDB(), default.file = "./.env", group = group)
-  
-  
+  dbEngine <- get_db_engine(data_configuration$SOURCE$DATABASE_GROUP)
   query <- paste0("SELECT ", paste(columns, collapse = ",")," FROM ", sensor_container, " WHERE device_id = '", device,"'")
   # Letting the user know what we are doing
   message(paste0("Executing the following query to download data: ", query)) 

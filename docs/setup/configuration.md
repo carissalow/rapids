@@ -454,25 +454,7 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
         |---------------------|----------------------------------------------------------------------------------------------------------------------------|
         | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
 
-        ??? info "Setting up a DATABASE_GROUP and its connection credentials"
-
-            1. If you haven't done so, create an empty file called `#!bash .env` in your RAPIDS root directory: `./.env`
-            2. Add the following lines to `./.env` and replace your database-specific credentials (user, password, host, and database):
-                1. Note that the label `[MY_GROUP]` is arbitrary but it has to match `[PHONE_DATA_STREAMS][aware_mysql] [DATABASE_GROUP]`
-
-              ``` yaml
-              [MY_GROUP]
-              user=MY_USER
-              password=MY_PASSWORD
-              host=MY_HOST
-              port=3306
-              database=MY_DATABASE
-              ```
-
-            ??? hint "Connecting to localhost (host machine) from inside our docker container"
-                If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, you can connect to a MySQL database in your host machine using `host.docker.internal` instead of `127.0.0.1` or `localhost`. In a Linux host you need to run our docker container using `docker run --network="host" -d moshiresearch/rapids:latest` and then `127.0.0.1` will point to your host machine.
-            ---
-
+        --8<---- "docs/snippets/database.md"
 
     === "aware_csv"
 
@@ -522,24 +504,7 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
         | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
         | `[COLUMN_MAPPINGS_READY]`   | Set this to `True` after you have modified this stream's `format.yaml` column mappings to match your raw data column names: [`fitbitjson_mysql`](../../datastreams/fitbitjson-mysql#format)   |
 
-        ??? info "Setting up a DATABASE_GROUP and its connection credentials"
-
-            1. If you haven't done so, create an empty file called `#!bash .env` in your RAPIDS root directory: `./.env`
-            2. Add the following lines to `./.env` and replace your database-specific credentials (user, password, host, and database):
-                1. Note that the label `[MY_GROUP]` is arbitrary but it has to match `[FITBIT_DATA_STREAMS][fitbitjson_mysql] [DATABASE_GROUP]`
-
-              ``` yaml
-              [MY_GROUP]
-              user=MY_USER
-              password=MY_PASSWORD
-              host=MY_HOST
-              port=3306
-              database=MY_DATABASE
-              ```
-
-            ??? hint "Connecting to localhost (host machine) from inside our docker container"
-                If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, you can connect to a MySQL database in your host machine using `host.docker.internal` instead of `127.0.0.1` or `localhost`. In a Linux host you need to run our docker container using `docker run --network="host" -d moshiresearch/rapids:latest` and then `127.0.0.1` will point to your host machine.
-            ---
+        --8<---- "docs/snippets/database.md"
 
     === "fitbitjson_csv"
 
@@ -561,24 +526,7 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
         | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
         | `[COLUMN_MAPPINGS_READY]`   | Set this to `True` after you have modified this stream's `format.yaml` column mappings to match your raw data column names: [`fitbitparsed_mysql`](../../datastreams/fitbitparsed-mysql#format)   |
 
-        ??? info "Setting up a DATABASE_GROUP and its connection credentials"
-
-            1. If you haven't done so, create an empty file called `#!bash .env` in your RAPIDS root directory: `./.env`
-            2. Add the following lines to `./.env` and replace your database-specific credentials (user, password, host, and database):
-                1. Note that the label `[MY_GROUP]` is arbitrary but it has to match `[FITBIT_DATA_STREAMS][fitbitparsed_mysql] [DATABASE_GROUP]`
-
-              ``` yaml
-              [MY_GROUP]
-              user=MY_USER
-              password=MY_PASSWORD
-              host=MY_HOST
-              port=3306
-              database=MY_DATABASE
-              ```
-
-            ??? hint "Connecting to localhost (host machine) from inside our docker container"
-                If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, you can connect to a MySQL database in your host machine using `host.docker.internal` instead of `127.0.0.1` or `localhost`. In a Linux host you need to run our docker container using `docker run --network="host" -d moshiresearch/rapids:latest` and then `127.0.0.1` will point to your host machine.
-            ---
+        --8<---- "docs/snippets/database.md"
         
     === "fitbitparsed_csv"
 
