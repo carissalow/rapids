@@ -63,7 +63,7 @@ load_container_script <- function(stream_container){
     return(container$pull_data)
   } else if(language == "r"){
     source(stream_container)
-    if(exists("pull_data"))
+    if(!exists("pull_data"))
       stop(paste0("The following container.R script does not have a pull_data function: ", stream_container))
     return(pull_data)
   }

@@ -17,9 +17,9 @@ validate_deviceid_platforms <- function(device_ids, platforms, participant){
   }
 }
 
-validate_inferred_os <- function(source_download_file, participant_file, device, device_os){
+validate_inferred_os <- function(stream_container, participant_file, device, device_os){
   if(!is.na(device_os) && device_os != "android" && device_os != "ios")
-    stop(paste0("We tried to infer the OS for ", device, " but 'infer_device_os' function inside '",source_download_file,"' returned '",device_os,"' instead of 'android' or 'ios'. You can assign the OS manually in the participant file or report this bug on GitHub.\nParticipant file ", participant_file))
+    stop(paste0("We tried to infer the OS for ", device, " but 'infer_device_os' function inside '",stream_container,"' returned '",device_os,"' instead of 'android' or 'ios'. You can assign the OS manually in the participant file or report this bug on GitHub.\nParticipant file ", participant_file))
 }
 
 mutate_data <- function(scripts, data){
@@ -58,7 +58,7 @@ rename_columns <- function(name_maps, data){
   return(data)
 }
 
-validate_expected_columns_mapping <- function(schema, rapids_schema, sensor, rapids_schema_file){
+validate_expected_columns_mapping <- function(schema, rapids_schema, sensor, rapids_schema_file, stream_format){
   android_columns <- names(schema[[sensor]][["ANDROID"]][["COLUMN_MAPPINGS"]])
   android_columns <- android_columns[(android_columns != "FLAG_AS_EXTRA")]
 
@@ -69,29 +69,47 @@ validate_expected_columns_mapping <- function(schema, rapids_schema, sensor, rap
   if(is.null(rapids_columns))
     stop(paste(sensor, " columns are not listed in RAPIDS' column specification. If you are adding support for a new phone sensor, add any mandatory columns in ", rapids_schema_file))
   if(length(setdiff(rapids_columns, android_columns)) > 0)
-    stop(paste(sensor," mappings are missing one or more mandatory columns for ANDROID. The missing column mappings are for ", paste(setdiff(rapids_columns, android_columns), collapse=","),"in", rapids_schema_file))
+    stop(paste(sensor," mappings are missing one or more mandatory columns for ANDROID. The missing column mappings are for ", paste(setdiff(rapids_columns, android_columns), collapse=","),"in", stream_format, " (the mappings are case sensitive)"))
   if(length(setdiff(rapids_columns, ios_columns)) > 0)
-    stop(paste(sensor," mappings are missing one or more mandatory columns for IOS. The missing column mappings are for ", paste(setdiff(rapids_columns, ios_columns), collapse=","),"in", rapids_schema_file))
+    stop(paste(sensor," mappings are missing one or more mandatory columns for IOS. The missing column mappings are for ", paste(setdiff(rapids_columns, ios_columns), collapse=","),"in", stream_format, " (the mappings are case sensitive)"))
   if(length(setdiff(android_columns, rapids_columns)) > 0)
-    stop(paste(sensor," mappings have one or more columns than required for ANDROID, add them as FLAG_AS_EXTRA instead. The extra column mappings are for ", paste(setdiff(android_columns, rapids_columns), collapse=","),"in", rapids_schema_file))
+    stop(paste(sensor," mappings have one or more columns than required for ANDROID, add them as FLAG_AS_EXTRA instead. The extra column mappings are for ", paste(setdiff(android_columns, rapids_columns), collapse=","),"in", stream_format, " (the mappings are case sensitive)"))
   if(length(setdiff(ios_columns, rapids_columns)) > 0)
-    stop(paste(sensor," mappings have one or more columns than required for IOS, add them as FLAG_AS_EXTRA instead. The extra column mappings are for ", paste(setdiff(ios_columns, rapids_columns), collapse=","),"in", rapids_schema_file))
+    stop(paste(sensor," mappings have one or more columns than required for IOS, add them as FLAG_AS_EXTRA instead. The extra column mappings are for ", paste(setdiff(ios_columns, rapids_columns), collapse=","),"in", stream_format, " (the mappings are case sensitive)"))
 }
 
-download_phone_data <- function(){
+load_container_script <- function(stream_container){
+  language <- if_else(endsWith(tolower(stream_container), "py"), "python", "r")
+  if(language == "python"){
+    library(reticulate)
+    container <- import_from_path(gsub(pattern = "\\.py$", "", basename(stream_container)), path = dirname(stream_container))
+    if(!py_has_attr(container, "pull_data"))
+      stop(paste0("The following container.py script does not have a pull_data function: ", stream_container))
+    if(!py_has_attr(container, "infer_device_os"))
+      stop(paste0("The following container.py script does not have a infer_device_os function: ", stream_container))
+    return(list("infer_device_os" = container$infer_device_os, "pull_data" = container$pull_data))
+  } else if(language == "r"){
+    source(stream_container)
+    if(!exists("pull_data"))
+      stop(paste0("The following container.R script does not have a pull_data function: ", stream_container))
+    if(!exists("infer_device_os"))
+      stop(paste0("The following container.R script does not have a infer_device_os function: ", stream_container))
+    return(list("infer_device_os" = infer_device_os, "pull_data" = pull_data))
+  }
+}
+
+pull_phone_data <- function(){
   participant_file <- snakemake@input[["participant_file"]]
-  source_schema_file <- snakemake@input[["source_schema_file"]]
+  stream_format <- snakemake@input[["stream_format"]]
   rapids_schema_file <- snakemake@input[["rapids_schema_file"]]
-  source_download_file <- snakemake@input[["source_download_file"]]
+  stream_container <- snakemake@input[["stream_container"]]
   data_configuration <- snakemake@params[["data_configuration"]]
   tables <- snakemake@params[["tables"]]
   sensor <- toupper(snakemake@params[["sensor"]])
   output_data_file <- snakemake@output[[1]]
 
-  source(source_download_file)
-
   participant_data <- read_yaml(participant_file)
-  schema <- read_yaml(source_schema_file)
+  stream_schema <- read_yaml(stream_format)
   rapids_schema <- read_yaml(rapids_schema_file)
   devices <- participant_data$PHONE$DEVICE_IDS
   device_oss <- participant_data$PHONE$PLATFORMS
@@ -101,30 +119,34 @@ download_phone_data <- function(){
   if(length(device_oss) == 1)
     device_oss <- rep(device_oss, length(devices))
 
-  validate_expected_columns_mapping(schema, rapids_schema, sensor, rapids_schema_file)
+  validate_expected_columns_mapping(stream_schema, rapids_schema, sensor, rapids_schema_file, stream_format)
   # ANDROID or IOS COLUMN_MAPPINGS are guaranteed to be the same at this point (see validate_expected_columns_mapping function)
-  expected_columns <- tolower(names(schema[[sensor]][["ANDROID"]][["COLUMN_MAPPINGS"]]))
+  expected_columns <- tolower(names(stream_schema[[sensor]][["ANDROID"]][["COLUMN_MAPPINGS"]]))
   expected_columns <- expected_columns[(expected_columns != "flag_extra")]
   participant_data <- setNames(data.frame(matrix(ncol = length(expected_columns), nrow = 0)), expected_columns)
+
+  container_functions <- load_container_script(stream_container)
+  infer_device_os_container <- container_functions$infer_device_os
+  pull_data_container <- container_functions$pull_data
 
   for(idx in seq_along(devices)){ #TODO remove length
     
     device <- devices[idx]
     message(paste0("\nProcessing ", sensor, " for ", device))
-    device_os <- ifelse(device_oss[idx] == "infer", infer_device_os(data_configuration, device), device_oss[idx])
-    validate_inferred_os(basename(source_download_file), participant_file, device, device_os)
+    device_os <- ifelse(device_oss[idx] == "infer", infer_device_os_container(data_configuration, device), device_oss[idx])
+    validate_inferred_os(basename(stream_container), participant_file, device, device_os)
     os_table <- ifelse(length(tables) > 1, tables[[toupper(device_os)]], tables) # some sensor tables have a different name for android and ios    
 
-    columns_to_download <- schema[[sensor]][[toupper(device_os)]][["COLUMN_MAPPINGS"]]
+    columns_to_download <- stream_schema[[sensor]][[toupper(device_os)]][["COLUMN_MAPPINGS"]]
     columns_to_download <- columns_to_download[(columns_to_download != "FLAG_TO_MUTATE")]
-    data <- download_data(data_configuration, device, os_table, columns_to_download)
+    data <- pull_data_container(data_configuration, device, os_table, columns_to_download)
     
     # Rename all COLUMN_MAPPINGS except those mapped as FLAG_AS_EXTRA or FLAG_TO_MUTATE
-    columns_to_rename <- schema[[sensor]][[toupper(device_os)]][["COLUMN_MAPPINGS"]]
+    columns_to_rename <- stream_schema[[sensor]][[toupper(device_os)]][["COLUMN_MAPPINGS"]]
     columns_to_rename <- (columns_to_rename[(columns_to_rename != "FLAG_TO_MUTATE" & names(columns_to_rename) != "FLAG_AS_EXTRA")])
     renamed_data <- rename_columns(columns_to_rename, data)
     
-    mutation_scripts <- schema[[sensor]][[toupper(device_os)]][["MUTATION_SCRIPTS"]]
+    mutation_scripts <- stream_schema[[sensor]][[toupper(device_os)]][["MUTATION_SCRIPTS"]]
     mutated_data <- mutate_data(mutation_scripts, renamed_data)
 
     if(length(setdiff(expected_columns, colnames(mutated_data))) > 0)
@@ -136,4 +158,4 @@ download_phone_data <- function(){
   write_csv(participant_data, output_data_file)
 }
 
-download_phone_data()
+pull_phone_data()

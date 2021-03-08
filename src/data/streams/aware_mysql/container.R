@@ -33,12 +33,12 @@ get_db_engine <- function(group){
 #' If you don't have a way to infer the OS, call stop("Error Message") so other users know they can't use "infer" or the inference failed, 
 #' and they have to assign the OS manually in the participant file
 #' 
-#' @param data_configuration The PHONE_DATA_CONFIGURATION key in config.yaml. If you need specific parameters add them there.
+#' @param stream_parameters The PHONE_STREAM_PARAMETERS key in config.yaml. If you need specific parameters add them there.
 #' @param device A device ID string
 #' @return The OS the device ran, "android" or "ios"
 
-infer_device_os <- function(data_configuration, device){
-  dbEngine <- get_db_engine(data_configuration$SOURCE$DATABASE_GROUP)
+infer_device_os <- function(stream_parameters, device){
+  dbEngine <- get_db_engine(stream_parameters$DATABASE_GROUP)
   query <- paste0("SELECT device_id,brand FROM aware_device WHERE device_id = '", device, "'")
   message(paste0("Executing the following query to infer phone OS: ", query)) 
   os <- dbGetQuery(dbEngine, query)
@@ -55,14 +55,14 @@ infer_device_os <- function(data_configuration, device){
 #' @description
 #' Gets the sensor data for a specific device id from a database table, file or whatever source you want to query
 #' 
-#' @param data_configuration The PHONE_DATA_CONFIGURATION key in config.yaml. If you need specific parameters add them there.
+#' @param stream_parameters The PHONE_STREAM_PARAMETERS key in config.yaml. If you need specific parameters add them there.
 #' @param device A device ID string
 #' @param sensor_container database table or file containing the sensor data for all participants. This is the PHONE_SENSOR[TABLE] key in config.yaml
 #' @param columns the columns needed from this sensor (we recommend to only return these columns instead of every column in sensor_container)
 #' @return A dataframe with the sensor data for device
 
-download_data <- function(data_configuration, device, sensor_container, columns){
-  dbEngine <- get_db_engine(data_configuration$SOURCE$DATABASE_GROUP)
+pull_data <- function(stream_parameters, device, sensor_container, columns){
+  dbEngine <- get_db_engine(stream_parameters$DATABASE_GROUP)
   query <- paste0("SELECT ", paste(columns, collapse = ",")," FROM ", sensor_container, " WHERE device_id = '", device,"'")
   # Letting the user know what we are doing
   message(paste0("Executing the following query to download data: ", query)) 

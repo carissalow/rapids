@@ -23,16 +23,16 @@ rule create_participants_files:
     script:
         "../src/data/create_participants_files.R"
 
-rule download_phone_data:
-    input: unpack(download_phone_data_input_with_mutation_scripts)
+rule pull_phone_data:
+    input: unpack(pull_phone_data_input_with_mutation_scripts)
     params:
-        data_configuration = config["PHONE_DATA_CONFIGURATION"],
+        data_configuration = config["PHONE_DATA_STREAMS"][config["PHONE_DATA_STREAMS"]["USE"]],
         sensor = "phone_" + "{sensor}",
         tables = lambda wildcards: config["PHONE_" + str(wildcards.sensor).upper()]["TABLE"],
     output:
         "data/raw/{pid}/phone_{sensor}_raw.csv"
     script:
-        "../src/data/download_phone_data.R"
+        "../src/data/streams/pull_phone_data.R"
 
 rule download_fitbit_data:
     input:
@@ -275,7 +275,7 @@ rule pull_empatica_data:
     output:
         "data/raw/{pid}/empatica_{sensor}_raw.csv"
     script:
-        "../src/data/pull_empatica_data.R"
+        "../src/data/streams/pull_empatica_data.R"
 
 rule empatica_readable_datetime:
     input:

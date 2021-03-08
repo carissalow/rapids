@@ -41,7 +41,7 @@
 ## Every time I run force the download_dataset rule all rules are executed
 
 ???+ failure "Problem"
-    When running `snakemake -j1 -R download_phone_data` or `./rapids -j1 -R download_phone_data` all the rules and files are re-computed
+    When running `snakemake -j1 -R pull_phone_data` or `./rapids -j1 -R pull_phone_data` all the rules and files are re-computed
 
 ???+ done "Solution"
     This is expected behavior. The advantage of using `snakemake` under the hood is that every time a file containing data is modified every rule that depends on that file will be re-executed to update their results. In this case, since `download_dataset` updates all the raw data, and you are forcing the rule with the flag `-R` every single rule that depends on those raw files will be executed.
@@ -215,7 +215,7 @@
         ```bash
         R -e 'renv::install("RMySQL")'
         ```
-        - Go to `src/data/download_phone_data.R` or `src/data/download_fitbit_data.R` and replace `library(RMariaDB)` with `library(RMySQL)`
+        - Go to `src/data/streams/pull_phone_data.R` or `src/data/streams/pull_fitbit_data.R` and replace `library(RMariaDB)` with `library(RMySQL)`
         - In the same file(s) replace `dbEngine <- dbConnect(MariaDB(), default.file = "./.env", group = group)` with `dbEngine <- dbConnect(MySQL(), default.file = "./.env", group = group)`
 ## There is no package called `RMariaDB`
 

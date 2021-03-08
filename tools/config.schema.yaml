@@ -6,7 +6,7 @@ required:
   - PIDS
   - CREATE_PARTICIPANT_FILES
   - TIME_SEGMENTS
-  - PHONE_DATA_CONFIGURATION
+  - PHONE_DATA_STREAMS
   - PHONE_ACCELEROMETER
   - PHONE_ACTIVITY_RECOGNITION
   - PHONE_APPLICATIONS_CRASHES
@@ -209,16 +209,16 @@ properties:
       INCLUDE_PAST_PERIODIC_SEGMENTS: 
         type: boolean
 
-  PHONE_DATA_CONFIGURATION:
-    allOf:
-      - $ref: "#/definitions/DATA_CONFIGURATION"
-      - properties:
-          SOURCE:
-            type: object
-            properties:
-              TYPE:
-                type: string
-                enum: [aware_mysql]
+  PHONE_DATA_STREAMS:
+      type: object
+      properties:
+        USE:
+          type: string
+        aware_mysql:
+          type: object
+          properties:
+            DATABASE_GROUP:
+              type: string
 
   PHONE_ACCELEROMETER:
     type: object

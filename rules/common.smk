@@ -30,26 +30,33 @@ def get_phone_sensor_names():
                     phone_sensor_names.append(config_key)
     return phone_sensor_names
 
-def download_phone_data_input_with_mutation_scripts(wilcards):
+def pull_phone_data_input_with_mutation_scripts(wilcards):
     import yaml
     input = dict()
-    phone_source_type = config["PHONE_DATA_CONFIGURATION"]["SOURCE"]["TYPE"]
+    phone_stream = config["PHONE_DATA_STREAMS"]["USE"]
 
     input["participant_file"] = "data/external/participant_files/{pid}.yaml"
     input["rapids_schema_file"] = "src/data/streams/rapids_columns.yaml"
-    input["source_schema_file"] = "src/data/streams/" + phone_source_type + "/format.yaml"
-    input["source_download_file"] = "src/data/streams/"+ phone_source_type + "/container.R"
+    input["stream_format"] = "src/data/streams/" + phone_stream + "/format.yaml"
 
-    schema = yaml.load(open(input.get("source_schema_file"), 'r'), Loader=yaml.FullLoader)
+    if Path("src/data/streams/"+ phone_stream + "/container.R").exists():
+        input["stream_container"] = "src/data/streams/"+ phone_stream + "/container.R"
+    elif Path("src/data/streams/"+ phone_stream + "/container.py").exists():
+        input["stream_container"] = "src/data/streams/"+ phone_stream + "/container.py"
+    else:
+        raise ValueError("The container script for {stream} is missing: src/data/streams/{stream}/container.[py|R]".format(stream=empatica_stream))
+
+    schema = yaml.load(open(input.get("stream_format"), 'r'), Loader=yaml.FullLoader)
     sensor = ("phone_" + wilcards.sensor).upper()
     if sensor not in schema:
-        raise ValueError("{sensor} is not defined in the schema {schema}".format(sensor=sensor, schema=input.get("source_schema_file")))
+        raise ValueError("{sensor} is not defined in the schema {schema}".format(sensor=sensor, schema=input.get("stream_format")))
+
     for device_os in ["ANDROID", "IOS"]:
         scripts = schema[sensor][device_os]["MUTATION_SCRIPTS"]
         if isinstance(scripts, list):
             for idx, script in enumerate(scripts):
                 if not script.lower().endswith((".py", ".r")):
-                    raise ValueError("Mutate scripts can only be Python or R scripts (.py, .R).\n   Instead we got {script} in \n   [{sensor}][{device_os}] of {schema}".format(script=script, sensor=sensor, device_os=device_os, schema=input.get("source_schema_file")))
+                    raise ValueError("Mutate scripts can only be Python or R scripts (.py, .R).\n   Instead we got {script} in \n   [{sensor}][{device_os}] of {schema}".format(script=script, sensor=sensor, device_os=device_os, schema=input.get("stream_format")))
                 input["mutationscript"+str(idx)] = script
     return input
 

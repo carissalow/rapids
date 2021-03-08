@@ -14,38 +14,51 @@ The most common cases when you would want to implement a new data stream are:
 
 ## Formats and Containers in RAPIDS
 
-**CONTAINER**. The container of a data stream is queried using a `container.R` script. This script implements functions that will pull data from a database, file, etc.
+**CONTAINER**. The container of a data stream is queried using a `container.[R|py]` script. This script implements functions that will pull data from a database, file, etc.
 
 **FORMAT**. The format of a data stream is described using a `format.yaml` file. A format file describes the mapping between your stream's raw data and the data that RAPIDS needs.
 
-Both the `container.R` and the `format.yaml` are saved under `src/data/streams/[stream_name]` where `[stream_name]` can be 
+Both the `container.[R|py]` and the `format.yaml` are saved under `src/data/streams/[stream_name]` where `[stream_name]` can be 
 `aware_mysql` for example.
 
 ## Implement a Container
 
-The `container.R` script of a data stream should be implemented in R. This script must have two functions if you are implementing a stream for phone data, or one function otherwise.
+The `container` script of a data stream should be implemented in R (strongly recommended) or python. This script must have two functions if you are implementing a stream for phone data or one function otherwise. The script can contain any other auxiliary functions that your data stream might need.
 
-=== "download_data"
+First of all, add any parameters your script might need in `config.yaml` under `(device)_DATA_STREAMS`. These parameters will be available in the `stream_parameters` argument of the one or two functions you implement.  For example, if you are adding support for `Beiwe` data stored in `PostgreSQL` and your container needs a set of credentials to connect to a database, your new data stream configuration would be:
+
+```yaml hl_lines="7 8"
+PHONE_DATA_STREAMS:
+  USE: aware_python
+  
+  # AVAILABLE:
+  aware_mysql: 
+    DATABASE_GROUP: MY_GROUP
+  beiwe_postgresql: 
+    DATABASE_GROUP: MY_GROUP # users define this group (user, password, host, etc.) in credentials.yaml
+```
+
+Then implement one or both of the following functions:
+
+=== "pull_data"
 
     This function returns the data columns for a specific sensor and participant. It has the following parameters:
 
     | Param              | Description                                                                                           |   
     |--------------------|-------------------------------------------------------------------------------------------------------|
-    | data_configuration | Any parameters (keys/values) set by the user in any `[DEVICE_DATA_STREAMS][stream_name]` key of `config.yaml`. For example, `[DATABASE_GROUP]` inside `[FITBIT_DATA_STREAMS][fitbitjson_mysql]` | 
+    | stream_parameters | Any parameters (keys/values) set by the user in any `[DEVICE_DATA_STREAMS][stream_name]` key of `config.yaml`. For example, `[DATABASE_GROUP]` inside `[FITBIT_DATA_STREAMS][fitbitjson_mysql]` | 
     | sensor_container   | The value set by the user in any `[DEVICE_SENSOR][CONTAINER]` key of `config.yaml`. It can be a table, file path, or whatever data source you want to support that contains the **data from a single sensor for all participants**. For example, `[PHONE_ACCELEROMETER][CONTAINER]`|
     | device             | The device id that you need to get the data for (this is set by the user in the [participant files](../../setup/configuration/#participant-files)). For example, in AWARE this device is a uuid|
     | columns            | A list of the columns that you need to get from `sensor_container`. You specify these columns in your stream's `format.yaml`|
 
 
     !!! example
-        This is the `download_data` function we implemented for `aware_mysql`. Note that we can `message`, `warn` or `stop` the user during execution.
+        This is the `pull_data` function we implemented for `aware_mysql`. Note that we can `message`, `warn` or `stop` the user during execution.
 
         ```r
-        download_data <- function(data_configuration, device, sensor_container, columns){
-            group <- data_configuration$SOURCE$DATABASE_GROUP
-            dbEngine <- dbConnect(MariaDB(), default.file = "./.env", group = group)
-            
-            
+        pull_data <- function(stream_parameters, device, sensor_container, columns){
+            # get_db_engine is an auxiliary function not shown here for brevity bu can be found in src/data/streams/aware_mysql/container.R
+            dbEngine <- get_db_engine(stream_parameters$DATABASE_GROUP)
             query <- paste0("SELECT ", paste(columns, collapse = ",")," FROM ", sensor_container, " WHERE device_id = '", device,"'")
             # Letting the user know what we are doing
             message(paste0("Executing the following query to download data: ", query)) 
@@ -65,17 +78,17 @@ The `container.R` script of a data stream should be implemented in R. This scrip
     !!! warning
         This function is only necessary for phone data streams. 
     
-    RAPIDS allows users to use the keyword `infer` (previously `multiple`) to [automatically infer](../../setup/configuration/#structure-of-participants-files) the mobile Operative System a device (phone) was running. 
+    RAPIDS allows users to use the keyword `infer` (previously `multiple`) to [automatically infer](../../setup/configuration/#structure-of-participants-files) the mobile Operative System a phone was running. 
     
     If you have a way to infer the OS of a device id, implement this function. For example, for AWARE data we use the `aware_device` table.
  
     If you don't have a way to infer the OS, call `stop("Error Message")` so other users know they can't use `infer` or the inference failed, and they have to assign the OS manually in the participant file.
     
-    This function returns the operative system (`android` or `ios`) for a specific device. It has the following parameters:
+    This function returns the operative system (`android` or `ios`) for a specific phone device id. It has the following parameters:
 
     | Param              | Description                                                                                           |   
     |--------------------|-------------------------------------------------------------------------------------------------------|
-    | data_configuration | Any parameters (keys/values) set by the user in any `[DEVICE_DATA_STREAMS][stream_name]` key of `config.yaml`. For example, `[DATABASE_GROUP]` inside `[FITBIT_DATA_STREAMS][fitbitjson_mysql]` | 
+    | stream_parameters | Any parameters (keys/values) set by the user in any `[DEVICE_DATA_STREAMS][stream_name]` key of `config.yaml`. For example, `[DATABASE_GROUP]` inside `[FITBIT_DATA_STREAMS][fitbitjson_mysql]` | 
     | device             | The device id that you need to infer the OS for (this is set by the user in the [participant files](../../setup/configuration/#participant-files)). For example, in AWARE this device is a uuid|
 
 
@@ -83,8 +96,9 @@ The `container.R` script of a data stream should be implemented in R. This scrip
         This is the `infer_device_os` function we implemented for `aware_mysql`. Note that we can `message`, `warn` or `stop` the user during execution.
 
         ```r
-        infer_device_os <- function(data_configuration, device){
-            group <- data_configuration$SOURCE$DATABASE_GROUP # specified DB credentials group in config.yaml
+        infer_device_os <- function(stream_parameters, device){
+            # get_db_engine is an auxiliary function not shown here for brevity bu can be found in src/data/streams/aware_mysql/container.R
+            group <- stream_parameters$DATABASE_GROUP
             
             dbEngine <- dbConnect(MariaDB(), default.file = "./.env", group = group)
             query <- paste0("SELECT device_id,brand FROM aware_device WHERE device_id = '", device, "'")

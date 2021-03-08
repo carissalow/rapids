@@ -50,13 +50,13 @@ TIMEZONE:
 ########################################################################################################################
 
 # See https://www.rapids.science/latest/setup/configuration/#device-data-source-configuration
-PHONE_DATA_CONFIGURATION:
-  SOURCE: 
-    TYPE: aware_mysql
-    DATABASE_GROUP: *database_group
-  TIMEZONE: 
-    TYPE: SINGLE
-    VALUE: *timezone
+PHONE_DATA_STREAMS:
+  USE: aware_mysql
+  
+  # AVAILABLE:
+  aware_mysql: 
+    DATABASE_GROUP: MY_GROUP
+
 
 # Sensors ------
 
