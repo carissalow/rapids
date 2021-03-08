@@ -51,7 +51,7 @@ def pull_phone_data_input_with_mutation_scripts(wilcards):
     if sensor not in schema:
         raise ValueError("{sensor} is not defined in the schema {schema}".format(sensor=sensor, schema=input.get("stream_format")))
 
-    for device_os in ["ANDROID", "IOS"]:
+    for device_os in schema[sensor].keys():
         scripts = schema[sensor][device_os]["MUTATION_SCRIPTS"]
         if isinstance(scripts, list):
             for idx, script in enumerate(scripts):
