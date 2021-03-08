@@ -135,6 +135,10 @@ pull_phone_data <- function(){
     message(paste0("\nProcessing ", sensor, " for ", device))
     device_os <- ifelse(device_oss[idx] == "infer", infer_device_os_container(data_configuration, device), device_oss[idx])
     validate_inferred_os(basename(stream_container), participant_file, device, device_os)
+    
+    if(!toupper(device_os) %in% stream_schema[[sensor]]) # the current sensor is only available in a single OS (like PHONE_MESSAGES)
+      next
+
     os_table <- ifelse(length(tables) > 1, tables[[toupper(device_os)]], tables) # some sensor tables have a different name for android and ios    
 
     columns_to_download <- stream_schema[[sensor]][[toupper(device_os)]][["COLUMN_MAPPINGS"]]
