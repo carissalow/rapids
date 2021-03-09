@@ -21,7 +21,7 @@ The following is a list of the sensors that testing is currently available.
 | Phone Locations               | Doryab   | N        | N         | N     |
 | Phone Locations               | Barnett  | N        | N         | N     |
 | Phone Messages                | RAPIDS   | Y        | Y         | N     |
-| Phone Screen                  | RAPIDS   | N        | N         | N     |
+| Phone Screen                  | RAPIDS   | Y        | N         | N     |
 | Phone WiFi Connected          | RAPIDS   | Y        | Y         | N     |
 | Phone WiFi Visible            | RAPIDS   | Y        | Y         | N     |
 | Fitbit Data Yield             | RAPIDS   | N        | N         | N     |
