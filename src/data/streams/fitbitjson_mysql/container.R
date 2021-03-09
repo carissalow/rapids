@@ -30,7 +30,7 @@ get_db_engine <- function(group){
 #' @param columns the columns needed from this sensor (we recommend to only return these columns instead of every column in sensor_container)
 #' @return A dataframe with the sensor data for device
 
-pull_data <- function(stream_parameters, device, sensor_container, columns){
+pull_data <- function(stream_parameters, device, sensor, sensor_container, columns){
   dbEngine <- get_db_engine(stream_parameters$DATABASE_GROUP)
   query <- paste0("SELECT ", paste(columns, collapse = ",")," FROM ", sensor_container, " WHERE ",columns$DEVICE_ID," = '", device,"'")
   # Letting the user know what we are doing

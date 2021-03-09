@@ -17,7 +17,7 @@ The `format.yaml` maps and transforms columns in your raw data stream to the [ma
 src/data/streams/fitbitjson_mysql/format.yaml
 ```
 
-If you want RAPIDS to process Fitbit sensor data using this stream, you will need to replace the following `COLUMN_MAPPINGS` inside **each sensor** section in `format.yaml` to match your raw data column names:
+If you want RAPIDS to process Fitbit sensor data using this stream, you will need to replace the following `RAPIDS_COLUMN_MAPPINGS` inside **each sensor** section in `format.yaml` to match your raw data column names:
 
 | Column   | Description   |
 |-----------------|-----------------|
@@ -28,7 +28,7 @@ If you want RAPIDS to process Fitbit sensor data using this stream, you will nee
 
 ??? info "FITBIT_HEARTRATE_SUMMARY section"
 
-    **COLUMN_MAPPINGS**
+    **RAPIDS_COLUMN_MAPPINGS**
 
     | RAPIDS column   | Stream column   |
     |-----------------|-----------------|

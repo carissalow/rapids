@@ -1,40 +1,48 @@
 PHONE_ACCELEROMETER:
   ANDROID:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
       DOUBLE_VALUES_0: double_values_0
       DOUBLE_VALUES_1: double_values_1
       DOUBLE_VALUES_2: double_values_2
-    MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
   IOS:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
       DOUBLE_VALUES_0: double_values_0
       DOUBLE_VALUES_1: double_values_1
       DOUBLE_VALUES_2: double_values_2
-    MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
 
 PHONE_ACTIVITY_RECOGNITION:
   ANDROID:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
       ACTIVITY_TYPE: activity_type
       ACTIVITY_NAME: activity_name
       CONFIDENCE: confidence
-    MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
   IOS:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
       ACTIVITY_TYPE: FLAG_TO_MUTATE
       ACTIVITY_NAME: FLAG_TO_MUTATE
       CONFIDENCE: confidence
-      FLAG_AS_EXTRA: activities
-    MUTATION_SCRIPTS:
-      - "src/data/streams/mutations/phone/aware/activity_recogniton_ios_unification.R"
+    MUTATION:
+      COLUMN_MAPPINGS:
+        ACTIVITIES: activities
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+        - "src/data/streams/mutations/phone/aware/activity_recogniton_ios_unification.R"
 
 PHONE_APPLICATIONS_FOREGROUND:
   ANDROID:
@@ -65,21 +73,26 @@ PHONE_BATTERY:
 
 PHONE_CONVERSATION:
   ANDROID:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
       DOUBLE_ENERGY: double_energy
       INFERENCE: inference
       DOUBLE_CONVO_START: double_convo_start
       DOUBLE_CONVO_END: double_convo_end
-    MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
   IOS:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
       DOUBLE_ENERGY: double_energy
       INFERENCE: inference
       DOUBLE_CONVO_START: double_convo_start
       DOUBLE_CONVO_END: double_convo_end
-    MUTATION_SCRIPTS: 
-      - "src/data/streams/mutations/phone/aware/conversation_ios_timestamp.R"
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+        - "src/data/streams/mutations/phone/aware/conversation_ios_timestamp.R"

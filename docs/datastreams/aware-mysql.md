@@ -29,7 +29,7 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted from the `FLAG_AS
 
     === "ANDROID"
     
-        **COLUMN_MAPPINGS**
+        **RAPIDS_COLUMN_MAPPINGS**
 
         | RAPIDS column   | Stream column   |
         |-----------------|-----------------|
@@ -51,7 +51,7 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted from the `FLAG_AS
 
     === "ANDROID"
     
-        **COLUMN_MAPPINGS**
+        **RAPIDS_COLUMN_MAPPINGS**
 
         | RAPIDS column   | Stream column   |
         |-----------------|-----------------|
@@ -67,7 +67,7 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted from the `FLAG_AS
 
     === "IOS"
 
-        **COLUMN_MAPPINGS**
+        **RAPIDS_COLUMN_MAPPINGS**
 
         | RAPIDS column   | Stream column   |
         |-----------------|-----------------|
@@ -136,7 +136,7 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted from the `FLAG_AS
 
     === "ANDROID"
     
-        **COLUMN_MAPPINGS**
+        **RAPIDS_COLUMN_MAPPINGS**
 
         | RAPIDS column        | Stream column       |
         |----------------------|---------------------|
@@ -153,7 +153,7 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted from the `FLAG_AS
 
     === "IOS"
 
-        **COLUMN_MAPPINGS**
+        **RAPIDS_COLUMN_MAPPINGS**
 
         Same as ANDROID
 

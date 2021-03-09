@@ -184,17 +184,20 @@ rule phone_application_categories:
     script:
         "../src/data/application_categories.R"
 
-rule pull_fitbit_data:
-    input: unpack(pull_fitbit_data_input_with_mutation_scripts)
+rule pull_wearable_data:
+    input: unpack(pull_wearable_data_input_with_mutation_scripts)
     params:
-        data_configuration = config["FITBIT_DATA_STREAMS"][config["FITBIT_DATA_STREAMS"]["USE"]],
-        sensor = "fitbit_" + "{sensor}",
-        tables = lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"],
+        data_configuration = lambda wildcards: config[wildcards.device_type.upper() +"_DATA_STREAMS"][config[wildcards.device_type.upper() +"_DATA_STREAMS"]["USE"]],
+        device_type = "{device_type}",
+        sensor = "{device_type}" + "_" + "{sensor}",
+        pid = "{pid}",
+        tables = lambda wildcards: config[wildcards.device_type.upper() + "_" + str(wildcards.sensor).upper()]["TABLE"],
+    wildcard_constraints:
+        device_type="(empatica|fitbit)"
     output:
-        "data/raw/{pid}/fitbit_{sensor}_raw.csv"
+        "data/raw/{pid}/{device_type}_{sensor}_raw.csv"
     script:
-        "../src/data/streams/pull_fitbit_data.R"
-
+        "../src/data/streams/pull_wearable_data.R"
 
 rule fitbit_readable_datetime:
     input:
@@ -212,60 +215,6 @@ rule fitbit_readable_datetime:
         "data/raw/{pid}/fitbit_{sensor}_with_datetime.csv"
     script:
         "../src/data/datetime/readable_datetime.R"
-
-# rule fitbit_parse_heartrate:
-#     input:
-#         participant_file = "data/external/participant_files/{pid}.yaml",
-#         raw_data = "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_raw.csv"
-#     params:
-#         timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-#         table = lambda wildcards: config["FITBIT_HEARTRATE_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
-#         column_format = config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["COLUMN_FORMAT"],
-#         fitbit_data_type = "{fitbit_data_type}"
-#     output:
-#         "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_parsed.csv"
-#     script:
-#         "../src/data/fitbit_parse_heartrate.py"
-
-# rule fitbit_parse_steps:
-#     input:
-#         participant_file = "data/external/participant_files/{pid}.yaml",
-#         raw_data = "data/raw/{pid}/fitbit_steps_{fitbit_data_type}_raw.csv"
-#     params:
-#         timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-#         table = lambda wildcards: config["FITBIT_STEPS_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
-#         column_format = config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["COLUMN_FORMAT"],
-#         fitbit_data_type = "{fitbit_data_type}"
-#     output:
-#         "data/raw/{pid}/fitbit_steps_{fitbit_data_type}_parsed.csv"
-#     script:
-#         "../src/data/fitbit_parse_steps.py"
-
-# rule fitbit_parse_sleep:
-#     input:
-#         participant_file = "data/external/participant_files/{pid}.yaml",
-#         raw_data = "data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_raw.csv"
-#     params:
-#         timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-#         table = lambda wildcards: config["FITBIT_SLEEP_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
-#         column_format = config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["COLUMN_FORMAT"],
-#         fitbit_data_type = "{fitbit_data_type}",
-#         sleep_episode_timestamp = config["FITBIT_SLEEP_SUMMARY"]["SLEEP_EPISODE_TIMESTAMP"]
-#     output:
-#         "data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_parsed.csv"
-#     script:
-#         "../src/data/fitbit_parse_sleep.py"
-
-rule pull_empatica_data:
-    input: unpack(pull_empatica_data_input_with_mutation_scripts)
-    params:
-        data_configuration = config["EMPATICA_DATA_STREAMS"][config["EMPATICA_DATA_STREAMS"]["USE"]],
-        sensor = "empatica_" + "{sensor}",
-        pid = "{pid}"
-    output:
-        "data/raw/{pid}/empatica_{sensor}_raw.csv"
-    script:
-        "../src/data/streams/pull_empatica_data.R"
 
 rule empatica_readable_datetime:
     input:

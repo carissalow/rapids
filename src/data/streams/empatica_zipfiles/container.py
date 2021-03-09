@@ -19,9 +19,9 @@ def readFile(file, dtype):
     dict = OrderedDict()
     # file is an in-memory buffer
     with file as csvfile:
-        if dtype in ('electrodermal_activity', 'temperature', 'heartrate', 'blood_volume_pulse'):
+        if dtype in ('EMPATICA_ELECTRODERMAL_ACTIVITY', 'EMPATICA_TEMPERATURE', 'EMPATICA_HEARTRATE', 'EMPATICA_BLOOD_VOLUME_PULSE'):
             reader = csv.reader(csvfile, delimiter='\n')
-        elif dtype == 'accelerometer':
+        elif dtype == 'EMPATICA_ACCELEROMETER':
             reader = csv.reader(csvfile, delimiter=',')
         i = 0
         for row in reader:
@@ -34,9 +34,9 @@ def readFile(file, dtype):
                     pass
                 else:
                     timestamp = timestamp + 1.0 / hertz
-                if dtype in ('electrodermal_activity', 'temperature', 'heartrate', 'blood_volume_pulse'):
+                if dtype in ('EMPATICA_ELECTRODERMAL_ACTIVITY', 'EMPATICA_TEMPERATURE', 'EMPATICA_HEARTRATE', 'EMPATICA_BLOOD_VOLUME_PULSE'):
                     dict[timestamp] = row[0]
-                elif dtype == 'accelerometer':
+                elif dtype == 'EMPATICA_ACCELEROMETER':
                     dict[timestamp] = processAcceleration(row[0], row[1], row[2])
             i += 1
     return dict
@@ -45,15 +45,14 @@ def readFile(file, dtype):
 def extract_empatica_data(data,  sensor):
     sensor_data_file = BytesIO(data).getvalue().decode('utf-8')
     sensor_data_file = StringIO(sensor_data_file)
-
     # read sensor data
-    if sensor in ('electrodermal_activity', 'temperature', 'heartrate', 'blood_volume_pulse'):
+    if sensor in ('EMPATICA_ELECTRODERMAL_ACTIVITY', 'EMPATICA_TEMPERATURE', 'EMPATICA_HEARTRATE', 'EMPATICA_BLOOD_VOLUME_PULSE'):
         ddict = readFile(sensor_data_file, sensor)
         df = pd.DataFrame.from_dict(ddict, orient='index', columns=[sensor])
         df[sensor] = df[sensor].astype(float)
         df.index.name = 'timestamp'
 
-    elif sensor == 'accelerometer':
+    elif sensor == 'EMPATICA_ACCELEROMETER':
         ddict = readFile(sensor_data_file, sensor)
         df = pd.DataFrame.from_dict(ddict, orient='index', columns=['x', 'y', 'z'])
         df['x'] = df['x'].astype(float)
@@ -61,7 +60,7 @@ def extract_empatica_data(data,  sensor):
         df['z'] = df['z'].astype(float)
         df.index.name = 'timestamp'
 
-    elif sensor == 'inter_beat_interval':
+    elif sensor == 'EMPATICA_INTER_BEAT_INTERVAL':
         df = pd.read_csv(sensor_data_file, names=['timestamp', sensor], header=None)
         timestampstart = float(df['timestamp'][0])
         df['timestamp'] = (df['timestamp'][1:len(df)]).astype(float) + timestampstart
@@ -78,17 +77,8 @@ def extract_empatica_data(data,  sensor):
     df.index = df.index.astype(int)
     return(df)
 
-def pull_data(data_configuration, device, sensor, columns_to_download):
-    sensor = sensor[9:].lower()
-    sensor_short_name = {"accelerometer":"ACC",
-                "temperature":"TEMP",
-                "tags":"tags",
-                "heartrate":"HR",
-                "inter_beat_interval":"IBI",
-                "blood_volume_pulse":"BVP",
-                "electrodermal_activity":"EDA"}
-
-    sensor_csv = sensor_short_name[sensor] + '.csv'
+def pull_data(data_configuration, device, sensor, container, columns_to_download):
+    sensor_csv = container + '.csv'
     warning = True
     participant_data = pd.DataFrame(columns=columns_to_download.values())
     participant_data.set_index('timestamp', inplace=True)

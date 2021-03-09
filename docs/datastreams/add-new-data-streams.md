@@ -23,7 +23,7 @@ Both the `container.[R|py]` and the `format.yaml` are saved under `src/data/stre
 
 ## Implement a Container
 
-The `container` script of a data stream should be implemented in R (strongly recommended) or python. This script must have two functions if you are implementing a stream for phone data or one function otherwise. The script can contain any other auxiliary functions that your data stream might need.
+The `container` script of a data stream can be implemented in R (strongly recommended) or python. This script must have two functions if you are implementing a stream for phone data or one function otherwise. The script can contain any other auxiliary functions that your data stream might need.
 
 First of all, add any parameters your script might need in `config.yaml` under `(device)_DATA_STREAMS`. These parameters will be available in the `stream_parameters` argument of the one or two functions you implement.  For example, if you are adding support for `Beiwe` data stored in `PostgreSQL` and your container needs a set of credentials to connect to a database, your new data stream configuration would be:
 
@@ -117,92 +117,134 @@ Then implement one or both of the following functions:
 
 ## Implement a Format
 
-A format describes the mapping between your stream's raw data and the data that RAPIDS needs. This file has a section per sensor (e.g. `PHONE_ACCELEROMETER`), and each section has two keys (attributes):
+A format describes the mapping between your stream's raw data and the data that RAPIDS needs. This file has a section per sensor (e.g. `PHONE_ACCELEROMETER`), and each section has two attributes (keys):
 
-1. `COLUMN_MAPPINGS` is a mapping between the columns RAPIDS needs and the columns your raw data has. 
-2. `MUTATION_SCRIPTS` are a collection of R or Python scripts that transform your raw data into the format RAPIDS needs. 
+1. `RAPIDS_COLUMN_MAPPINGS` are mappings between the columns RAPIDS needs and the columns your raw data already has. 
 
-Let's explain these keys with examples.
+    1. The reserved keyword `FLAG_TO_MUTATE` flags columns that RAPIDS requires but that are not initially present in your container (database, CSV file). These columns have to be created by your mutation scripts.
+
+2. `MUTATION`. Columns marked as `FLAG_TO_MUTATE` need to be created before RAPIDS can process data from a sensor
+    
+    2. `COLUMN_MAPPINGS` are mappings between the columns a mutation `SCRIPT` needs and the columns your raw data has.
+
+    2. `SCRIPTS` are a collection of R or Python scripts that transform one or more raw data columns into the format RAPIDS needs.
+
+!!! hint
+    `[RAPIDS_COLUMN_MAPPINGS]` and `[MUTATE][COLUMN_MAPPINGS]` have a `key` (left-hand side string) and a `value` (right-hand side string). The `values` are the names used to pulled columns from a container (e.g., columns in a database table). All `values` are renamed to their `keys` in lower case. The renamed columns are sent to every mutation script within the `data` argument, and the final output is the input RAPIDS process further.
+
+    For example, let's assume we are using `aware_mysql` and defining the following format for `PHONE_FAKESENSOR`:
+
+    ```yaml
+    PHONE_FAKESENSOR:
+        ANDROID:
+            RAPIDS_COLUMN_MAPPINGS:
+                TIMESTAMP: beiwe_timestamp
+                DEVICE_ID: beiwe_deviceID
+                MAGNITUDE_SQUARED: FLAG_TO_MUTATE
+            MUTATE:
+                COLUMN_MAPPINGS:
+                    MAGNITUDE: beiwe_value
+                SCRIPTS:
+                  - src/data/streams/mutations/phone/square_magnitude.py
+    ```
+
+    RAPIDS will:
+
+    1. Download `beiwe_timestamp`, `beiwe_deviceID`, and `beiwe_value` from the container of `aware_mysql` (MySQL DB)
+    2. Rename these columns to `timestamp`, `device_id`, and `magnitude`, respectively.
+    3. Execute `square_magnitude.py` with a data frame as an argument containing the renamed columns. This script will square `magnitude` and rename it to `magnitude_squared`
+    4. Verify the data frame returned by `square_magnitude.py` has the columns RAPIDS needs `timestamp`, `device_id`, and `magnitude_squared`.
+    5. Use this data frame as the input to be processed in the pipeline.
+
+    Note that although `RAPIDS_COLUMN_MAPPINGS` and `[MUTATE][COLUMN_MAPPINGS]` keys are in capital letters for readability (e.g. `MAGNITUDE_SQUARED`), the names of the final columns you mutate in your scripts should be lower case.
+    
+
+Let's explain this column mapping further with examples.
 
 ### Name mapping
 
-The mapping for some sensors is straightforward. For example, accelerometer data most of the time has a timestamp, three axis (x,y,z) and a device id that produced it. It is likely that AWARE and a different sensing app like Beiwe logged accelerometer data in the same way but with different columns names. In this case we only need to match Beiwe data columns to RAPIDS columns one-to-one:
+The mapping for some sensors is straightforward. For example, accelerometer data most of the time has a timestamp, three axes (x,y,z), and a device id that produced it. AWARE and a different sensing app like Beiwe likely logged accelerometer data in the same way but with different column names. In this case, we only need to match Beiwe data columns to RAPIDS columns one-to-one:
 
 ```yaml hl_lines="4 5 6 7 8"
 PHONE_ACCELEROMETER:
   ANDROID:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: beiwe_timestamp
       DEVICE_ID: beiwe_deviceID
       DOUBLE_VALUES_0: beiwe_x
       DOUBLE_VALUES_1: beiwe_y
       DOUBLE_VALUES_2: beiwe_z
-    MUTATION_SCRIPTS: # it's ok if this is empty
+    MUTATE:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # it's ok if this is empty
 ```
 
 ### Value mapping
-For some sensors we need to map column names and values. For example, screen data has ON and OFF events, let's suppose Beiwe represents an ON event with the number `1` but RAPIDS identifies ON events with the number `2`. In this case we need to mutate the raw data coming from Beiwe and replace all `1`s with `2`s.
+For some sensors, we need to map column names and values. For example, screen data has ON and OFF events; let's suppose Beiwe represents an ON event with the number `1,` but RAPIDS identifies ON events with the number `2`. In this case, we need to mutate the raw data coming from Beiwe and replace all `1`s with `2`s.
 
-We do this by listing one or more R or Python scripts in `MUTATION_SCRIPTS` that will be executed in order:
+We do this by listing one or more R or Python scripts in `MUTATION_SCRIPTS` that will be executed in order. We usually store all mutation scripts under `src/data/streams/mutations/[device]/[platform]/` and they can be reused across data streams.
 
-```yaml hl_lines="8"
+```yaml hl_lines="10"
 PHONE_SCREEN:
   ANDROID:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: beiwe_timestamp
       DEVICE_ID: beiwe_deviceID
       EVENT: beiwe_event
-    MUTATION_SCRIPTS:
+     MUTATE:
+      COLUMN_MAPPINGS:
+      SCRIPTS:
         - src/data/streams/mutations/phone/beiwe/beiwe_screen_map.py
 ```
 
-Every `MUTATION_SCRIPT` has a `main` function that receives a data frame with your raw sensor data and should return the mutated data. We usually store all mutation scripts under `src/data/streams/mutations/[device]/[platform]/` and they can be reused across data streams.
-
 !!! hint
-    This `MUTATION_SCRIPT` can also be used to clean/preprocess your data before extracting behavioral features.
+    - A `MUTATION_SCRIPT` can also be used to clean/preprocess your data before extracting behavioral features.
+    - A mutation script has to have a `main` function that receives two arguments, `data` and `stream_parameters`.
+    - The `stream_parameters` argument contains the `config.yaml` key/values of your data stream (this is the same argument that your `container.[py|R]` script receives, see [Implement a Container](#implement-a-container)). 
 
-=== "python"
-    Example of a python mutation script
-    ```python
-    import pandas as pd
+    === "python"
+        Example of a python mutation script
+        ```python
+        import pandas as pd
 
-    def main(data):
-        # mutate data
-        return(data)
-    ```
-=== "R"
-    Example of a R mutation script
-    ```r
-    source("renv/activate.R") # needed to use RAPIDS renv environment
-    library(dplyr)
+        def main(data, stream_parameters):
+            # mutate data
+            return(data)
+        ```
+    === "R"
+        Example of a R mutation script
+        ```r
+        source("renv/activate.R") # needed to use RAPIDS renv environment
+        library(dplyr)
 
-    main <- function(data){
-        # mutate data
-        return(data)
-    }
-    ```
+        main <- function(data, stream_parameters){
+            # mutate data
+            return(data)
+        }
+        ```
 
 ### Complex mapping
-Sometimes, your raw data doesn't even have the same columns RAPIDS expects for a sensor. For example, let's pretend Beiwe stores `PHONE_ACCELEROMETER` axis data in a single column called `acc_col` instead of three: `x-y-z`. You need to create a `MUTATION_SCRIPT` to split `acc_col` into three columns `x`, `y`, and `z`. 
+Sometimes, your raw data doesn't even have the same columns RAPIDS expects for a sensor. For example, let's pretend Beiwe stores `PHONE_ACCELEROMETER` axis data in a single column called `acc_col` instead of three. You have to create a `MUTATION_SCRIPT` to split `acc_col` into three columns `x`, `y`, and `z`. 
 
-For this, you mark the missing `COLUMN_MAPPINGS` with the word `FLAG_TO_MUTATE`, map `acc_col` to `FLAG_AS_EXTRA`, and list a Python script under `MUTATION_SCRIPT` with the code to split `acc_col`.
+For this, you mark the three axes columns RAPIDS needs in `[RAPIDS_COLUMN_MAPPINGS]` with the word `FLAG_TO_MUTATE`, map `acc_col` in `[MUTATION][COLUMN_MAPPINGS]`, and list a Python script under `[MUTATION][SCRIPTS]` with the code to split `acc_col`. See an example below.
 
-Every column mapped with `FLAG_AS_EXTRA` will be included in the data frame you receive in your mutation script and we recommend deleting them from the returned data frame after they are not needed anymore.
+RAPIDS expects that every column mapped as `FLAG_TO_MUTATE` will be generated by your mutation script, so it won't try to retrieve them from your container (database, CSV file, etc.). 
 
-!!! hint
-    Note that although `COLUMN_MAPPINGS` keys are in capital letters for readability (e.g. `DOUBLE_VALUES_0`), the names of the final columns you mutate in your scripts should be lower case.
+In our example, `acc_col` will be fetched from the stream's container and renamed to `JOINED_AXES` because `beiwe_split_acc.py` will split it into `double_values_0`, `double_values_1`, and `double_values_2`.
 
-```yaml hl_lines="6 7 8 9 11"
+```yaml hl_lines="6 7 8 11 13"
 PHONE_ACCELEROMETER:
   ANDROID:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: beiwe_timestamp
       DEVICE_ID: beiwe_deviceID
       DOUBLE_VALUES_0: FLAG_TO_MUTATE
       DOUBLE_VALUES_1: FLAG_TO_MUTATE
       DOUBLE_VALUES_2: FLAG_TO_MUTATE
-      FLAG_AS_EXTRA: acc_col
-    MUTATION_SCRIPTS:
+    MUTATE:
+      COLUMN_MAPPINGS:
+        JOINED_AXES: acc_col
+      SCRIPTS:
         - src/data/streams/mutations/phone/beiwe/beiwe_split_acc.py
 ```
 
@@ -210,7 +252,7 @@ This is a draft of `beiwe_split_acc.py` `MUTATION_SCRIPT`:
 ```python
 import pandas as pd
 
-def main(data):
+def main(data, stream_parameters):
     # data has the acc_col
     # split acc_col into three columns: double_values_0, double_values_1, double_values_2 to match RAPIDS format
     # remove acc_col since we don't need it anymore
@@ -222,28 +264,32 @@ There is a special case for a complex mapping scenario for smartphone data strea
 
 In case you didn't notice, the examples we have used so far are grouped under an `ANDROID` key, which means they will be applied to data collected by Android phones. Additionally, each sensor has an `IOS` key for a similar purpose. We use the complex mapping described above to transform iOS data into an Android format (it's always iOS to Android and any new phone data stream must do the same).
 
-For example, this is the `format.yaml` key for `PHONE_ACTVITY_RECOGNITION`. Note that the `ANDROID` mapping is simple (one-to-one) but the `IOS` mapping is complex with two `FLAG_TO_MUTATE` columns, one `FLAG_AS_EXTRA` column, and one `MUTATION_SCRIPT`.
+For example, this is the `format.yaml` key for `PHONE_ACTVITY_RECOGNITION`. Note that the `ANDROID` mapping is simple (one-to-one) but the `IOS` mapping is complex with two `FLAG_TO_MUTATE` columns, one `[MUTATE][COLUMN_MAPPINGS]` mapping, and one `[MUTATION][SCRIPT]`.
 
-```yaml hl_lines="14 15 17 19"
+```yaml hl_lines="16 17 21 23"
 PHONE_ACTIVITY_RECOGNITION:
   ANDROID:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
       ACTIVITY_TYPE: activity_type
       ACTIVITY_NAME: activity_name
       CONFIDENCE: confidence
-    MUTATION_SCRIPTS: 
+    MUTATE:
+      COLUMN_MAPPINGS:
+      SCRIPTS:
   IOS:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
       ACTIVITY_TYPE: FLAG_TO_MUTATE
       ACTIVITY_NAME: FLAG_TO_MUTATE
       CONFIDENCE: confidence
-      FLAG_AS_EXTRA: activities
-    MUTATION_SCRIPTS:
-      - "src/data/streams/mutations/phone/aware/activity_recogniton_ios_unification.R"
+    MUTATE:
+      COLUMN_MAPPINGS:
+        ACTIVITIES: activities
+      SCRIPTS:
+        - "src/data/streams/mutations/phone/aware/activity_recogniton_ios_unification.R"
 ```
 
 ??? "Example activity_recogniton_ios_unification.R"
@@ -304,7 +350,7 @@ PHONE_ACTIVITY_RECOGNITION:
         return(ios_gar)
     }
 
-    main <- function(data){
+    main <- function(data, stream_parameters){
         return(unify_ios_activity_recognition(data))
     }
     ```

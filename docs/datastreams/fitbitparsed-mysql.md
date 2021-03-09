@@ -20,14 +20,14 @@ The `format.yaml` maps and transforms columns in your raw data stream to the [ma
 src/data/streams/fitbitparsed_mysql/format.yaml
 ```
 
-If you want RAPIDS to process Fitbit sensor data using this stream, you will need to replace any `COLUMN_MAPPINGS` inside **each sensor** section in  `format.yaml` to match your raw data column names. 
+If you want RAPIDS to process Fitbit sensor data using this stream, you will need to replace any `RAPIDS_COLUMN_MAPPINGS` inside **each sensor** section in  `format.yaml` to match your raw data column names. 
 
 All columns are mandatory, however, all except `device_id` and `local_date_time` can be empty if you don't have that data. Just have in mind that some features will be empty if some of these columns are empty.
 
 ??? info "FITBIT_HEARTRATE_SUMMARY section"
 
     
-    **COLUMN_MAPPINGS**
+    **RAPIDS_COLUMN_MAPPINGS**
 
     | RAPIDS column   | Stream column   |
     |-----------------|-----------------|

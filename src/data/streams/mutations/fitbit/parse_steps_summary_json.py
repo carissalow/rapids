@@ -13,7 +13,7 @@ def parseStepsData(steps_data):
     records = []
     
     # Parse JSON into individual records
-    for record in steps_data.fitbit_data:
+    for record in steps_data.json_fitbit_column:
         record = json.loads(record)  # Parse text into JSON
         if "activities-steps" in record.keys():
             curr_date = datetime.strptime(record["activities-steps"][0]["dateTime"], "%Y-%m-%d")
