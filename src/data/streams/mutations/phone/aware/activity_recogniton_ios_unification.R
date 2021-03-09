@@ -53,6 +53,6 @@ unify_ios_activity_recognition <- function(ios_gar){
     return(ios_gar)
 }
 
-main <- function(data){
+main <- function(data, stream_parameters){
     return(unify_ios_activity_recognition(data))
 }

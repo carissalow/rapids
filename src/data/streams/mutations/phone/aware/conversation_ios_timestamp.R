@@ -14,6 +14,6 @@ unify_ios_conversation <- function(conversation){
     }
     return(conversation) 
 }
-main <- function(data){
+main <- function(data, stream_parameters){
     return(unify_ios_conversation(data))
 }

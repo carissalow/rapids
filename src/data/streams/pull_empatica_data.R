@@ -4,7 +4,7 @@ library(yaml)
 library(dplyr)
 library(readr)
 # we use reticulate but only load it if we are going to use it to minimize the case when old RAPIDS deployments need to update ther renv
-mutate_data <- function(scripts, data){
+mutate_data <- function(scripts, data, data_configuration){
   for(script in scripts){
     if(grepl("\\.(R)$", script)){
       myEnv <- new.env()    
@@ -12,7 +12,7 @@ mutate_data <- function(scripts, data){
       attach(myEnv, name="sourced_scripts_rapids")
       if(exists("main", myEnv)){
         message(paste("Applying mutation script", script))
-        data <- main(data)
+        data <- main(data, data_configuration)
       } else{
         stop(paste0("The following mutation script does not have main function: ", script))
       }
@@ -24,7 +24,7 @@ mutate_data <- function(scripts, data){
       script_functions <- import_from_path(module, path = dirname(script))
       if(py_has_attr(script_functions, "main")){
         message(paste("Applying mutation script", script))
-        data <- script_functions$main(data)
+        data <- script_functions$main(data, data_configuration)
       } else{
         stop(paste0("The following mutation script does not have a main function: ", script))
       }
@@ -107,7 +107,7 @@ pull_empatica_data_main <- function(){
     renamed_data <- rename_columns(columns_to_rename, data)
 
     mutation_scripts <- stream_schema[[sensor]][["MUTATION_SCRIPTS"]]
-    mutated_data <- mutate_data(mutation_scripts, renamed_data)
+    mutated_data <- mutate_data(mutation_scripts, renamed_data, data_configuration)
 
     if(length(setdiff(expected_columns, colnames(mutated_data))) > 0)
       stop(paste("The mutated data for", device, "is missing these columns expected by RAPIDS: [", paste(setdiff(expected_columns, colnames(mutated_data)), collapse=","),"]. One ore more mutation scripts in [", sensor,"][",toupper(device_os), "]","[MUTATION_SCRIPTS] are removing or not adding these columns"))
