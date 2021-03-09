@@ -34,19 +34,6 @@ rule pull_phone_data:
     script:
         "../src/data/streams/pull_phone_data.R"
 
-rule download_fitbit_data:
-    input:
-        participant_file = "data/external/participant_files/{pid}.yaml",
-        input_file = [] if config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["TYPE"] == "DATABASE" else lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"]
-    params:
-        data_configuration = config["FITBIT_DATA_CONFIGURATION"],
-        sensor = "fitbit_" + "{sensor}",
-        table = lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"],
-    output:
-        "data/raw/{pid}/fitbit_{sensor}_raw.csv"
-    script:
-        "../src/data/download_fitbit_data.R"
-
 rule compute_time_segments:
     input: 
         config["TIME_SEGMENTS"]["FILE"],
@@ -197,74 +184,77 @@ rule phone_application_categories:
     script:
         "../src/data/application_categories.R"
 
-rule fitbit_parse_heartrate:
-    input:
-        participant_file = "data/external/participant_files/{pid}.yaml",
-        raw_data = "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_raw.csv"
+rule pull_fitbit_data:
+    input: unpack(pull_fitbit_data_input_with_mutation_scripts)
     params:
-        timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-        table = lambda wildcards: config["FITBIT_HEARTRATE_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
-        column_format = config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["COLUMN_FORMAT"],
-        fitbit_data_type = "{fitbit_data_type}"
+        data_configuration = config["FITBIT_DATA_STREAMS"][config["FITBIT_DATA_STREAMS"]["USE"]],
+        sensor = "fitbit_" + "{sensor}",
+        tables = lambda wildcards: config["FITBIT_" + str(wildcards.sensor).upper()]["TABLE"],
     output:
-        "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_parsed.csv"
+        "data/raw/{pid}/fitbit_{sensor}_raw.csv"
     script:
-        "../src/data/fitbit_parse_heartrate.py"
+        "../src/data/streams/pull_fitbit_data.R"
 
-rule fitbit_parse_steps:
-    input:
-        participant_file = "data/external/participant_files/{pid}.yaml",
-        raw_data = "data/raw/{pid}/fitbit_steps_{fitbit_data_type}_raw.csv"
-    params:
-        timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-        table = lambda wildcards: config["FITBIT_STEPS_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
-        column_format = config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["COLUMN_FORMAT"],
-        fitbit_data_type = "{fitbit_data_type}"
-    output:
-        "data/raw/{pid}/fitbit_steps_{fitbit_data_type}_parsed.csv"
-    script:
-        "../src/data/fitbit_parse_steps.py"
-
-rule fitbit_parse_sleep:
-    input:
-        participant_file = "data/external/participant_files/{pid}.yaml",
-        raw_data = "data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_raw.csv"
-    params:
-        timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-        table = lambda wildcards: config["FITBIT_SLEEP_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
-        column_format = config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["COLUMN_FORMAT"],
-        fitbit_data_type = "{fitbit_data_type}",
-        sleep_episode_timestamp = config["FITBIT_SLEEP_SUMMARY"]["SLEEP_EPISODE_TIMESTAMP"]
-    output:
-        "data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_parsed.csv"
-    script:
-        "../src/data/fitbit_parse_sleep.py"
-
-# rule fitbit_parse_calories:
-#     input:
-#         data = expand("data/raw/{{pid}}/fitbit_calories_{fitbit_data_type}_raw.csv", fitbit_data_type = (["json"] if config["FITBIT_CALORIES"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"]))
-#     params:
-#         timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
-#         table = config["FITBIT_CALORIES"]["TABLE"],
-#         table_format = config["FITBIT_CALORIES"]["TABLE_FORMAT"]
-#     output:
-#         summary_data = "data/raw/{pid}/fitbit_calories_summary_parsed.csv",
-#         intraday_data = "data/raw/{pid}/fitbit_calories_intraday_parsed.csv"
-#     script:
-#         "../src/data/fitbit_parse_calories.py"
 
 rule fitbit_readable_datetime:
     input:
-        sensor_input = "data/raw/{pid}/fitbit_{sensor}_{fitbit_data_type}_parsed.csv",
-        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
+        sensor_input = "data/raw/{pid}/fitbit_{sensor}_raw.csv",
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv",
+        pid_file = "data/external/participant_files/{pid}.yaml",
+        tzcodes_file = input_tzcodes_file,
     params:
-        fixed_timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
+        device_type = "fitbit",
+        timezone_parameters = config["TIMEZONE"],
+        pid = "{pid}",
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
-        "data/raw/{pid}/fitbit_{sensor}_{fitbit_data_type}_parsed_with_datetime.csv"
+        "data/raw/{pid}/fitbit_{sensor}_with_datetime.csv"
     script:
-        "../src/data/readable_datetime.R"
+        "../src/data/datetime/readable_datetime.R"
+
+# rule fitbit_parse_heartrate:
+#     input:
+#         participant_file = "data/external/participant_files/{pid}.yaml",
+#         raw_data = "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_raw.csv"
+#     params:
+#         timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
+#         table = lambda wildcards: config["FITBIT_HEARTRATE_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
+#         column_format = config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["COLUMN_FORMAT"],
+#         fitbit_data_type = "{fitbit_data_type}"
+#     output:
+#         "data/raw/{pid}/fitbit_heartrate_{fitbit_data_type}_parsed.csv"
+#     script:
+#         "../src/data/fitbit_parse_heartrate.py"
+
+# rule fitbit_parse_steps:
+#     input:
+#         participant_file = "data/external/participant_files/{pid}.yaml",
+#         raw_data = "data/raw/{pid}/fitbit_steps_{fitbit_data_type}_raw.csv"
+#     params:
+#         timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
+#         table = lambda wildcards: config["FITBIT_STEPS_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
+#         column_format = config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["COLUMN_FORMAT"],
+#         fitbit_data_type = "{fitbit_data_type}"
+#     output:
+#         "data/raw/{pid}/fitbit_steps_{fitbit_data_type}_parsed.csv"
+#     script:
+#         "../src/data/fitbit_parse_steps.py"
+
+# rule fitbit_parse_sleep:
+#     input:
+#         participant_file = "data/external/participant_files/{pid}.yaml",
+#         raw_data = "data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_raw.csv"
+#     params:
+#         timezone = config["FITBIT_DATA_CONFIGURATION"]["TIMEZONE"]["VALUE"],
+#         table = lambda wildcards: config["FITBIT_SLEEP_"+str(wildcards.fitbit_data_type).upper()]["TABLE"],
+#         column_format = config["FITBIT_DATA_CONFIGURATION"]["SOURCE"]["COLUMN_FORMAT"],
+#         fitbit_data_type = "{fitbit_data_type}",
+#         sleep_episode_timestamp = config["FITBIT_SLEEP_SUMMARY"]["SLEEP_EPISODE_TIMESTAMP"]
+#     output:
+#         "data/raw/{pid}/fitbit_sleep_{fitbit_data_type}_parsed.csv"
+#     script:
+#         "../src/data/fitbit_parse_sleep.py"
 
 rule pull_empatica_data:
     input: unpack(pull_empatica_data_input_with_mutation_scripts)

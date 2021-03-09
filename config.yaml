@@ -332,15 +332,12 @@ PHONE_WIFI_VISIBLE:
 ########################################################################################################################
 
 # See https://www.rapids.science/latest/setup/configuration/#device-data-source-configuration
-FITBIT_DATA_CONFIGURATION:
-  SOURCE: 
-    TYPE: DATABASE # DATABASE or FILES (set each [FITBIT_SENSOR][TABLE] attribute with a table name or a file path accordingly)
-    COLUMN_FORMAT: JSON # JSON or PLAIN_TEXT
-    DATABASE_GROUP: *database_group
-    DEVICE_ID_COLUMN: device_id # column name
-  TIMEZONE: 
-    TYPE: SINGLE # Fitbit devices don't support time zones so we read this data in the timezone indicated by VALUE 
-    VALUE: *timezone
+FITBIT_DATA_STREAMS:
+  USE: fitbitjson_mysql
+  
+  # AVAILABLE:
+  fitbitjson_mysql: 
+    DATABASE_GROUP: MY_GROUP
 
 # Sensors ------
 

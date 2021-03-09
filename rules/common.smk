@@ -99,3 +99,33 @@ def pull_empatica_data_input_with_mutation_scripts(wilcards):
                 raise ValueError("Mutate scripts can only be Python or R scripts (.py, .R).\n   Instead we got {script} in \n   [{sensor}] of {schema}".format(script=script, sensor=sensor, schema=input.get("stream_format")))
             input["mutationscript"+str(idx)] = script
     return input
+
+def pull_fitbit_data_input_with_mutation_scripts(wilcards):
+    import yaml
+    from pathlib import Path
+    input = dict()
+    fitbit_stream = config["FITBIT_DATA_STREAMS"]["USE"]
+
+    input["participant_file"] = "data/external/participant_files/{pid}.yaml"
+    input["rapids_schema_file"] = "src/data/streams/rapids_columns.yaml"
+    input["stream_format"] = "src/data/streams/" + fitbit_stream + "/format.yaml"
+
+    if Path("src/data/streams/"+ fitbit_stream + "/container.R").exists():
+        input["stream_container"] = "src/data/streams/"+ fitbit_stream + "/container.R"
+    elif Path("src/data/streams/"+ fitbit_stream + "/container.py").exists():
+        input["stream_container"] = "src/data/streams/"+ fitbit_stream + "/container.py"
+    else:
+        raise ValueError("The container script for {stream} is missing: src/data/streams/{stream}/container.[py|R]".format(stream=fitbit_stream))
+
+    schema = yaml.load(open(input.get("stream_format"), 'r'), Loader=yaml.FullLoader)
+    sensor = ("fitbit_" + wilcards.sensor).upper()
+    if sensor not in schema:
+        raise ValueError("{sensor} is not defined in the schema {schema}".format(sensor=sensor, schema=input.get("stream_format")))
+    
+    scripts = schema[sensor]["MUTATION_SCRIPTS"]
+    if isinstance(scripts, list):
+        for idx, script in enumerate(scripts):
+            if not script.lower().endswith((".py", ".r")):
+                raise ValueError("Mutate scripts can only be Python or R scripts (.py, .R).\n   Instead we got {script} in \n   [{sensor}] of {schema}".format(script=script, sensor=sensor, schema=input.get("stream_format")))
+            input["mutationscript"+str(idx)] = script
+    return input

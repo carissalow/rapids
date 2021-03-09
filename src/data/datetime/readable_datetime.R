@@ -53,6 +53,8 @@ create_mising_temporal_column <- function(data, device_type){
       # For fibit we infere timestamp from Fitbit's local date time
       if(nrow(data) == 0)
         return(data %>% mutate(timestamp = NA_real_))
+      if(any(is.na(parse_date_time(data$local_date_time, orders= c("%Y/%m/%d %H:%M:%S","%Y-%m-%d %H:%M:%S"), exact=T))))
+        stop("One or more values in the local_date_time column do not have the expected format: yyyy-mm-dd hh:mm:ss or yyyy/mm/dd hh:mm:ss")
       return(data %>% 
           group_by(local_timezone) %>% 
           nest() %>% 

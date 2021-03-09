@@ -24,7 +24,7 @@ required:
   - PHONE_SCREEN
   - PHONE_WIFI_CONNECTED
   - PHONE_WIFI_VISIBLE
-  - FITBIT_DATA_CONFIGURATION
+  - FITBIT_DATA_STREAMS
   - FITBIT_DATA_YIELD
   - FITBIT_HEARTRATE_SUMMARY
   - FITBIT_HEARTRATE_INTRADAY
@@ -819,18 +819,16 @@ properties:
         additionalProperties: 
           $ref: "#/definitions/PROVIDER"
 
-  FITBIT_DATA_CONFIGURATION:
-    allOf:
-      - $ref: "#/definitions/DATA_CONFIGURATION"
-      - properties:
-          SOURCE:
-            properties:
-              TYPE:
-                type: string
-                enum: [DATABASE, FILES]
-              COLUMN_FORMAT: 
-                  type: string
-                  enum: ["JSON", "PLAIN_TEXT"]
+  FITBIT_DATA_STREAMS:
+      type: object
+      properties:
+        USE:
+          type: string
+        fitbitjson_mysql:
+          type: object
+          properties:
+            DATABASE_GROUP:
+              type: string
   
   FITBIT_DATA_YIELD:
     type: object

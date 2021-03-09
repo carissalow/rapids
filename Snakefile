@@ -269,8 +269,7 @@ for provider in config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"].keys():
 for provider in config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"].keys():
     if config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_summary_raw.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_summary_parsed.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_summary_parsed_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_summary_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_steps_summary_features/fitbit_steps_summary_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/fitbit_steps_summary.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
