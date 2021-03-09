@@ -84,6 +84,25 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted from the `FLAG_AS
         src/data/streams/mutations/phone/aware/activity_recogniton_ios_unification.R
         ```
 
+??? info "PHONE_APPLICATIONS_FOREGROUND"
+
+    === "ANDROID"
+    
+        **COLUMN_MAPPINGS**
+
+        | RAPIDS column      | Stream column      |
+        |--------------------|--------------------|
+        | TIMESTAMP          | timestamp          |
+        | DEVICE_ID          | device_id          |
+        | PACKAGE_NAME       | package_name       |
+        | APPLICATION_NAME   | application_name   |
+        | IS_SYSTEM_APP      | is_system_app      |
+
+        **MUTATION_SCRIPTS**
+
+        None
+
+
 ??? info "PHONE_CONVERSATION"
 
     === "ANDROID"
