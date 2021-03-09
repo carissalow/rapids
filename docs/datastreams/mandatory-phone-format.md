@@ -35,6 +35,16 @@ This is a description of the format RAPIDS needs to process data for the followi
     | IS_SYSTEM_APP      | Device’s pre-installed application                                        |
 
 
+??? info "PHONE_BATTERY"
+
+    | RAPIDS column      | Description                                                               |
+    |--------------------|---------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged               |
+    | DEVICE_ID          | A string that uniquely identifies a device                                |
+    | BATTERY_STATUS     | An integer that denotes battery status: 0 or 1 = unknown, 2 = charging, 3 = discharging, 4 = not charging, 5 = full    |
+    | BATTERY_LEVEL      | An integer that denotes battery level                                     |
+
+
 ??? info "PHONE_CONVERSATION"
 
     | RAPIDS column        | Description                                                                          |

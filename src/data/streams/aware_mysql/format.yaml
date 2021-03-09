@@ -46,6 +46,23 @@ PHONE_APPLICATIONS_FOREGROUND:
       IS_SYSTEM_APP: is_system_app
     MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
 
+PHONE_BATTERY:
+  ANDROID:
+    COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      BATTERY_STATUS: battery_status
+      BATTERY_LEVEL: battery_level
+    MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      BATTERY_STATUS: battery_status
+      BATTERY_LEVEL: battery_level
+    MUTATION_SCRIPTS:
+      - "src/data/streams/mutations/phone/aware/battery_ios_unification.R"
+
 PHONE_CONVERSATION:
   ANDROID:
     COLUMN_MAPPINGS:

@@ -102,6 +102,35 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted from the `FLAG_AS
 
         None
 
+??? info "PHONE_BATTERY"
+
+    === "ANDROID"
+    
+        **COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | BATTERY_STATUS       | battery_status      |
+        | BATTERY_LEVEL        | battery_level       |
+
+        **MUTATION_SCRIPTS**
+
+        None
+
+    === "IOS"
+
+        **COLUMN_MAPPINGS**
+
+        Same as ANDROID
+
+        **MUTATION_SCRIPTS**
+        
+        ```bash
+        src/data/streams/mutations/phone/aware/battery_ios_unification.R
+        ```
+
 
 ??? info "PHONE_CONVERSATION"
 
