@@ -1,29 +1,22 @@
 # Add New Data Streams
 
-A data stream is a set of sensor data collected using a specific type of **device** with a specific **format** and stored in a specific **container**. RAPIDS is agnostic to data streams' formats and containers (see the [Data Streams Introduction](../data-streams-introduction) for a list of supported data streams).
+A data stream is a set of sensor data collected using a specific type of **device** with a specific **format** and stored in a specific **container**. RAPIDS is agnostic to data streams' formats and container; see the [Data Streams Introduction](../data-streams-introduction) for a list of supported streams.
 
-In short, a format describes how raw data logged by a device maps to the data expected by RAPIDS, and a container is a script that connects to the database or file where that data is stored. 
+**A container** is queried with an R or Python script that connects to the database, API or file where your stream's raw data is stored. 
 
-The most common cases when you would want to implement a new data stream are:
-
-- You collected data with a mobile sensing app RAPIDS does not support yet. For example, [Beiwe](https://www.beiwe.org/) data stored in MySQL. You will need to define a new format and a new container.
-- You collected data with a mobile sensing app RAPIDS supports but this data is stored in a container that RAPIDS can't connect to yet. For example, AWARE data stored in PostgreSQL. In this case, you can reuse the format of the`aware_mysql` stream but you will need to implement a new container script.
-
-!!! hint
-    RAPIDS supports smartphones, Fitbit, and Empatica devices, you can add a new data stream for the first two.
-
-## Formats and Containers in RAPIDS
-
-**CONTAINER**. The container of a data stream is queried using a `container.[R|py]` script. This script implements functions that will pull data from a database, file, etc.
-
-**FORMAT**. The format of a data stream is described using a `format.yaml` file. A format file describes the mapping between your stream's raw data and the data that RAPIDS needs.
+**A format** is described using a `format.yaml` file that specifies how to map and mutate your stream's raw data to match the data and format RAPIDS needs.
 
 Both the `container.[R|py]` and the `format.yaml` are saved under `src/data/streams/[stream_name]` where `[stream_name]` can be 
 `aware_mysql` for example.
 
+The most common cases when you would want to implement a new data stream are:
+
+- You collected data with a mobile sensing app RAPIDS does not support yet. For example, [Beiwe](https://www.beiwe.org/) data stored in MySQL. You will need to define a new format file and a new container script.
+- You collected data with a mobile sensing app RAPIDS supports, but this data is stored in a container that RAPIDS can't connect to yet. For example, AWARE data stored in PostgreSQL. In this case, you can reuse the format file of the `aware_mysql` stream, but you will need to implement a new container script.
+
 ## Implement a Container
 
-The `container` script of a data stream can be implemented in R (strongly recommended) or python. This script must have two functions if you are implementing a stream for phone data or one function otherwise. The script can contain any other auxiliary functions that your data stream might need.
+The `container` script of a data stream can be implemented in R (strongly recommended) or python. This script must have two functions if you are implementing a stream for phone data or one function otherwise. The script can contain other auxiliary functions.
 
 First of all, add any parameters your script might need in `config.yaml` under `(device)_DATA_STREAMS`. These parameters will be available in the `stream_parameters` argument of the one or two functions you implement.  For example, if you are adding support for `Beiwe` data stored in `PostgreSQL` and your container needs a set of credentials to connect to a database, your new data stream configuration would be:
 
@@ -48,7 +41,7 @@ Then implement one or both of the following functions:
     |--------------------|-------------------------------------------------------------------------------------------------------|
     | stream_parameters | Any parameters (keys/values) set by the user in any `[DEVICE_DATA_STREAMS][stream_name]` key of `config.yaml`. For example, `[DATABASE_GROUP]` inside `[FITBIT_DATA_STREAMS][fitbitjson_mysql]` | 
     | sensor_container   | The value set by the user in any `[DEVICE_SENSOR][CONTAINER]` key of `config.yaml`. It can be a table, file path, or whatever data source you want to support that contains the **data from a single sensor for all participants**. For example, `[PHONE_ACCELEROMETER][CONTAINER]`|
-    | device             | The device id that you need to get the data for (this is set by the user in the [participant files](../../setup/configuration/#participant-files)). For example, in AWARE this device is a uuid|
+    | device             | The device id that you need to get the data for (this is set by the user in the [participant files](../../setup/configuration/#participant-files)). For example, in AWARE this device id is a uuid|
     | columns            | A list of the columns that you need to get from `sensor_container`. You specify these columns in your stream's `format.yaml`|
 
 
@@ -89,7 +82,7 @@ Then implement one or both of the following functions:
     | Param              | Description                                                                                           |   
     |--------------------|-------------------------------------------------------------------------------------------------------|
     | stream_parameters | Any parameters (keys/values) set by the user in any `[DEVICE_DATA_STREAMS][stream_name]` key of `config.yaml`. For example, `[DATABASE_GROUP]` inside `[FITBIT_DATA_STREAMS][fitbitjson_mysql]` | 
-    | device             | The device id that you need to infer the OS for (this is set by the user in the [participant files](../../setup/configuration/#participant-files)). For example, in AWARE this device is a uuid|
+    | device             | The device id that you need to infer the OS for (this is set by the user in the [participant files](../../setup/configuration/#participant-files)). For example, in AWARE this device id is a uuid|
 
 
     !!! example
@@ -117,13 +110,13 @@ Then implement one or both of the following functions:
 
 ## Implement a Format
 
-A format describes the mapping between your stream's raw data and the data that RAPIDS needs. This file has a section per sensor (e.g. `PHONE_ACCELEROMETER`), and each section has two attributes (keys):
+A format file `format.yaml` describes the mapping between your stream's raw data and the data that RAPIDS needs. This file has a section per sensor (e.g. `PHONE_ACCELEROMETER`), and each section has two attributes (keys):
 
 1. `RAPIDS_COLUMN_MAPPINGS` are mappings between the columns RAPIDS needs and the columns your raw data already has. 
 
     1. The reserved keyword `FLAG_TO_MUTATE` flags columns that RAPIDS requires but that are not initially present in your container (database, CSV file). These columns have to be created by your mutation scripts.
 
-2. `MUTATION`. Columns marked as `FLAG_TO_MUTATE` need to be created before RAPIDS can process data from a sensor
+2. `MUTATION`. Sometimes your raw data needs to be transformed to match the format RAPIDS can handle (including creating columns marked as `FLAG_TO_MUTATE`)
     
     2. `COLUMN_MAPPINGS` are mappings between the columns a mutation `SCRIPT` needs and the columns your raw data has.
 
@@ -132,7 +125,7 @@ A format describes the mapping between your stream's raw data and the data that 
 !!! hint
     `[RAPIDS_COLUMN_MAPPINGS]` and `[MUTATE][COLUMN_MAPPINGS]` have a `key` (left-hand side string) and a `value` (right-hand side string). The `values` are the names used to pulled columns from a container (e.g., columns in a database table). All `values` are renamed to their `keys` in lower case. The renamed columns are sent to every mutation script within the `data` argument, and the final output is the input RAPIDS process further.
 
-    For example, let's assume we are using `aware_mysql` and defining the following format for `PHONE_FAKESENSOR`:
+    For example, let's assume we are implementing `beiwe_mysql` and defining the following format for `PHONE_FAKESENSOR`:
 
     ```yaml
     PHONE_FAKESENSOR:
@@ -150,7 +143,7 @@ A format describes the mapping between your stream's raw data and the data that 
 
     RAPIDS will:
 
-    1. Download `beiwe_timestamp`, `beiwe_deviceID`, and `beiwe_value` from the container of `aware_mysql` (MySQL DB)
+    1. Download `beiwe_timestamp`, `beiwe_deviceID`, and `beiwe_value` from the container of `beiwe_mysql` (MySQL DB)
     2. Rename these columns to `timestamp`, `device_id`, and `magnitude`, respectively.
     3. Execute `square_magnitude.py` with a data frame as an argument containing the renamed columns. This script will square `magnitude` and rename it to `magnitude_squared`
     4. Verify the data frame returned by `square_magnitude.py` has the columns RAPIDS needs `timestamp`, `device_id`, and `magnitude_squared`.
@@ -159,7 +152,7 @@ A format describes the mapping between your stream's raw data and the data that 
     Note that although `RAPIDS_COLUMN_MAPPINGS` and `[MUTATE][COLUMN_MAPPINGS]` keys are in capital letters for readability (e.g. `MAGNITUDE_SQUARED`), the names of the final columns you mutate in your scripts should be lower case.
     
 
-Let's explain this column mapping further with examples.
+Let's explain in more depth this column mapping with examples.
 
 ### Name mapping
 
