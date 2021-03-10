@@ -420,7 +420,7 @@ rule phone_messages_r_features:
 
 rule screen_episodes:
     input:
-        screen = "data/raw/{pid}/phone_screen_with_datetime_unified.csv"
+        screen = "data/raw/{pid}/phone_screen_with_datetime.csv"
     output:
         "data/interim/{pid}/phone_screen_episodes.csv"
     script:

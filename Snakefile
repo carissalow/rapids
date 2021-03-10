@@ -91,7 +91,6 @@ for provider in config["PHONE_SCREEN"]["PROVIDERS"].keys():
         #     raise ValueError("Error: Add PHONE_SCREEN (and as many PHONE_SENSORS as you have in your database) to [PHONE_DATA_YIELD][SENSORS] in config.yaml. This is necessary to compute phone_yielded_timestamps (time when the smartphone was sensing data)")
         files_to_compute.extend(expand("data/raw/{pid}/phone_screen_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/phone_screen_with_datetime.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/raw/{pid}/phone_screen_with_datetime_unified.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_screen_episodes.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_screen_episodes_resampled.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_screen_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))

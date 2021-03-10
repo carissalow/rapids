@@ -114,3 +114,12 @@ This is a description of the format RAPIDS needs to process data for the followi
     | MESSAGE_TYPE       | An integer that denotes message type: 1 = received, 2 = sent              |
     | TRACE              | SHA-1 one-way source/target of the message                                |
 
+
+??? info "PHONE_SCREEN"
+
+    | RAPIDS column      | Description                                                                       |
+    |--------------------|-----------------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged                       |
+    | DEVICE_ID          | A string that uniquely identifies a device                                        |
+    | SCREEN_STATUS      | An integer that denotes screen status: 0 = off, 1 = on, 2 = locked, 3 = unlocked  |
+

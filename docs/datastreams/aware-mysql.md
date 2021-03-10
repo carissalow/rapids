@@ -418,3 +418,53 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted based on the `MUT
     === "IOS"
 
         This sensor is not supported by iOS devices.
+
+
+??? info "PHONE_SCREEN"
+
+    === "ANDROID"
+    
+        **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | SCREEN_STATUS        | screen_status       |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS** (None)
+        - **SCRIPTS** (None)
+
+    === "IOS"
+
+        **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | SCREEN_STATUS        | FLAG_TO_MUTATE      |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS**
+
+        | Script column        | Stream column       |
+        |----------------------|---------------------|
+        | SCREEN_STATUS        | screen_status       |
+
+        - **SCRIPTS**
+        
+        ```bash
+        src/data/streams/mutations/phone/aware/screen_ios_unification.R
+        ```
+
+        !!! note
+            For `SCREEN_STATUS` RAPIDS column:
+            
+            - if stream's `screen_status` field is 2 (lock episode), set `SCREEN_STATUS` = 0 (off episode).
+
+
+

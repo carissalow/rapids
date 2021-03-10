@@ -193,3 +193,25 @@ PHONE_MESSAGES:
     MUTATION:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_SCREEN:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      SCREEN_STATUS: screen_status
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      SCREEN_STATUS: FLAG_TO_MUTATE
+    MUTATION:
+      COLUMN_MAPPINGS:
+        SCREEN_STATUS: screen_status
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+        - "src/data/streams/mutations/phone/aware/screen_ios_unification.R"
+
+

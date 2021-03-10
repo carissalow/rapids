@@ -16,7 +16,6 @@ Sensor parameters description for `[PHONE_SCREEN]`:
     ```bash
     - data/raw/{pid}/phone_screen_raw.csv
     - data/raw/{pid}/phone_screen_with_datetime.csv
-    - data/raw/{pid}/phone_screen_with_datetime_unified.csv
     - data/interim/{pid}/phone_screen_episodes.csv
     - data/interim/{pid}/phone_screen_episodes_resampled.csv
     - data/interim/{pid}/phone_screen_episodes_resampled_with_datetime.csv
