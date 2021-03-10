@@ -112,6 +112,33 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted based on the `MUT
             - if stream's `confidence` field is 2, set `CONFIDENCE` = 100
 
 
+??? info "PHONE_APPLICATIONS_CRASHES"
+
+    === "ANDROID"
+    
+         **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column      | Stream column      |
+        |--------------------|--------------------|
+        | TIMESTAMP          | timestamp          |
+        | DEVICE_ID          | device_id          |
+        | PACKAGE_NAME       | package_name       |
+        | APPLICATION_NAME   | application_name   |
+        | APPLICATION_VERSION| application_version|
+        | ERROR_SHORT        | error_short        |
+        | ERROR_LONG         | error_long         |
+        | ERROR_CONDITION    | error_condition    |
+        | IS_SYSTEM_APP      | is_system_app      |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS** (None)
+        - **SCRIPTS** (None)
+    
+    === "IOS"
+
+        This sensor is not supported by iOS devices.
+
 
 ??? info "PHONE_APPLICATIONS_FOREGROUND"
 

@@ -24,6 +24,21 @@ This is a description of the format RAPIDS needs to process data for the followi
     | CONFIDENCE      | An integer (ranged from 0 to 100) that denotes the prediction accuracy    |
 
 
+??? info "PHONE_APPLICATIONS_CRASHES"
+
+    | RAPIDS column      | Description                                                               |
+    |--------------------|---------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged               |
+    | DEVICE_ID          | A string that uniquely identifies a device                                |
+    | PACKAGE_NAME       | Application’s package name                                                |
+    | APPLICATION_NAME   | Application’s localized name                                              |
+    | APPLICATION_VERSION| Application’s version code                                                |
+    | ERROR_SHORT        | Short description of the error                                            |
+    | ERROR_LONG         | More verbose version of the error description                             |
+    | ERROR_CONDITION    | 1 = code error; 2 = non-responsive (ANR error)                            |
+    | IS_SYSTEM_APP      | Device’s pre-installed application                                        |
+
+
 ??? info "PHONE_APPLICATIONS_FOREGROUND"
 
     | RAPIDS column      | Description                                                               |
