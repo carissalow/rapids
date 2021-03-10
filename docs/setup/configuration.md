@@ -74,26 +74,26 @@ Participant files link together multiple devices (smartphones and wearables) to 
     |-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
     | `[DEVICE_IDS]` | An array of the strings that uniquely identify each smartphone, you can have more than one for when participants changed phones in the middle of the study, in this case, data from all their devices will be joined and relabeled with the last 1 on this list.                                                                           |
     | `[PLATFORMS]`  | An array that specifies the OS of each smartphone in  `[DEVICE_IDS]` , use a combination of  `android`  or  `ios`  (we support participants that changed platforms in the middle of your study!). You can set `[PLATFORMS]: [infer]`  and RAPIDS will infer them automatically (each phone data stream infer this differently, e.g. `aware_mysql` uses the `aware_device` table). |
-    | `[LABEL]`      | A string that is used in reports and visualizations.                                                                                                                                                                                                                                                                                       |
-    | `[START_DATE]` | A string with format  `YYY-MM-DD` . Only data collected  *after*  this date will be included in the analysis                                                                                                                                                                                                                               |
-    | `[END_DATE]`   | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis                                                                                                                                                                                                                              |
+    | `[LABEL]`      | A string that is used in reports and visualizations.        |
+    | `[START_DATE]` | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *after*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                               |
+    | `[END_DATE]`   | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *before*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                              |
 
 === "[FITBIT]"
 
     | Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              | Description                                                                                               |
     |------------------|-----------------------------------------------------------------------------------------------------------|
     | `[DEVICE_IDS]`   | An array of the strings that uniquely identify each Fitbit, you can have more than one in case the participant changed devices in the middle of the study, in this case, data from all devices will be joined and relabeled with the last  `device_id`  on this list. |
-    | `[LABEL]`        | A string that is used in reports and visualizations.                                                                                                                                                                                                                  |
-    | `[START_DATE]`   | A string with format  `YYY-MM-DD` . Only data collected  *after*  this date will be included in the analysis                                                                                                                                                          |
-    | `[END_DATE]`     | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis                                                                                                                                                         |
+    | `[LABEL]`        | A string that is used in reports and visualizations.                                              |
+    | `[START_DATE]`   | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *after*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                               |
+    | `[END_DATE]`     | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *before*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                              |
 
 === "[EMPATICA]"
 
     | Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              | Description                                                                                               |
     |------------------|-----------------------------------------------------------------------------------------------------------|
-    | `[LABEL]`        | A string that is used in reports and visualizations.                                                                                                                                                                                                                  |
-    | `[START_DATE]`   | A string with format  `YYY-MM-DD` . Only data collected  *after*  this date will be included in the analysis                                                                                                                                                          |
-    | `[END_DATE]`     | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis    
+    | `[LABEL]`        | A string that is used in reports and visualizations.                                                                                              |
+    | `[START_DATE]`   | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *after*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                               |
+    | `[END_DATE]`     | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *before*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                              |
 ### Automatic creation of participant files
 
 You can use a CSV file with a row per participant to automatically create participant files. 

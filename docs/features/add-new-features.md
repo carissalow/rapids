@@ -16,20 +16,24 @@ You can add new features to any existing sensors (see list below) by adding a ne
 As a tutorial, we will add a new provider for `PHONE_ACCELEROMETER` called `VEGA` that extracts `feature1`, `feature2`, `feature3` in Python and that it requires a parameter from the user called `MY_PARAMETER`.
 
 ??? info "Existing Sensors"
-    An existing sensor is any of the phone or Fitbit sensors with a configuration entry in `config.yaml`:
+    An existing sensor of any device with a configuration entry in `config.yaml`:
 
     Smartphone (AWARE)
 
     - Phone Accelerometer
     - Phone Activity Recognition
+    - Phone Applications Crashes
     - Phone Applications Foreground
+    - Phone Applications Notifications
     - Phone Battery
     - Phone Bluetooth
     - Phone Calls
     - Phone Conversation
     - Phone Data Yield
+    - Phone Keyboard
     - Phone Light
     - Phone Locations
+    - Phone Log
     - Phone Messages
     - Phone Screen
     - Phone WiFI Connected

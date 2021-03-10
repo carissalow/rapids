@@ -474,6 +474,7 @@ EMPATICA_DATA_STREAMS:
 
 # Sensors ------
 
+# See https://www.rapids.science/latest/features/empatica-accelerometer/
 EMPATICA_ACCELEROMETER:
   TABLE: ACC
   PROVIDERS:
@@ -483,6 +484,7 @@ EMPATICA_ACCELEROMETER:
       SRC_FOLDER: "dbdp" # inside src/features/empatica_accelerometer
       SRC_LANGUAGE: "python"
 
+# See https://www.rapids.science/latest/features/empatica-heartrate/
 EMPATICA_HEARTRATE:
   TABLE: HR
   PROVIDERS:
@@ -492,6 +494,7 @@ EMPATICA_HEARTRATE:
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
 
+# See https://www.rapids.science/latest/features/empatica-temperature/
 EMPATICA_TEMPERATURE:
   TABLE: TEMP
   PROVIDERS:
@@ -501,6 +504,7 @@ EMPATICA_TEMPERATURE:
       SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
       SRC_LANGUAGE: "python"
 
+# See https://www.rapids.science/latest/features/empatica-electrodermal-activity/
 EMPATICA_ELECTRODERMAL_ACTIVITY:
   TABLE: EDA
   PROVIDERS:
@@ -510,6 +514,7 @@ EMPATICA_ELECTRODERMAL_ACTIVITY:
       SRC_FOLDER: "dbdp" # inside src/features/empatica_electrodermal_activity
       SRC_LANGUAGE: "python"
 
+# See https://www.rapids.science/latest/features/empatica-blood-volume-pulse/
 EMPATICA_BLOOD_VOLUME_PULSE:
   TABLE: BVP
   PROVIDERS:
@@ -519,6 +524,7 @@ EMPATICA_BLOOD_VOLUME_PULSE:
       SRC_FOLDER: "dbdp" # inside src/features/empatica_blood_volume_pulse
       SRC_LANGUAGE: "python"
 
+# See https://www.rapids.science/latest/features/empatica-inter-beat-interval/
 EMPATICA_INTER_BEAT_INTERVAL:
   TABLE: IBI
   PROVIDERS:
@@ -528,6 +534,7 @@ EMPATICA_INTER_BEAT_INTERVAL:
       SRC_FOLDER: "dbdp" # inside src/features/inter_beat_interval
       SRC_LANGUAGE: "python"
 
+# See https://www.rapids.science/latest/features/empatica-tags/
 EMPATICA_TAGS:
   TABLE: TAGS
   PROVIDERS:  # None implemented yet
@@ -537,21 +544,28 @@ EMPATICA_TAGS:
 #                                                 PLOTS                                                                #
 ########################################################################################################################
 
-# Data quality
+# Data quality ------
+
+# See https://www.rapids.science/latest/visualizations/data-quality-visualizations/#1-histograms-of-phone-data-yield
 HISTOGRAM_PHONE_DATA_YIELD:
   PLOT: False
 
+# See https://www.rapids.science/latest/visualizations/data-quality-visualizations/#2-heatmaps-of-overall-data-yield
 HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT:
   PLOT: False
 
+# See https://www.rapids.science/latest/visualizations/data-quality-visualizations/#3-heatmap-of-recorded-phone-sensors
 HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT:
   PLOT: False
 
+# See https://www.rapids.science/latest/visualizations/data-quality-visualizations/#4-heatmap-of-sensor-row-count
 HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT:
   PLOT: False
   SENSORS: [PHONE_ACCELEROMETER, PHONE_ACTIVITY_RECOGNITION, PHONE_APPLICATIONS_FOREGROUND, PHONE_BATTERY, PHONE_BLUETOOTH, PHONE_CALLS, PHONE_CONVERSATION, PHONE_LIGHT, PHONE_LOCATIONS, PHONE_MESSAGES, PHONE_SCREEN, PHONE_WIFI_CONNECTED, PHONE_WIFI_VISIBLE]
 
-# Features
+# Features ------
+
+# See https://www.rapids.science/latest/visualizations/feature-visualizations/#1-heatmap-correlation-matrix
 HEATMAP_FEATURE_CORRELATION_MATRIX:
   PLOT: False
   MIN_ROWS_RATIO: 0.5

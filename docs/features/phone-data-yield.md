@@ -28,8 +28,8 @@ Sensor parameters description for `[PHONE_DATA_YIELD]`:
     PHONE_LOCATIONS
     PHONE_LOG
     PHONE_SCREEN
-    PHONE_WIFI_VISIBLE
     PHONE_WIFI_CONNECTED
+    PHONE_WIFI_VISIBLE
     ```
 
 ## RAPIDS provider
