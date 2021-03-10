@@ -79,3 +79,13 @@ This is a description of the format RAPIDS needs to process data for the followi
     | DOUBLE_CONVO_START   | UNIX timestamp (13 digits) of the beginning of a conversation                        |
     | DOUBLE_CONVO_END     | UNIX timestamp (13 digits) of the end of a conversation                              |
 
+
+??? info "PHONE_LIGHT"
+
+    | RAPIDS column      | Description                                                                                                          |
+    |--------------------|----------------------------------------------------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged                                                          |
+    | DEVICE_ID          | A string that uniquely identifies a device                                                                           |
+    | DOUBLE_LIGHT_LUX   | The ambient luminance in lux units                                                                                   |
+    | ACCURACY           | An integer that denotes the sensor's accuracy level: 3 = maximum accuracy, 2 = medium accuracy, 1 = low accuracy     |
+

@@ -129,7 +129,6 @@ PHONE_CONVERSATION:
     MUTATION:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
-
   IOS:
     RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
@@ -142,3 +141,14 @@ PHONE_CONVERSATION:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
         - "src/data/streams/mutations/phone/aware/conversation_ios_timestamp.R"
+
+PHONE_LIGHT:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DOUBLE_LIGHT_LUX: double_light_lux
+      ACCURACY: accuracy
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
