@@ -152,3 +152,33 @@ PHONE_LIGHT:
     MUTATION:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_LOCATIONS:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DOUBLE_LATITUDE: double_latitude
+      DOUBLE_LONGITUDE: double_longitude
+      DOUBLE_BEARING: double_bearing
+      DOUBLE_SPEED: double_speed
+      DOUBLE_ALTITUDE: double_altitude
+      PROVIDER: provider
+      ACCURACY: accuracy
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DOUBLE_LATITUDE: double_latitude
+      DOUBLE_LONGITUDE: double_longitude
+      DOUBLE_BEARING: double_bearing
+      DOUBLE_SPEED: double_speed
+      DOUBLE_ALTITUDE: double_altitude
+      PROVIDER: provider
+      ACCURACY: accuracy
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data

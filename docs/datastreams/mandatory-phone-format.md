@@ -89,3 +89,18 @@ This is a description of the format RAPIDS needs to process data for the followi
     | DOUBLE_LIGHT_LUX   | The ambient luminance in lux units                                                                                   |
     | ACCURACY           | An integer that denotes the sensor's accuracy level: 3 = maximum accuracy, 2 = medium accuracy, 1 = low accuracy     |
 
+
+??? info "PHONE_LOCATIONS"
+
+    | RAPIDS column      | Description                                                               |
+    |--------------------|---------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged               |
+    | DEVICE_ID          | A string that uniquely identifies a device                                |
+    | DOUBLE_LATITUDE    | The location’s latitude, in degrees                                       |
+    | DOUBLE_LONGITUDE   | The location’s longitude, in degrees                                      |
+    | DOUBLE_BEARING     | The location’s bearing, in degrees                                        |
+    | DOUBLE_SPEED       | The speed if available, in meters/second over ground                      |
+    | DOUBLE_ALTITUDE    | The altitude if available, in meters above sea level                      |
+    | PROVIDER           | A string that denotes the provider: `gps`, `fused` or `network`           |
+    | ACCURACY           | The estimated location accuracy                                           |
+

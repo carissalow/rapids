@@ -368,3 +368,32 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted based on the `MUT
 
         This sensor is not supported by iOS devices.
 
+
+??? info "PHONE_LOCATIONS"
+
+    === "ANDROID"
+    
+        **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | DOUBLE_LATITUDE      | double_latitude     |
+        | DOUBLE_LONGITUDE     | double_longitude    |
+        | DOUBLE_BEARING       | double_bearing      |
+        | DOUBLE_SPEED         | double_speed        |
+        | DOUBLE_ALTITUDE      | double_altitude     |
+        | PROVIDER             | provider            |
+        | ACCURACY             | accuracy            |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS** (None)
+        - **SCRIPTS** (None)
+
+    === "IOS"
+    
+        Same as ANDROID
+
+
