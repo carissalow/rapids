@@ -451,6 +451,28 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted based on the `MUT
         Same as ANDROID
 
 
+??? info "PHONE_LOG"
+
+    === "ANDROID"
+    
+        **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | LOG_MESSAGE          | log_message         |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS** (None)
+        - **SCRIPTS** (None)
+
+    === "IOS"
+    
+        Same as ANDROID
+
+
 ??? info "PHONE_MESSAGES"
 
     === "ANDROID"

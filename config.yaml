@@ -138,11 +138,6 @@ PHONE_APPLICATIONS_NOTIFICATIONS:
     SCRAPE_MISSING_CATEGORIES: False # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
   PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
 
-# See https://www.rapids.science/latest/features/phone-aware-log/
-PHONE_AWARE_LOG:
-  TABLE: aware_log
-  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
-
 # See https://www.rapids.science/latest/features/phone-battery/
 PHONE_BATTERY:
   TABLE: battery
@@ -277,6 +272,13 @@ PHONE_LOCATIONS:
       MINUTES_DATA_USED: False # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
       SRC_FOLDER: "barnett" # inside src/features/phone_locations
       SRC_LANGUAGE: "r"
+
+# See https://www.rapids.science/latest/features/phone-log/
+PHONE_LOG:
+  TABLE: 
+    ANDROID: aware_log
+    IOS: ios_aware_log
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
 
 # See https://www.rapids.science/latest/features/phone-messages/
 PHONE_MESSAGES:

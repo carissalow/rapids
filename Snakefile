@@ -187,13 +187,13 @@ if isinstance(config["PHONE_KEYBOARD"]["PROVIDERS"], dict):
             files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
             files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
-if isinstance(config["PHONE_AWARE_LOG"]["PROVIDERS"], dict):
-    for provider in config["PHONE_AWARE_LOG"]["PROVIDERS"].keys():    
-        if config["PHONE_AWARE_LOG"]["PROVIDERS"][provider]["COMPUTE"]:
-            files_to_compute.extend(expand("data/raw/{pid}/phone_aware_log_raw.csv", pid=config["PIDS"]))
-            files_to_compute.extend(expand("data/raw/{pid}/phone_aware_log_with_datetime.csv", pid=config["PIDS"]))
-            files_to_compute.extend(expand("data/interim/{pid}/phone_aware_log_features/phone_aware_log_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_AWARE_LOG"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
-            files_to_compute.extend(expand("data/processed/features/{pid}/phone_aware_log.csv", pid=config["PIDS"]))
+if isinstance(config["PHONE_LOG"]["PROVIDERS"], dict):
+    for provider in config["PHONE_LOG"]["PROVIDERS"].keys():    
+        if config["PHONE_LOG"]["PROVIDERS"][provider]["COMPUTE"]:
+            files_to_compute.extend(expand("data/raw/{pid}/phone_log_raw.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/raw/{pid}/phone_log_with_datetime.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/phone_log_features/phone_log_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["PHONE_LOG"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
+            files_to_compute.extend(expand("data/processed/features/{pid}/phone_log.csv", pid=config["PIDS"]))
             files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
             files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 

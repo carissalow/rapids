@@ -215,6 +215,24 @@ PHONE_LOCATIONS:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
 
+PHONE_LOG:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      LOG_MESSAGE: log_message
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      LOG_MESSAGE: log_message
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
 PHONE_MESSAGES:
   ANDROID:
     RAPIDS_COLUMN_MAPPINGS:

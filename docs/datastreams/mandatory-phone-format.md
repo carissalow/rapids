@@ -135,6 +135,15 @@ This is a description of the format RAPIDS needs to process data for the followi
     | ACCURACY           | The estimated location accuracy                                           |
 
 
+??? info "PHONE_LOG"
+
+    | RAPIDS column      | Description                                                               |
+    |--------------------|---------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged               |
+    | DEVICE_ID          | A string that uniquely identifies a device                                |
+    | LOG_MESSAGE        | A string that denotes log message                                         |
+
+
 ??? info "PHONE_MESSAGES"
 
     | RAPIDS column      | Description                                                               |

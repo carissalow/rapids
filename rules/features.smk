@@ -174,29 +174,29 @@ rule phone_applications_notifications_r_features:
     script:
         "../src/features/entry.R"
 
-rule phone_aware_log_python_features:
+rule phone_log_python_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_aware_log_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/phone_log_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
-        provider = lambda wildcards: config["PHONE_AWARE_LOG"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider = lambda wildcards: config["PHONE_LOG"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
-        sensor_key = "phone_aware_log"
+        sensor_key = "phone_log"
     output:
-        "data/interim/{pid}/phone_aware_log_features/phone_aware_log_python_{provider_key}.csv"
+        "data/interim/{pid}/phone_log_features/phone_log_python_{provider_key}.csv"
     script:
         "../src/features/entry.py"
 
-rule phone_aware_log_r_features:
+rule phone_log_r_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_aware_log_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/phone_log_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
-        provider = lambda wildcards: config["PHONE_AWARE_LOG"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider = lambda wildcards: config["PHONE_LOG"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
-        sensor_key = "phone_aware_log"
+        sensor_key = "phone_log"
     output:
-        "data/interim/{pid}/phone_aware_log_features/phone_aware_log_r_{provider_key}.csv"
+        "data/interim/{pid}/phone_log_features/phone_log_r_{provider_key}.csv"
     script:
         "../src/features/entry.R"
 

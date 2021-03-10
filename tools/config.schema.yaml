@@ -12,7 +12,6 @@ required:
   - PHONE_APPLICATIONS_CRASHES
   - PHONE_APPLICATIONS_FOREGROUND
   - PHONE_APPLICATIONS_NOTIFICATIONS
-  - PHONE_AWARE_LOG
   - PHONE_BATTERY
   - PHONE_BLUETOOTH
   - PHONE_CALLS
@@ -20,6 +19,7 @@ required:
   - PHONE_DATA_YIELD
   - PHONE_KEYBOARD
   - PHONE_LOCATIONS
+  - PHONE_LOG
   - PHONE_MESSAGES
   - PHONE_SCREEN
   - PHONE_WIFI_CONNECTED
@@ -392,17 +392,6 @@ properties:
         type: ["null", object]
         additionalProperties: 
             $ref: "#/definitions/PROVIDER"
-
-  PHONE_AWARE_LOG:
-    type: object
-    required: [TABLE, PROVIDERS]
-    properties:
-      TABLE: 
-        type: string
-      PROVIDERS:
-        type: ["null", object]
-        additionalProperties: 
-            $ref: "#/definitions/PROVIDER"
         
   PHONE_BATTERY:
     type: object
@@ -561,7 +550,7 @@ properties:
         type: ["null", array]
         items:
           type: string
-          enum: ["PHONE_ACCELEROMETER", "PHONE_ACTIVITY_RECOGNITION", "PHONE_APPLICATIONS_CRASHES", "PHONE_APPLICATIONS_FOREGROUND", "PHONE_APPLICATIONS_NOTIFICATIONS", "PHONE_AWARE_LOG", "PHONE_BATTERY", "PHONE_BLUETOOTH", "PHONE_CALLS", "PHONE_CONVERSATION", "PHONE_KEYBOARD", "PHONE_LIGHT", "PHONE_LOCATIONS", "PHONE_MESSAGES", "PHONE_SCREEN", "PHONE_WIFI_CONNECTED", "PHONE_WIFI_VISIBLE"]
+          enum: ["PHONE_ACCELEROMETER", "PHONE_ACTIVITY_RECOGNITION", "PHONE_APPLICATIONS_CRASHES", "PHONE_APPLICATIONS_FOREGROUND", "PHONE_APPLICATIONS_NOTIFICATIONS", "PHONE_LOG", "PHONE_BATTERY", "PHONE_BLUETOOTH", "PHONE_CALLS", "PHONE_CONVERSATION", "PHONE_KEYBOARD", "PHONE_LIGHT", "PHONE_LOCATIONS", "PHONE_MESSAGES", "PHONE_SCREEN", "PHONE_WIFI_CONNECTED", "PHONE_WIFI_VISIBLE"]
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -704,7 +693,24 @@ properties:
                     type: boolean
         additionalProperties:
           $ref: "#/definitions/PROVIDER"
-    
+
+  PHONE_LOG:
+    type: object
+    required: [TABLE, PROVIDERS]
+    properties:
+      TABLE:
+        type: object
+        required: [ANDROID, IOS]
+        properties:
+          ANDROID:
+            type: string
+          IOS:
+            type: string
+      PROVIDERS:
+        type: ["null", object]
+        additionalProperties: 
+            $ref: "#/definitions/PROVIDER"
+
   PHONE_MESSAGES:
     type: object
     required: [TABLE, PROVIDERS]
