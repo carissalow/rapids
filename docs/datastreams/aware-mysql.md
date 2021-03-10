@@ -397,3 +397,24 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted based on the `MUT
         Same as ANDROID
 
 
+??? info "PHONE_MESSAGES"
+
+    === "ANDROID"
+    
+        **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | MESSAGE_TYPE         | message_type        |
+        | TRACE                | trace               |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS** (None)
+        - **SCRIPTS** (None)
+
+    === "IOS"
+
+        This sensor is not supported by iOS devices.

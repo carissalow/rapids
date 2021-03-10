@@ -104,3 +104,13 @@ This is a description of the format RAPIDS needs to process data for the followi
     | PROVIDER           | A string that denotes the provider: `gps`, `fused` or `network`           |
     | ACCURACY           | The estimated location accuracy                                           |
 
+
+??? info "PHONE_MESSAGES"
+
+    | RAPIDS column      | Description                                                               |
+    |--------------------|---------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged               |
+    | DEVICE_ID          | A string that uniquely identifies a device                                |
+    | MESSAGE_TYPE       | An integer that denotes message type: 1 = received, 2 = sent              |
+    | TRACE              | SHA-1 one-way source/target of the message                                |
+
