@@ -340,6 +340,7 @@ FITBIT_DATA_STREAMS:
   # AVAILABLE:
   fitbitjson_mysql: 
     DATABASE_GROUP: MY_GROUP
+    SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
 
 # Sensors ------
 
@@ -378,7 +379,6 @@ FITBIT_HEARTRATE_INTRADAY:
 # See https://www.rapids.science/latest/features/fitbit-sleep-summary/
 FITBIT_SLEEP_SUMMARY:
   TABLE: sleep_summary
-  SLEEP_EPISODE_TIMESTAMP: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
   PROVIDERS:
     RAPIDS:
       COMPUTE: False

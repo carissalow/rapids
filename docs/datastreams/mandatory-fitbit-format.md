@@ -25,6 +25,24 @@ This is a description of the format RAPIDS needs to process data for the followi
     | HEARTRATE |  Intraday heartrate |
     | HEARTRATE_ZONE |  Heartrate [zone](https://help.fitbit.com/articles/en_US/Help_article/1565.htm#) that HEARTRATE belongs to. It is based on the heartrate zone ranges of each device |
 
+??? info "FITBIT_SLEEP_SUMMARY"
+
+    | RAPIDS column   | Description   |
+    |-----------------|-----------------|
+    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged |
+    | LOCAL_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss`, this either is a copy of LOCAL_START_DATE_TIME or LOCAL_END_DATE_TIME depending on which column is used to assign an episode to a specific day|
+    | LOCAL_START_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss` representing the start of a daily sleep episode |
+    | LOCAL_END_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss`  representing the end of a daily sleep episode|
+    | DEVICE_ID       |  A string that uniquely identifies a device |
+    | EFFICIENCY | Sleep efficiency computed by fitbit as time asleep / (total time in bed - time to fall asleep)|
+    | MINUTES_AFTER_WAKEUP | Minutes the participant spent in bed after waking up|
+    | MINUTES_ASLEEP | Minutes the participant was asleep |
+    | MINUTES_AWAKE | Minutes the participant was awake |
+    | MINUTES_TO_FALL_ASLEEP | Minutes the participant spent in bed before falling asleep|
+    | MINUTES_IN_BED | Minutes the participant spent in bed across the sleep episode|
+    | IS_MAIN_SLEEP | 0 if this episode is a nap, or 1 if it is a main sleep episode|
+    | TYPE | stages or classic [sleep data](https://dev.fitbit.com/build/reference/web-api/sleep/)|
+
 ??? info "FITBIT_STEPS_SUMMARY"
 
     | RAPIDS column   | Description   |

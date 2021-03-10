@@ -832,9 +832,13 @@ properties:
           type: string
         fitbitjson_mysql:
           type: object
+          required: [DATABASE_GROUP, SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]
           properties:
             DATABASE_GROUP:
               type: string
+            SLEEP_SUMMARY_EPISODE_DAY_ANCHOR:
+              type: string
+              enum: ["start", "end"]
   
   FITBIT_DATA_YIELD:
     type: object
@@ -903,13 +907,10 @@ properties:
 
   FITBIT_SLEEP_SUMMARY:
     type: object
-    required: [TABLE, SLEEP_EPISODE_TIMESTAMP, PROVIDERS]
+    required: [TABLE, PROVIDERS]
     properties:
       TABLE:
         type: string
-      SLEEP_EPISODE_TIMESTAMP:
-        type: string
-        enum: ["start", "end"]
       PROVIDERS:
         type: ["null", object]
         properties:

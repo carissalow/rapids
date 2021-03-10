@@ -636,7 +636,7 @@ rule fitbit_steps_intraday_r_features:
 
 rule fitbit_sleep_summary_python_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_sleep_summary_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -649,7 +649,7 @@ rule fitbit_sleep_summary_python_features:
 
 rule fitbit_sleep_summary_r_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_sleep_summary_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
