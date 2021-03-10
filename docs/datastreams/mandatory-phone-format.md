@@ -46,6 +46,17 @@ This is a description of the format RAPIDS needs to process data for the followi
     | BATTERY_SCALE        | An integer that denotes the maximum battery level                                                                      |
 
 
+??? info "PHONE_BLUETOOTH"
+
+    | RAPIDS column      | Description                                                               |
+    |--------------------|---------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged               |
+    | DEVICE_ID          | A string that uniquely identifies a device                                |
+    | BT_ADDRESS         | MAC address of the device’s Bluetooth sensor                              |
+    | BT_NAME            | User assigned name of the device’s Bluetooth sensor                       |
+    | BT_RSSI            | The RSSI dB to the scanned device                                         |
+
+
 ??? info "PHONE_CONVERSATION"
 
     | RAPIDS column        | Description                                                                          |

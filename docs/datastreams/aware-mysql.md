@@ -192,6 +192,30 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted based on the `MUT
         Same as ANDROID
 
 
+??? info "PHONE_BLUETOOTH"
+
+    === "ANDROID"
+    
+        **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | BT_ADDRESS           | bt_address          |
+        | BT_NAME              | bt_name             |
+        | BT_RSSI              | bt_rssi             |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS** (None)
+        - **SCRIPTS** (None)
+
+    === "IOS"
+
+        This sensor is not supported by iOS devices.
+
+
 ??? info "PHONE_CONVERSATION"
 
     === "ANDROID"
