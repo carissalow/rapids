@@ -236,3 +236,17 @@ PHONE_WIFI_CONNECTED:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
 
+PHONE_WIFI_VISIBLE:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      SSID: ssid
+      BSSID: bssid
+      SECURITY: security
+      FREQUENCY: frequency
+      RSSI: rssi
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+

@@ -489,3 +489,30 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted based on the `MUT
     === "IOS"
     
         Same as ANDROID
+
+
+??? info "PHONE_WIFI_VISIBLE"
+
+    === "ANDROID"
+    
+        **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | SSID                 | ssid                |
+        | BSSID                | bssid               |
+        | SECURITY             | security            |
+        | FREQUENCY            | frequency           |
+        | RSSI                 | rssi                |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS** (None)
+        - **SCRIPTS** (None)
+
+    === "IOS"
+
+        This sensor is not supported by iOS devices.
+

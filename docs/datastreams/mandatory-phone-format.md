@@ -134,3 +134,16 @@ This is a description of the format RAPIDS needs to process data for the followi
     | SSID               | Currently connected access point network name                                     |
     | BSSID              | Currently connected access point MAC address                                      |
 
+
+??? info "PHONE_WIFI_VISIBLE"
+
+    | RAPIDS column      | Description                                                                       |
+    |--------------------|-----------------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged                       |
+    | DEVICE_ID          | A string that uniquely identifies a device                                        |
+    | SSID               | Detected access point network name                                                |
+    | BSSID              | Detected access point MAC address                                                 |
+    | SECURITY           | Active security protocols                                                         |
+    | FREQUENCY          | Wi-Fi band frequency (e.g., 2427, 5180), in Hz                                    |
+    | RSSI               | RSSI dB to the scanned device                                                     |
+
