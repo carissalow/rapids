@@ -16,7 +16,6 @@ Sensor parameters description for `[PHONE_CALLS]`:
     ```bash
     - data/raw/{pid}/phone_calls_raw.csv
     - data/raw/{pid}/phone_calls_with_datetime.csv
-    - data/raw/{pid}/phone_calls_with_datetime_unified.csv
     - data/interim/{pid}/phone_calls_features/phone_calls_{language}_{provider_key}.csv
     - data/processed/features/{pid}/phone_calls.csv
     ```

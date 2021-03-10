@@ -264,7 +264,7 @@ rule phone_bluetooth_r_features:
 
 rule calls_python_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_calls_with_datetime_unified.csv",
+        sensor_data = "data/raw/{pid}/phone_calls_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CALLS"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -277,7 +277,7 @@ rule calls_python_features:
 
 rule calls_r_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_calls_with_datetime_unified.csv",
+        sensor_data = "data/raw/{pid}/phone_calls_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CALLS"]["PROVIDERS"][wildcards.provider_key.upper()],

@@ -93,6 +93,30 @@ PHONE_BLUETOOTH:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
 
+PHONE_CALLS:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      CALL_TYPE: call_type
+      CALL_DURATION: call_duration
+      TRACE: trace
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      CALL_TYPE: FLAG_TO_MUTATE
+      CALL_DURATION: call_duration
+      TRACE: trace
+    MUTATION:
+      COLUMN_MAPPINGS:
+        CALL_TYPE: call_type
+      SCRIPTS:
+        - "src/data/streams/mutations/phone/aware/calls_ios_unification.R"
+
 PHONE_CONVERSATION:
   ANDROID:
     RAPIDS_COLUMN_MAPPINGS:

@@ -216,6 +216,81 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted based on the `MUT
         This sensor is not supported by iOS devices.
 
 
+??? info "PHONE_CALLS"
+
+    === "ANDROID"
+    
+        **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | CALL_TYPE            | call_type           |
+        | CALL_DURATION        | call_duration       |
+        | TRACE                | trace               |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS** (None)
+        - **SCRIPTS** (None)
+
+    === "IOS"
+
+        **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | CALL_TYPE            | FLAG_TO_MUTATE      |
+        | CALL_DURATION        | call_duration       |
+        | TRACE                | trace               |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS**
+
+        | Script column        | Stream column       |
+        |----------------------|---------------------|
+        | CALL_TYPE            | call_type           |
+
+
+        - **SCRIPTS**
+
+        ```bash
+        src/data/streams/mutations/phone/aware/calls_ios_unification.R
+        ```
+
+        !!! note
+
+            We transform iOS call logs into Android's format. iOS stores call status: 1=incoming, 2=connected, 3=dialing, 4=disconnected, as opposed to Android's events: 1=incoming, 2=outgoing, 3=missed. 
+
+            We follow this algorithm to convert iOS call data (there are some inaccuracies in the way we handle sequences, see new rules below):
+
+            - Search for the disconnected (4) status as it is common to all calls
+            - Group all events that preceded every status 4
+            - We convert every 1,2,4 (or 2,1,4) sequence to an incoming call
+            - We convert every 3,2,4 (or 2,3,4) sequence to an outgoing call
+            - We convert every 1,4 or 3,4 sequence to a missed call (either incoming or outgoing)
+            - We set the duration of the call to be the sum of every status (dialing/ringing to hangup) as opposed to the duration of the last status (pick up to hang up)
+
+            **Tested with an Android (OnePlus 7T) and an iPhone XR**
+
+            |Call type | Android (duration) | iOS (duration) | New Rule|
+            |---------|----------|--------|------|
+            |Outgoing missed ended by me | 2 (0) | 3,4 (0,X) | 3,4 is converted to 2 with duration 0|
+            |Outgoing missed ended by them|2(0)|3,2,4 (0,X,X2)| 3,2,4 is converted to 2 with duration X2*|
+            |Incoming missed ended by me|NA**|1,4 (0,X)|1,4 is converted to 3 with duration 0|
+            |Incoming missed ended by them|3(0)|1,4 (0,X)|1,4 is converted to 3 with duration 0|
+            |Outgoing answered|2(X excluding dialing time)|3,2,4 (0,X,X2)|3,2,4 is converted to 2 with duration X2|
+            |Incoming answered|1(X excluding dialing time)|1,2,4 (0,X,X2)|1,2,4 is converted to 1 with duration X2|
+
+            .* There is no way to differentiate an outgoing missed call ended by them from an outgoing answered call because the phone goes directly to voice mail and it counts as call time (essentially the voice mail answered).
+
+            .** Android does not record incoming missed calls ended by the participant, just those ended by the person calling or ignored by the participant.
+
+
 ??? info "PHONE_CONVERSATION"
 
     === "ANDROID"

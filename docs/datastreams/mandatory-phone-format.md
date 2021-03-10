@@ -57,6 +57,17 @@ This is a description of the format RAPIDS needs to process data for the followi
     | BT_RSSI            | The RSSI dB to the scanned device                                         |
 
 
+??? info "PHONE_CALLS"
+
+    | RAPIDS column      | Description                                                               |
+    |--------------------|---------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged               |
+    | DEVICE_ID          | A string that uniquely identifies a device                                |
+    | CALL_TYPE          | An integer that denotes call type: 1 = incoming, 2 = outgoing, 3 = missed |
+    | CALL_DURATION      | Length of the call session                                                |
+    | TRACE              | SHA-1 one-way source/target of the call                                   |
+
+
 ??? info "PHONE_CONVERSATION"
 
     | RAPIDS column        | Description                                                                          |
