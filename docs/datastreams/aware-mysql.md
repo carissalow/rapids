@@ -163,6 +163,33 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted based on the `MUT
 
         This sensor is not supported by iOS devices.
 
+??? info "PHONE_APPLICATIONS_NOTIFICATIONS"
+
+    === "ANDROID"
+    
+         **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column      | Stream column      |
+        |--------------------|--------------------|
+        | TIMESTAMP          | timestamp          |
+        | DEVICE_ID          | device_id          |
+        | PACKAGE_NAME       | package_name       |
+        | APPLICATION_NAME   | application_name   |
+        | TEXT               | text               |
+        | SOUND              | sound              |
+        | VIBRATE            | vibrate            |
+        | DEFAULTS           | defaults           |
+        | FLAGS              | flags              |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS** (None)
+        - **SCRIPTS** (None)
+    
+    === "IOS"
+
+        This sensor is not supported by iOS devices.
+
 ??? info "PHONE_BATTERY"
 
     === "ANDROID"

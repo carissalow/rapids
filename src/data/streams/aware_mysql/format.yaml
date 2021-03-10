@@ -73,6 +73,22 @@ PHONE_APPLICATIONS_FOREGROUND:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
 
+PHONE_APPLICATIONS_NOTIFICATIONS:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      PACKAGE_NAME: package_name
+      APPLICATION_NAME: application_name
+      TEXT: text
+      SOUND: sound
+      VIBRATE: vibrate
+      DEFAULTS: defaults
+      FLAGS: flags
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
 PHONE_BATTERY:
   ANDROID:
     RAPIDS_COLUMN_MAPPINGS:

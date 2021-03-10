@@ -50,6 +50,21 @@ This is a description of the format RAPIDS needs to process data for the followi
     | IS_SYSTEM_APP      | Device’s pre-installed application                                        |
 
 
+??? info "PHONE_APPLICATIONS_NOTIFICATIONS"
+
+    | RAPIDS column      | Description                                                               |
+    |--------------------|---------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged               |
+    | DEVICE_ID          | A string that uniquely identifies a device                                |
+    | PACKAGE_NAME       | Application’s package name                                                |
+    | APPLICATION_NAME   | Application’s localized name                                              |
+    | TEXT               | Notification’s header text, not the content                               |
+    | SOUND              | Notification’s sound source (if applicable)                               |
+    | VIBRATE            | Notification’s vibration pattern (if applicable)                          |
+    | DEFAULTS           | If notification was delivered according to device’s default settings      |
+    | FLAGS              | An integer that denotes [Android notification flag](https://developer.android.com/reference/android/app/Notification.html)  |
+
+
 ??? info "PHONE_BATTERY"
 
     | RAPIDS column        | Description                                                                                                            |
