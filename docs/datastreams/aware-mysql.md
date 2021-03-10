@@ -467,4 +467,25 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted based on the `MUT
             - if stream's `screen_status` field is 2 (lock episode), set `SCREEN_STATUS` = 0 (off episode).
 
 
+??? info "PHONE_WIFI_CONNECTED"
 
+    === "ANDROID"
+    
+        **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | MAC_ADDRESS          | mac_address         |
+        | SSID                 | ssid                |
+        | BSSID                | bssid               |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS** (None)
+        - **SCRIPTS** (None)
+
+    === "IOS"
+    
+        Same as ANDROID

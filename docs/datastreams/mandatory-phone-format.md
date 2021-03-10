@@ -123,3 +123,14 @@ This is a description of the format RAPIDS needs to process data for the followi
     | DEVICE_ID          | A string that uniquely identifies a device                                        |
     | SCREEN_STATUS      | An integer that denotes screen status: 0 = off, 1 = on, 2 = locked, 3 = unlocked  |
 
+
+??? info "PHONE_WIFI_CONNECTED"
+
+    | RAPIDS column      | Description                                                                       |
+    |--------------------|-----------------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged                       |
+    | DEVICE_ID          | A string that uniquely identifies a device                                        |
+    | MAC_ADDRESS        | Device’s MAC address                                                              |
+    | SSID               | Currently connected access point network name                                     |
+    | BSSID              | Currently connected access point MAC address                                      |
+
