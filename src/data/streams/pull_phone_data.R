@@ -65,20 +65,18 @@ validate_expected_columns_mapping <- function(schema, rapids_schema, sensor, rap
   
   if("ANDROID" %in% schema[[sensor]]){
     android_columns <- names(schema[[sensor]][["ANDROID"]][["RAPIDS_COLUMN_MAPPINGS"]])
-    android_columns <- android_columns[(android_columns != "FLAG_AS_EXTRA")]
     if(length(setdiff(rapids_columns, android_columns)) > 0)
       stop(paste(sensor," mappings are missing one or more mandatory columns for ANDROID. The missing column mappings are for ", paste(setdiff(rapids_columns, android_columns), collapse=","),"in", stream_format, " (the mappings are case sensitive)"))
     if(length(setdiff(android_columns, rapids_columns)) > 0)
-      stop(paste(sensor," mappings have one or more columns than required for ANDROID, add them as FLAG_AS_EXTRA instead. The extra column mappings are for ", paste(setdiff(android_columns, rapids_columns), collapse=","),"in", stream_format, " (the mappings are case sensitive)"))
+      stop(paste(sensor," mappings have one or more columns than required for ANDROID. The extra column mappings are for ", paste(setdiff(android_columns, rapids_columns), collapse=","),"in", stream_format, " (the mappings are case sensitive)"))
   }
 
   if("IOS" %in% schema[[sensor]]){
     ios_columns <- names(schema[[sensor]][["IOS"]][["RAPIDS_COLUMN_MAPPINGS"]])
-    ios_columns <- ios_columns[(ios_columns != "FLAG_AS_EXTRA")]
     if(length(setdiff(rapids_columns, ios_columns)) > 0)
       stop(paste(sensor," mappings are missing one or more mandatory columns for IOS. The missing column mappings are for ", paste(setdiff(rapids_columns, ios_columns), collapse=","),"in", stream_format, " (the mappings are case sensitive)"))
     if(length(setdiff(ios_columns, rapids_columns)) > 0)
-      stop(paste(sensor," mappings have one or more columns than required for IOS, add them as FLAG_AS_EXTRA instead. The extra column mappings are for ", paste(setdiff(ios_columns, rapids_columns), collapse=","),"in", stream_format, " (the mappings are case sensitive)"))
+      stop(paste(sensor," mappings have one or more columns than required for IOS. The extra column mappings are for ", paste(setdiff(ios_columns, rapids_columns), collapse=","),"in", stream_format, " (the mappings are case sensitive)"))
   }
 }
 

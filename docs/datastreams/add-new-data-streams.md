@@ -264,9 +264,9 @@ There is a special case for a complex mapping scenario for smartphone data strea
 
 In case you didn't notice, the examples we have used so far are grouped under an `ANDROID` key, which means they will be applied to data collected by Android phones. Additionally, each sensor has an `IOS` key for a similar purpose. We use the complex mapping described above to transform iOS data into an Android format (it's always iOS to Android and any new phone data stream must do the same).
 
-For example, this is the `format.yaml` key for `PHONE_ACTVITY_RECOGNITION`. Note that the `ANDROID` mapping is simple (one-to-one) but the `IOS` mapping is complex with two `FLAG_TO_MUTATE` columns, one `[MUTATE][COLUMN_MAPPINGS]` mapping, and one `[MUTATION][SCRIPT]`.
+For example, this is the `format.yaml` key for `PHONE_ACTVITY_RECOGNITION`. Note that the `ANDROID` mapping is simple (one-to-one) but the `IOS` mapping is complex with three `FLAG_TO_MUTATE` columns, two `[MUTATE][COLUMN_MAPPINGS]` mappings, and one `[MUTATION][SCRIPT]`.
 
-```yaml hl_lines="16 17 21 23"
+```yaml hl_lines="16 17 18 21 22 24"
 PHONE_ACTIVITY_RECOGNITION:
   ANDROID:
     RAPIDS_COLUMN_MAPPINGS:
@@ -275,7 +275,7 @@ PHONE_ACTIVITY_RECOGNITION:
       ACTIVITY_TYPE: activity_type
       ACTIVITY_NAME: activity_name
       CONFIDENCE: confidence
-    MUTATE:
+    MUTATION:
       COLUMN_MAPPINGS:
       SCRIPTS:
   IOS:
@@ -284,10 +284,11 @@ PHONE_ACTIVITY_RECOGNITION:
       DEVICE_ID: device_id
       ACTIVITY_TYPE: FLAG_TO_MUTATE
       ACTIVITY_NAME: FLAG_TO_MUTATE
-      CONFIDENCE: confidence
-    MUTATE:
+      CONFIDENCE: FLAG_TO_MUTATE
+    MUTATION:
       COLUMN_MAPPINGS:
         ACTIVITIES: activities
+        CONFIDENCE: confidence
       SCRIPTS:
         - "src/data/streams/mutations/phone/aware/activity_recogniton_ios_unification.R"
 ```
@@ -342,8 +343,8 @@ PHONE_ACTIVITY_RECOGNITION:
                                             activities == "stationary" ~ 3,
                                             activities == "unknown" ~ 4),
                     confidence = case_when(confidence == 0 ~ 0,
-                                        confidence == 1 ~ 50,
-                                        confidence == 2 ~ 100)
+                                          confidence == 1 ~ 50,
+                                          confidence == 2 ~ 100)
                                         ) %>% 
             select(-activities)
         
@@ -351,6 +352,6 @@ PHONE_ACTIVITY_RECOGNITION:
     }
 
     main <- function(data, stream_parameters){
-        return(unify_ios_activity_recognition(data))
+        return(unify_ios_activity_recognition(data, stream_parameters))
     }
     ```

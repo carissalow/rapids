@@ -11,6 +11,6 @@ unify_ios_battery <- function(ios_battery){
     return(ios_battery)
 }
 
-main <- function(data){
+main <- function(data, stream_parameters){
     return(unify_ios_battery(data))
 }

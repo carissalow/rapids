@@ -25,8 +25,8 @@ PHONE_ACTIVITY_RECOGNITION:
     RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
-      ACTIVITY_TYPE: activity_type
       ACTIVITY_NAME: activity_name
+      ACTIVITY_TYPE: activity_type
       CONFIDENCE: confidence
     MUTATION:
       COLUMN_MAPPINGS:
@@ -35,41 +35,51 @@ PHONE_ACTIVITY_RECOGNITION:
     RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
-      ACTIVITY_TYPE: FLAG_TO_MUTATE
       ACTIVITY_NAME: FLAG_TO_MUTATE
-      CONFIDENCE: confidence
+      ACTIVITY_TYPE: FLAG_TO_MUTATE
+      CONFIDENCE: FLAG_TO_MUTATE
     MUTATION:
       COLUMN_MAPPINGS:
         ACTIVITIES: activities
+        CONFIDENCE: confidence
       SCRIPTS: # List any python or r scripts that mutate your raw data
         - "src/data/streams/mutations/phone/aware/activity_recogniton_ios_unification.R"
 
 PHONE_APPLICATIONS_FOREGROUND:
   ANDROID:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
       PACKAGE_NAME: package_name
       APPLICATION_NAME: application_name
       IS_SYSTEM_APP: is_system_app
-    MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
 
 PHONE_BATTERY:
   ANDROID:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
       BATTERY_STATUS: battery_status
       BATTERY_LEVEL: battery_level
-    MUTATION_SCRIPTS: # List any python or r scripts that mutate your raw data
+      BATTERY_SCALE: battery_scale
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
   IOS:
-    COLUMN_MAPPINGS:
+    RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id
-      BATTERY_STATUS: battery_status
+      BATTERY_STATUS: FLAG_TO_MUTATE
       BATTERY_LEVEL: battery_level
-    MUTATION_SCRIPTS:
-      - "src/data/streams/mutations/phone/aware/battery_ios_unification.R"
+      BATTERY_SCALE: battery_scale
+    MUTATION:
+      COLUMN_MAPPINGS:
+        BATTERY_STATUS: battery_status
+      SCRIPTS:
+        - "src/data/streams/mutations/phone/aware/battery_ios_unification.R"
 
 PHONE_CONVERSATION:
   ANDROID:
