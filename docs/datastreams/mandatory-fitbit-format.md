@@ -22,3 +22,12 @@ This is a description of the format RAPIDS needs to process data for the followi
     | LOCAL_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss` |
     | DEVICE_ID       |  A string that uniquely identifies a device |
     | STEPS |  Daily step count |
+
+??? info "FITBIT_STEPS_INTRADAY"
+
+    | RAPIDS column   | Description   |
+    |-----------------|-----------------|
+    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged |
+    | LOCAL_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss` |
+    | DEVICE_ID       |  A string that uniquely identifies a device |
+    | STEPS |  Intraday step count (usually every minute)|

@@ -83,3 +83,40 @@ If you want RAPIDS to process Fitbit sensor data using this stream, you will nee
                 |a748ee1a-1d0b-4ae9-9074-279a2b6ba524     |"activities-steps":[{"dateTime":"2020-10-08","value":"3201"}],"activities-steps-intraday":{"dataset":[{"time":"00:00:00","value":14},{"time":"00:01:00","value":11},{"time":"00:02:00","value":10},...],"datasetInterval":1,"datasetType":"minute"}}
                 |a748ee1a-1d0b-4ae9-9074-279a2b6ba524     |"activities-steps":[{"dateTime":"2020-10-09","value":"998"}],"activities-steps-intraday":{"dataset":[{"time":"00:00:00","value":0},{"time":"00:01:00","value":0},{"time":"00:02:00","value":0},...],"datasetInterval":1,"datasetType":"minute"}}
         
+??? info "FITBIT_STEPS_INTRADAY"
+
+    **RAPIDS_COLUMN_MAPPINGS**
+
+    | RAPIDS column   | Stream column   |
+    |-----------------|-----------------|
+    | TIMESTAMP       | FLAG_TO_MUTATE       |
+    | DEVICE_ID       | device_id       |
+    | LOCAL_DATE_TIME       | FLAG_TO_MUTATE       |
+    | STEPS | FLAG_TO_MUTATE |
+
+    **MUTATION**
+
+    - **COLUMN_MAPPINGS**
+
+        | Script column   | Stream column   |
+        |-----------------|-----------------|
+        | JSON_FITBIT_COLUMN      | fitbit_data      |
+    
+    - **SCRIPTS**
+    
+        ```bash
+        src/data/streams/mutations/fitbit/parse_steps_intraday_json.py
+        ```
+
+        !!! note
+            `TIMESTAMP`, `LOCAL_DATE_TIME`, and `STEPS` are parsed from `JSON_FITBIT_COLUMN`. `JSON_FITBIT_COLUMN` is a string column containing the JSON objects returned by [Fitbit's API](https://dev.fitbit.com/build/reference/web-api/activity/#get-activity-intraday-time-series). See an example of the raw data RAPIDS expects for this data stream:
+
+            ??? example "Example of the expected raw data"
+
+                |device_id                                |fitbit_data                                               |
+                |---------------------------------------- |--------------------------------------------------------- |
+                |a748ee1a-1d0b-4ae9-9074-279a2b6ba524     |"activities-steps":[{"dateTime":"2020-10-07","value":"1775"}],"activities-steps-intraday":{"dataset":[{"time":"00:00:00","value":5},{"time":"00:01:00","value":3},{"time":"00:02:00","value":0},...],"datasetInterval":1,"datasetType":"minute"}}
+                |a748ee1a-1d0b-4ae9-9074-279a2b6ba524     |"activities-steps":[{"dateTime":"2020-10-08","value":"3201"}],"activities-steps-intraday":{"dataset":[{"time":"00:00:00","value":14},{"time":"00:01:00","value":11},{"time":"00:02:00","value":10},...],"datasetInterval":1,"datasetType":"minute"}}
+                |a748ee1a-1d0b-4ae9-9074-279a2b6ba524     |"activities-steps":[{"dateTime":"2020-10-09","value":"998"}],"activities-steps-intraday":{"dataset":[{"time":"00:00:00","value":0},{"time":"00:01:00","value":0},{"time":"00:02:00","value":0},...],"datasetInterval":1,"datasetType":"minute"}}
+    
+        
