@@ -1,8 +1,6 @@
-import yaml, json, sys
+import json
 import pandas as pd
-import numpy as np
-from datetime import datetime, timezone
-from math import trunc
+from datetime import datetime
 
 
 HR_SUMMARY_COLUMNS = ("device_id",

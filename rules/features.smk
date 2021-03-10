@@ -558,7 +558,7 @@ rule fitbit_heartrate_summary_r_features:
 
 rule fitbit_heartrate_intraday_python_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -571,7 +571,7 @@ rule fitbit_heartrate_intraday_python_features:
 
 rule fitbit_heartrate_intraday_r_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
