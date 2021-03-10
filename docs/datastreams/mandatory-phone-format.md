@@ -110,6 +110,18 @@ This is a description of the format RAPIDS needs to process data for the followi
     | DOUBLE_CONVO_END     | UNIX timestamp (13 digits) of the end of a conversation                              |
 
 
+??? info "PHONE_KEYBOARD"
+
+    | RAPIDS column      | Description                                                               |
+    |--------------------|---------------------------------------------------------------------------|
+    | TIMESTAMP          | An UNIX timestamp (13 digits) when a row of data was logged               |
+    | DEVICE_ID          | A string that uniquely identifies a device                                |
+    | PACKAGE_NAME       | The application’s package name of keyboard interaction                    |
+    | BEFORE_TEXT        | The previous keyboard input (empty if password)                           |
+    | CURRENT_TEXT       | The current keyboard input (empty if password)                            |
+    | IS_PASSWORD        | An integer: 0 = not password; 1 = password                                |
+
+
 ??? info "PHONE_LIGHT"
 
     | RAPIDS column      | Description                                                                                                          |

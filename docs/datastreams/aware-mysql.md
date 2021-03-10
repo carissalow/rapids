@@ -398,7 +398,32 @@ Stream columns named `FLAG_TO_MUTATE` means they are extracted based on the `MUT
 
             - if stream's `double_convo_start` field is smaller than 9999999999, it is in seconds instead of milliseconds. Set `DOUBLE_CONVO_START` = 1000 * `double_convo_start`.
             - if stream's `double_convo_end` field is smaller than 9999999999, it is in seconds instead of milliseconds. Set `DOUBLE_CONVO_END` = 1000 * `double_convo_end`.
-                
+
+
+??? info "PHONE_KEYBOARD"
+
+    === "ANDROID"
+    
+        **RAPIDS_COLUMN_MAPPINGS**
+
+        | RAPIDS column        | Stream column       |
+        |----------------------|---------------------|
+        | TIMESTAMP            | timestamp           |
+        | DEVICE_ID            | device_id           |
+        | PACKAGE_NAME         | package_name        |
+        | BEFORE_TEXT          | before_text         |
+        | CURRENT_TEXT         | current_text        |
+        | IS_PASSWORD          | is_password         |
+
+        **MUTATION**
+
+        - **COLUMN_MAPPINGS** (None)
+        - **SCRIPTS** (None)
+
+    === "IOS"
+
+        This sensor is not supported by iOS devices.
+
 
 ??? info "PHONE_LIGHT"
 
