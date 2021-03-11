@@ -279,13 +279,6 @@ for provider in config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
         files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
-# for provider in config["FITBIT_CALORIES"]["PROVIDERS"].keys():
-#     if config["FITBIT_CALORIES"]["PROVIDERS"][provider]["COMPUTE"]:
-#         files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_raw.csv", pid=config["PIDS"], fitbit_data_type=(["json"] if config["FITBIT_CALORIES"]["TABLE_FORMAT"] == "JSON" else ["summary", "intraday"])))
-#         files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_parsed.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
-#         files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_{fitbit_data_type}_parsed_with_datetime.csv", pid=config["PIDS"], fitbit_data_type=["summary", "intraday"]))
-#         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
-#         files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
 for provider in config["EMPATICA_ACCELEROMETER"]["PROVIDERS"].keys():
     if config["EMPATICA_ACCELEROMETER"]["PROVIDERS"][provider]["COMPUTE"]:

@@ -6,7 +6,7 @@ This is a description of the format RAPIDS needs to process data for the followi
 
     | RAPIDS column   | Description   |
     |-----------------|-----------------|
-    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged |
+    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged (automatically created by RAPIDS) |
     | LOCAL_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss` |
     | DEVICE_ID       |  A string that uniquely identifies a device |
     | HEARTRATE_DAILY_RESTINGHR |  Daily resting heartrate |
@@ -19,7 +19,7 @@ This is a description of the format RAPIDS needs to process data for the followi
 
     | RAPIDS column   | Description   |
     |-----------------|-----------------|
-    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged |
+    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged (automatically created by RAPIDS) |
     | LOCAL_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss` |
     | DEVICE_ID       |  A string that uniquely identifies a device |
     | HEARTRATE |  Intraday heartrate |
@@ -29,7 +29,7 @@ This is a description of the format RAPIDS needs to process data for the followi
 
     | RAPIDS column   | Description   |
     |-----------------|-----------------|
-    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged |
+    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged (automatically created by RAPIDS) |
     | LOCAL_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss`, this either is a copy of LOCAL_START_DATE_TIME or LOCAL_END_DATE_TIME depending on which column is used to assign an episode to a specific day|
     | LOCAL_START_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss` representing the start of a daily sleep episode |
     | LOCAL_END_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss`  representing the end of a daily sleep episode|
@@ -43,11 +43,24 @@ This is a description of the format RAPIDS needs to process data for the followi
     | IS_MAIN_SLEEP | 0 if this episode is a nap, or 1 if it is a main sleep episode|
     | TYPE | stages or classic [sleep data](https://dev.fitbit.com/build/reference/web-api/sleep/)|
 
+??? info "FITBIT_SLEEP_INTRADAY"
+
+    | RAPIDS column   | Description   |
+    |-----------------|-----------------|
+    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged (automatically created by RAPIDS)|
+    | LOCAL_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss`, this either is a copy of LOCAL_START_DATE_TIME or LOCAL_END_DATE_TIME depending on which column is used to assign an episode to a specific day|
+    | DEVICE_ID       |  A string that uniquely identifies a device |
+    | TYPE_EPISODE_ID | An id for each unique main or nap episode. Main and nap episodes have different levels, each row in this table is one of such levels, so multiple rows can have the same TYPE_EPISODE_ID|
+    | DURATION | Duration of the episode level in minutes|
+    | IS_MAIN_SLEEP | 0 if this episode level belongs to a nap, or 1 if it belongs to a main sleep episode|
+    | TYPE | type of level: stages or classic [sleep data](https://dev.fitbit.com/build/reference/web-api/sleep/)|
+    | LEVEL | For stages levels one of `wake`, `deep`, `light`, or `rem`. For classic levels one of `awake`, `restless`, and `asleep`|
+
 ??? info "FITBIT_STEPS_SUMMARY"
 
     | RAPIDS column   | Description   |
     |-----------------|-----------------|
-    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged |
+    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged (automatically created by RAPIDS) |
     | LOCAL_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss` |
     | DEVICE_ID       |  A string that uniquely identifies a device |
     | STEPS |  Daily step count |
@@ -56,7 +69,7 @@ This is a description of the format RAPIDS needs to process data for the followi
 
     | RAPIDS column   | Description   |
     |-----------------|-----------------|
-    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged |
+    | TIMESTAMP       |  An UNIX timestamp (13 digits) when a row of data was logged (automatically created by RAPIDS) |
     | LOCAL_DATE_TIME       |  Date time string with format `yyyy-mm-dd hh:mm:ss` |
     | DEVICE_ID       |  A string that uniquely identifies a device |
     | STEPS |  Intraday step count (usually every minute)|

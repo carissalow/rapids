@@ -448,19 +448,6 @@ FITBIT_STEPS_INTRADAY:
       SRC_FOLDER: "rapids" # inside src/features/fitbit_steps_intraday
       SRC_LANGUAGE: "python"
 
-# FITBIT_CALORIES:
-#   TABLE_FORMAT: JSON # JSON or CSV. If your JSON or CSV data are files change [DEVICE_DATA][FITBIT][SOURCE][TYPE] to FILES
-#   TABLE:
-#     JSON: fitbit_calories
-#     CSV:
-#       SUMMARY: calories_summary
-#       INTRADAY: calories_intraday
-#   PROVIDERS:
-#     RAPIDS:
-#       COMPUTE: False
-#       FEATURES: []
-
-
 ########################################################################################################################
 #                                                 EMPATICA                                                             #
 ########################################################################################################################

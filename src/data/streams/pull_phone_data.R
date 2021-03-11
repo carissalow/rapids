@@ -156,7 +156,7 @@ pull_phone_data <- function(){
     mutated_data <- mutate_data(mutation_scripts, renamed_data, data_configuration)
 
     if(!setequal(expected_columns, colnames(mutated_data)))
-      stop(paste0("The mutated data for ", device, " does not have the columns RAPIDS expects. The container script returned [", paste(colnames(mutated_data), collapse=","),"] but RAPIDS expected [",paste(expected_columns, collapse=","), "]. One ore more mutation scripts in [", sensor,"][MUTATION][SCRIPTS] are adding extra columns or removing or not adding the ones expected"))
+      stop(paste0("The mutated data for ", device, " does not have the columns RAPIDS expects. The mutation script returned [", paste(colnames(mutated_data), collapse=","),"] but RAPIDS expected [",paste(expected_columns, collapse=","), "]. One ore more mutation scripts in [", sensor,"][MUTATION][SCRIPTS] are adding extra columns or removing or not adding the ones expected"))
     participant_data <- rbind(participant_data, mutated_data)
       
   }
