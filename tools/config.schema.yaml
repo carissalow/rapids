@@ -158,22 +158,11 @@ properties:
 
   CREATE_PARTICIPANT_FILES:
     type: object
-    required: [SOURCE, PHONE_SECTION, FITBIT_SECTION]
+    required: [CSV_FILE_PATH, PHONE_SECTION, FITBIT_SECTION,EMPATICA_SECTION]
     properties:
-      SOURCE:
-        type: object
-        required: [TYPE]
-        properties:
-          TYPE:
-            type: string
-            enum: [AWARE_DEVICE_TABLE, CSV_FILE]
-          DATABASE_GROUP:
-            type: string
-          CSV_FILE_PATH:
-            type: string
-            pattern: "^.*\\.csv$"
-          TIMEZONE:
-            type: string
+      CSV_FILE_PATH:
+        type: string
+        pattern: "^.*\\.csv$"
       PHONE_SECTION:
         type: object
         properties:
@@ -186,6 +175,16 @@ properties:
             items:
               type: string
       FITBIT_SECTION:
+        properties:
+          ADD:
+            type: boolean
+          DEVICE_ID_COLUMN:
+            type: string
+          IGNORED_DEVICE_IDS:
+            type: array
+            items:
+              type: string
+      EMPATICA_SECTION:
         properties:
           ADD:
             type: boolean

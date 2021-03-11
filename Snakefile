@@ -253,7 +253,6 @@ for provider in config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"].keys():
 for provider in config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"].keys():
     if config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_intraday_raw.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_intraday_parsed.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_sleep_intraday_episodes_resampled.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_sleep_intraday_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_sleep_intraday_features/fitbit_sleep_intraday_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))

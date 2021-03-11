@@ -17,7 +17,7 @@ rule create_example_participant_files:
 
 rule create_participants_files:
     input:
-        participants_file = [] if config["CREATE_PARTICIPANT_FILES"]["SOURCE"]["TYPE"] == "AWARE_DEVICE_TABLE" else config["CREATE_PARTICIPANT_FILES"]["SOURCE"]["CSV_FILE_PATH"] 
+        participants_file = config["CREATE_PARTICIPANT_FILES"]["CSV_FILE_PATH"] 
     params:
         config = config["CREATE_PARTICIPANT_FILES"]
     script:
