@@ -1,0 +1,89 @@
+FITBIT_HEARTRATE_SUMMARY:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: FLAG_TO_MUTATE
+    DEVICE_ID: device_id
+    LOCAL_DATE_TIME: FLAG_TO_MUTATE
+    HEARTRATE_DAILY_RESTINGHR: FLAG_TO_MUTATE
+    HEARTRATE_DAILY_CALORIESOUTOFRANGE: FLAG_TO_MUTATE
+    HEARTRATE_DAILY_CALORIESFATBURN: FLAG_TO_MUTATE
+    HEARTRATE_DAILY_CALORIESCARDIO: FLAG_TO_MUTATE
+    HEARTRATE_DAILY_CALORIESPEAK: FLAG_TO_MUTATE
+  MUTATION:
+    COLUMN_MAPPINGS:
+      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+      - src/data/streams/mutations/fitbit/parse_heartrate_summary_json.py
+
+FITBIT_HEARTRATE_INTRADAY:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: FLAG_TO_MUTATE
+    DEVICE_ID: device_id
+    LOCAL_DATE_TIME: FLAG_TO_MUTATE
+    HEARTRATE: FLAG_TO_MUTATE
+    HEARTRATE_ZONE: FLAG_TO_MUTATE
+  MUTATION:
+    COLUMN_MAPPINGS:
+      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+      - src/data/streams/mutations/fitbit/parse_heartrate_intraday_json.py
+
+FITBIT_SLEEP_SUMMARY:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: FLAG_TO_MUTATE
+    DEVICE_ID: device_id
+    LOCAL_DATE_TIME: FLAG_TO_MUTATE
+    LOCAL_START_DATE_TIME: FLAG_TO_MUTATE
+    LOCAL_END_DATE_TIME: FLAG_TO_MUTATE
+    EFFICIENCY: FLAG_TO_MUTATE
+    MINUTES_AFTER_WAKEUP: FLAG_TO_MUTATE
+    MINUTES_ASLEEP: FLAG_TO_MUTATE
+    MINUTES_AWAKE: FLAG_TO_MUTATE
+    MINUTES_TO_FALL_ASLEEP: FLAG_TO_MUTATE
+    MINUTES_IN_BED: FLAG_TO_MUTATE
+    IS_MAIN_SLEEP: FLAG_TO_MUTATE
+    TYPE: FLAG_TO_MUTATE
+  MUTATION:
+    COLUMN_MAPPINGS:
+      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+      - src/data/streams/mutations/fitbit/parse_sleep_summary_json.py
+
+FITBIT_SLEEP_INTRADAY:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: FLAG_TO_MUTATE
+    DEVICE_ID: device_id
+    LOCAL_DATE_TIME: FLAG_TO_MUTATE
+    TYPE_EPISODE_ID: FLAG_TO_MUTATE
+    DURATION: FLAG_TO_MUTATE
+    IS_MAIN_SLEEP: FLAG_TO_MUTATE
+    TYPE: FLAG_TO_MUTATE
+    LEVEL: FLAG_TO_MUTATE
+  MUTATION:
+    COLUMN_MAPPINGS:
+      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+      - src/data/streams/mutations/fitbit/parse_sleep_intraday_json.py
+
+FITBIT_STEPS_SUMMARY:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: FLAG_TO_MUTATE
+    DEVICE_ID: device_id
+    LOCAL_DATE_TIME: FLAG_TO_MUTATE
+    STEPS: FLAG_TO_MUTATE
+  MUTATION:
+    COLUMN_MAPPINGS:
+      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+      - src/data/streams/mutations/fitbit/parse_steps_summary_json.py
+
+FITBIT_STEPS_INTRADAY:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: FLAG_TO_MUTATE
+    DEVICE_ID: device_id
+    LOCAL_DATE_TIME: FLAG_TO_MUTATE
+    STEPS: FLAG_TO_MUTATE
+  MUTATION:
+    COLUMN_MAPPINGS:
+      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+      - src/data/streams/mutations/fitbit/parse_steps_intraday_json.py
