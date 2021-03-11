@@ -350,6 +350,10 @@ FITBIT_DATA_STREAMS:
     FOLDER: data/external/fitbit_csv
     SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
 
+  fitbitparsed_csv: 
+    FOLDER: data/external/fitbit_csv
+    SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
+
 # Sensors ------
 
 # See https://www.rapids.science/latest/features/fitbit-data-yield/

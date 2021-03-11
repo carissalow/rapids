@@ -12,7 +12,7 @@ library(readr)
 
 pull_data <- function(stream_parameters, device, sensor, sensor_container, columns){
   if(!dir.exists(stream_parameters$FOLDER))
-    stop("[FITBIT_DATA_STREAMS][fitbitjson_csv][FOLDER] does not exist: ", stream_parameters$FOLDER)
+    stop("[FITBIT_DATA_STREAMS][fitbitparsed_csv][FOLDER] does not exist: ", stream_parameters$FOLDER)
   data_file <- file.path(stream_parameters$FOLDER, sensor_container)
 
   if(!file.exists(data_file))

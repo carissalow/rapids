@@ -15,14 +15,10 @@ For reference, these are the data streams we currently support:
 
 | Data Stream | Device | Format | Container | Docs
 |--|--|--|--|--|
-| `aware_mysql`| Phone | AWARE app | MySQL | [link]()
-| `aware_csv`| Phone | AWARE app | CSV files | [link]()
-| `fitbitjson_mysql`| Fitbit | JSON (per Fitbit's API) | MySQL | [link]()
-| `fitbitjson_csv`| Fitbit | JSON (per Fitbit's API) | CSV files | [link]()
-| `fitbitparsed_mysql`| Fitbit | Parsed (parsed API data) | MySQL | [link]()
-| `fitbitparsed_csv`| Fitbit | Parsed (parsed API data)  | CSV files | [link]()
-| `empatica_zip`| Empatica | E4 Connect | ZIP files | [link]()
-
-!!! hint
-    - Fitbit data can be processed from the JSON object produced by Fitbit's API (recommended) or from parsed tabular data (if you only have access to parsed data).
-    - Empatica data can only be accessed through the [E4 Connect website](https://support.empatica.com/hc/en-us/articles/201608896-Data-export-and-formatting-from-E4-connect-) that produces zip files with a CSV file per sensor which can be processed directly in RAPIDS. 
+| `aware_mysql`| Phone | AWARE app | MySQL | [link](../aware-mysql)
+| `aware_csv`| Phone | AWARE app | CSV files | [link](../aware-csv)
+| `fitbitjson_mysql`| Fitbit | JSON (per [Fitbit's API](https://dev.fitbit.com/build/reference/web-api/)) | MySQL | [link](../fitbitjson-mysql)
+| `fitbitjson_csv`| Fitbit | JSON (per [Fitbit's API](https://dev.fitbit.com/build/reference/web-api/)) | CSV files | [link](../fitbitjson-csv)
+| `fitbitparsed_mysql`| Fitbit | Parsed (parsed API data) | MySQL | [link](../fitbitparsed-mysql)
+| `fitbitparsed_csv`| Fitbit | Parsed (parsed API data)  | CSV files | [link](../fitbitparsed-csv)
+| `empatica_zip`| Empatica | [E4 Connect](https://support.empatica.com/hc/en-us/articles/201608896-Data-export-and-formatting-from-E4-connect-) | ZIP files | [link](../empatica-zip)
