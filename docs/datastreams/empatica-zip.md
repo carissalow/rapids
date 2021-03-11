@@ -3,7 +3,7 @@ This [data stream](../../datastreams/data-streams-introduction) handles Empatica
 
 ## Container
 
-You need to create a subfolder for every participant named after their `pid` in the path specified by `[EMPATICA_DATA_STREAMS][empatica_zipfiles][FOLDER]`. You can add one or more Empatica zip files to any subfolder. 
+You need to create a subfolder for every participant named after their `device id` inside the folder specified by `[EMPATICA_DATA_STREAMS][empatica_zipfiles][FOLDER]`. You can add one or more Empatica zip files to any subfolder. 
 
 The script to connect and download data from this container is at:
 ```bash

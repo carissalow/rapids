@@ -13,11 +13,11 @@ PIDS: [test01]
 CREATE_PARTICIPANT_FILES:
   CSV_FILE_PATH: "data/external/example_participants.csv" # see docs for required format
   PHONE_SECTION:
-    ADD: TRUE
+    ADD: True
     DEVICE_ID_COLUMN: device_id # column name
     IGNORED_DEVICE_IDS: []
   FITBIT_SECTION:
-    ADD: FALSE
+    ADD: True
     DEVICE_ID_COLUMN: fitbit_id # column name
     IGNORED_DEVICE_IDS: []
   EMPATICA_SECTION:
