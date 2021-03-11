@@ -84,7 +84,11 @@ def pull_data(data_configuration, device, sensor, container, columns_to_download
     participant_data = pd.DataFrame(columns=columns_to_download.values())
     participant_data.set_index('timestamp', inplace=True)
 
-    for zipfile in list((Path(data_configuration["FOLDER"]) / Path(device)).rglob("*.zip")):
+    available_zipfiles = list((Path(data_configuration["FOLDER"]) / Path(device)).rglob("*.zip"))
+    if len(available_zipfiles) == 0:
+        warnings.warn("There were no zip files in: {}. If you were expecting data for this participant the [EMPATICA][DEVICE_IDS] key in their participant file is missing the pid".format((Path(data_configuration["FOLDER"]) / Path(device))))
+
+    for zipfile in available_zipfiles:
         print("Extracting {} data from {} for {}".format(sensor, zipfile, device))
         with ZipFile(zipfile, 'r') as zipFile:
             listOfFileNames = zipFile.namelist()

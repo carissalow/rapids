@@ -138,7 +138,7 @@ properties:
             pattern: "^.*\\.csv$"
           IF_MISSING_TZCODE:
             type: string
-            enum: [USE_DEFAULT]
+            enum: [STOP, USE_DEFAULT]
           DEFAULT_TZCODE:
             type: string
           FITBIT:
