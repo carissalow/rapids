@@ -2,7 +2,7 @@
 This [data stream](../../datastreams/data-streams-introduction) handles Fitbit sensor data downloaded using the [Fitbit Web API](https://dev.fitbit.com/build/reference/web-api/) and stored in a MySQL database. Please note that RAPIDS cannot query the API directly; you need to use other available tools or implement your own. Once you have your sensor data in a MySQL database, RAPIDS can process it.
 
 ## Container
-The container should be a MySQL database with a table per sensor, each containing the data for all participants.
+The container should be a MySQL database with a table per sensor, each containing all participants' data.
 
 The script to connect and download data from this container is at:
 ```bash
@@ -17,7 +17,7 @@ The `format.yaml` maps and transforms columns in your raw data stream to the [ma
 src/data/streams/fitbitjson_mysql/format.yaml
 ```
 
-If you want RAPIDS to process Fitbit sensor data using this stream, you will need to replace `[RAPIDS_COLUMN_MAPPINGS]`/`[MUTATION][COLUMN_MAPPINGS]` inside **each sensor** section in `format.yaml` to match your raw data column names:
+If you want RAPIDS to process Fitbit sensor data using this stream, you will need to map `DEVICE_ID` and `JSON_FITBIT_COLUMN` to your own raw data columns inside **each sensor** section in `format.yaml`.
 
 ??? info "FITBIT_HEARTRATE_SUMMARY"
 
@@ -52,7 +52,7 @@ If you want RAPIDS to process Fitbit sensor data using this stream, you will nee
             All columns except `DEVICE_ID` are parsed from `JSON_FITBIT_COLUMN`. `JSON_FITBIT_COLUMN` is a string column containing the JSON objects returned by Fitbit's API. See an example of the raw data RAPIDS expects for this data stream:
 
 
-            ??? "Example of the raw data RAPIDS expects for this data stream"
+            ??? example "Example of the raw data RAPIDS expects for this data stream"
 
                 |device_id                                |fitbit_data                                               |
                 |---------------------------------------- |--------------------------------------------------------- |
@@ -90,7 +90,7 @@ If you want RAPIDS to process Fitbit sensor data using this stream, you will nee
             All columns except `DEVICE_ID` are parsed from `JSON_FITBIT_COLUMN`. `JSON_FITBIT_COLUMN` is a string column containing the JSON objects returned by Fitbit's API. See an example of the raw data RAPIDS expects for this data stream:
 
 
-            ??? "Example of the raw data RAPIDS expects for this data stream"
+            ??? example "Example of the raw data RAPIDS expects for this data stream"
 
                 |device_id                                |fitbit_data                                               |
                 |---------------------------------------- |--------------------------------------------------------- |

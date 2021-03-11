@@ -9,7 +9,7 @@ If you want to process a data stream using RAPIDS, make sure that your data is s
 If RAPIDS doesn't support your data stream yet (e.g. Beiwe data stored in PostgreSQL, or AWARE data stored in InfluxDB), you can always [implement a new data stream](../add-new-data-streams). If it's something you think other people might be interested on, we will be happy to include your new data stream in RAPIDS, so get in touch!.
 
 !!! hint
-    You can only add new data streams for Smartphone or Fitbit data. If you need RAPIDS to process data from **different devices**, like Oura Rings or Actigraph wearables, get in touch. It is a more complex process that could take a few days to implement for someone familiar with R or Python but that we would be happy to work on together.
+    Currently, you can add new data streams for smartphones, Fitbit, and Empatica devices. If you need RAPIDS to process data from **other devices**, like Oura Rings or Actigraph wearables, get in touch. It is a more complicated process that could take a couple of days to implement for someone familiar with R or Python, but we would be happy to work on it together.
 
 For reference, these are the data streams we currently support: 
 

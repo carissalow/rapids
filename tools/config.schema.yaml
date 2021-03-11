@@ -839,6 +839,15 @@ properties:
             SLEEP_SUMMARY_EPISODE_DAY_ANCHOR:
               type: string
               enum: ["start", "end"]
+        fitbitparsed_mysql:
+          type: object
+          required: [DATABASE_GROUP, SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]
+          properties:
+            DATABASE_GROUP:
+              type: string
+            SLEEP_SUMMARY_EPISODE_DAY_ANCHOR:
+              type: string
+              enum: ["start", "end"]
   
   FITBIT_DATA_YIELD:
     type: object

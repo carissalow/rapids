@@ -341,6 +341,11 @@ FITBIT_DATA_STREAMS:
   fitbitjson_mysql: 
     DATABASE_GROUP: MY_GROUP
     SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
+  
+  fitbitparsed_mysql: 
+    DATABASE_GROUP: MY_GROUP
+    SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
+
 
 # Sensors ------
 
