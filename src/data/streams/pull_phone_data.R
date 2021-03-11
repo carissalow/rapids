@@ -119,6 +119,9 @@ pull_phone_data <- function(){
   device_oss <- replace(device_oss, device_oss == "multiple", "infer") # support multiple for retro compatibility
   validate_deviceid_platforms(devices, device_oss, participant_file)
 
+  if(length(devices) == 0)
+    stop("There were no PHONE device ids in this participant file:", participant_file)
+
   if(length(device_oss) == 1)
     device_oss <- rep(device_oss, length(devices))
 

@@ -45,11 +45,12 @@ def readFile(file, dtype):
 def extract_empatica_data(data,  sensor):
     sensor_data_file = BytesIO(data).getvalue().decode('utf-8')
     sensor_data_file = StringIO(sensor_data_file)
+    column = sensor.replace("EMPATICA_", "").lower()
     # read sensor data
     if sensor in ('EMPATICA_ELECTRODERMAL_ACTIVITY', 'EMPATICA_TEMPERATURE', 'EMPATICA_HEARTRATE', 'EMPATICA_BLOOD_VOLUME_PULSE'):
         ddict = readFile(sensor_data_file, sensor)
-        df = pd.DataFrame.from_dict(ddict, orient='index', columns=[sensor])
-        df[sensor] = df[sensor].astype(float)
+        df = pd.DataFrame.from_dict(ddict, orient='index', columns=[column])
+        df[column] = df[column].astype(float)
         df.index.name = 'timestamp'
 
     elif sensor == 'EMPATICA_ACCELEROMETER':
@@ -61,16 +62,16 @@ def extract_empatica_data(data,  sensor):
         df.index.name = 'timestamp'
 
     elif sensor == 'EMPATICA_INTER_BEAT_INTERVAL':
-        df = pd.read_csv(sensor_data_file, names=['timestamp', sensor], header=None)
+        df = pd.read_csv(sensor_data_file, names=['timestamp', column], header=None)
         timestampstart = float(df['timestamp'][0])
         df['timestamp'] = (df['timestamp'][1:len(df)]).astype(float) + timestampstart
         df = df.drop([0])
-        df[sensor] = df[sensor].astype(float)
+        df[column] = df[column].astype(float)
         df = df.set_index('timestamp')
 
     else:
         raise ValueError(
-            "sensor can only be one of ['electrodermal_activity','temperature','heartrate','blood_volume_pulse','accelerometer','inter_beat_interval'].")
+            "sensor has an invalid name: {}".format(sensor))
 
     # format timestamps
     df.index *= 1000

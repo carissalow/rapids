@@ -88,10 +88,13 @@ nav:
         - Mandatory Phone Format: datastreams/mandatory-phone-format.md
       - Fitbit:
         - fitbitjson_mysql: datastreams/fitbitjson-mysql.md
-        - fitbitparsed_mysql: datastreams/fitbitparsed-mysql.md
         - fitbitjson_csv: datastreams/fitbitjson-csv.md
+        - fitbitparsed_mysql: datastreams/fitbitparsed-mysql.md
         - fitbitparsed_csv: datastreams/fitbitparsed-csv.md
         - Mandatory Fitbit Format: datastreams/mandatory-fitbit-format.md
+      - Empatica:
+        - empatica_zip: datastreams/empatica-zip.md
+        - Mandatory Empatica Format: datastreams/mandatory-empatica-format.md
       - Add New Data Streams: datastreams/add-new-data-streams.md
   - Behavioral Features:
       - Introduction: features/feature-introduction.md

@@ -33,14 +33,15 @@ TIME_SEGMENTS: &time_segments
   FILE: "data/external/timesegments_periodic.csv"
   INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, see docs
 
+# See https://www.rapids.science/latest/setup/configuration/#timezone-of-your-study
 TIMEZONE: 
-    TYPE: MULTIPLE
+    TYPE: SINGLE
     SINGLE:
       TZCODE: America/New_York
     MULTIPLE:
       TZCODES_FILE: data/external/multiple_timezones_example.csv
-      IF_MISSING_TZCODE: USE_DEFAULT
-      DEFAULT_TZCODE: America/Los_Angeles
+      IF_MISSING_TZCODE: STOP
+      DEFAULT_TZCODE: America/New_York
       FITBIT: 
         ALLOW_MULTIPLE_TZ_PER_DEVICE: False
         INFER_FROM_SMARTPHONE_TZ: False

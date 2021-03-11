@@ -86,7 +86,7 @@ pull_wearable_data_main <- function(){
   rapids_schema <- read_yaml(rapids_schema_file)
   devices <- participant_data[[toupper(device_type)]]$DEVICE_IDS
   if(length(devices) == 0)
-    devices <- c(pid)
+    stop("There were no ", device_type ," device ids in this participant file: ", participant_file)
   validate_expected_columns_mapping(stream_schema, rapids_schema, sensor, rapids_schema_file, stream_format)
   expected_columns <- tolower(names(stream_schema[[sensor]][["RAPIDS_COLUMN_MAPPINGS"]]))
   participant_data <- setNames(data.frame(matrix(ncol = length(expected_columns), nrow = 0)), expected_columns)
