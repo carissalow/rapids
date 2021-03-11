@@ -1,9 +1,10 @@
+# This rull will dissapear
 rule restore_sql_file:
     input:
         sql_file = "data/external/rapids_example.sql",
         db_credentials = ".env"
     params:
-        group = config["DATABASE_GROUP"]
+        group = "No_GROUP" #config["DATABASE_GROUP"]
     output:
         touch("data/interim/restore_sql_file.done")
     script:

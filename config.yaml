@@ -1,10 +1,6 @@
-# See https://www.rapids.science/latest/setup/configuration/#database-credentials
-DATABASE_GROUP: &database_group
-  MY_GROUP
-
-# See https://www.rapids.science/latest/setup/configuration/#timezone-of-your-study
-TIMEZONE: &timezone
-  America/New_York
+########################################################################################################################
+#                                              GLOBAL CONFIGURATION                                                    #
+########################################################################################################################
 
 # See https://www.rapids.science/latest/setup/configuration/#participant-files
 PIDS: [test01]

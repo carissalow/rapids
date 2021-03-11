@@ -1,7 +1,6 @@
 $schema: "http://json-schema.org/draft-07/schema#"
 description: RAPIDS configuration schema
 required:
-  - DATABASE_GROUP
   - TIMEZONE
   - PIDS
   - CREATE_PARTICIPANT_FILES
@@ -113,8 +112,6 @@ definitions:
             type: string
     
 properties:
-  DATABASE_GROUP:
-    type: string
 
   TIMEZONE:
     type: object
