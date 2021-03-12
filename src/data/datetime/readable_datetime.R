@@ -61,7 +61,8 @@ create_mising_temporal_column <- function(data, device_type){
           mutate(data = map2(data, local_timezone, function(nested_data, tz){
             return(nested_data %>%  mutate(timestamp = as.numeric(ymd_hms(local_date_time, tz=tz)) * 1000) %>% drop_na(timestamp))
             })) %>% 
-          unnest(cols = everything()))
+          unnest(cols = everything())) %>% 
+          ungroup()
     } else {
       # For the rest of devices we infere local date time from timestamp
       if(nrow(data) == 0)
@@ -72,7 +73,8 @@ create_mising_temporal_column <- function(data, device_type){
           mutate(data = map2(data, local_timezone, function(nested_data, tz){
             return(nested_data %>%  mutate(local_date_time = format(as_datetime(timestamp / 1000, tz=tz), format="%Y-%m-%d %H:%M:%S")) %>% drop_na(local_date_time) )
             })) %>% 
-          unnest(cols = everything()))
+          unnest(cols = everything())) %>% 
+          ungroup()
     }
 }
 
@@ -118,6 +120,7 @@ readable_datetime <- function(){
   output <- split_local_date_time(output)
   output <- assign_to_time_segment(output, time_segments, time_segments_type, include_past_periodic_segments)
   output <- filter_wanted_dates(output, participant_file, device_type)
+  output <- output %>% arrange(timestamp)
 
   write_csv(output, snakemake@output[[1]])
 }

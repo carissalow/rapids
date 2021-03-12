@@ -163,7 +163,7 @@ pull_phone_data <- function(){
     participant_data <- rbind(participant_data, mutated_data)
       
   }
-
+  participant_data <- participant_data %>% arrange(timestamp)
   write_csv(participant_data, output_data_file)
 }
 

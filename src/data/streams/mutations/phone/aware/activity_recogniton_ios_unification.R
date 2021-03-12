@@ -25,9 +25,8 @@ clean_ios_activity_column <- function(ios_gar){
 }
 
 unify_ios_activity_recognition <- function(ios_gar){
-    # We only need to unify Google Activity Recognition data for iOS
     # discard rows where activities column is blank
-    ios_gar <- ios_gar[-which(ios_gar$activities == ""), ]
+    ios_gar <- ios_gar %>% filter(!is.na(activities) & activities != "" )
     # clean "activities" column of ios_gar
     ios_gar <- clean_ios_activity_column(ios_gar)
 

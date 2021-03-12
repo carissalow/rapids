@@ -114,6 +114,10 @@ pull_wearable_data_main <- function(){
     participant_data <- rbind(participant_data, mutated_data)
       
   }
+  if(device_type == "fitbit")
+    participant_data <- participant_data %>% arrange(local_date_time)
+  else
+    participant_data <- participant_data %>% arrange(timestamp)
   
   write_csv(participant_data, output_data_file)
 }

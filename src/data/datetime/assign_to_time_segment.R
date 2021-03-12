@@ -80,7 +80,8 @@ assign_to_time_segment <- function(sensor_data, time_segments, time_segments_typ
       mutate(data = map2(data, local_timezone, assign_rows_to_segments_frequency, time_segments)) %>% 
       unnest(cols = data) %>% 
       arrange(timestamp) %>% 
-      select(-local_time_obj)
+      select(-local_time_obj) %>% 
+      ungroup()
     
     return(sensor_data)
 
@@ -171,5 +172,5 @@ assign_to_time_segment <- function(sensor_data, time_segments, time_segments_typ
       arrange(timestamp)
   }
 
-  return(sensor_data)
+  return(sensor_data %>% ungroup())
 }
