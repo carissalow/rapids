@@ -4,30 +4,7 @@ Sensor parameters description for `[FITBIT_STEPS_INTRADAY]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[TABLE]`| Database table name or file path where the steps intraday data is stored. The configuration keys in [Device Data Source Configuration](../../setup/configuration/#device-data-source-configuration) control whether this parameter is interpreted as table or file.
-
-The format of the column(s) containing the Fitbit sensor data can be `JSON` or `PLAIN_TEXT`. The data in `JSON` format is obtained directly from the Fitbit API. We support `PLAIN_TEXT` in case you already parsed your data and don't have access to your participants' Fitbit accounts anymore. If your data is in `JSON` format then summary and intraday data come packed together. 
-
-We provide examples of the input format that RAPIDS expects, note that both examples for `JSON` and `PLAIN_TEXT` are tabular and the actual format difference comes in the `fitbit_data` column (we truncate the `JSON` example for brevity).
-
-??? example "Example of the structure of source data"
-
-    === "JSON"
-
-        |device_id                                |fitbit_data                                               |
-        |---------------------------------------- |--------------------------------------------------------- |
-        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524     |"activities-steps":[{"dateTime":"2020-10-07","value":"1775"}],"activities-steps-intraday":{"dataset":[{"time":"00:00:00","value":5},{"time":"00:01:00","value":3},{"time":"00:02:00","value":0},...],"datasetInterval":1,"datasetType":"minute"}}
-        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524     |"activities-steps":[{"dateTime":"2020-10-08","value":"3201"}],"activities-steps-intraday":{"dataset":[{"time":"00:00:00","value":14},{"time":"00:01:00","value":11},{"time":"00:02:00","value":10},...],"datasetInterval":1,"datasetType":"minute"}}
-        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524     |"activities-steps":[{"dateTime":"2020-10-09","value":"998"}],"activities-steps-intraday":{"dataset":[{"time":"00:00:00","value":0},{"time":"00:01:00","value":0},{"time":"00:02:00","value":0},...],"datasetInterval":1,"datasetType":"minute"}}
-    
-    === "PLAIN_TEXT"
-        All columns are mandatory.
-
-        |device_id                              |local_date_time        |steps     |
-        |-------------------------------------- |---------------------- |--------- |
-        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |2020-10-07 00:00:00    |5         |
-        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |2020-10-07 00:01:00    |3         |
-        |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |2020-10-07 00:02:00    |0         |
+|`[CONTAINER]`| Container where your steps intraday data is stored, depending on the data stream you are using this can be a database table, a CSV file, etc. |
 
 
 ## RAPIDS provider
@@ -38,8 +15,7 @@ We provide examples of the input format that RAPIDS expects, note that both exam
 !!! info "File Sequence"
     ```bash
     - data/raw/{pid}/fitbit_steps_intraday_raw.csv
-    - data/raw/{pid}/fitbit_steps_intraday_parsed.csv
-    - data/raw/{pid}/fitbit_steps_intraday_parsed_with_datetime.csv
+    - data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv
     - data/interim/{pid}/fitbit_steps_intraday_features/fitbit_steps_intraday_{language}_{provider_key}.csv
     - data/processed/features/{pid}/fitbit_steps_intraday.csv
     ```

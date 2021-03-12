@@ -23,8 +23,7 @@ Before explaining the data yield features, let's define the following relevant c
 !!! info "File Sequence"
     ```bash
     - data/raw/{pid}/fitbit_heartrate_intraday_raw.csv
-    - data/raw/{pid}/fitbit_heartrate_intraday_parsed.csv
-    - data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv
+    - data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv
     - data/interim/{pid}/fitbit_data_yield_features/fitbit_data_yield_{language}_{provider_key}.csv
     - data/processed/features/{pid}/fitbit_data_yield.csv
     ```

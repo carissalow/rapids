@@ -217,8 +217,7 @@ for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
 for provider in config["FITBIT_DATA_YIELD"]["PROVIDERS"].keys():
     if config["FITBIT_DATA_YIELD"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_intraday_raw.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_intraday_parsed.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/processed/features/{pid}/fitbit_data_yield.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
         files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
@@ -253,6 +252,8 @@ for provider in config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"].keys():
 for provider in config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"].keys():
     if config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_intraday_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_intraday_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/fitbit_sleep_intraday_episodes.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_sleep_intraday_episodes_resampled.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_sleep_intraday_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_sleep_intraday_features/fitbit_sleep_intraday_{language}_{provider_key}.csv", pid=config["PIDS"], language=config["FITBIT_SLEEP_INTRADAY"]["PROVIDERS"][provider]["SRC_LANGUAGE"].lower(), provider_key=provider.lower()))
