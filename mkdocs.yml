@@ -149,6 +149,6 @@ nav:
   - Others:
     - Migrating from an old version: migrating-from-old-versions.md
     - Code of Conduct: code_of_conduct.md
-    - FAQ: faq.md
+    - Common Errors: common-errors.md
     - Team: team.md
     - Change Log: change-log.md

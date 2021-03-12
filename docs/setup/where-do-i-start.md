@@ -120,5 +120,5 @@ RAPIDS functionality includes:
 ??? info "I know how to program in Python or R but not both. Can I still use or extend RAPIDS?"
     Yes, you don't need to write any code to use RAPIDS out of the box. If you need to add support for new [data streams](../../datastreams/add-new-data-streams/)  or [behavioral features](../../features/add-new-features/) you can use scripts in either language.
 
-??? info "I have scripts that clean data from X sensor, can I use them with RAPIDS?"
-    Yes, you can add them as a [`[MUTATION][SCRIPT]`](../../datastreams/add-new-data-streams/#complex-mapping) in the `format.yaml` of the [data stream](../../datastreams/data-streams-introduction/) you are using. You will add a `main` function that will receive a data frame with the raw data for that sensor.
+??? info "I have scripts that clean raw data from X sensor, can I use them with RAPIDS?"
+    Yes, you can add them as a [`[MUTATION][SCRIPT]`](../../datastreams/add-new-data-streams/#complex-mapping) in the `format.yaml` of the [data stream](../../datastreams/data-streams-introduction/) you are using. You will add a `main` function that will receive a data frame with the raw data for that sensor that in turn will be used to compute behavioral features.

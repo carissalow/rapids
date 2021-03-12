@@ -1,4 +1,4 @@
-# Frequently Asked Questions
+# Common Errors
 
 ##  Cannot connect to your MySQL server
 
