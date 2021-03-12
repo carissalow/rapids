@@ -2,7 +2,10 @@
 
 ## Migrating from RAPIDS 0.4.x or older
 
-There are three actions that you need to take if you were using RAPIDS `0.4.3` or older ([before Feb 9th, 2021](https://github.com/carissalow/rapids/releases/tag/v0.4.3)):
+There are four actions that you need to take if you were using RAPIDS `0.4.3` or older ([before Feb 9th, 2021](https://github.com/carissalow/rapids/releases/tag/v0.4.3)):
+
+??? check "Check the new Where do I start? page"
+      Check the new [Where do I start?](../setup/where-do-i-start/) page. Hopefully, it is a better overview of RAPIDS and provides answers to Frequently Asked Questions.
 
 ??? check "Deploy RAPIDS in a new folder"
 
@@ -38,7 +41,7 @@ The most relevant changes to RAPIDS that you need to know about are:
       In the future, you will not have to change your raw data; you will be able to just change column mappings/values in the data stream's `format.yaml` file.
 
 ??? danger "We introduced multiple time zones"
-      The default is still a single time zone (America/New_York). See how to handle [multiple time zones](../setup/configuration/#multiple-timezones)
+      You can now process data from participants that visited multiple time zones. The default is still a single time zone (America/New_York). See how to handle [multiple time zones](../setup/configuration/#multiple-timezones)
 
 ??? danger "The keyword `multiple` is now `infer`"
       When processing data from smartphones, RAPIDS allows you to [infer](../setup/configuration/#participant-files) the OS of a smartphone by using the keyword `multiple` in the `[PLATFORM]` key of participant files. Now RAPIDS uses `infer` instead of `multiple` Nonetheless, `multiple` still works for backward compatibility.
