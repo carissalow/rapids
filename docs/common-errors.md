@@ -58,7 +58,7 @@
     ```
 
 ???+ done "Solution"
-    Please make sure the sensors listed in `[PHONE_VALID_SENSED_BINS][PHONE_SENSORS]` and the `[TABLE]` of each sensor you activated in `config.yaml`  match your database tables.
+    Please make sure the sensors listed in `[PHONE_VALID_SENSED_BINS][PHONE_SENSORS]` and the `[CONTAINER]` of each sensor you activated in `config.yaml`  match your database tables or files.
 
 ---
 ## How do I install RAPIDS on Ubuntu 16.04

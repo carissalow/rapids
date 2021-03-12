@@ -218,9 +218,9 @@ properties:
 
   PHONE_ACCELEROMETER:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -262,9 +262,9 @@ properties:
 
   PHONE_ACTIVITY_RECOGNITION:
     type: object
-    required: [TABLE, EPISODE_THRESHOLD_BETWEEN_ROWS, PROVIDERS]
+    required: [CONTAINER, EPISODE_THRESHOLD_BETWEEN_ROWS, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: object
         required: [ANDROID, IOS]
         properties:
@@ -315,9 +315,9 @@ properties:
         
   PHONE_APPLICATIONS_CRASHES:
     type: object
-    required: [TABLE, APPLICATION_CATEGORIES, PROVIDERS]
+    required: [CONTAINER, APPLICATION_CATEGORIES, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       APPLICATION_CATEGORIES:
         allOf:
@@ -328,9 +328,9 @@ properties:
 
   PHONE_APPLICATIONS_FOREGROUND:
     type: object
-    required: [TABLE, APPLICATION_CATEGORIES, PROVIDERS]
+    required: [CONTAINER, APPLICATION_CATEGORIES, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       APPLICATION_CATEGORIES:
         allOf:
@@ -377,9 +377,9 @@ properties:
 
   PHONE_APPLICATIONS_NOTIFICATIONS:
     type: object
-    required: [TABLE, APPLICATION_CATEGORIES, PROVIDERS]
+    required: [CONTAINER, APPLICATION_CATEGORIES, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       APPLICATION_CATEGORIES:
         allOf:
@@ -391,9 +391,9 @@ properties:
         
   PHONE_BATTERY:
     type: object
-    required: [TABLE, PROVIDERS, EPISODE_THRESHOLD_BETWEEN_ROWS]
+    required: [CONTAINER, PROVIDERS, EPISODE_THRESHOLD_BETWEEN_ROWS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       EPISODE_THRESHOLD_BETWEEN_ROWS:
         type: integer
@@ -416,9 +416,9 @@ properties:
 
   PHONE_BLUETOOTH:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -455,9 +455,9 @@ properties:
                       
   PHONE_CALLS:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -501,9 +501,9 @@ properties:
 
   PHONE_CONVERSATION:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: object
         required: [ANDROID, IOS]
         properties:
@@ -568,9 +568,9 @@ properties:
                   
   PHONE_KEYBOARD:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -579,9 +579,9 @@ properties:
 
   PHONE_LIGHT:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -600,9 +600,9 @@ properties:
 
   PHONE_LOCATIONS:
     type: object
-    required: [TABLE, LOCATIONS_TO_USE, FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD, PROVIDERS]
+    required: [CONTAINER, LOCATIONS_TO_USE, FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       LOCATIONS_TO_USE:
         type: string
@@ -692,9 +692,9 @@ properties:
 
   PHONE_LOG:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: object
         required: [ANDROID, IOS]
         properties:
@@ -709,9 +709,9 @@ properties:
 
   PHONE_MESSAGES:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties: 
-      TABLE: 
+      CONTAINER: 
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -746,9 +746,9 @@ properties:
     
   PHONE_SCREEN:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -781,9 +781,9 @@ properties:
 
   PHONE_WIFI_CONNECTED:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -802,9 +802,9 @@ properties:
   
   PHONE_WIFI_VISIBLE:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -872,9 +872,9 @@ properties:
 
   FITBIT_HEARTRATE_SUMMARY:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -891,9 +891,9 @@ properties:
 
   FITBIT_HEARTRATE_INTRADAY:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -912,9 +912,9 @@ properties:
 
   FITBIT_SLEEP_SUMMARY:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -939,9 +939,9 @@ properties:
   
   FITBIT_SLEEP_INTRADAY:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -1069,9 +1069,9 @@ properties:
   
   FITBIT_STEPS_SUMMARY:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -1088,9 +1088,9 @@ properties:
   
   FITBIT_STEPS_INTRADAY:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       PROVIDERS:
         type: ["null", object]

@@ -26,7 +26,7 @@ get_db_engine <- function(group){
 #' 
 #' @param stream_parameters The PHONE_STREAM_PARAMETERS key in config.yaml. If you need specific parameters add them there.
 #' @param device A device ID string
-#' @param sensor_container database table or file containing the sensor data for all participants. This is the PHONE_SENSOR[TABLE] key in config.yaml
+#' @param sensor_container database table or file containing the sensor data for all participants. This is the FITBIT_SENSOR[CONTAINER] key in config.yaml
 #' @param columns the columns needed from this sensor (we recommend to only return these columns instead of every column in sensor_container)
 #' @return A dataframe with the sensor data for device
 

@@ -6,13 +6,13 @@ A data stream is a set of sensor data collected using a specific type of **devic
 
 **A format** is described using a `format.yaml` file that specifies how to map and mutate your stream's raw data to match the data and format RAPIDS needs.
 
-Both the `container.[R|py]` and the `format.yaml` are saved under `src/data/streams/[stream_name]` where `[stream_name]` can be 
-`aware_mysql` for example.
-
 The most common cases when you would want to implement a new data stream are:
 
 - You collected data with a mobile sensing app RAPIDS does not support yet. For example, [Beiwe](https://www.beiwe.org/) data stored in MySQL. You will need to define a new format file and a new container script.
 - You collected data with a mobile sensing app RAPIDS supports, but this data is stored in a container that RAPIDS can't connect to yet. For example, AWARE data stored in PostgreSQL. In this case, you can reuse the format file of the `aware_mysql` stream, but you will need to implement a new container script.
+
+!!! hint
+    Both the `container.[R|py]` and the `format.yaml` are stored in `./src/data/streams/[stream_name]` where `[stream_name]` can be `aware_mysql` for example.
 
 ## Implement a Container
 

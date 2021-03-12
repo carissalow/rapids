@@ -21,7 +21,7 @@ for provider in config["PHONE_DATA_YIELD"]["PROVIDERS"].keys():
         if not (set(config["PHONE_DATA_YIELD"]["SENSORS"]) <= set(allowed_phone_sensors)):
             raise ValueError('\nInvalid sensor(s) for PHONE_DATA_YIELD. config["PHONE_DATA_YIELD"]["SENSORS"] can have '
                             'one or more of the following phone sensors: {}.\nInstead you provided "{}".\n'
-                            'Keep in mind that the sensors\' TABLE attribute must point to a valid database table'\
+                            'Keep in mind that the sensors\' CONTAINER attribute must point to a valid database table or file'\
                             .format(', '.join(allowed_phone_sensors),
                                     ', '.join(set(config["PHONE_DATA_YIELD"]["SENSORS"]) - set(allowed_phone_sensors))))
         

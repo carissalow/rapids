@@ -14,7 +14,7 @@ Every device sensor has a corresponding config section in `config.yaml`, these s
     # 1) Config section
     PHONE_ACCELEROMETER:
         # 2) Parameters for PHONE_ACCELEROMETER
-        TABLE: accelerometer
+        CONTAINER: accelerometer
 
         # 3) Providers for PHONE_ACCELEROMETER
         PROVIDERS:
@@ -41,7 +41,7 @@ Every device sensor has a corresponding config section in `config.yaml`, these s
     ```
 
 ## Sensor Parameters
-Each sensor configuration section has a "parameters" subsection (see `#2` in the example). These are parameters that affect different aspects of how the raw data is downloaded, and processed. The `TABLE` parameter exists for every sensor, but some sensors will have extra parameters like [`[PHONE_LOCATIONS]`](../phone-locations/). We explain these parameters in a table at the top of each sensor documentation page.
+Each sensor configuration section has a "parameters" subsection (see `#2` in the example). These are parameters that affect different aspects of how the raw data is downloaded, and processed. The `CONTAINER` parameter exists for every sensor, but some sensors will have extra parameters like [`[PHONE_LOCATIONS]`](../phone-locations/). We explain these parameters in a table at the top of each sensor documentation page.
 
 ## Sensor Providers
 Each sensor configuration section can have zero, one or more behavioral feature **providers** (see `#3` in the example). A provider is a script created by the core RAPIDS team or other researchers that extracts behavioral features for that sensor. In this example, accelerometer has two providers: RAPIDS (see `#4`) and PANDA (see `#5`).

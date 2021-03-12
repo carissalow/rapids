@@ -1,6 +1,6 @@
 # Fitbit Data Yield
 
-We use Fitbit heart rate intraday data to extract data yield features. Fitbit data yield features can be used to remove rows ([time segments](../../setup/configuration/#time-segments)) that do not contain enough Fitbit data. You should decide what is your "enough" threshold depending on the time a participant was supposed to be wearing their Fitbit, the length of your study, and the rates of missing data that your analysis could handle.
+We use Fitbit **heart rate intraday** data to extract data yield features. Fitbit data yield features can be used to remove rows ([time segments](../../setup/configuration/#time-segments)) that do not contain enough Fitbit data. You should decide what is your "enough" threshold depending on the time a participant was supposed to be wearing their Fitbit, the length of your study, and the rates of missing data that your analysis could handle.
 
 !!! hint "Why is Fitbit data yield important?"
     Imagine that you want to extract `FITBIT_STEPS_SUMMARY` features on daily segments (`00:00` to `23:59`). Let's say that on day 1 the Fitbit logged 6k as the total step count and the heart rate sensor logged 24 hours of data and on day 2 the Fitbit logged 101 as the total step count and the heart rate sensor logged 2 hours of data. It’s very likely that on day 2 you walked during the other 22 hours so including this day in your analysis could bias your results.
@@ -8,7 +8,7 @@ Sensor parameters description for `[FITBIT_DATA_YIELD]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[SENSORS]`| The Fitbit sensor we considered for calculating the Fitbit data yield features.
+|`[SENSORS]`| The Fitbit sensor we considered for calculating the Fitbit data yield features. We only support `FITBIT_HEARTRATE_INTRADAY` since sleep data is commonly collected only overnight, and step counts are 0 even when not wearing the Fitbit device.
 
 ## RAPIDS provider
 

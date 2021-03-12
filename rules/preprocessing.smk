@@ -29,7 +29,7 @@ rule pull_phone_data:
     params:
         data_configuration = config["PHONE_DATA_STREAMS"][config["PHONE_DATA_STREAMS"]["USE"]],
         sensor = "phone_" + "{sensor}",
-        tables = lambda wildcards: config["PHONE_" + str(wildcards.sensor).upper()]["TABLE"],
+        tables = lambda wildcards: config["PHONE_" + str(wildcards.sensor).upper()]["CONTAINER"],
     output:
         "data/raw/{pid}/phone_{sensor}_raw.csv"
     script:
@@ -192,7 +192,7 @@ rule pull_wearable_data:
         device_type = "{device_type}",
         sensor = "{device_type}" + "_" + "{sensor}",
         pid = "{pid}",
-        tables = lambda wildcards: config[wildcards.device_type.upper() + "_" + str(wildcards.sensor).upper()]["TABLE"],
+        tables = lambda wildcards: config[wildcards.device_type.upper() + "_" + str(wildcards.sensor).upper()]["CONTAINER"],
     wildcard_constraints:
         device_type="(empatica|fitbit)"
     output:

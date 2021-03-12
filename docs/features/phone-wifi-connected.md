@@ -4,7 +4,7 @@ Sensor parameters description for `[PHONE_WIFI_CONNECTED]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[TABLE]`| Database table where the wifi (connected) data is stored
+|`[CONTAINER]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the wifi (connected) data is stored
 
 ## RAPIDS provider
 

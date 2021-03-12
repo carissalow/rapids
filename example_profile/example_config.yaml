@@ -50,7 +50,7 @@ PHONE_DATA_CONFIGURATION:
 # Sensors ------
 
 PHONE_ACCELEROMETER:
-  TABLE: accelerometer
+  CONTAINER: accelerometer
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -68,7 +68,7 @@ PHONE_ACCELEROMETER:
       SRC_LANGUAGE: "python"
 
 PHONE_ACTIVITY_RECOGNITION:
-  TABLE: 
+  CONTAINER: 
     ANDROID: plugin_google_activity_recognition
     IOS: plugin_ios_activity_recognition
   EPISODE_THRESHOLD_BETWEEN_ROWS: 5 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
@@ -84,7 +84,7 @@ PHONE_ACTIVITY_RECOGNITION:
       SRC_LANGUAGE: "python"
 
 PHONE_APPLICATIONS_FOREGROUND:
-  TABLE: applications_foreground
+  CONTAINER: applications_foreground
   APPLICATION_CATEGORIES:
     CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
     CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
@@ -105,7 +105,7 @@ PHONE_APPLICATIONS_FOREGROUND:
       SRC_LANGUAGE: "python"
 
 PHONE_BATTERY:
-  TABLE: battery
+  CONTAINER: battery
   EPISODE_THRESHOLD_BETWEEN_ROWS: 30 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
   PROVIDERS:
     RAPIDS:
@@ -115,7 +115,7 @@ PHONE_BATTERY:
       SRC_LANGUAGE: "python"
 
 PHONE_BLUETOOTH:
-  TABLE: bluetooth
+  CONTAINER: bluetooth
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -124,7 +124,7 @@ PHONE_BLUETOOTH:
       SRC_LANGUAGE: "r"
 
 PHONE_CALLS:
-  TABLE: calls
+  CONTAINER: calls
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -137,7 +137,7 @@ PHONE_CALLS:
       SRC_FOLDER: "rapids" # inside src/features/phone_calls
 
 PHONE_CONVERSATION:
-  TABLE: 
+  CONTAINER: 
     ANDROID: plugin_studentlife_audio_android
     IOS: plugin_studentlife_audio
   PROVIDERS:
@@ -165,7 +165,7 @@ PHONE_DATA_YIELD:
       SRC_FOLDER: "rapids" # inside src/features/phone_data_yield
 
 PHONE_LIGHT:
-  TABLE: light
+  CONTAINER: light
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -174,7 +174,7 @@ PHONE_LIGHT:
       SRC_LANGUAGE: "python"
 
 PHONE_LOCATIONS:
-  TABLE: locations
+  CONTAINER: locations
   LOCATIONS_TO_USE: FUSED_RESAMPLED # ALL, GPS OR FUSED_RESAMPLED  
   FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
   FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION: 720 # minutes, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
@@ -201,7 +201,7 @@ PHONE_LOCATIONS:
       SRC_LANGUAGE: "r"
 
 PHONE_MESSAGES:
-  TABLE: messages
+  CONTAINER: messages
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -213,7 +213,7 @@ PHONE_MESSAGES:
       SRC_FOLDER: "rapids" # inside src/features/phone_messages
 
 PHONE_SCREEN:
-  TABLE: screen
+  CONTAINER: screen
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -226,7 +226,7 @@ PHONE_SCREEN:
       SRC_LANGUAGE: "python"
 
 PHONE_WIFI_CONNECTED:
-  TABLE: "sensor_wifi"
+  CONTAINER: "sensor_wifi"
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -235,7 +235,7 @@ PHONE_WIFI_CONNECTED:
       SRC_LANGUAGE: "r"
 
 PHONE_WIFI_VISIBLE:
-  TABLE: "wifi"
+  CONTAINER: "wifi"
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -252,7 +252,7 @@ PHONE_WIFI_VISIBLE:
 # See https://www.rapids.science/latest/setup/configuration/#device-data-source-configuration
 FITBIT_DATA_CONFIGURATION:
   SOURCE: 
-    TYPE: DATABASE # DATABASE or FILES (set each [FITBIT_SENSOR][TABLE] attribute with a table name or a file path accordingly)
+    TYPE: DATABASE # DATABASE or FILES (set each [FITBIT_SENSOR][CONTAINER] attribute with a table name or a file path accordingly)
     COLUMN_FORMAT: JSON # JSON or PLAIN_TEXT
     DATABASE_GROUP: *database_group
     DEVICE_ID_COLUMN: device_id # column name
@@ -263,7 +263,7 @@ FITBIT_DATA_CONFIGURATION:
     SINGLE_FITBIT_TABLE: TRUE
 
 FITBIT_HEARTRATE_SUMMARY:
-  TABLE: fitbit_data
+  CONTAINER: fitbit_data
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -272,7 +272,7 @@ FITBIT_HEARTRATE_SUMMARY:
       SRC_LANGUAGE: "python"
 
 FITBIT_HEARTRATE_INTRADAY:
-  TABLE: fitbit_data
+  CONTAINER: fitbit_data
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -281,7 +281,7 @@ FITBIT_HEARTRATE_INTRADAY:
       SRC_LANGUAGE: "python"
 
 FITBIT_SLEEP_SUMMARY:
-  TABLE: fitbit_data
+  CONTAINER: fitbit_data
   SLEEP_EPISODE_TIMESTAMP: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
   PROVIDERS:
     RAPIDS:
@@ -292,7 +292,7 @@ FITBIT_SLEEP_SUMMARY:
       SRC_LANGUAGE: "python"
 
 FITBIT_STEPS_SUMMARY:
-  TABLE: fitbit_data
+  CONTAINER: fitbit_data
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -301,7 +301,7 @@ FITBIT_STEPS_SUMMARY:
       SRC_LANGUAGE: "python"
 
 FITBIT_STEPS_INTRADAY:
-  TABLE: fitbit_data
+  CONTAINER: fitbit_data
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -349,7 +349,7 @@ PARAMS_FOR_ANALYSIS:
   CATEGORICAL_OPERATORS: [mostcommon]
 
   DEMOGRAPHIC:
-    TABLE: participant_info
+    CONTAINER: participant_info
     FEATURES: [age, gender, inpatientdays]
     CATEGORICAL_FEATURES: [gender]
     SOURCE:
@@ -357,7 +357,7 @@ PARAMS_FOR_ANALYSIS:
       TIMEZONE: *timezone
   
   TARGET:
-    TABLE: participant_target
+    CONTAINER: participant_target
     SOURCE:
       DATABASE_GROUP: *database_group
       TIMEZONE: *timezone

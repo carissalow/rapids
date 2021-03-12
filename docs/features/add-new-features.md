@@ -67,7 +67,7 @@ In this step you need to add your provider configuration section under the relev
 ??? example "Example configuration for a new accelerometer provider `VEGA`"
     ```yaml
     PHONE_ACCELEROMETER:
-        TABLE: accelerometer
+        CONTAINER: accelerometer
         PROVIDERS:
             RAPIDS:
                 COMPUTE: False

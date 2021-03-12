@@ -4,7 +4,7 @@ Sensor parameters description for `[EMPATICA_HEARTRATE]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[TABLE]`| Name of the CSV file containing heart rate data that is compressed inside an Empatica zip file. Since these zip files are created [automatically](https://support.empatica.com/hc/en-us/articles/201608896-Data-export-and-formatting-from-E4-connect-) by Empatica, there is no need to change the value of this attribute.
+|`[CONTAINER]`| Name of the CSV file containing heart rate data that is compressed inside an Empatica zip file. Since these zip files are created [automatically](https://support.empatica.com/hc/en-us/articles/201608896-Data-export-and-formatting-from-E4-connect-) by Empatica, there is no need to change the value of this attribute.
 
 ## DBDP provider
 
@@ -13,9 +13,7 @@ Sensor parameters description for `[EMPATICA_HEARTRATE]`:
 
 !!! info "File Sequence"
     ```bash
-    - data/raw/{pid}/empatica_heartrate_unzipped_{zip-file}.csv # one per zip file
-    - data/raw/{pid}/empatica_heartrate_raw_{zip-file}.csv # one per zip file
-    - data/raw/{pid}/empatica_heartrate_joined.csv
+    - data/raw/{pid}/empatica_heartrate_raw.csv
     - data/raw/{pid}/empatica_heartrate_with_datetime.csv
     - data/interim/{pid}/empatica_heartrate_features/empatica_heartrate_{language}_{provider_key}.csv
     - data/processed/features/{pid}/empatica_heartrate.csv

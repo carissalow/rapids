@@ -3,7 +3,7 @@ rule download_demographic_data:
         participant_file = "data/external/participant_files/{pid}.yaml"
     params:
         source = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["SOURCE"],
-        table = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["TABLE"],
+        table = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["CONTAINER"],
     output:
         "data/raw/{pid}/participant_info_raw.csv"
     script:
@@ -25,7 +25,7 @@ rule download_target_data:
         participant_file = "data/external/participant_files/{pid}.yaml"
     params:
         source = config["PARAMS_FOR_ANALYSIS"]["TARGET"]["SOURCE"],
-        table = config["PARAMS_FOR_ANALYSIS"]["TARGET"]["TABLE"],
+        table = config["PARAMS_FOR_ANALYSIS"]["TARGET"]["CONTAINER"],
     output:
         "data/raw/{pid}/participant_target_raw.csv"
     script:

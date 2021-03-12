@@ -58,7 +58,7 @@ PHONE_DATA_STREAMS:
 
 # https://www.rapids.science/latest/features/phone-accelerometer/
 PHONE_ACCELEROMETER:
-  TABLE: accelerometer
+  CONTAINER: accelerometer
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -77,7 +77,7 @@ PHONE_ACCELEROMETER:
 
 # See https://www.rapids.science/latest/features/phone-activity-recognition/
 PHONE_ACTIVITY_RECOGNITION:
-  TABLE: 
+  CONTAINER: 
     ANDROID: plugin_google_activity_recognition
     IOS: plugin_ios_activity_recognition
   EPISODE_THRESHOLD_BETWEEN_ROWS: 5 # minutes. Max time difference for two consecutive rows to be considered within the same AR episode.
@@ -94,7 +94,7 @@ PHONE_ACTIVITY_RECOGNITION:
 
 # See https://www.rapids.science/latest/features/phone-applications-crashes/
 PHONE_APPLICATIONS_CRASHES:
-  TABLE: applications_crashes
+  CONTAINER: applications_crashes
   APPLICATION_CATEGORIES:
     CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
     CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
@@ -104,7 +104,7 @@ PHONE_APPLICATIONS_CRASHES:
 
 # See https://www.rapids.science/latest/features/phone-applications-foreground/
 PHONE_APPLICATIONS_FOREGROUND:
-  TABLE: applications_foreground
+  CONTAINER: applications_foreground
   APPLICATION_CATEGORIES:
     CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
     CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
@@ -126,7 +126,7 @@ PHONE_APPLICATIONS_FOREGROUND:
 
 # See https://www.rapids.science/latest/features/phone-applications-notifications/
 PHONE_APPLICATIONS_NOTIFICATIONS:
-  TABLE: applications_notifications
+  CONTAINER: applications_notifications
   APPLICATION_CATEGORIES:
     CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
     CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
@@ -136,7 +136,7 @@ PHONE_APPLICATIONS_NOTIFICATIONS:
 
 # See https://www.rapids.science/latest/features/phone-battery/
 PHONE_BATTERY:
-  TABLE: battery
+  CONTAINER: battery
   EPISODE_THRESHOLD_BETWEEN_ROWS: 30 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
   PROVIDERS:
     RAPIDS:
@@ -147,7 +147,7 @@ PHONE_BATTERY:
 
 # See https://www.rapids.science/latest/features/phone-bluetooth/
 PHONE_BLUETOOTH:
-  TABLE: bluetooth
+  CONTAINER: bluetooth
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -174,7 +174,7 @@ PHONE_BLUETOOTH:
 
 # See https://www.rapids.science/latest/features/phone-calls/
 PHONE_CALLS:
-  TABLE: calls
+  CONTAINER: calls
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -188,7 +188,7 @@ PHONE_CALLS:
 
 # See https://www.rapids.science/latest/features/phone-conversation/
 PHONE_CONVERSATION:
-  TABLE: 
+  CONTAINER: 
     ANDROID: plugin_studentlife_audio_android
     IOS: plugin_studentlife_audio
   PROVIDERS:
@@ -218,12 +218,12 @@ PHONE_DATA_YIELD:
 
 # See https://www.rapids.science/latest/features/phone-keyboard/
 PHONE_KEYBOARD:
-  TABLE: keyboard
+  CONTAINER: keyboard
   PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
 
 # See https://www.rapids.science/latest/features/phone-light/
 PHONE_LIGHT:
-  TABLE: light
+  CONTAINER: light
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -233,7 +233,7 @@ PHONE_LIGHT:
 
 # See https://www.rapids.science/latest/features/phone-locations/
 PHONE_LOCATIONS:
-  TABLE: locations
+  CONTAINER: locations
   LOCATIONS_TO_USE: ALL_RESAMPLED # ALL, GPS, ALL_RESAMPLED, OR FUSED_RESAMPLED
   FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
   FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION: 720 # minutes, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
@@ -271,14 +271,14 @@ PHONE_LOCATIONS:
 
 # See https://www.rapids.science/latest/features/phone-log/
 PHONE_LOG:
-  TABLE: 
+  CONTAINER: 
     ANDROID: aware_log
     IOS: ios_aware_log
   PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
 
 # See https://www.rapids.science/latest/features/phone-messages/
 PHONE_MESSAGES:
-  TABLE: messages
+  CONTAINER: messages
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -291,7 +291,7 @@ PHONE_MESSAGES:
 
 # See https://www.rapids.science/latest/features/phone-screen/
 PHONE_SCREEN:
-  TABLE: screen
+  CONTAINER: screen
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -305,7 +305,7 @@ PHONE_SCREEN:
 
 # See https://www.rapids.science/latest/features/phone-wifi-connected/
 PHONE_WIFI_CONNECTED:
-  TABLE: "sensor_wifi"
+  CONTAINER: "sensor_wifi"
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -315,7 +315,7 @@ PHONE_WIFI_CONNECTED:
 
 # See https://www.rapids.science/latest/features/phone-wifi-visible/
 PHONE_WIFI_VISIBLE:
-  TABLE: "wifi"
+  CONTAINER: "wifi"
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -366,7 +366,7 @@ FITBIT_DATA_YIELD:
 
 # See https://www.rapids.science/latest/features/fitbit-heartrate-summary/
 FITBIT_HEARTRATE_SUMMARY:
-  TABLE: heartrate_summary
+  CONTAINER: heartrate_summary
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -376,7 +376,7 @@ FITBIT_HEARTRATE_SUMMARY:
 
 # See https://www.rapids.science/latest/features/fitbit-heartrate-intraday/
 FITBIT_HEARTRATE_INTRADAY:
-  TABLE: heartrate_intraday
+  CONTAINER: heartrate_intraday
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -386,7 +386,7 @@ FITBIT_HEARTRATE_INTRADAY:
 
 # See https://www.rapids.science/latest/features/fitbit-sleep-summary/
 FITBIT_SLEEP_SUMMARY:
-  TABLE: sleep_summary
+  CONTAINER: sleep_summary
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -397,7 +397,7 @@ FITBIT_SLEEP_SUMMARY:
 
 # See https://www.rapids.science/latest/features/fitbit-sleep-intraday/
 FITBIT_SLEEP_INTRADAY:
-  TABLE: sleep_intraday
+  CONTAINER: sleep_intraday
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -433,7 +433,7 @@ FITBIT_SLEEP_INTRADAY:
 
 # See https://www.rapids.science/latest/features/fitbit-steps-summary/
 FITBIT_STEPS_SUMMARY:
-  TABLE: steps_summary
+  CONTAINER: steps_summary
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -443,7 +443,7 @@ FITBIT_STEPS_SUMMARY:
 
 # See https://www.rapids.science/latest/features/fitbit-steps-intraday/
 FITBIT_STEPS_INTRADAY:
-  TABLE: steps_intraday
+  CONTAINER: steps_intraday
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -471,7 +471,7 @@ EMPATICA_DATA_STREAMS:
 
 # See https://www.rapids.science/latest/features/empatica-accelerometer/
 EMPATICA_ACCELEROMETER:
-  TABLE: ACC
+  CONTAINER: ACC
   PROVIDERS:
     DBDP:
       COMPUTE: False
@@ -481,7 +481,7 @@ EMPATICA_ACCELEROMETER:
 
 # See https://www.rapids.science/latest/features/empatica-heartrate/
 EMPATICA_HEARTRATE:
-  TABLE: HR
+  CONTAINER: HR
   PROVIDERS:
     DBDP:
       COMPUTE: False
@@ -491,7 +491,7 @@ EMPATICA_HEARTRATE:
 
 # See https://www.rapids.science/latest/features/empatica-temperature/
 EMPATICA_TEMPERATURE:
-  TABLE: TEMP
+  CONTAINER: TEMP
   PROVIDERS:
     DBDP:
       COMPUTE: False
@@ -501,7 +501,7 @@ EMPATICA_TEMPERATURE:
 
 # See https://www.rapids.science/latest/features/empatica-electrodermal-activity/
 EMPATICA_ELECTRODERMAL_ACTIVITY:
-  TABLE: EDA
+  CONTAINER: EDA
   PROVIDERS:
     DBDP:
       COMPUTE: False
@@ -511,7 +511,7 @@ EMPATICA_ELECTRODERMAL_ACTIVITY:
 
 # See https://www.rapids.science/latest/features/empatica-blood-volume-pulse/
 EMPATICA_BLOOD_VOLUME_PULSE:
-  TABLE: BVP
+  CONTAINER: BVP
   PROVIDERS:
     DBDP:
       COMPUTE: False
@@ -521,7 +521,7 @@ EMPATICA_BLOOD_VOLUME_PULSE:
 
 # See https://www.rapids.science/latest/features/empatica-inter-beat-interval/
 EMPATICA_INTER_BEAT_INTERVAL:
-  TABLE: IBI
+  CONTAINER: IBI
   PROVIDERS:
     DBDP:
       COMPUTE: False
@@ -531,7 +531,7 @@ EMPATICA_INTER_BEAT_INTERVAL:
 
 # See https://www.rapids.science/latest/features/empatica-tags/
 EMPATICA_TAGS:
-  TABLE: TAGS
+  CONTAINER: TAGS
   PROVIDERS:  # None implemented yet
 
 
