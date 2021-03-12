@@ -1,7 +1,7 @@
 Minimal Working Example
 =======================
 
-This is a quick guide for creating and running a simple pipeline to extract missing, outgoing, and incoming `call` features for `daily` (`00:00:00` to `23:59:59`) and `night` (`00:00:00` to `05:59:59`) epochs of every day of data of one participant monitored on the US East coast with an Android smartphone.
+This is a quick guide for creating and running a simple pipeline to extract missing, outgoing, and incoming `call` features for `24 hr` (`00:00:00` to `23:59:59`) and `night` (`00:00:00` to `05:59:59`) time segments of every day of data of one participant that was monitored on the US East coast with an Android smartphone.
 
 1. Install RAPIDS and make sure your `conda` environment is active (see [Installation](../../setup/installation))
 3. Download this [CSV file](../img/calls.csv) and save it as `data/external/aware_csv/calls.csv`
@@ -10,7 +10,7 @@ This is a quick guide for creating and running a simple pipeline to extract miss
     ??? info "Required configuration changes"
         1. **Supported [data streams](../../setup/configuration#supported-data-streams).** 
             
-            We identified that we will use the `aware_csv` data stream because we are processing aware data saved in a CSV file. We will use this label in a later step.
+            Based on the docs, we decided to use the `aware_csv` data stream because we are processing aware data saved in a CSV file. We will use this label in a later step; there's no need to type it or save it anywhere yet.
 
         3. **Create your [participants file](../../setup/configuration#participant-files).**
         

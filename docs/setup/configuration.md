@@ -21,7 +21,7 @@ When you are done with this configuration, go to [executing RAPIDS](../execution
 
 A data stream refers to sensor data collected using a specific type of **device** with a specific **format** and stored in a specific **container**. For example, the `aware_mysql` data stream handles smartphone data (**device**) collected with the [AWARE Framework](https://awareframework.com/) (**format**) stored in a MySQL database (**container**).
 
-Check the table in [introduction to data streams](../../datastreams/data-streams-introduction) to know what data streams we support. If your data stream is supported, continue to the next configuration section, **you will use its label later in this guide** (e.g. `aware_mysql`). If your steam is not supported but you want to implement it, follow this tutorial to [add support for new data streams](../../datastreams/add-new-data-streams) and get in touch by email or in Slack if you have any questions.
+Check the table in [introduction to data streams](../../datastreams/data-streams-introduction) to know what data streams we support. If your data stream is supported, continue to the next configuration section, **you will use its label later in this guide** (e.g. `aware_mysql`). If your steam is not supported but you want to implement it, follow the tutorial to [add support for new data streams](../../datastreams/add-new-data-streams) and get in touch by email or in Slack if you have any questions.
 
 ---
 

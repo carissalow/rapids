@@ -73,14 +73,12 @@ extra_css:
 nav:
   - Home: 'index.md'
   - Setup:
-    - File Structure: file-structure.md
+    - Where do I start?: setup/where-do-i-start.md
+    - Minimal Example: workflow-examples/minimal.md
     - Installation: 'setup/installation.md'
     - Configuration: setup/configuration.md
     - Execution: setup/execution.md
     - Citation: citation.md
-  - Example Workflows:
-    - Minimal: workflow-examples/minimal.md
-    - Analysis: workflow-examples/analysis.md
   - Data Streams:
       - Introduction: datastreams/data-streams-introduction.md
       - Phone:
@@ -138,6 +136,8 @@ nav:
   - Visualizations:
     - Data Quality: visualizations/data-quality-visualizations.md
     - Features: visualizations/feature-visualizations.md
+  - Analysis Workflows:
+    - Complete Example: workflow-examples/analysis.md
   - Developers:
     - Git Flow: developers/git-flow.md
     - Remote Support: developers/remote-support.md
@@ -147,7 +147,7 @@ nav:
     - Test cases: developers/test-cases.md
     - Validation schema of config.yaml: developers/validation-schema-config.md
   - Others:
-    - Migrating from beta: migrating-from-old-versions.md
+    - Migrating from an old version: migrating-from-old-versions.md
     - Code of Conduct: code_of_conduct.md
     - FAQ: faq.md
     - Team: team.md
