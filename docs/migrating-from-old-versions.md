@@ -50,8 +50,14 @@ The most relevant changes to RAPIDS that you need to know about are:
       There is no global `DATABASE_GROUP` anymore. Each data stream that needs credentials to connect to a database has its own [`DATABASE_GROUP` config key](../setup/configuration/#data-stream-configuration). The groups are defined in `credentials.yaml` instead of the `.env`.
 
 ??? danger "`[DEVICE_SENSOR][TABLE]` is now `[DEVICE_SENSOR][CONTAINER]`"
-      We renamed the key `[DEVICE_SENSOR][TABLE]` to `[DEVICE_SENSOR][CONTAINER]` to reflect that, with the introduction of data streams, it can point to a database table, file, or any other data container.
+      We renamed the keys `[DEVICE_SENSOR][TABLE]` to `[DEVICE_SENSOR][CONTAINER]` to reflect that, with the introduction of data streams, they can point to a database table, file, or any other data container.
 
+??? danger "Creating participant files from the AWARE_DEVICE_TABLE is deprecated"
+    In previous versions of RAPIDS, you could create participant files automatically using the `aware_device` table. We deprecated this option but you can still achieve the same results if you export the output of the following SQL query as a CSV file and follow the instructions to [create participant files from CSV files](../setup/configuration/#automatic-creation-of-participant-files):
+    
+    ```sql
+    SELECT device_id, device_id as fitbit_id, CONCAT("p", _id) as empatica_id, CONCAT("p", _id) as pid, if(brand = "iPhone", "ios", "android") as platform, CONCAT("p", _id)  as label, DATE_FORMAT(FROM_UNIXTIME((timestamp/1000)- 86400), "%Y-%m-%d") as start_date, CURRENT_DATE as end_date from aware_device order by _id;
+    ```
 ## Migrating from RAPIDS beta
 
 If you were relying on the [old docs](https://rapidspitt.readthedocs.io/en/latest/) and the most recent version of RAPIDS you are working with is from or before [Oct 13, 2020](https://github.com/carissalow/rapids/commit/640890c7b49492d150accff5c87b1eb25bd97a49) you are using the beta version of RAPIDS.
