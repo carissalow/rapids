@@ -1,9 +1,7 @@
 rule download_demographic_data:
     input:
-        participant_file = "data/external/participant_files/{pid}.yaml"
-    params:
-        source = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["SOURCE"],
-        table = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["CONTAINER"],
+        participant_file = "data/external/participant_files/{pid}.yaml",
+        data = config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["FOLDER"] + "/" + config["PARAMS_FOR_ANALYSIS"]["DEMOGRAPHIC"]["CONTAINER"]
     output:
         "data/raw/{pid}/participant_info_raw.csv"
     script:
@@ -22,10 +20,8 @@ rule demographic_features:
 
 rule download_target_data:
     input:
-        participant_file = "data/external/participant_files/{pid}.yaml"
-    params:
-        source = config["PARAMS_FOR_ANALYSIS"]["TARGET"]["SOURCE"],
-        table = config["PARAMS_FOR_ANALYSIS"]["TARGET"]["CONTAINER"],
+        participant_file = "data/external/participant_files/{pid}.yaml",
+        data = config["PARAMS_FOR_ANALYSIS"]["TARGET"]["FOLDER"] + "/" + config["PARAMS_FOR_ANALYSIS"]["TARGET"]["CONTAINER"]
     output:
         "data/raw/{pid}/participant_target_raw.csv"
     script:
@@ -34,15 +30,19 @@ rule download_target_data:
 rule target_readable_datetime:
     input:
         sensor_input = "data/raw/{pid}/participant_target_raw.csv",
-        time_segments = "data/interim/time_segments/{pid}_time_segments.csv"
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv",
+        pid_file = "data/external/participant_files/{pid}.yaml",
+        tzcodes_file = input_tzcodes_file,
     params:
-        fixed_timezone = config["PARAMS_FOR_ANALYSIS"]["TARGET"]["SOURCE"]["TIMEZONE"],
+        device_type = "fitbit",
+        timezone_parameters = config["TIMEZONE"],
+        pid = "{pid}",
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
         "data/raw/{pid}/participant_target_with_datetime.csv"
     script:
-        "../src/data/readable_datetime.R"
+        "../src/data/datetime/readable_datetime.R"
 
 rule parse_targets:
     input:
