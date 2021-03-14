@@ -1,0 +1,12 @@
+<!-- Disqus integration -->
+{% if not page.is_homepage %}
+  <h2 id="__comments">{{ lang.t("meta.comments") }}</h2>
+  <script src="https://utteranc.es/client.js"
+        repo="carissalow/rapids"
+        issue-term="pathname"
+        label="docs comments"
+        theme="preferred-color-scheme"
+        crossorigin="anonymous"
+        async>
+   </script>
+{% endif %}

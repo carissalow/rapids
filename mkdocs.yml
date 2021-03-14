@@ -49,6 +49,7 @@ repo_url: 'https://github.com/carissalow/rapids'
 copyright: 'Released under AGPL'
 theme:
   name: material
+  custom_dir: docs/overrides
   logo: img/logo.png
   favicon: img/logo.png
   palette:

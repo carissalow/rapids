@@ -4,9 +4,10 @@
 - Add a new [Overview](../setup/overview/) page.
 - You can [extend](../datastreams/add-new-data-streams/) RAPIDS with your own [data streams](../datastreams/data-streams-introduction/). Data streams are data collected with other sensing apps besides AWARE (like Beiwe, mindLAMP), and stored in other data containers (databases, files) besides MySQL.
 - Support to analyze Empatica wearable data (thanks to Joe Kim and  Brinnae Bent from the [DBDP](https://dbdp.org/))
-- Support to analyze AWARE data stored in [CSV files](../datastreams/aware-csv/) and [InfluxDB](../datastreams/aware-influxdb/) databases (the latter thanks to Neil Singh)
+- Support to analyze AWARE data stored in [CSV files](../datastreams/aware-csv/) and [InfluxDB](../datastreams/aware-influxdb/) databases
 - Support to analyze data collected over [multiple time zones](../setup/configuration/#multiple-timezones)
 - Support for [sleep intraday features](../features/fitbit-sleep-intraday/) from the core team and also from the community (thanks to Stephen Price)
+- Users can comment on the documentation (powered by utterances).
 - Add RAPIDS new logo
 - Move Citation and Minimal Example page to the Setup section
 - Add `config.yaml` validation schema and documentation. Now it's more difficult to modify the `config.yaml` file with invalid values.
