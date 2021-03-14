@@ -40,17 +40,16 @@ required:
 definitions:
   PROVIDER:
     type: object
-    required: [COMPUTE, SRC_FOLDER, SRC_LANGUAGE, FEATURES]
+    required: [COMPUTE, SRC_SCRIPT, FEATURES]
     properties:
       COMPUTE:
         type: boolean
       FEATURES:
         type: [array, object]
-      SRC_FOLDER:
+      SRC_SCRIPT:
         type: string
-      SRC_LANGUAGE:
-        type: string
-        enum: [python, r]
+        pattern: "^.*\\.(py|R)$"
+      
 
   DORYAB_BLUETOOTH_FEATURE:
     type: object

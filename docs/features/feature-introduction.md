@@ -23,8 +23,7 @@ PHONE_ACCELEROMETER: # (1)
             COMPUTE: False # (4)
             FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
 
-            SRC_FOLDER: "rapids"
-            SRC_LANGUAGE: "python"
+            SRC_SCRIPT: src/features/phone_accelerometer/rapids/main.py
         
         PANDA:
             COMPUTE: False
@@ -33,8 +32,8 @@ PHONE_ACCELEROMETER: # (1)
                 exertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
                 nonexertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
 
-            SRC_FOLDER: "panda"
-            SRC_LANGUAGE: "python" # (6)
+                        # (6)
+            SRC_SCRIPT: src/features/phone_accelerometer/panda/main.py
 ```
 
 --8<--- "docs/snippets/feature_introduction_example.md"

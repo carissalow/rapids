@@ -65,7 +65,7 @@ As a tutorial, we will add a new provider for `PHONE_ACCELEROMETER` called `VEGA
 In this step, you need to add your provider configuration section under the relevant sensor in `config.yaml`. See our example for our tutorial's `VEGA` provider for  `PHONE_ACCELEROMETER`:
 
 ??? example "Example configuration for a new accelerometer provider `VEGA`"
-    ```yaml hl_lines="12 13 14 15 16 17"
+    ```yaml hl_lines="12 13 14 15 16"
     PHONE_ACCELEROMETER:
         CONTAINER: accelerometer
         PROVIDERS:
@@ -81,8 +81,7 @@ In this step, you need to add your provider configuration section under the rele
                 COMPUTE: False
                 FEATURES: ["feature1", "feature2", "feature3"]
                 MY_PARAMTER: a_string
-                SRC_FOLDER: "vega"
-                SRC_LANGUAGE: "python"
+                SRC_SCRIPT: src/features/phone_accelerometer/vega/main.py
             
     ```
 
@@ -91,12 +90,11 @@ In this step, you need to add your provider configuration section under the rele
 |`[COMPUTE]`| Flag to activate/deactivate your provider
 |`[FEATURES]`| List of features your provider supports. Your provider code should only return the features on this list
 |`[MY_PARAMTER]`| An arbitrary parameter that our example provider `VEGA` needs. This can be a boolean, integer, float, string, or an array of any of such types.
-|`[SRC_LANGUAGE]`| The programming language of your provider script, it can be `python` or `r`, in our example `python`
-|`[SRC_FOLDER]`| The name of your provider in lower case, in our example `vega` (this will be the name of your folder in the next step)
+|`[SRC_SCRIPT]`| The relative path from RAPIDS' root folder to an script that computes the features for this provider. It can be implemented in R or Python.
 
 ### Create a feature provider script
 
-Create your feature Python or R script called `main.py` or `main.R` in the correct folder, `src/feature/[sensorname]/[providername]/`. RAPIDS automatically loads and executes it based on the config section you added in the last step. For our example, this script is:
+Create your feature Python or R script called `main.py` or `main.R` in the correct folder, `src/feature/[sensorname]/[providername]/`. RAPIDS automatically loads and executes it based on the config key `[SRC_SCRIPT]` you added in the last step. For our example, this script is:
 ```bash
 src/feature/phone_accelerometer/vega/main.py
 ```

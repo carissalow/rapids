@@ -8,15 +8,15 @@ run_pipeline() {
         CONFIG_FILE="./tests/settings/periodic_config.yaml"
     fi
 
+    echo "Copying participant files"
+    cp -r tests/data/external/participant_files/* data/external/participant_files/
+
     echo $TYPE
     echo "Deleting old outputs"
     snakemake --configfile=$(echo $CONFIG_FILE) --delete-all-output -j1 
 
-    echo "Copying participant files"
-    cp -r tests/data/external/participant_files/* data/external/participant_files/
-
     echo "Running RAPIDS"
-    snakemake --configfile=$(echo $CONFIG_FILE) -R pull_phone_data -j12
+    snakemake --configfile=$(echo $CONFIG_FILE) -R pull_phone_data -j1
 }
 
 display_usage() {

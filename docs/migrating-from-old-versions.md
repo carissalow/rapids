@@ -58,6 +58,10 @@ The most relevant changes to RAPIDS that you need to know about are:
     ```sql
     SELECT device_id, device_id as fitbit_id, CONCAT("p", _id) as empatica_id, CONCAT("p", _id) as pid, if(brand = "iPhone", "ios", "android") as platform, CONCAT("p", _id)  as label, DATE_FORMAT(FROM_UNIXTIME((timestamp/1000)- 86400), "%Y-%m-%d") as start_date, CURRENT_DATE as end_date from aware_device order by _id;
     ```
+??? danger "`SCR_SCRIPT` and `SRC_LANGUAGE` are replaced by `SRC_SCRIPT`"
+    The attributes `SCR_SCRIPT` and `SRC_LANGUAGE` of every sensor `PROVIDER` are replaced by `SRC_SCRIPT`. `SRC_SCRIPT` is a relative path from the RAPIDS root folder to that provider's feature script. We did this to simplify and clarify where the features scripts are stored. 
+    
+    There are no actions to take unless you created your own feature provider; update it with your feature script path.
 ## Migrating from RAPIDS beta
 
 If you were relying on the [old docs](https://rapidspitt.readthedocs.io/en/latest/) and the most recent version of RAPIDS you are working with is from or before [Oct 13, 2020](https://github.com/carissalow/rapids/commit/640890c7b49492d150accff5c87b1eb25bd97a49) you are using the beta version of RAPIDS.

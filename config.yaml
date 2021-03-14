@@ -67,8 +67,7 @@ PHONE_ACCELEROMETER:
     RAPIDS:
       COMPUTE: False
       FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_accelerometer
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/phone_accelerometer/rapids/main.py
     
     PANDA:
       COMPUTE: False
@@ -76,8 +75,7 @@ PHONE_ACCELEROMETER:
       FEATURES:
         exertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
         nonexertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
-      SRC_FOLDER: "panda" # inside src/features/phone_accelerometer
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/phone_accelerometer/panda/main.py
 
 # See https://www.rapids.science/latest/features/phone-activity-recognition/
 PHONE_ACTIVITY_RECOGNITION:
@@ -93,8 +91,7 @@ PHONE_ACTIVITY_RECOGNITION:
         STATIONARY: ["still", "tilting"]
         MOBILE: ["on_foot", "walking", "running", "on_bicycle"]
         VEHICLE: ["in_vehicle"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_activity_recognition
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/phone_activity_recognition/rapids/main.py
 
 # See https://www.rapids.science/latest/features/phone-applications-crashes/
 PHONE_APPLICATIONS_CRASHES:
@@ -125,8 +122,7 @@ PHONE_APPLICATIONS_FOREGROUND:
       EXCLUDED_CATEGORIES: []
       EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
       FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_applications_foreground
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/phone_applications_foreground/rapids/main.py
 
 # See https://www.rapids.science/latest/features/phone-applications-notifications/
 PHONE_APPLICATIONS_NOTIFICATIONS:
@@ -146,8 +142,7 @@ PHONE_BATTERY:
     RAPIDS:
       COMPUTE: False
       FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_battery
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/phone_battery/rapids/main.py
 
 # See https://www.rapids.science/latest/features/phone-bluetooth/
 PHONE_BLUETOOTH:
@@ -156,8 +151,8 @@ PHONE_BLUETOOTH:
     RAPIDS:
       COMPUTE: False
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_bluetooth
-      SRC_LANGUAGE: "r"
+      SRC_SCRIPT: src/features/phone_bluetooth/rapids/main.R
+
     DORYAB:
       COMPUTE: False
       FEATURES: 
@@ -173,8 +168,7 @@ PHONE_BLUETOOTH:
             DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
             SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
             SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
-      SRC_FOLDER: "doryab" # inside src/features/phone_bluetooth
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/phone_bluetooth/doryab/main.py
 
 # See https://www.rapids.science/latest/features/phone-calls/
 PHONE_CALLS:
@@ -187,8 +181,7 @@ PHONE_CALLS:
         missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
         incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
         outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
-      SRC_LANGUAGE: "r"
-      SRC_FOLDER: "rapids" # inside src/features/phone_calls
+      SRC_SCRIPT: src/features/phone_calls/rapids/main.R
 
 # See https://www.rapids.science/latest/features/phone-conversation/
 PHONE_CONVERSATION:
@@ -206,8 +199,7 @@ PHONE_CONVERSATION:
     "unknownexpectedfraction","countconversation"]
       RECORDING_MINUTES: 1
       PAUSED_MINUTES : 3
-      SRC_FOLDER: "rapids" # inside src/features/phone_conversation
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/phone_conversation/rapids/main.py
 
 # See https://www.rapids.science/latest/features/phone-data-yield/
 PHONE_DATA_YIELD:
@@ -217,8 +209,7 @@ PHONE_DATA_YIELD:
       COMPUTE: False
       FEATURES: [ratiovalidyieldedminutes, ratiovalidyieldedhours]
       MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 # 0 to 1, minimum percentage of valid minutes in an hour to be considered valid.
-      SRC_LANGUAGE: "r"
-      SRC_FOLDER: "rapids" # inside src/features/phone_data_yield
+      SRC_SCRIPT: src/features/phone_data_yield/rapids/main.R
 
 # See https://www.rapids.science/latest/features/phone-keyboard/
 PHONE_KEYBOARD:
@@ -232,8 +223,7 @@ PHONE_LIGHT:
     RAPIDS:
       COMPUTE: False
       FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_light
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/phone_light/rapids/main.py
 
 # See https://www.rapids.science/latest/features/phone-locations/
 PHONE_LOCATIONS:
@@ -261,8 +251,7 @@ PHONE_LOCATIONS:
       CLUSTER_ON: PARTICIPANT_DATASET # PARTICIPANT_DATASET,TIME_SEGMENT
       CLUSTERING_ALGORITHM: DBSCAN #DBSCAN,OPTICS
       RADIUS_FOR_HOME: 100  
-      SRC_FOLDER: "doryab" # inside src/features/phone_locations
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/phone_locations/doryab/main.py
 
     BARNETT:
       COMPUTE: False
@@ -270,8 +259,7 @@ PHONE_LOCATIONS:
       ACCURACY_LIMIT: 100 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
       IF_MULTIPLE_TIMEZONES: USE_MOST_COMMON
       MINUTES_DATA_USED: False # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
-      SRC_FOLDER: "barnett" # inside src/features/phone_locations
-      SRC_LANGUAGE: "r"
+      SRC_SCRIPT: src/features/phone_locations/barnett/main.R
 
 # See https://www.rapids.science/latest/features/phone-log/
 PHONE_LOG:
@@ -290,8 +278,7 @@ PHONE_MESSAGES:
       FEATURES: 
         received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
         sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
-      SRC_LANGUAGE: "r"
-      SRC_FOLDER: "rapids" # inside src/features/phone_messages
+      SRC_SCRIPT: src/features/phone_messages/rapids/main.R
 
 # See https://www.rapids.science/latest/features/phone-screen/
 PHONE_SCREEN:
@@ -304,28 +291,25 @@ PHONE_SCREEN:
       IGNORE_EPISODES_LONGER_THAN: 0 # in minutes, set to 0 to disable
       FEATURES: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"] # "episodepersensedminutes" needs to be added later
       EPISODE_TYPES: ["unlock"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_screen
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/phone_screen/rapids/main.py
 
 # See https://www.rapids.science/latest/features/phone-wifi-connected/
 PHONE_WIFI_CONNECTED:
-  CONTAINER: "sensor_wifi"
+  CONTAINER: sensor_wifi
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_wifi_connected
-      SRC_LANGUAGE: "r"
+      SRC_SCRIPT: src/features/phone_wifi_connected/rapids/main.R
 
 # See https://www.rapids.science/latest/features/phone-wifi-visible/
 PHONE_WIFI_VISIBLE:
-  CONTAINER: "wifi"
+  CONTAINER: wifi
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
-      SRC_FOLDER: "rapids" # inside src/features/phone_wifi_visible
-      SRC_LANGUAGE: "r"
+      SRC_SCRIPT: src/features/phone_wifi_visible/rapids/main.R
 
 
 
@@ -364,8 +348,7 @@ FITBIT_DATA_YIELD:
       COMPUTE: False
       FEATURES: [ratiovalidyieldedminutes, ratiovalidyieldedhours]
       MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 #  0 to 1, minimum percentage of valid minutes in an hour to be considered valid.
-      SRC_LANGUAGE: "r"
-      SRC_FOLDER: "rapids" # inside src/features/fitbit_data_yield
+      SRC_SCRIPT: src/features/fitbit_data_yield/rapids/main.R
 
 
 # See https://www.rapids.science/latest/features/fitbit-heartrate-summary/
@@ -375,8 +358,7 @@ FITBIT_HEARTRATE_SUMMARY:
     RAPIDS:
       COMPUTE: False
       FEATURES: ["maxrestinghr", "minrestinghr", "avgrestinghr", "medianrestinghr", "moderestinghr", "stdrestinghr", "diffmaxmoderestinghr", "diffminmoderestinghr", "entropyrestinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. height, weight) use these with care: ["sumcaloriesoutofrange", "maxcaloriesoutofrange", "mincaloriesoutofrange", "avgcaloriesoutofrange", "mediancaloriesoutofrange", "stdcaloriesoutofrange", "entropycaloriesoutofrange", "sumcaloriesfatburn", "maxcaloriesfatburn", "mincaloriesfatburn", "avgcaloriesfatburn", "mediancaloriesfatburn", "stdcaloriesfatburn", "entropycaloriesfatburn", "sumcaloriescardio", "maxcaloriescardio", "mincaloriescardio", "avgcaloriescardio", "mediancaloriescardio", "stdcaloriescardio", "entropycaloriescardio", "sumcaloriespeak", "maxcaloriespeak", "mincaloriespeak", "avgcaloriespeak", "mediancaloriespeak", "stdcaloriespeak", "entropycaloriespeak"]
-      SRC_FOLDER: "rapids" # inside src/features/fitbit_heartrate_summary
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/fitbit_heartrate_summary/rapids/main.py
 
 # See https://www.rapids.science/latest/features/fitbit-heartrate-intraday/
 FITBIT_HEARTRATE_INTRADAY:
@@ -385,8 +367,7 @@ FITBIT_HEARTRATE_INTRADAY:
     RAPIDS:
       COMPUTE: False
       FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
-      SRC_FOLDER: "rapids" # inside src/features/fitbit_heartrate_intraday
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/fitbit_heartrate_intraday/rapids/main.py
 
 # See https://www.rapids.science/latest/features/fitbit-sleep-summary/
 FITBIT_SLEEP_SUMMARY:
@@ -396,8 +377,7 @@ FITBIT_SLEEP_SUMMARY:
       COMPUTE: False
       FEATURES: ["countepisode", "avgefficiency", "sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgdurationafterwakeup", "avgdurationasleep", "avgdurationawake", "avgdurationtofallasleep", "avgdurationinbed"]
       SLEEP_TYPES: ["main", "nap", "all"]
-      SRC_FOLDER: "rapids" # inside src/features/fitbit_sleep_summary
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/fitbit_sleep_summary/rapids/main.py
 
 # See https://www.rapids.science/latest/features/fitbit-sleep-intraday/
 FITBIT_SLEEP_INTRADAY:
@@ -418,8 +398,7 @@ FITBIT_SLEEP_INTRADAY:
       SLEEP_TYPES: [main, nap]
       INCLUDE_SLEEP_LATER_THAN: 0 # a number ranged from 0 (midnight) to 1439 (23:59)
       REFERENCE_TIME: MIDNIGHT # chosen from "MIDNIGHT" and "START_OF_THE_SEGMENT"
-      SRC_FOLDER: "rapids" # inside src/features/fitbit_sleep_intraday
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/fitbit_sleep_intraday/rapids/main.py
   
     PRICE:
       COMPUTE: False
@@ -432,8 +411,7 @@ FITBIT_SLEEP_INTRADAY:
       GROUP_EPISODES_WITHIN: # by default: today's 6pm to tomorrow's noon
         START_TIME: 1080 # number of minutes after the midnight (18:00) 18*60
         LENGTH: 1080 # in minutes (18 hours) 18*60
-      SRC_FOLDER: "price" # inside src/features/fitbit_sleep_intraday
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/fitbit_sleep_intraday/price/main.py
 
 # See https://www.rapids.science/latest/features/fitbit-steps-summary/
 FITBIT_STEPS_SUMMARY:
@@ -442,8 +420,7 @@ FITBIT_STEPS_SUMMARY:
     RAPIDS:
       COMPUTE: False
       FEATURES: ["maxsumsteps", "minsumsteps", "avgsumsteps", "mediansumsteps", "stdsumsteps"]
-      SRC_FOLDER: "rapids" # inside src/features/fitbit_steps_summary
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/fitbit_steps_summary/rapids/main.py
 
 # See https://www.rapids.science/latest/features/fitbit-steps-intraday/
 FITBIT_STEPS_INTRADAY:
@@ -457,8 +434,7 @@ FITBIT_STEPS_INTRADAY:
         ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
       THRESHOLD_ACTIVE_BOUT: 10 # steps
       INCLUDE_ZERO_STEP_ROWS: False
-      SRC_FOLDER: "rapids" # inside src/features/fitbit_steps_intraday
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/fitbit_steps_intraday/rapids/main.py
 
 ########################################################################################################################
 #                                                 EMPATICA                                                             #
@@ -480,8 +456,7 @@ EMPATICA_ACCELEROMETER:
     DBDP:
       COMPUTE: False
       FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
-      SRC_FOLDER: "dbdp" # inside src/features/empatica_accelerometer
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/empatica_accelerometer/dbdp/main.py
 
 # See https://www.rapids.science/latest/features/empatica-heartrate/
 EMPATICA_HEARTRATE:
@@ -490,8 +465,7 @@ EMPATICA_HEARTRATE:
     DBDP:
       COMPUTE: False
       FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr"]
-      SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/empatica_heartrate/dbdp/main.py
 
 # See https://www.rapids.science/latest/features/empatica-temperature/
 EMPATICA_TEMPERATURE:
@@ -500,8 +474,7 @@ EMPATICA_TEMPERATURE:
     DBDP:
       COMPUTE: False
       FEATURES: ["maxtemp", "mintemp", "avgtemp", "mediantemp", "modetemp", "stdtemp", "diffmaxmodetemp", "diffminmodetemp", "entropytemp"]
-      SRC_FOLDER: "dbdp" # inside src/features/empatica_heartrate
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/empatica_temperature/dbdp/main.py
 
 # See https://www.rapids.science/latest/features/empatica-electrodermal-activity/
 EMPATICA_ELECTRODERMAL_ACTIVITY:
@@ -510,8 +483,7 @@ EMPATICA_ELECTRODERMAL_ACTIVITY:
     DBDP:
       COMPUTE: False
       FEATURES: ["maxeda", "mineda", "avgeda", "medianeda", "modeeda", "stdeda", "diffmaxmodeeda", "diffminmodeeda", "entropyeda"]
-      SRC_FOLDER: "dbdp" # inside src/features/empatica_electrodermal_activity
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/empatica_electrodermal_activity/dbdp/main.py
 
 # See https://www.rapids.science/latest/features/empatica-blood-volume-pulse/
 EMPATICA_BLOOD_VOLUME_PULSE:
@@ -520,8 +492,7 @@ EMPATICA_BLOOD_VOLUME_PULSE:
     DBDP:
       COMPUTE: False
       FEATURES: ["maxbvp", "minbvp", "avgbvp", "medianbvp", "modebvp", "stdbvp", "diffmaxmodebvp", "diffminmodebvp", "entropybvp"]
-      SRC_FOLDER: "dbdp" # inside src/features/empatica_blood_volume_pulse
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/empatica_blood_volume_pulse/dbdp/main.py
 
 # See https://www.rapids.science/latest/features/empatica-inter-beat-interval/
 EMPATICA_INTER_BEAT_INTERVAL:
@@ -530,8 +501,7 @@ EMPATICA_INTER_BEAT_INTERVAL:
     DBDP:
       COMPUTE: False
       FEATURES: ["maxibi", "minibi", "avgibi", "medianibi", "modeibi", "stdibi", "diffmaxmodeibi", "diffminmodeibi", "entropyibi"]
-      SRC_FOLDER: "dbdp" # inside src/features/inter_beat_interval
-      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/empatica_inter_beat_interval/dbdp/main.py
 
 # See https://www.rapids.science/latest/features/empatica-tags/
 EMPATICA_TAGS:

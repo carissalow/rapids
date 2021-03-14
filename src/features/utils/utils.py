@@ -1,5 +1,19 @@
 rapids_log_tag =  "RAPIDS:"
 
+import os, sys
+import importlib
+
+def import_path(path):
+    module_name = os.path.basename(path).replace('-', '_')
+    spec = importlib.util.spec_from_loader(
+        module_name,
+        importlib.machinery.SourceFileLoader(module_name, path)
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    sys.modules[module_name] = module
+    return module
+
 def filter_data_by_segment(data, time_segment):
     data.dropna(subset=["assigned_segments"], inplace=True)
     if(data.shape[0] == 0): # data is empty
@@ -85,15 +99,14 @@ def fetch_provider_features(provider, provider_key, sensor_key, sensor_data_file
 
     if provider["COMPUTE"] == True:
 
-            code_path =  sensor_key + "." + provider["SRC_FOLDER"] + ".main"
-            feature_module = import_module(code_path)
-            feature_function = getattr(feature_module,  provider["SRC_FOLDER"] + "_features")
+            feature_module = import_path(provider["SRC_SCRIPT"])
+            feature_function = getattr(feature_module,  provider_key.lower() + "_features")
             
             for time_segment in time_segments_labels["label"]:
                     print("{} Processing {} {} {}".format(rapids_log_tag, sensor_key, provider_key, time_segment))
                     features = feature_function(sensor_data_files, time_segment, provider, filter_data_by_segment=filter_data_by_segment, chunk_episodes=chunk_episodes)
                     if not "local_segment" in features.columns:
-                        raise ValueError("The dataframe returned by the " + sensor_key + " provider '" + provider_key + "' is missing the 'local_segment' column added by the 'filter_data_by_segment()' function. Check the provider script is using such function and is not removing 'local_segment' by accident (" + code_path + ")\n  The 'local_segment' column is used to index a provider's features (each row corresponds to a different time segment instance (e.g. 2020-01-01, 2020-01-02, 2020-01-03, etc.)")
+                        raise ValueError("The dataframe returned by the " + sensor_key + " provider '" + provider_key + "' is missing the 'local_segment' column added by the 'filter_data_by_segment()' function. Check the provider script is using such function and is not removing 'local_segment' by accident (" + provider["SRC_SCRIPT"] + ")\n  The 'local_segment' column is used to index a provider's features (each row corresponds to a different time segment instance (e.g. 2020-01-01, 2020-01-02, 2020-01-03, etc.)")
                     features.columns = ["{}{}".format("" if col.startswith("local_segment") else (sensor_key + "_"+ provider_key + "_"), col) for col in features.columns]
                     sensor_features = pd.concat([sensor_features, features], axis=0, sort=False)
     else:

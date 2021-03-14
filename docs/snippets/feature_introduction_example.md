@@ -38,4 +38,6 @@
 
 6. **`PROVIDER` script**
 
-    Each `PROVIDER` has a `SRC_FOLDER` and `SRC_LANGUAGE` that point to the script implementing the features of this `PROVIDER`.
+    Each `PROVIDER` has a `SRC_SCRIPT` that points to the script implementing its behavioral features.
+
+    It has to be a relative path from RAPIDS' root folder and the script's parent folder should be named after the provider, e.g. `panda`.

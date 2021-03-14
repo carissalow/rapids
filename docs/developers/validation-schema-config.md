@@ -25,7 +25,7 @@ The schema has three main sections `required`, `definitions`, and `properties`. 
 ### definitions
 `definitions` lists key/values that are common to different `properties` so we can reuse them. You can define a key/value under `definitions` and use `$ref` to refer to it in any `property`. 
 
-For example, every sensor like `[PHONE_ACCELEROMETER]` has one or more providers like `RAPIDS` and `PANDA`, these providers have some common properties like the `COMPUTE` flag or the `SRC_FOLDER` string, therefore we define a common provider "template" that is used by every provider and extended with properties exclusive to each one of them. For example:
+For example, every sensor like `[PHONE_ACCELEROMETER]` has one or more providers like `RAPIDS` and `PANDA`, these providers have some common properties like the `COMPUTE` flag or the `SRC_SCRIPT` string. Therefore we define a shared provider "template" that is used by every provider and extended with properties exclusive to each one of them. For example:
 
 === "provider definition (template)"
     The `PROVIDER` definition will be used later on different `properties`.
@@ -33,21 +33,19 @@ For example, every sensor like `[PHONE_ACCELEROMETER]` has one or more providers
     ```yaml
     PROVIDER:
         type: object
-        required: [COMPUTE, SRC_FOLDER, SRC_LANGUAGE, FEATURES]
+        required: [COMPUTE, SRC_SCRIPT, FEATURES]
         properties:
         COMPUTE:
             type: boolean
         FEATURES:
             type: [array, object]
-        SRC_FOLDER:
+        SRC_SCRIPT:
             type: string
-        SRC_LANGUAGE:
-            type: string
-            enum: [python, r]
+            pattern: "^.*\\.(py|R)$"
     ```
 
 === "provider reusing and extending the template"
-    Notice that in this example `RAPIDS` (a provider) is using and extending the `PROVIDER` template. The `FEATURES` key is overriding the `FEATURES` key from the `#/definitions/PROVIDER` template but is keeping the validation for `COMPUTE`, `SRC_FOLDER`, and `SRC_LANGUAGE`. For more details about reusing properties go to this [link](http://json-schema.org/understanding-json-schema/structuring.html#reuse)
+    Notice that `RAPIDS` (a provider) uses and extends the `PROVIDER` template in this example. The `FEATURES` key is overriding the `FEATURES` key from the `#/definitions/PROVIDER` template but is keeping the validation for `COMPUTE`, and `SRC_SCRIPT`. For more details about reusing properties, go to this [link](http://json-schema.org/understanding-json-schema/structuring.html#reuse)
 
     ```yaml hl_lines="9 10"
     PHONE_ACCELEROMETER:
@@ -128,7 +126,7 @@ You can validate different aspects of each key/value in our `config.yaml` file:
             enum: ["received", "sent"]
     ```
 === "object"
-    `PARENT` is an object that has two properties. `KID1` is one of those properties that is in turn another object that will reuse the  `"#/definitions/PROVIDER"` `definition` **AND** also include (extend) two extra properties `GRAND_KID1` of type `array` and `GRAND_KID2` of type `number`. `KID2` is another property of `PARENT` of type `boolean`.
+    `PARENT` is an object that has two properties. `KID1` is one of those properties that are, in turn, another object that will reuse the  `"#/definitions/PROVIDER"` `definition` **AND** also include (extend) two extra properties `GRAND_KID1` of type `array` and `GRAND_KID2` of type `number`. `KID2` is another property of `PARENT` of type `boolean`.
 
     The schema validation looks like this
     ```yaml
@@ -155,8 +153,7 @@ You can validate different aspects of each key/value in our `config.yaml` file:
             # These four come from the `PROVIDER` definition (template)
             COMPUTE: False
             FEATURES: [x, y] # an array
-            SRC_FOLDER: "any string"
-            SRC_LANGUAGE: "any string"
+            SRC_SCRIPT: "a path to a py or R script"
 
             # This two come from the extension
             GRAND_KID1: [a, b] # an array

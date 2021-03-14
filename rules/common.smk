@@ -1,9 +1,21 @@
+def get_script_language(script_path):
+    from pathlib import Path
+    script_path = Path(script_path)
+    if not script_path.exists():
+        raise ValueError("The following provider feature script does not exist: " + str(script_path))
+
+    if script_path.name.endswith(".py"):
+        return "python"
+    elif script_path.name.endswith(".R"):
+        return "r"
+
+
 # Features.smk #########################################################################################################
 def find_features_files(wildcards):
     feature_files = []
     for provider_key, provider in config[(wildcards.sensor_key).upper()]["PROVIDERS"].items():
         if provider["COMPUTE"]:
-            feature_files.extend(expand("data/interim/{{pid}}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", sensor_key=wildcards.sensor_key.lower(), language=provider["SRC_LANGUAGE"].lower(), provider_key=provider_key.lower()))
+            feature_files.extend(expand("data/interim/{{pid}}/{sensor_key}_features/{sensor_key}_{language}_{provider_key}.csv", sensor_key=wildcards.sensor_key.lower(), language=get_script_language(provider["SRC_SCRIPT"]), provider_key=provider_key.lower()))
     return(feature_files)
 
 def optional_steps_sleep_input(wildcards):
@@ -114,3 +126,4 @@ def pull_wearable_data_input_with_mutation_scripts(wilcards):
                 raise ValueError("Mutate scripts can only be Python or R scripts (.py, .R).\n   Instead we got {script} in [{sensor}] of {schema}".format(script=script, sensor=sensor, schema=input.get("stream_format")))
             input["mutationscript"+str(idx)] = script
     return input
+

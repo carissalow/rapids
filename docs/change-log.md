@@ -8,6 +8,7 @@
 - Support to analyze data collected over [multiple time zones](../setup/configuration/#multiple-timezones)
 - Support for [sleep intraday features](../features/fitbit-sleep-intraday/) from the core team and also from the community (thanks to Stephen Price)
 - Users can comment on the documentation (powered by utterances).
+- `SCR_SCRIPT` and `SRC_LANGUAGE` are replaced by `SRC_SCRIPT`.
 - Add RAPIDS new logo
 - Move Citation and Minimal Example page to the Setup section
 - Add `config.yaml` validation schema and documentation. Now it's more difficult to modify the `config.yaml` file with invalid values.
