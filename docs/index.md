@@ -2,9 +2,9 @@
 
 Reproducible Analysis Pipeline for Data Streams (RAPIDS) allows you to process smartphone and wearable data to [extract](features/feature-introduction.md) and [create](features/add-new-features.md) **behavioral features** (a.k.a. digital biomarkers), [visualize](visualizations/data-quality-visualizations.md) mobile sensor data, and [structure](workflow-examples/analysis.md) your analysis into reproducible workflows.
 
-RAPIDS is open source, documented, modular, tested, and reproducible. At the moment, we support [data streams](../../datastreams/data-streams-introduction) logged by smartphones, Fitbit wearables, and, in collaboration with the [DBDP](https://dbdp.org/), Empatica wearables (but you can [add your own]((../../datastreams/add-new-data-streams)) too). 
+RAPIDS is open source, documented, modular, tested, and reproducible. At the moment, we support [data streams](../../datastreams/data-streams-introduction) logged by smartphones, Fitbit wearables, and, in collaboration with the [DBDP](https://dbdp.org/), Empatica wearables (but you can [add your own](../../datastreams/add-new-data-streams) too). 
 
-**If you want to know more head over to [Where do I start?](../setup/where-do-i-start/)**
+**If you want to know more head over to [Overview](../setup/overview/)**
 
 !!! tip
     :material-slack: Questions or feedback can be posted on the \#rapids channel in AWARE Framework\'s [slack](http://awareframework.com:3000/). 
@@ -13,9 +13,9 @@ RAPIDS is open source, documented, modular, tested, and reproducible. At the mom
 
     :fontawesome-solid-tasks: Join our discussions on our algorithms and assumptions for feature [processing](https://github.com/carissalow/rapids/discussions).
 
-    :fontawesome-solid-play: Ready to start? Go to [Installation](setup/installation/), then to [Configuration](setup/configuration/), and then to [Execution](setup/execution/)
-
     :fontawesome-solid-sync-alt: Are you upgrading from RAPIDS `0.4.x` or older? Follow this [guide](migrating-from-old-versions)
+
+    :fontawesome-solid-play: Ready? Go to [Overview](../setup/overview/).
 
 ## What are the benefits of using RAPIDS?
 

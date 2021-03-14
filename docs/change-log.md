@@ -1,7 +1,7 @@
 # Change Log
 
 ## v1.0.0
-- Add a new [Where do I start?](../setup/where-do-i-start/) page.
+- Add a new [Overview](../setup/overview/) page.
 - You can [extend](../datastreams/add-new-data-streams/) RAPIDS with your own [data streams](../datastreams/data-streams-introduction/). Data streams are data collected with other sensing apps besides AWARE (like Beiwe, mindLAMP), and stored in other data containers (databases, files) besides MySQL.
 - Support to analyze Empatica wearable data (thanks to Joe Kim and  Brinnae Bent from the [DBDP](https://dbdp.org/))
 - Support to analyze AWARE data stored in [CSV files](../datastreams/aware-csv/) and InfluxDB databases (the latter thanks to Neil Singh)

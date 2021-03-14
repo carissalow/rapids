@@ -73,7 +73,7 @@ extra_css:
 nav:
   - Home: 'index.md'
   - Setup:
-    - Where do I start?: setup/where-do-i-start.md
+    - Overview: setup/overview.md
     - Minimal Example: workflow-examples/minimal.md
     - Installation: 'setup/installation.md'
     - Configuration: setup/configuration.md

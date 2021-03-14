@@ -1,4 +1,4 @@
-# Where do I start?
+# Overview
 
 Let's review some key concepts we use throughout these docs:
 
@@ -18,19 +18,18 @@ Let's review some key concepts we use throughout these docs:
 |credentials.yaml| A YAML file where you can define credential groups (user, password, host, etc.) if your data stream needs to connect to a database or Web API|
 |Participant file| A YAML file that links one or more smartphone or wearable devices that a single participant used. RAPIDS needs one file per participant. |
 
-RAPIDS functionality includes:
+You can do one or more of these things with RAPIDS:
 
-- [Extract behavioral features](../../features/feature-introduction/) from smartphone, Fitbit, and Empatica's [supported data streams](../../datastreams/data-streams-introduction/)
-- [Add your own behavioral features](../../features/add-new-features/) (we can include them in RAPIDS if you want to share them with the community)
-- [Add support for new data streams](../../datastreams/add-new-data-streams/) if yours cannot be processed by RAPIDS yet
-- Create visualizations for [data quality control](../../visualizations/data-quality-visualizations/)  and [feature inspection](../../visualizations/feature-visualizations/)
-- [Extending RAPIDS to organize your analysis](../../workflow-examples/analysis/) and publish a code repository along with your code
+1. [Extract behavioral features](../../features/feature-introduction/) from smartphone, Fitbit, and Empatica's [supported data streams](../../datastreams/data-streams-introduction/)
+1. [Add your own behavioral features](../../features/add-new-features/) (we can include them in RAPIDS if you want to share them with the community)
+1. [Add support for new data streams](../../datastreams/add-new-data-streams/) if yours cannot be processed by RAPIDS yet
+1. Create visualizations for [data quality control](../../visualizations/data-quality-visualizations/)  and [feature inspection](../../visualizations/feature-visualizations/)
+1. [Extending RAPIDS to organize your analysis](../../workflow-examples/analysis/) and publish a code repository along with your code
 
+**In order to follow any of the previous tutorials, you will have to [Install](../installation/), [Configure](../configuration/), and learn how to [Execute](../execution/) RAPIDS.**
 
 !!! hint
-    - If you want to use RAPIDS for any of the above, you will have to [Install](../installation/), [Configure](../configuration/), and learn how to [Execute](../execution/) it.
-
-    - We also recommend you follow the [Minimal Example](../../workflow-examples/minimal/) tutorial to get familiar with RAPIDS
+    - We recommend you follow the [Minimal Example](../../workflow-examples/minimal/) tutorial to get familiar with RAPIDS
 
     - [Email us](../../team), create a [Github issue](https://github.com/carissalow/rapids/issues) or text us in [Slack](http://awareframework.com:3000/) if you have any questions
 

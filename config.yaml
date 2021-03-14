@@ -44,7 +44,7 @@ TIMEZONE:
 #                                                 PHONE                                                                #
 ########################################################################################################################
 
-# See https://www.rapids.science/latest/setup/configuration/#device-data-source-configuration
+# See https://www.rapids.science/latest/setup/configuration/#data-stream-configuration
 PHONE_DATA_STREAMS:
   USE: aware_mysql
   
@@ -329,7 +329,7 @@ PHONE_WIFI_VISIBLE:
 #                                                 FITBIT                                                               #
 ########################################################################################################################
 
-# See https://www.rapids.science/latest/setup/configuration/#device-data-source-configuration
+# See https://www.rapids.science/latest/setup/configuration/#data-stream-configuration
 FITBIT_DATA_STREAMS:
   USE: fitbitjson_mysql
   

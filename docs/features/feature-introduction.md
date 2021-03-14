@@ -6,6 +6,7 @@ Every device sensor has a corresponding config section in `config.yaml`, these s
     - We recommend reading this page if you are using RAPIDS for the first time
     - All computed sensor features are stored under `/data/processed/features` on files per sensor, per participant and per study (all participants).
     - Every time you change any sensor parameters, provider parameters or provider features, all the necessary files will be updated as soon as you execute RAPIDS.
+    - In short, to extract features offered by a provider, you need to set its `[COMPUTE]` flag to `TRUE`, configure any of its parameters, and [execute](../../setup/execution) RAPIDS.
 
 
 !!! example "Config section example for `PHONE_ACCELEROMETER`"

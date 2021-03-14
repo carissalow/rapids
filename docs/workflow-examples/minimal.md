@@ -54,7 +54,9 @@ This is a quick guide for creating and running a simple pipeline to extract miss
 
          5. **Modify your [device data stream configuration](../../setup/configuration#data-stream-configuration)**
             
-            Set `[PHONE_DATA_STREAMS][USE]` to `aware_csv`. 
+            1. Set `[PHONE_DATA_STREAMS][USE]` to `aware_csv`. 
+            
+            2. We will use the default value for `[PHONE_DATA_STREAMS][aware_csv][FOLDER]` since we already stored the test calls CSV file there.
 
          6. **Select what [sensors and features](../../setup/configuration#sensor-and-features-to-process) you want to process.** 
          
@@ -77,7 +79,7 @@ This is a quick guide for creating and running a simple pipeline to extract miss
 
         TIME_SEGMENTS: &time_segments
             TYPE: PERIODIC
-            FILE: "data/external/timesegments_periodic.csv" # make sure the three lines specified above are in the file
+            FILE: "data/external/timesegments_periodic.csv"
             INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE
 
         PHONE_DATA_STREAMS:

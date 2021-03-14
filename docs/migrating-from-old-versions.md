@@ -4,8 +4,8 @@
 
 There are four actions that you need to take if you were using RAPIDS `0.4.3` or older ([before Feb 9th, 2021](https://github.com/carissalow/rapids/releases/tag/v0.4.3)):
 
-??? check "Check the new Where do I start? page"
-      Check the new [Where do I start?](../setup/where-do-i-start/) page. Hopefully, it is a better overview of RAPIDS and provides answers to Frequently Asked Questions.
+??? check "Check the new Overview page"
+      Check the new [Overview](../setup/overview/) page. Hopefully, it is a better overview of RAPIDS and provides answers to Frequently Asked Questions.
 
 ??? check "Deploy RAPIDS in a new folder"
 
