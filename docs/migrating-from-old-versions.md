@@ -10,8 +10,8 @@ There are four actions that you need to take if you were using RAPIDS `0.4.3` or
 ??? check "Deploy RAPIDS in a new folder"
 
       - Clone RAPIDS 1.x in a new folder (do not pull the updates in your current folder)
-      - Install renv again `snakemake -j1 renv_install`
-      - Restore renv packages `snakemake -j1 renv_restore`
+      - Install renv again `snakemake -j1 renv_install` (for Ubuntu take advantage of the [platform specific R `renv` instructions](../setup/installation))
+      - Restore renv packages `snakemake -j1 renv_restore` (for Ubuntu take advantage of the [platform specific R `renv` instructions](../setup/installation))
       - Activate your conda environment
       - Move your participant files `pxx.yaml` to the new folder
       - Move your time segment files to the new folder
