@@ -1,15 +1,3 @@
-# This rull will dissapear
-rule restore_sql_file:
-    input:
-        sql_file = "data/external/rapids_example.sql",
-        db_credentials = ".env"
-    params:
-        group = "No_GROUP" #config["DATABASE_GROUP"]
-    output:
-        touch("data/interim/restore_sql_file.done")
-    script:
-        "../src/data/restore_sql_file.py"
-
 rule create_example_participant_files:
     output:
         expand("data/external/participant_files/{pid}.yaml", pid = ["example01", "example02"])
