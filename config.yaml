@@ -54,6 +54,10 @@ PHONE_DATA_STREAMS:
 
   aware_csv:
     FOLDER: data/external/aware_csv
+  
+  aware_influxdb: 
+    DATABASE_GROUP: MY_GROUP
+
 # Sensors ------
 
 # https://www.rapids.science/latest/features/phone-accelerometer/

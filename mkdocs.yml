@@ -84,6 +84,7 @@ nav:
       - Phone:
         - aware_mysql: datastreams/aware-mysql.md
         - aware_csv: datastreams/aware-csv.md
+        - aware_influxdb (beta): datastreams/aware-influxdb.md
         - Mandatory Phone Format: datastreams/mandatory-phone-format.md
       - Fitbit:
         - fitbitjson_mysql: datastreams/fitbitjson-mysql.md

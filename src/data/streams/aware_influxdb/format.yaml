@@ -1,0 +1,315 @@
+PHONE_ACCELEROMETER:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DOUBLE_VALUES_0: double_values_0
+      DOUBLE_VALUES_1: double_values_1
+      DOUBLE_VALUES_2: double_values_2
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DOUBLE_VALUES_0: double_values_0
+      DOUBLE_VALUES_1: double_values_1
+      DOUBLE_VALUES_2: double_values_2
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_ACTIVITY_RECOGNITION:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      ACTIVITY_NAME: activity_name
+      ACTIVITY_TYPE: activity_type
+      CONFIDENCE: confidence
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      ACTIVITY_NAME: FLAG_TO_MUTATE
+      ACTIVITY_TYPE: FLAG_TO_MUTATE
+      CONFIDENCE: FLAG_TO_MUTATE
+    MUTATION:
+      COLUMN_MAPPINGS:
+        ACTIVITIES: activities
+        CONFIDENCE: confidence
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+        - "src/data/streams/mutations/phone/aware/activity_recogniton_ios_unification.R"
+
+PHONE_APPLICATIONS_CRASHES:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      PACKAGE_NAME: package_name
+      APPLICATION_NAME: application_name
+      APPLICATION_VERSION: application_version
+      ERROR_SHORT: error_short
+      ERROR_LONG: error_long
+      ERROR_CONDITION: error_condition
+      IS_SYSTEM_APP: is_system_app
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_APPLICATIONS_FOREGROUND:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      PACKAGE_NAME: package_name
+      APPLICATION_NAME: application_name
+      IS_SYSTEM_APP: is_system_app
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_APPLICATIONS_NOTIFICATIONS:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      PACKAGE_NAME: package_name
+      APPLICATION_NAME: application_name
+      TEXT: text
+      SOUND: sound
+      VIBRATE: vibrate
+      DEFAULTS: defaults
+      FLAGS: flags
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_BATTERY:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      BATTERY_STATUS: battery_status
+      BATTERY_LEVEL: battery_level
+      BATTERY_SCALE: battery_scale
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      BATTERY_STATUS: FLAG_TO_MUTATE
+      BATTERY_LEVEL: battery_level
+      BATTERY_SCALE: battery_scale
+    MUTATION:
+      COLUMN_MAPPINGS:
+        BATTERY_STATUS: battery_status
+      SCRIPTS:
+        - "src/data/streams/mutations/phone/aware/battery_ios_unification.R"
+
+PHONE_BLUETOOTH:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      BT_ADDRESS: bt_address
+      BT_NAME: bt_name
+      BT_RSSI: bt_rssi
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_CALLS:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      CALL_TYPE: call_type
+      CALL_DURATION: call_duration
+      TRACE: trace
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      CALL_TYPE: FLAG_TO_MUTATE
+      CALL_DURATION: call_duration
+      TRACE: trace
+    MUTATION:
+      COLUMN_MAPPINGS:
+        CALL_TYPE: call_type
+      SCRIPTS:
+        - "src/data/streams/mutations/phone/aware/calls_ios_unification.R"
+
+PHONE_CONVERSATION:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DOUBLE_ENERGY: double_energy
+      INFERENCE: inference
+      DOUBLE_CONVO_START: double_convo_start
+      DOUBLE_CONVO_END: double_convo_end
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DOUBLE_ENERGY: double_energy
+      INFERENCE: inference
+      DOUBLE_CONVO_START: double_convo_start
+      DOUBLE_CONVO_END: double_convo_end
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+        - "src/data/streams/mutations/phone/aware/conversation_ios_timestamp.R"
+
+PHONE_KEYBOARD:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      PACKAGE_NAME: package_name
+      BEFORE_TEXT: before_text
+      CURRENT_TEXT: current_text
+      IS_PASSWORD: is_password
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_LIGHT:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DOUBLE_LIGHT_LUX: double_light_lux
+      ACCURACY: accuracy
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_LOCATIONS:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DOUBLE_LATITUDE: double_latitude
+      DOUBLE_LONGITUDE: double_longitude
+      DOUBLE_BEARING: double_bearing
+      DOUBLE_SPEED: double_speed
+      DOUBLE_ALTITUDE: double_altitude
+      PROVIDER: provider
+      ACCURACY: accuracy
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      DOUBLE_LATITUDE: double_latitude
+      DOUBLE_LONGITUDE: double_longitude
+      DOUBLE_BEARING: double_bearing
+      DOUBLE_SPEED: double_speed
+      DOUBLE_ALTITUDE: double_altitude
+      PROVIDER: provider
+      ACCURACY: accuracy
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_LOG:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      LOG_MESSAGE: log_message
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      LOG_MESSAGE: log_message
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_MESSAGES:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      MESSAGE_TYPE: message_type
+      TRACE: trace
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_SCREEN:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      SCREEN_STATUS: screen_status
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      SCREEN_STATUS: FLAG_TO_MUTATE
+    MUTATION:
+      COLUMN_MAPPINGS:
+        SCREEN_STATUS: screen_status
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+        - "src/data/streams/mutations/phone/aware/screen_ios_unification.R"
+
+PHONE_WIFI_CONNECTED:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      MAC_ADDRESS: mac_address
+      SSID: ssid
+      BSSID: bssid
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      MAC_ADDRESS: mac_address
+      SSID: ssid
+      BSSID: bssid
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
+PHONE_WIFI_VISIBLE:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      SSID: ssid
+      BSSID: bssid
+      SECURITY: security
+      FREQUENCY: frequency
+      RSSI: rssi
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
