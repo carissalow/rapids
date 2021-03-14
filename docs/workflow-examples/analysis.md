@@ -27,7 +27,7 @@ Our example is based on a hypothetical study that recruited 2 participants that 
 
 The goal of this workflow is to find out if we can predict the daily symptom burden score of a participant. Thus, we framed this question as a binary classification problem with two classes, high and low symptom burden based on the scores above and below average of each participant. We also want to compare the performance of individual (personalized) models vs a population model. 
 
-In total, our example workflow has nine steps that are in charge of sensor data preprocessing, feature extraction, feature cleaning, machine learning model training and model evaluation (see figure below). We ship this workflow with RAPIDS and share a database with [test data](https://osf.io/skqfv/files/) in an Open Science Framework repository. 
+In total, our example workflow has nine steps that are in charge of sensor data preprocessing, feature extraction, feature cleaning, machine learning model training and model evaluation (see figure below). We ship this workflow with RAPIDS and share files with [test data](https://osf.io/wbg23/) in an Open Science Framework repository. 
 
 <figure>
   <img src="../../img/analysis_workflow.png" max-width="100%" />
@@ -37,7 +37,7 @@ In total, our example workflow has nine steps that are in charge of sensor data 
 
 ## Configure and run the analysis workflow example
 1.	[Install](../../setup/installation) RAPIDS
-2.	*Skip this step if you are using RAPIDS docker container*. Unzip the [test database](https://osf.io/skqfv/files/) as `example_workflow` folder and move it to `data/external/` directory.
+2.	Unzip the CSV files inside [rapids_example_csv.zip](https://osf.io/wbg23/) in `data/external/example_workflow/*.csv`.
 3.	Create the participant files for this example by running:
     ```bash
     ./rapids -j1 create_example_participant_files
@@ -46,6 +46,8 @@ In total, our example workflow has nine steps that are in charge of sensor data 
     ```bash
     ./rapids -j1 --profile example_profile
     ```
+
+Note you will see a lot of warning messages, you can ignore them since they happen because we ran ML algorithms with a small fake dataset.
 
 ## Modules of our analysis workflow example
 

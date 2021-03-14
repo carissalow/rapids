@@ -9,50 +9,36 @@ Every device sensor has a corresponding config section in `config.yaml`, these s
     - In short, to extract features offered by a provider, you need to set its `[COMPUTE]` flag to `TRUE`, configure any of its parameters, and [execute](../../setup/execution) RAPIDS.
 
 
-!!! example "Config section example for `PHONE_ACCELEROMETER`"
+### Explaining the config.yaml sensor sections with an example
 
-    ```yaml
-    # 1) Config section
-    PHONE_ACCELEROMETER:
-        # 2) Parameters for PHONE_ACCELEROMETER
-        CONTAINER: accelerometer
+Each sensor section follows the same structure. Click on the numbered markers to know more.
 
-        # 3) Providers for PHONE_ACCELEROMETER
-        PROVIDERS:
-            # 4) RAPIDS provider
-            RAPIDS:
-                # 4.1) Parameters of RAPIDS provider of PHONE_ACCELEROMETER
-                COMPUTE: False
-                # 4.2) Features of RAPIDS provider of PHONE_ACCELEROMETER
-                FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
-                SRC_FOLDER: "rapids" # inside src/features/phone_accelerometer
-                SRC_LANGUAGE: "python"
-            
-            # 5) PANDA provider
-            PANDA:
-                # 5.1) Parameters of PANDA provider of PHONE_ACCELEROMETER
-                COMPUTE: False
-                VALID_SENSED_MINUTES: False
-                # 5.2) Features of PANDA provider of PHONE_ACCELEROMETER
-                FEATURES:
-                    exertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
-                    nonexertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
-                SRC_FOLDER: "panda" # inside src/features/phone_accelerometer
-                SRC_LANGUAGE: "python"
-    ```
+``` { .yaml .annotate }
+PHONE_ACCELEROMETER: # (1)
 
-## Sensor Parameters
-Each sensor configuration section has a "parameters" subsection (see `#2` in the example). These are parameters that affect different aspects of how the raw data is downloaded, and processed. The `CONTAINER` parameter exists for every sensor, but some sensors will have extra parameters like [`[PHONE_LOCATIONS]`](../phone-locations/). We explain these parameters in a table at the top of each sensor documentation page.
+    CONTAINER: accelerometer # (2)
 
-## Sensor Providers
-Each sensor configuration section can have zero, one or more behavioral feature **providers** (see `#3` in the example). A provider is a script created by the core RAPIDS team or other researchers that extracts behavioral features for that sensor. In this example, accelerometer has two providers: RAPIDS (see `#4`) and PANDA (see `#5`).
+    PROVIDERS: # (3)
+        RAPIDS:
+            COMPUTE: False # (4)
+            FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
 
-### Provider Parameters
-Each provider has parameters that affect the computation of the behavioral features it offers (see `#4.1` or `#5.1` in the example). These parameters will include at least a `[COMPUTE]` flag that you switch to `True` to extract a provider's behavioral features. 
+            SRC_FOLDER: "rapids"
+            SRC_LANGUAGE: "python"
+        
+        PANDA:
+            COMPUTE: False
+            VALID_SENSED_MINUTES: False
+            FEATURES: # (5)
+                exertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
+                nonexertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
 
-We explain every provider's parameter in a table under the `Parameters description` heading on each provider documentation page.
+            SRC_FOLDER: "panda"
+            SRC_LANGUAGE: "python" # (6)
+```
 
-### Provider Features
-Each provider offers a set of behavioral features (see `#4.2` or `#5.2` in the example). For some providers these features are grouped in an array (like those for `RAPIDS` provider in `#4.2`) but for others they are grouped in a collection of arrays depending on the meaning and purpose of those features (like those for `PANDAS` provider in `#5.2`). In either case, you can delete the features you are not interested in and they will not be included in the sensor's output feature file. 
+--8<--- "docs/snippets/feature_introduction_example.md"
 
-We explain each behavioral feature in a table under the `Features description` heading on each provider documentation page.
+These are descriptions of each marker for accessibility:
+
+--8<--- "docs/snippets/feature_introduction_example.md"

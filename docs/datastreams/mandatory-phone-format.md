@@ -2,6 +2,8 @@
 
 This is a description of the format RAPIDS needs to process data for the following PHONE sensors.
 
+See examples in the CSV files inside [rapids_example_csv.zip](https://osf.io/wbg23/)
+
 ??? info "PHONE_ACCELEROMETER"
 
     | RAPIDS column   | Description                                                  |

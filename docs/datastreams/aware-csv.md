@@ -5,6 +5,8 @@ This [data stream](../../datastreams/data-streams-introduction) handles iOS and 
 !!! warning
     The CSV files have to use `,` as separator, `\` as escape character (do not escape `"` with `""`), and wrap any string columns with `"`.
 
+    See examples in the CSV files inside [rapids_example_csv.zip](https://osf.io/wbg23/)
+
     ??? example "Example of a valid CSV file"
         ```csv
         "_id","timestamp","device_id","activities","confidence","stationary","walking","running","automotive","cycling","unknown","label"
