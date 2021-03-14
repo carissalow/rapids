@@ -45,14 +45,27 @@ You can do one or more of these things with RAPIDS:
 ??? info "How does RAPIDS work?"
     You will most of the time only have to modify configuration files in YAML format (`config.yaml`, `credentials.yaml`, and participant files `pxx.yaml`), and in CSV format (time zones and time segments).
 
-    RAPIDS pulls data from different data containers and processes it in steps. The input/output of each step is saved as a CSV file for inspection. All data is stored in `data/`, and all processing Python and R scripts are stored in `src/`.
+    RAPIDS pulls data from different data containers and processes it in steps. The input/output of each step is saved as a CSV file for inspection; you can check what files are created for each sensor provider on their documentation page. All data is stored in `data/`, and all processing Python and R scripts are stored in `src/`.
 
-    In the figure below, we represent the interactions between users and files. After a user modifies the configuration files mentioned above, the `Snakefile` file will search for and execute the Snakemake rules that contain the Python or R scripts necessary to generate or update the required output files (behavioral features, plots, etc.).
 
-    <figure>
-      <img src="../../img/files.png" max-width="50%" />
-      <figcaption>Interaction diagram between the user, and important files in RAPIDS</figcaption>
-    </figure>
+    ??? example "User and File interactions in RAPIDS"
+        In the figure below, we represent the interactions between users and files. After a user modifies the configuration files mentioned above, the `Snakefile` file will search for and execute the Snakemake rules that contain the Python or R scripts necessary to generate or update the required output files (behavioral features, plots, etc.).
+
+        <figure>
+        <img src="../../img/files.png" max-width="50%" />
+        <figcaption>Interaction diagram between the user, and important files in RAPIDS</figcaption>
+        </figure>
+
+
+    ??? example "Data flow in RAPIDS"
+        In the figure below, we represent the flow of data in RAPIDS. In broad terms, smartphone and wearable devices log [data streams](../../datastreams/data-streams-introduction/) with a certain format to a data container (database, file, etc.). 
+        
+        RAPIDS can connect to these containers if it has a `format.yaml` and a `container.[R|py]` script used to pull the correct data and mutate it to comply with RAPIDS' internal data representation. Once the data stream is in RAPIDS, it goes through some basic transformations (scripts), one that assigns a time segment and a time zone to each data row, and another one that creates "episodes" of data for some sensors that need it (like screen, battery, activity recognition, and sleep intraday day). After this, RAPIDS executes the requested provider script that computes behavioral features per time segment instance. After every feature is computed, they are joined per sensor, per participant, and study. Visualizations are built based on raw data with date-time information or based on computed features. 
+        
+        <figure>
+        <img src="../../img/dataflow.png" max-width="50%" />
+        <figcaption>Data stream flow in RAPIDS</figcaption>
+        </figure>
 
 ??? info "Is my data private?"
     Absolutely, you are processing your data with your own copy of RAPIDS in your laptop, server, or computer cluster, so neither we nor anyone else can have access to your datasets.
