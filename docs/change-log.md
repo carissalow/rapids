@@ -1,11 +1,20 @@
 # Change Log
 
-## Next release
-- Add support for Empatica devices (all sensors)
-- Add logo
-- Move Citation page to the Setup section
-- Add `config.yaml` validation schema and documentation.
-- Add time at home Doryab location feature and home coordinates to location file
+## v1.0.0
+- Add a new [Overview](../setup/overview/) page.
+- You can [extend](../datastreams/add-new-data-streams/) RAPIDS with your own [data streams](../datastreams/data-streams-introduction/). Data streams are data collected with other sensing apps besides AWARE (like Beiwe, mindLAMP), and stored in other data containers (databases, files) besides MySQL.
+- Support to analyze Empatica wearable data (thanks to Joe Kim and  Brinnae Bent from the [DBDP](https://dbdp.org/))
+- Support to analyze AWARE data stored in [CSV files](../datastreams/aware-csv/) and [InfluxDB](../datastreams/aware-influxdb/) databases
+- Support to analyze data collected over [multiple time zones](../setup/configuration/#multiple-timezones)
+- Support for [sleep intraday features](../features/fitbit-sleep-intraday/) from the core team and also from the community (thanks to Stephen Price)
+- Users can comment on the documentation (powered by utterances).
+- `SCR_SCRIPT` and `SRC_LANGUAGE` are replaced by `SRC_SCRIPT`.
+- Add RAPIDS new logo
+- Move Citation and Minimal Example page to the Setup section
+- Add `config.yaml` validation schema and documentation. Now it's more difficult to modify the `config.yaml` file with invalid values.
+- Add new `time at home` Doryab location feature
+- Add and home coordinates to the location data file so location providers can build features based on it.
+- If you are migrating from RAPIDS 0.4.3 or older, check this [guide](../migrating-from-old-versions/#migrating-from-rapids-04x-or-older)
 ## v0.4.3
 - Fix bug when any of the rows from any sensor do not belong a time segment
 ## v0.4.2

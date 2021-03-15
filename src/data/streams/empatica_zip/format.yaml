@@ -1,0 +1,64 @@
+EMPATICA_ACCELEROMETER:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: timestamp
+    DEVICE_ID: device_id
+    DOUBLE_VALUES_0: x
+    DOUBLE_VALUES_1: 'y'
+    DOUBLE_VALUES_2: z
+  MUTATION:
+    COLUMN_MAPPINGS:
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+
+EMPATICA_HEARTRATE:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: timestamp
+    DEVICE_ID: device_id
+    HEARTRATE: heartrate
+  MUTATION:
+    COLUMN_MAPPINGS:
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+
+EMPATICA_TEMPERATURE:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: timestamp
+    DEVICE_ID: device_id
+    TEMPERATURE: temperature
+  MUTATION:
+    COLUMN_MAPPINGS:
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+
+EMPATICA_ELECTRODERMAL_ACTIVITY:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: timestamp
+    DEVICE_ID: device_id
+    ELECTRODERMAL_ACTIVITY: electrodermal_activity
+  MUTATION:
+    COLUMN_MAPPINGS:
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+
+EMPATICA_BLOOD_VOLUME_PULSE:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: timestamp
+    DEVICE_ID: device_id
+    BLOOD_VOLUME_PULSE: blood_volume_pulse
+  MUTATION:
+    COLUMN_MAPPINGS:
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+
+EMPATICA_INTER_BEAT_INTERVAL:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: timestamp
+    DEVICE_ID: device_id
+    INTER_BEAT_INTERVAL: inter_beat_interval
+  MUTATION:
+    COLUMN_MAPPINGS:
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+
+EMPATICA_EMPATICA_TAGS:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: timestamp
+    DEVICE_ID: device_id
+    TAGS: tags
+  MUTATION:
+    COLUMN_MAPPINGS:
+    SCRIPTS: # List any python or r scripts that mutate your raw data

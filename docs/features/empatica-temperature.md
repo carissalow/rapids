@@ -4,7 +4,7 @@ Sensor parameters description for `[EMPATICA_TEMPERATURE]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[TABLE]`| Name of the CSV file containing temperature data that is compressed inside an Empatica zip file. Since these zip files are created [automatically](https://support.empatica.com/hc/en-us/articles/201608896-Data-export-and-formatting-from-E4-connect-) by Empatica, there is no need to change the value of this attribute.
+|`[CONTAINER]`| Name of the CSV file containing temperature data that is compressed inside an Empatica zip file. Since these zip files are created [automatically](https://support.empatica.com/hc/en-us/articles/201608896-Data-export-and-formatting-from-E4-connect-) by Empatica, there is no need to change the value of this attribute.
 
 ## DBDP provider
 
@@ -13,9 +13,7 @@ Sensor parameters description for `[EMPATICA_TEMPERATURE]`:
 
 !!! info "File Sequence"
     ```bash
-    - data/raw/{pid}/empatica_temperature_unzipped_{zip-file}.csv # one per zip file
-    - data/raw/{pid}/empatica_temperature_raw_{zip-file}.csv # one per zip file
-    - data/raw/{pid}/empatica_temperature_joined.csv
+    - data/raw/{pid}/empatica_temperature_raw.csv
     - data/raw/{pid}/empatica_temperature_with_datetime.csv
     - data/interim/{pid}/empatica_temperature_features/empatica_temperature_{language}_{provider_key}.csv
     - data/processed/features/{pid}/empatica_temperature.csv

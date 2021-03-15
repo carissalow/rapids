@@ -51,7 +51,7 @@ if(locations_to_use == "ALL"){
             # Filter those rows that are further away than time_since_valid_location since the last fused location
             mutate(time_from_fused = timestamp - first(timestamp)) %>%
             filter(provider %in% providers_to_keep | (time_from_fused < (1000 * 60 * time_since_valid_location))) %>%
-            select(-consecutive_time_diff, -time_from_fused, -device_id) %>% 
+            select(-consecutive_time_diff, -time_from_fused) %>% 
             # Summarise the period to resample for
             summarise(across(timestamp, max, .names = "limit"), across(everything(), first)) %>% 
             # the limit will be equal to the next timestamp-1 or the last binded timestamp (limit) plus the consecutive_threshold buffer

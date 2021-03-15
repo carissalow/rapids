@@ -4,7 +4,7 @@ Sensor parameters description for `[PHONE_SCREEN]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[TABLE]`| Database table where the screen data is stored
+|`[CONTAINER]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the screen data is stored
 
 ## RAPIDS provider
 
@@ -16,7 +16,6 @@ Sensor parameters description for `[PHONE_SCREEN]`:
     ```bash
     - data/raw/{pid}/phone_screen_raw.csv
     - data/raw/{pid}/phone_screen_with_datetime.csv
-    - data/raw/{pid}/phone_screen_with_datetime_unified.csv
     - data/interim/{pid}/phone_screen_episodes.csv
     - data/interim/{pid}/phone_screen_episodes_resampled.csv
     - data/interim/{pid}/phone_screen_episodes_resampled_with_datetime.csv

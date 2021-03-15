@@ -4,8 +4,8 @@ Sensor parameters description for `[PHONE_ACTIVITY_RECOGNITION]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[TABLE][ANDROID]`| Database table where the activity data from Android devices is stored (the AWARE client saves this data on different tables for Android and iOS)
-|`[TABLE][IOS]`| Database table where the activity data from iOS devices is stored (the AWARE client saves this data on different tables for Android and iOS)
+|`[CONTAINER][ANDROID]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the activity data from Android devices is stored (the AWARE client saves this data on different tables for Android and iOS)
+|`[CONTAINER][IOS]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the activity data from iOS devices is stored (the AWARE client saves this data on different tables for Android and iOS)
 |`[EPISODE_THRESHOLD_BETWEEN_ROWS]` | Difference in minutes between any two rows for them to be considered part of the same activity episode
 
 ## RAPIDS provider
@@ -18,7 +18,6 @@ Sensor parameters description for `[PHONE_ACTIVITY_RECOGNITION]`:
     ```bash
     - data/raw/{pid}/phone_activity_recognition_raw.csv
     - data/raw/{pid}/phone_activity_recognition_with_datetime.csv
-    - data/raw/{pid}/phone_activity_recognition_with_datetime_unified.csv
     - data/interim/{pid}/phone_activity_recognition_episodes.csv
     - data/interim/{pid}/phone_activity_recognition_episodes_resampled.csv
     - data/interim/{pid}/phone_activity_recognition_episodes_resampled_with_datetime.csv

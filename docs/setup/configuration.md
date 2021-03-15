@@ -3,11 +3,11 @@
 
 You need to follow these steps to configure your RAPIDS deployment before you can extract behavioral features
 
-1. Add your [database credentials](#database-credentials)
-2. Choose the [timezone of your study](#timezone-of-your-study)
+0. Verify RAPIDS can process your [data streams](#supported-data-streams)
 3. Create your [participants files](#participant-files)
 4. Select what [time segments](#time-segments) you want to extract features on
-5. Modify your [device data source configuration](#device-data-source-configuration)
+2. Choose the [timezone of your study](#timezone-of-your-study)
+5. Configure your [data streams](#data-stream-configuration)
 6. Select what [sensors and features](#sensor-and-features-to-process) you want to process
 
 When you are done with this configuration, go to [executing RAPIDS](../execution).
@@ -16,59 +16,12 @@ When you are done with this configuration, go to [executing RAPIDS](../execution
     Every time you see `config["KEY"]` or `[KEY]` in these docs we are referring to the corresponding key in the `config.yaml` file.
 
 ---
-## Database credentials
 
-Only follow this step if you are processing smartphone or Fitbit data stored in a database. For reference, we list below the data sources RAPIDS support for each type of device.
+## Supported data streams
 
-1. Create an empty file called `#!bash .env` in your RAPIDS root directory
-2. Add the following lines and replace your database-specific  credentials (user, password, host, and database):
+A data stream refers to sensor data collected using a specific type of **device** with a specific **format** and stored in a specific **container**. For example, the `aware_mysql` data stream handles smartphone data (**device**) collected with the [AWARE Framework](https://awareframework.com/) (**format**) stored in a MySQL database (**container**).
 
-  ``` yaml
-  [MY_GROUP]
-  user=MY_USER
-  password=MY_PASSWORD
-  host=MY_HOST
-  port=3306
-  database=MY_DATABASE
-  ```
-
-??? warning "What is `[MY_GROUP]`?"
-    The label `[MY_GROUP]` is arbitrary but it has to match the following `config.yaml` key:
-    ```yaml
-    DATABASE_GROUP: &database_group
-      MY_GROUP
-    ```
-
-??? hint "Connecting to localhost (host machine) from inside our docker container"
-    If you are using RAPIDS' docker container and Docker-for-mac or Docker-for-Windows 18.03+, you can connect to a MySQL database in your host machine using `host.docker.internal` instead of `127.0.0.1` or `localhost`. In a Linux host you need to run our docker container using `docker run --network="host" -d moshiresearch/rapids:latest` and then `127.0.0.1` will point to your host machine.
-
-??? hint "Data sources supported for each device type"
-    | Device | Database | CSV Files | Zip files
-    |--|--|--|--|
-    | Smartphone| Yes (MySQL) | No | No |
-    | Fitbit| Yes (MySQL) | Yes | No |
-    | Empatica| No | No | Yes |
-
-    - RAPIDS only supports MySQL/MariaDB databases. If you would like to add support for a different database engine get in touch and we can discuss how to implement it.
-    - Fitbit data can be processed as the JSON object produced by Fitbit's API (recommended) or in a parsed tabular fashion.
-    - Empatica devices produce a zip file with a CSV file per sensor which can be processed directly in RAPIDS.
-    
----
-
-## Timezone of your study
-
-### Single timezone
-
-If your study only happened in a single time zone, select the appropriate code form this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) and change the following config key. Double check your timezone code pick, for example US Eastern Time is `America/New_York` not `EST`
-
-``` yaml
-TIMEZONE: &timezone
-  America/New_York
-```
-
-### Multiple timezones
-
-Support coming soon.
+Check the table in [introduction to data streams](../../datastreams/data-streams-introduction) to know what data streams we support. If your data stream is supported, continue to the next configuration section, **you will use its label later in this guide** (e.g. `aware_mysql`). If your steam is not supported but you want to implement it, follow the tutorial to [add support for new data streams](../../datastreams/add-new-data-streams) and get in touch by email or in Slack if you have any questions.
 
 ---
 
@@ -109,7 +62,8 @@ Participant files link together multiple devices (smartphones and wearables) to 
       LABEL: test01
       START_DATE: 2020-04-23
       END_DATE: 2020-10-28
-    EMPATICA: # Empatica doesn't have a device_id because the devices produce zip files per participant
+    EMPATICA:
+      DEVICE_IDS: [empatica1]
       LABEL: test01
       START_DATE: 2020-04-23
       END_DATE: 2020-10-28
@@ -120,107 +74,89 @@ Participant files link together multiple devices (smartphones and wearables) to 
     | Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description                                                                                                                                                                                                                                                                                                                                |
     |-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
     | `[DEVICE_IDS]` | An array of the strings that uniquely identify each smartphone, you can have more than one for when participants changed phones in the middle of the study, in this case, data from all their devices will be joined and relabeled with the last 1 on this list.                                                                           |
-    | `[PLATFORMS]`  | An array that specifies the OS of each smartphone in  `[DEVICE_IDS]` , use a combination of  `android`  or  `ios`  (we support participants that changed platforms in the middle of your study!). If you have an  `aware_device`  table in your database you can set  `[PLATFORMS]: [multiple]`  and RAPIDS will infer them automatically. |
-    | `[LABEL]`      | A string that is used in reports and visualizations.                                                                                                                                                                                                                                                                                       |
-    | `[START_DATE]` | A string with format  `YYY-MM-DD` . Only data collected  *after*  this date will be included in the analysis                                                                                                                                                                                                                               |
-    | `[END_DATE]`   | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis                                                                                                                                                                                                                              |
+    | `[PLATFORMS]`  | An array that specifies the OS of each smartphone in  `[DEVICE_IDS]` , use a combination of  `android`  or  `ios`  (we support participants that changed platforms in the middle of your study!). You can set `[PLATFORMS]: [infer]`  and RAPIDS will infer them automatically (each phone data stream infer this differently, e.g. `aware_mysql` uses the `aware_device` table). |
+    | `[LABEL]`      | A string that is used in reports and visualizations.        |
+    | `[START_DATE]` | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *after*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                               |
+    | `[END_DATE]`   | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *before*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                              |
 
 === "[FITBIT]"
 
     | Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              | Description                                                                                               |
     |------------------|-----------------------------------------------------------------------------------------------------------|
     | `[DEVICE_IDS]`   | An array of the strings that uniquely identify each Fitbit, you can have more than one in case the participant changed devices in the middle of the study, in this case, data from all devices will be joined and relabeled with the last  `device_id`  on this list. |
-    | `[LABEL]`        | A string that is used in reports and visualizations.                                                                                                                                                                                                                  |
-    | `[START_DATE]`   | A string with format  `YYY-MM-DD` . Only data collected  *after*  this date will be included in the analysis                                                                                                                                                          |
-    | `[END_DATE]`     | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis                                                                                                                                                         |
+    | `[LABEL]`        | A string that is used in reports and visualizations.                                              |
+    | `[START_DATE]`   | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *after*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                               |
+    | `[END_DATE]`     | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *before*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                              |
 
 === "[EMPATICA]"
 
     | Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              | Description                                                                                               |
     |------------------|-----------------------------------------------------------------------------------------------------------|
-    | `[LABEL]`        | A string that is used in reports and visualizations.                                                                                                                                                                                                                  |
-    | `[START_DATE]`   | A string with format  `YYY-MM-DD` . Only data collected  *after*  this date will be included in the analysis                                                                                                                                                          |
-    | `[END_DATE]`     | A string with format  `YYY-MM-DD` . Only data collected  *before*  this date will be included in the analysis    
+    | `[DEVICE_IDS]`   | An array of the strings that uniquely identify each Empatica device used by this participant. Since the most common use case involves having multiple zip files from a single device for each person, set this device id to an arbitrary string (we usually use their `pid`) |
+    | `[LABEL]`        | A string that is used in reports and visualizations.                                                                                              |
+    | `[START_DATE]`   | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *after*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                               |
+    | `[END_DATE]`     | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *before*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                              |
 ### Automatic creation of participant files
 
-You have two options a) use the `aware_device` table in your database or b) use a CSV file. In either case, in your `config.yaml`, set the devices (`PHONE`, `FITBIT`, `EMPATICA`) `[ADD]` flag to `TRUE` depending on what devices you used in your study. Set `[DEVICE_ID_COLUMN]` to the name of the column that uniquely identifies each device  (only for `PHONE` and `FITBIT`).
+You can use a CSV file with a row per participant to automatically create participant files. 
 
-=== "aware_device table"
-
-    Set the following keys in your `config.yaml`
-
-    ```yaml
-    CREATE_PARTICIPANT_FILES:
-      SOURCE:
-        TYPE: AWARE_DEVICE_TABLE
-        DATABASE_GROUP: *database_group
-        CSV_FILE_PATH: ""
-        TIMEZONE: *timezone
-      PHONE_SECTION:
-        ADD: TRUE # or FALSE
-        DEVICE_ID_COLUMN: device_id # column name
-        IGNORED_DEVICE_IDS: []
-      FITBIT_SECTION:
-        ADD: FALSE # or FALSE
-        DEVICE_ID_COLUMN: fitbit_id # column name
-        IGNORED_DEVICE_IDS: []
-      EMPATICA_SECTION: # Empatica doesn't have a device_id column because the devices produce zip files per participant
-        ADD: FALSE # or FALSE
+??? "`AWARE_DEVICE_TABLE` was deprecated"
+    In previous versions of RAPIDS, you could create participant files automatically using the `aware_device` table. We deprecated this option but you can still achieve the same results if you export the output of the following SQL query as a CSV file and follow the instructions below:
+    
+    ```sql
+    SELECT device_id, device_id as fitbit_id, CONCAT("p", _id) as empatica_id, CONCAT("p", _id) as pid, if(brand = "iPhone", "ios", "android") as platform, CONCAT("p", _id)  as label, DATE_FORMAT(FROM_UNIXTIME((timestamp/1000)- 86400), "%Y-%m-%d") as start_date, CURRENT_DATE as end_date from aware_device order by _id;
     ```
 
-    Then run 
+In your `config.yaml`:
 
-    ```bash
-    snakemake -j1 create_participants_files
+1. Set `CSV_FILE_PATH` to a CSV file path that complies with the specs described below
+2. Set the devices (`PHONE`, `FITBIT`, `EMPATICA`) `[ADD]` flag to `TRUE` depending on what devices you used in your study.
+3. Set `[DEVICE_ID_COLUMN]` to the column's name in your CSV file that uniquely identifies each device.
+
+```yaml
+CREATE_PARTICIPANT_FILES:
+  CSV_FILE_PATH: "your_path/to_your.csv"
+  PHONE_SECTION:
+    ADD: TRUE # or FALSE
+    DEVICE_ID_COLUMN: device_id # column name
+    IGNORED_DEVICE_IDS: []
+  FITBIT_SECTION:
+    ADD: FALSE # or FALSE
+    DEVICE_ID_COLUMN: fitbit_id # column name
+    IGNORED_DEVICE_IDS: []
+  EMPATICA_SECTION:
+    ADD: FALSE
+    DEVICE_ID_COLUMN: empatica_id # column name
+    IGNORED_DEVICE_IDS: []
+```
+
+Your CSV file (`[CSV_FILE_PATH]`) should have the following columns (headers) but the values within each column can be empty:
+
+| Column           | Description                                                                                               |
+|------------------|-----------------------------------------------------------------------------------------------------------|
+| phone device id  | The name of this column has to match `[PHONE_SECTION][DEVICE_ID_COLUMN]`. Separate multiple ids with `;`  |
+| fitbit device id | The name of this column has to match `[FITBIT_SECTION][DEVICE_ID_COLUMN]`. Separate multiple ids with `;`  |
+| empatica device id | The name of this column has to match `[EMPATICA_SECTION][DEVICE_ID_COLUMN]`. Since the most common use case involves having multiple zip files from a single device for each person, set this device id to an arbitrary string (we usually use their `pid`)  |
+| pid              | Unique identifiers with the format pXXX (your participant files will be named with this string)            |
+| platform         | Use `android`, `ios` or `infer` as explained above, separate values with `;`            |
+| label            | A human readable string that is used in reports and visualizations.                                       |
+| start_date       | A string with format `YYY-MM-DD`. |
+| end_date         | A string with format `YYY-MM-DD`. |
+
+!!! example
+    We added white spaces to this example to make it easy to read but you don't have to.
+
+    ```csv
+    device_id                                                                ,fitbit_id, empatica_id ,pid ,label ,platform    ,start_date ,end_date
+    a748ee1a-1d0b-4ae9-9074-279a2b6ba524;dsadas-2324-fgsf-sdwr-gdfgs4rfsdf43 ,fitbit1  , p01         ,p01 ,julio ,android;ios ,2020-01-01 ,2021-01-01
+    4c4cf7a1-0340-44bc-be0f-d5053bf7390c                                     ,fitbit2  , p02         ,p02 ,meng  ,ios         ,2021-01-01 ,2022-01-01
     ```
 
-=== "CSV file"
+Then run 
 
-    Set the following keys in your `config.yaml`. 
-
-    ```yaml
-    CREATE_PARTICIPANT_FILES:
-      SOURCE:
-        TYPE: CSV_FILE
-        DATABASE_GROUP: ""
-        CSV_FILE_PATH: "your_path/to_your.csv"
-        TIMEZONE: *timezone
-      PHONE_SECTION:
-        ADD: TRUE # or FALSE
-        DEVICE_ID_COLUMN: device_id # column name
-        IGNORED_DEVICE_IDS: []
-      FITBIT_SECTION:
-        ADD: FALSE # or FALSE
-        DEVICE_ID_COLUMN: fitbit_id # column name
-        IGNORED_DEVICE_IDS: []
-      EMPATICA_SECTION: # Empatica doesn't have a device_id column because the devices produce zip files per participant
-        ADD: FALSE # or FALSE
-    ```
-    Your CSV file (`[SOURCE][CSV_FILE_PATH]`) should have the following columns but you can omit any values you don't have on each column:
-
-    | Column           | Description                                                                                               |
-    |------------------|-----------------------------------------------------------------------------------------------------------|
-    | phone device id  | The name of this column has to match `[PHONE_SECTION][DEVICE_ID_COLUMN]`. Separate multiple ids with `;`  |
-    | fitbit device id | The name of this column has to match `[FITBIT_SECTION][DEVICE_ID_COLUMN]`. Separate multiple ids with `;`  |
-    | pid              | Unique identifiers with the format pXXX (your participant files will be named with this string            |
-    | platform         | Use `android`, `ios` or `multiple` as explained above, separate values with `;`            |
-    | label            | A human readable string that is used in reports and visualizations.                                       |
-    | start_date       | A string with format `YYY-MM-DD`. |
-    | end_date         | A string with format `YYY-MM-DD`. |
-
-    !!! example
-
-        ```csv
-        device_id,pid,label,platform,start_date,end_date,fitbit_id
-        a748ee1a-1d0b-4ae9-9074-279a2b6ba524;dsadas-2324-fgsf-sdwr-gdfgs4rfsdf43,p01,julio,android;ios,2020-01-01,2021-01-01,fitbit1
-        4c4cf7a1-0340-44bc-be0f-d5053bf7390c,p02,meng,ios,2021-01-01,2022-01-01,fitbit2
-        ```
-
-    Then run 
-
-    ```bash
-    snakemake -j1 create_participants_files
-    ```
+```bash
+snakemake -j1 create_participants_files
+```
 
 ---
 
@@ -394,103 +330,256 @@ Time segments (or epochs) are the time windows on which you want to extract beha
     survey2,1584291600000,2H,1H,-1,klj34oi2-8frk-2343-21kk-324ljklewlr3
     ```
 --- 
-## Device Data Source Configuration
 
-You might need to modify the following config keys in your `config.yaml` depending on what devices your participants used and where you are storing your data (ignore the sections of devices you did not use).
+## Timezone of your study
+
+### Single timezone
+
+If your study only happened in a single time zone or you want to ignore short trips of your participants to different time zones, select the appropriate code form this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) and change the following config key. Double-check your timezone code pick, for example, US Eastern Time is `America/New_York` not `EST`
+
+``` yaml
+TIMEZONE: 
+    TYPE: SINGLE
+    TZCODE: America/New_York
+```
+
+### Multiple timezones
+
+If your participants lived on different time zones or they travelled across time zones, and you know when participants' devices were in a specific time zone, RAPIDS can use this data to process your data streams with the correct date-time. You need to provide RAPIDS with the time zone data in a CSV file (`[TZCODES_FILE]`) in the format described below.
+
+``` yaml
+TIMEZONE: 
+    TYPE: MULTIPLE
+    SINGLE:
+      TZCODE: America/New_York
+    MULTIPLE:
+      TZCODES_FILE: path_to/time_zones_csv.file
+      IF_MISSING_TZCODE: STOP
+      DEFAULT_TZCODE: America/New_York
+      FITBIT: 
+        ALLOW_MULTIPLE_TZ_PER_DEVICE: False
+        INFER_FROM_SMARTPHONE_TZ: False
+```
+
+Parameters for `[TIMEZONE]`
+
+|Parameter &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description |
+|--|--|
+|`[TYPE]`| Either `SINGLE` or `MULTIPLE` as explained above |
+|`[SINGLE][TZCODE]`| The time zone code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to be used across all devices |
+|`[MULTIPLE][TZCODES_FILE]`| A CSV file containing the time and code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) visited by each device in the study. Multiple devices can be linked to the same person, read more in [Participants Files](#participant-files) |
+|`[MULTIPLE][IF_MISSING_TZCODE]`| When a device is missing from `[TZCODES_FILE]` Set this flag to `STOP` to stop RAPIDS execution and show an error, or to `USE_DEFAULT` to assign the time zone specified in `[DEFAULT_TZCODE]` to any such devices  |
+|`[MULTIPLE][FITBIT][ALLOW_MULTIPLE_TZ_PER_DEVICE]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more time zones, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
+|`[MULTIPLE][FITBIT][INFER_FROM_SMARTPHONE_TZ]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more time zones, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
+
+??? info "Format of `TZCODES_FILE`"
+    `TZCODES_FILE` has three columns and a row for each time zone a device visited (a device can be a smartphone or wearable (Fitbit/Empatica)):
+
+    |Column | Description |
+    |--|--|
+    |`device_id`|A string that uniquely identifies a smartphone or wearable|
+    |`tzcode`| A string with the appropriate code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) that represents the time zone where the `device` sensed data|
+    |`timestamp`| A UNIX timestamp indicating when was the first time this `device_id` sensed data in `tzcode`|
+
+    ```csv
+    device_id,                            tzcode,              timestamp
+    13dbc8a3-dae3-4834-823a-4bc96a7d459d, America/New_York,     1587500000000
+    13dbc8a3-dae3-4834-823a-4bc96a7d459d, America/Mexico_City,  1587600000000
+    13dbc8a3-dae3-4834-823a-4bc96a7d459d, America/Los_Angeles,  1587700000000
+    65sa66a5-2d2d-4524-946v-44ascbv4sad7, Europe/Amsterdam,     1587100000000
+    65sa66a5-2d2d-4524-946v-44ascbv4sad7, Europe/Berlin,        1587200000000
+    65sa66a5-2d2d-4524-946v-44ascbv4sad7, Europe/Amsterdam,     1587300000000
+    ```
+
+    Using this file, RAPDIS will create time zone intervals per device, for example for `13dbc8a3-dae3-4834-823a-4bc96a7d459d`:
+
+    -  Interval 1 `[1587500000000, 1587599999999]` for `America/New_York`
+    -  Interval 2 `[1587600000000, 1587699999999]` for `America/Mexico_City`
+    -  Interval 3 `[1587700000000, now]` for `America/Los_Angeles`
+
+    Any sensor data row from a device will be assigned a timezone if it falls within that interval, for example:
+
+    - A screen row sensed at `1587533333333` will be assigned to `America/New_York` because it falls within Interval 1
+    - A screen row sensed at `1587400000000` will be discarded because it was logged outside any interval.
+
+??? note "What happens if participant X lives in Los Angeles but participant Y lives in Amsterdam and they both stayed there during my study?"
+    Add a row per participant and set timestamp to `0`:
+    ```csv
+    device_id,                            tzcode,              timestamp
+    13dbc8a3-dae3-4834-823a-4bc96a7d459d, America/Los_Angeles,  0
+    65sa66a5-2d2d-4524-946v-44ascbv4sad7, Europe/Amsterdam,     0
+    ```
+
+??? note "What happens if I forget to add a timezone for one or more devices?"
+    It depends on `[IF_MISSING_TZCODE]`. 
+    
+    If `[IF_MISSING_TZCODE]` is set to `STOP`, RAPIDS will stop its execution and show you an error message.
+
+    If `[IF_MISSING_TZCODE]` is set to `USE_DEFAULT`, it will assign the time zone specified in `[DEFAULT_TZCODE]` to any devices with missing time zone information in `[TZCODES_FILE]`. This is helpful if only a few of your participants had multiple timezones and you don't want to specify the same time zone for the rest.
+
+??? note "How does RAPIDS handle Fitbit devices?"
+    Fitbit devices are not time zone aware and they always log data with a local date-time string. 
+
+    - When none of the Fitbit devices in your study changed time zones (e.g., `p01` was always in New York and `p02` was always in Amsterdam), you can set a single time zone per Fitbit device id along with a timestamp 0 (you can still assign multiple time zones to smartphone device ids)
+    ```csv
+    device_id, tzcode,              timestamp
+    fitbit123, America/New_York,     0
+    fitbit999, Europe/Amsterdam,     0
+    ```
+
+    - On the other hand, when at least one of your Fitbit devices changed time zones **AND** you want RAPIDS to take into account these changes, you need to set `[ALLOW_MULTIPLE_TZ_PER_DEVICE]` to `True`. **You have to manually allow this option because you need to be aware it can produce inaccurate features around the times when time zones changed**. This is because we cannot know exactly when the Fitbit device detected and processed the time zone change.
+
+        If you want to `ALLOW_MULTIPLE_TZ_PER_DEVICE` you will need to add any time zone changes per device in the `TZCODES_FILE` as explained above. You could obtain this data by hand but if your participants also used a smartphone during your study, you can use their time zone logs. Recall that in RAPIDS every participant is represented with a participant file `pXX.yaml`, this file links together multiple devices and we will use it to know what smartphone time zone data should be applied to Fitbit devices. Thus set `INFER_FROM_SMARTPHONE_TZ` to `TRUE`, if you have included smartphone time zone data in your `TZCODE_FILE` and you want to make a participant's Fitbit data time zone aware with their respective smartphone data.
+
+---
+## Data Stream Configuration
+
+Modify the following keys in your `config.yaml` depending on the [data stream](../../datastreams/data-streams-introduction) you want to process.
 
 === "Phone"
 
-    The relevant `config.yaml` section looks like this by default:
+    Set `[PHONE_DATA_STREAMS][TYPE]` to the smartphone data stream you want to process (e.g. `aware_mysql`) and configure its parameters (e.g. `[DATABASE_GROUP]`). Ignore the parameters of streams you are not using (e.g. `[FOLDER]` of `aware_csv`).
 
     ```yaml
-    PHONE_DATA_CONFIGURATION:
-      SOURCE: 
-        TYPE: DATABASE
-        DATABASE_GROUP: *database_group
-        DEVICE_ID_COLUMN: device_id # column name
-      TIMEZONE: 
-        TYPE: SINGLE # SINGLE (MULTIPLE support coming soon)
-        VALUE: *timezone
+    PHONE_DATA_STREAMS:
+      USE: aware_mysql
 
+      # AVAILABLE:
+      aware_mysql:
+        DATABASE_GROUP: MY_GROUP
+
+      aware_csv:
+        FOLDER: data/external/aware_csv
     ```
 
-    **Parameters for `[PHONE_DATA_CONFIGURATION]`**
+    === "aware_mysql"
 
-    | Key                  | Description                                                                                                                |
-    |---------------------|----------------------------------------------------------------------------------------------------------------------------|
-    | `[SOURCE] [TYPE]`             | Only `DATABASE` is supported (phone data will be pulled from a database)                                                   |
-    | `[SOURCE] [DATABASE_GROUP]`   | `*database_group`  points to the value defined before in  [Database credentials](#database-credentials)    |
-    | `[SOURCE] [DEVICE_ID_COLUMN]` | A column that contains strings that uniquely identify smartphones. For data collected with AWARE this is usually  `device_id` |
-    | `[TIMEZONE] [TYPE]`             | Only `SINGLE` is supported for now                                                                                                |
-    | `[TIMEZONE] [VALUE]`            | `*timezone`  points to the value defined before in  [Timezone of your study](#timezone-of-your-study)          |
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
+
+        --8<---- "docs/snippets/database.md"
+
+    === "aware_csv"
+
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[FOLDER]`   | Folder where you have to place a CSV file **per** phone sensor. Each file has to contain all the data from every participant you want to process.     |
+
+
+
 
 === "Fitbit"
 
-    The relevant `config.yaml` section looks like this by default:
+    Set `[FITBIT_DATA_STREAMS][TYPE]` to the Fitbit data stream you want to process (e.g. `fitbitjson_mysql`) and configure its parameters (e.g. `[DATABASE_GROUP]`). Ignore the parameters of the other streams you are not using (e.g. `[FOLDER]` of `aware_csv`).
 
-      ```yaml
-      FITBIT_DATA_CONFIGURATION:
-        SOURCE: 
-          TYPE: DATABASE # DATABASE or FILES (set each [FITBIT_SENSOR][TABLE] attribute with a table name or a file path accordingly)
-          COLUMN_FORMAT: JSON # JSON or PLAIN_TEXT
-          DATABASE_GROUP: *database_group
-          DEVICE_ID_COLUMN: device_id # column name
-        TIMEZONE: 
-          TYPE: SINGLE # Fitbit devices don't support time zones so we read this data in the timezone indicated by VALUE 
-          VALUE: *timezone
+    !!! warning
+        You will probably have to tell RAPIDS the name of the columns where you stored your Fitbit data. To do this, modify your chosen stream's `format.yaml` column mappings to match your raw data column names.
 
-      ```
-
-      **Parameters for For `[FITBIT_DATA_CONFIGURATION]`**
-
-      | Key                         | Description                                                                                                                                                       |
-      |------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-      | `[SOURCE]` `[TYPE]`             | `DATABASE` or `FILES`  (set each `[FITBIT_SENSOR]` `[TABLE]` attribute accordingly with a table name or a file path)                                                                                         |
-      | `[SOURCE]` `[COLUMN_FORMAT]`    | `JSON` or `PLAIN_TEXT`. Column format of the source data. If you pulled your data directly from the Fitbit API the column containing the sensor data will be in `JSON` format                                   |
-      | `[SOURCE]` `[DATABASE_GROUP]`   | `*database_group`  points to the value defined before in  [Database credentials](#database-credentials). Only used if  `[TYPE]`  is  `DATABASE` . |
-      | `[SOURCE]` `[DEVICE_ID_COLUMN]` | A column that contains strings that uniquely identify Fitbit devices.                                                                                                |
-      | `[TIMEZONE]` `[TYPE]`             | Only `SINGLE` is supported  (Fitbit devices always store data in local time).                                                                                 |
-      | `[TIMEZONE]` `[VALUE]`            | `*timezone`  points to the value defined before in  [Timezone of your study](#timezone-of-your-study)                                             |
-
-=== "Empatica"
-
-    The relevant `config.yaml` section looks like this by default:
 
     ```yaml
-    SOURCE: 
-      TYPE: ZIP_FILE
-      FOLDER: data/external/empatica
-    TIMEZONE: 
-      TYPE: SINGLE # Empatica devices don't support time zones so we read this data in the timezone indicated by VALUE 
-      VALUE: *timezone
+    FITBIT_DATA_STREAMS:
+      USE: fitbitjson_mysql
+
+      # AVAILABLE:
+      fitbitjson_mysql:
+        DATABASE_GROUP: MY_GROUP
+        SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: False
+
+      fitbitjson_csv:
+        FOLDER: data/external/fitbit_csv
+        SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: False
+
+      fitbitparsed_mysql:
+        DATABASE_GROUP: MY_GROUP
+        SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: False
+        
+      fitbitparsed_csv:
+        FOLDER: data/external/fitbit_csv
+        SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: False
 
     ```
 
-    **Parameters for `[EMPATICA_DATA_CONFIGURATION]`**
+    === "fitbitjson_mysql"
 
-    | Key                  | Description                                                                                                                |
-    |---------------------|----------------------------------------------------------------------------------------------------------------------------|
-    | `[SOURCE] [TYPE]`             | Only `ZIP_FILE` is supported (Empatica devices save sensor data in CSV files that are zipped together).|
-    | `[SOURCE] [FOLDER]` | The relative path to a folder containing one folder per participant. The name of a participant folder should match their pid in `config[PIDS]`, for example `p01`. Each participant folder can have one or more zip files with any name; in other words, the sensor data contained in those zip files belongs to a single participant. The zip files are [automatically](https://support.empatica.com/hc/en-us/articles/201608896-Data-export-and-formatting-from-E4-connect-) generated by Empatica and have a CSV file per sensor (`ACC`, `HR`, `TEMP`, `EDA`, `BVP`, `TAGS`). All CSV files of the same type contained in one or more zip files are uncompressed, parsed, sorted by timestamp, and joinned together.|
-    | `[TIMEZONE] [TYPE]`             | Only `SINGLE` is supported for now                                                                                                |
-    | `[TIMEZONE] [VALUE]`            | `*timezone`  points to the value defined before in  [Timezone of your study](#timezone-of-your-study)          |
+        This data stream process Fitbit data inside a JSON column as obtained from the Fitbit API and stored in a MySQL database. Read more about its column mappings and mutations in [`fitbitjson_mysql`](../../datastreams/fitbitjson-mysql#format).
 
-    ??? example "Example of an EMPATICA FOLDER"
-        In the file tree below, we want to process the data of three participants: `p01`, `p02`, and `p03`. `p01` has two zip files, `p02` has only one zip file, and `p03` has three zip files. Each zip will have a CSV file per sensor that are joinned together and process by RAPIDS. These zip files are generated by Empatica.
-        ```bash
-        data/ # this folder exists in the root RAPIDS folder
-          external/
-            empatica/
-              p01/
-                file1.zip
-                file2.zip
-              p02/
-                aaaa.zip
-              p03/
-                t1.zip
-                t2.zip
-                t3.zip
-        ```
+
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
+        | `[SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]`   | One of `start` or `end`. Summary sleep episodes are considered as events based on either the start timestamp or end timestamp (they will belong to the day where they start or end).  |
+
+        --8<---- "docs/snippets/database.md"
+
+    === "fitbitjson_csv"
+
+        This data stream process Fitbit data inside a JSON column as obtained from the Fitbit API and stored in a CSV file. Read more about its column mappings and mutations in [`fitbitjson_csv`](../../datastreams/fitbitjson-csv#format).
+
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[FOLDER]`   | Folder where you have to place a CSV file **per** Fitbit sensor. Each file has to contain all the data from every participant you want to process.     |
+        | `[SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]`   | One of `start` or `end`. Summary sleep episodes are considered as events based on either the start timestamp or end timestamp (they will belong to the day where they start or end).  |
+
+
+    === "fitbitparsed_mysql"
+
+        This data stream process Fitbit data stored in multiple columns after being parsed from the JSON column returned by Fitbit API and stored in a MySQL database. Read more about its column mappings and mutations in [`fitbitparsed_mysql`](../../datastreams/fitbitparsed-mysql#format).
+        
+
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
+        | `[SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]`   | One of `start` or `end`. Summary sleep episodes are considered as events based on either the start timestamp or end timestamp (they will belong to the day where they start or end).  |
+
+        --8<---- "docs/snippets/database.md"
+        
+    === "fitbitparsed_csv"
+
+        This data stream process Fitbit data stored in multiple columns (plain text) after being parsed from the JSON column returned by Fitbit API and stored in a CSV file. Read more about its column mappings and mutations in [`fitbitparsed_csv`](../../datastreams/fitbitparsed-csv#format).
+
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[FOLDER]`   | Folder where you have to place a CSV file **per** Fitbit sensor. Each file has to contain all the data from every participant you want to process.     |
+        | `[SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]`   | One of `start` or `end`. Summary sleep episodes are considered as events based on either the start timestamp or end timestamp (they will belong to the day where they start or end).  |
+
+=== "Empatica"
+
+    Set `[USE]` to the Empatica data stream you want to use; see the table in [introduction to data streams](../../datastreams/data-streams-introduction). Configure any parameters as indicated below.
+
+    ```yaml
+    EMPATICA_DATA_STREAMS:
+      USE: empatica_zip
+      
+      # AVAILABLE:
+      empatica_zip: 
+        FOLDER: data/external/empatica
+
+    ```
+
+    === "empatica_zip"
+
+        | Key             | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[FOLDER]` | The relative path to a folder containing one subfolder per participant. The name of a participant folder should match their device_id assigned in their participant file. Each participant folder can have one or more zip files with any name; in other words, the sensor data in those zip files belong to a single participant. The zip files are [automatically](https://support.empatica.com/hc/en-us/articles/201608896-Data-export-and-formatting-from-E4-connect-) generated by Empatica and have a CSV file per sensor (`ACC`, `HR`, `TEMP`, `EDA`, `BVP`, `TAGS`). All CSV files of the same type contained in one or more zip files are uncompressed, parsed, sorted by timestamp, and joined together.|
+
+        ??? example "Example of an EMPATICA FOLDER"
+            In the file tree below, we want to process three participants' data: `p01`, `p02`, and `p03`. `p01` has two zip files, `p02` has only one zip file, and `p03` has three zip files. Each zip has a CSV file per sensor that are joined together and processed by RAPIDS.
+
+            ```bash
+            data/ # this folder exists in the root RAPIDS folder
+              external/
+                empatica/
+                  p01/
+                    file1.zip
+                    file2.zip
+                  p02/
+                    aaaa.zip
+                  p03/
+                    t1.zip
+                    t2.zip
+                    t3.zip
+            ```
 
 ---
 

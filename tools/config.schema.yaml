@@ -1,18 +1,16 @@
 $schema: "http://json-schema.org/draft-07/schema#"
 description: RAPIDS configuration schema
 required:
-  - DATABASE_GROUP
   - TIMEZONE
   - PIDS
   - CREATE_PARTICIPANT_FILES
   - TIME_SEGMENTS
-  - PHONE_DATA_CONFIGURATION
+  - PHONE_DATA_STREAMS
   - PHONE_ACCELEROMETER
   - PHONE_ACTIVITY_RECOGNITION
   - PHONE_APPLICATIONS_CRASHES
   - PHONE_APPLICATIONS_FOREGROUND
   - PHONE_APPLICATIONS_NOTIFICATIONS
-  - PHONE_AWARE_LOG
   - PHONE_BATTERY
   - PHONE_BLUETOOTH
   - PHONE_CALLS
@@ -20,11 +18,12 @@ required:
   - PHONE_DATA_YIELD
   - PHONE_KEYBOARD
   - PHONE_LOCATIONS
+  - PHONE_LOG
   - PHONE_MESSAGES
   - PHONE_SCREEN
   - PHONE_WIFI_CONNECTED
   - PHONE_WIFI_VISIBLE
-  - FITBIT_DATA_CONFIGURATION
+  - FITBIT_DATA_STREAMS
   - FITBIT_DATA_YIELD
   - FITBIT_HEARTRATE_SUMMARY
   - FITBIT_HEARTRATE_INTRADAY
@@ -41,17 +40,16 @@ required:
 definitions:
   PROVIDER:
     type: object
-    required: [COMPUTE, SRC_FOLDER, SRC_LANGUAGE, FEATURES]
+    required: [COMPUTE, SRC_SCRIPT, FEATURES]
     properties:
       COMPUTE:
         type: boolean
       FEATURES:
         type: [array, object]
-      SRC_FOLDER:
+      SRC_SCRIPT:
         type: string
-      SRC_LANGUAGE:
-        type: string
-        enum: [python, r]
+        pattern: "^.*\\.(py|R)$"
+      
 
   DORYAB_BLUETOOTH_FEATURE:
     type: object
@@ -97,13 +95,11 @@ definitions:
     properties:
       SOURCE: 
         type: object
-        required: [TYPE, DATABASE_GROUP, DEVICE_ID_COLUMN]
+        required: [TYPE, DATABASE_GROUP]
         properties:
           TYPE:
             type: string
           DATABASE_GROUP:
-            type: string
-          DEVICE_ID_COLUMN:
             type: string
       TIMEZONE:
         type: object
@@ -115,11 +111,40 @@ definitions:
             type: string
     
 properties:
-  DATABASE_GROUP:
-    type: string
 
   TIMEZONE:
-    type: string
+    type: object
+    required: [TYPE, SINGLE, MULTIPLE]
+    properties:
+      TYPE:
+        type: string
+        enum: ["MULTIPLE", "SINGLE"]
+      SINGLE:
+        type: object
+        required: [TZCODE]
+        properties:
+          TZCODE:
+            type: string
+      MULTIPLE:
+        type: object
+        required: [TZCODES_FILE, IF_MISSING_TZCODE, DEFAULT_TZCODE, FITBIT]
+        properties:
+          TZCODES_FILE:
+            type: string
+            pattern: "^.*\\.csv$"
+          IF_MISSING_TZCODE:
+            type: string
+            enum: [STOP, USE_DEFAULT]
+          DEFAULT_TZCODE:
+            type: string
+          FITBIT:
+            type: object
+            required: [ALLOW_MULTIPLE_TZ_PER_DEVICE, INFER_FROM_SMARTPHONE_TZ]
+            properties:
+              ALLOW_MULTIPLE_TZ_PER_DEVICE:
+                type: boolean
+              INFER_FROM_SMARTPHONE_TZ:
+                type: boolean
   
   PIDS:
     type: array
@@ -129,22 +154,11 @@ properties:
 
   CREATE_PARTICIPANT_FILES:
     type: object
-    required: [SOURCE, PHONE_SECTION, FITBIT_SECTION]
+    required: [CSV_FILE_PATH, PHONE_SECTION, FITBIT_SECTION,EMPATICA_SECTION]
     properties:
-      SOURCE:
-        type: object
-        required: [TYPE]
-        properties:
-          TYPE:
-            type: string
-            enum: [AWARE_DEVICE_TABLE, CSV_FILE]
-          DATABASE_GROUP:
-            type: string
-          CSV_FILE_PATH:
-            type: string
-            pattern: "^.*\\.csv$"
-          TIMEZONE:
-            type: string
+      CSV_FILE_PATH:
+        type: string
+        pattern: "^.*\\.csv$"
       PHONE_SECTION:
         type: object
         properties:
@@ -157,6 +171,16 @@ properties:
             items:
               type: string
       FITBIT_SECTION:
+        properties:
+          ADD:
+            type: boolean
+          DEVICE_ID_COLUMN:
+            type: string
+          IGNORED_DEVICE_IDS:
+            type: array
+            items:
+              type: string
+      EMPATICA_SECTION:
         properties:
           ADD:
             type: boolean
@@ -180,22 +204,22 @@ properties:
       INCLUDE_PAST_PERIODIC_SEGMENTS: 
         type: boolean
 
-  PHONE_DATA_CONFIGURATION:
-    allOf:
-      - $ref: "#/definitions/DATA_CONFIGURATION"
-      - properties:
-          SOURCE:
-            type: object
-            properties:
-              TYPE:
-                type: string
-                enum: [DATABASE]
+  PHONE_DATA_STREAMS:
+      type: object
+      properties:
+        USE:
+          type: string
+        aware_mysql:
+          type: object
+          properties:
+            DATABASE_GROUP:
+              type: string
 
   PHONE_ACCELEROMETER:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -237,9 +261,9 @@ properties:
 
   PHONE_ACTIVITY_RECOGNITION:
     type: object
-    required: [TABLE, EPISODE_THRESHOLD_BETWEEN_ROWS, PROVIDERS]
+    required: [CONTAINER, EPISODE_THRESHOLD_BETWEEN_ROWS, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: object
         required: [ANDROID, IOS]
         properties:
@@ -290,9 +314,9 @@ properties:
         
   PHONE_APPLICATIONS_CRASHES:
     type: object
-    required: [TABLE, APPLICATION_CATEGORIES, PROVIDERS]
+    required: [CONTAINER, APPLICATION_CATEGORIES, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       APPLICATION_CATEGORIES:
         allOf:
@@ -303,9 +327,9 @@ properties:
 
   PHONE_APPLICATIONS_FOREGROUND:
     type: object
-    required: [TABLE, APPLICATION_CATEGORIES, PROVIDERS]
+    required: [CONTAINER, APPLICATION_CATEGORIES, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       APPLICATION_CATEGORIES:
         allOf:
@@ -352,9 +376,9 @@ properties:
 
   PHONE_APPLICATIONS_NOTIFICATIONS:
     type: object
-    required: [TABLE, APPLICATION_CATEGORIES, PROVIDERS]
+    required: [CONTAINER, APPLICATION_CATEGORIES, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       APPLICATION_CATEGORIES:
         allOf:
@@ -363,23 +387,12 @@ properties:
         type: ["null", object]
         additionalProperties: 
             $ref: "#/definitions/PROVIDER"
-
-  PHONE_AWARE_LOG:
-    type: object
-    required: [TABLE, PROVIDERS]
-    properties:
-      TABLE: 
-        type: string
-      PROVIDERS:
-        type: ["null", object]
-        additionalProperties: 
-            $ref: "#/definitions/PROVIDER"
         
   PHONE_BATTERY:
     type: object
-    required: [TABLE, PROVIDERS, EPISODE_THRESHOLD_BETWEEN_ROWS]
+    required: [CONTAINER, PROVIDERS, EPISODE_THRESHOLD_BETWEEN_ROWS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       EPISODE_THRESHOLD_BETWEEN_ROWS:
         type: integer
@@ -402,9 +415,9 @@ properties:
 
   PHONE_BLUETOOTH:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -441,9 +454,9 @@ properties:
                       
   PHONE_CALLS:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -487,9 +500,9 @@ properties:
 
   PHONE_CONVERSATION:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: object
         required: [ANDROID, IOS]
         properties:
@@ -532,7 +545,7 @@ properties:
         type: ["null", array]
         items:
           type: string
-          enum: ["PHONE_ACCELEROMETER", "PHONE_ACTIVITY_RECOGNITION", "PHONE_APPLICATIONS_CRASHES", "PHONE_APPLICATIONS_FOREGROUND", "PHONE_APPLICATIONS_NOTIFICATIONS", "PHONE_AWARE_LOG", "PHONE_BATTERY", "PHONE_BLUETOOTH", "PHONE_CALLS", "PHONE_CONVERSATION", "PHONE_KEYBOARD", "PHONE_LIGHT", "PHONE_LOCATIONS", "PHONE_MESSAGES", "PHONE_SCREEN", "PHONE_WIFI_CONNECTED", "PHONE_WIFI_VISIBLE"]
+          enum: ["PHONE_ACCELEROMETER", "PHONE_ACTIVITY_RECOGNITION", "PHONE_APPLICATIONS_CRASHES", "PHONE_APPLICATIONS_FOREGROUND", "PHONE_APPLICATIONS_NOTIFICATIONS", "PHONE_LOG", "PHONE_BATTERY", "PHONE_BLUETOOTH", "PHONE_CALLS", "PHONE_CONVERSATION", "PHONE_KEYBOARD", "PHONE_LIGHT", "PHONE_LOCATIONS", "PHONE_MESSAGES", "PHONE_SCREEN", "PHONE_WIFI_CONNECTED", "PHONE_WIFI_VISIBLE"]
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -554,9 +567,9 @@ properties:
                   
   PHONE_KEYBOARD:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -565,9 +578,9 @@ properties:
 
   PHONE_LIGHT:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -586,9 +599,9 @@ properties:
 
   PHONE_LOCATIONS:
     type: object
-    required: [TABLE, LOCATIONS_TO_USE, FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD, PROVIDERS]
+    required: [CONTAINER, LOCATIONS_TO_USE, FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       LOCATIONS_TO_USE:
         type: string
@@ -668,18 +681,36 @@ properties:
                   ACCURACY_LIMIT:
                     type: integer
                     exclusiveMinimum: 0
-                  TIMEZONE:
+                  IF_MULTIPLE_TIMEZONES:
                     type: string
+                    enum: [USE_MOST_COMMON]
                   MINUTES_DATA_USED:
                     type: boolean
         additionalProperties:
           $ref: "#/definitions/PROVIDER"
-    
+
+  PHONE_LOG:
+    type: object
+    required: [CONTAINER, PROVIDERS]
+    properties:
+      CONTAINER:
+        type: object
+        required: [ANDROID, IOS]
+        properties:
+          ANDROID:
+            type: string
+          IOS:
+            type: string
+      PROVIDERS:
+        type: ["null", object]
+        additionalProperties: 
+            $ref: "#/definitions/PROVIDER"
+
   PHONE_MESSAGES:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties: 
-      TABLE: 
+      CONTAINER: 
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -714,9 +745,9 @@ properties:
     
   PHONE_SCREEN:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -749,9 +780,9 @@ properties:
 
   PHONE_WIFI_CONNECTED:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -770,9 +801,9 @@ properties:
   
   PHONE_WIFI_VISIBLE:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -789,18 +820,29 @@ properties:
         additionalProperties: 
           $ref: "#/definitions/PROVIDER"
 
-  FITBIT_DATA_CONFIGURATION:
-    allOf:
-      - $ref: "#/definitions/DATA_CONFIGURATION"
-      - properties:
-          SOURCE:
-            properties:
-              TYPE:
-                type: string
-                enum: [DATABASE, FILES]
-              COLUMN_FORMAT: 
-                  type: string
-                  enum: ["JSON", "PLAIN_TEXT"]
+  FITBIT_DATA_STREAMS:
+      type: object
+      properties:
+        USE:
+          type: string
+        fitbitjson_mysql:
+          type: object
+          required: [DATABASE_GROUP, SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]
+          properties:
+            DATABASE_GROUP:
+              type: string
+            SLEEP_SUMMARY_EPISODE_DAY_ANCHOR:
+              type: string
+              enum: ["start", "end"]
+        fitbitparsed_mysql:
+          type: object
+          required: [DATABASE_GROUP, SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]
+          properties:
+            DATABASE_GROUP:
+              type: string
+            SLEEP_SUMMARY_EPISODE_DAY_ANCHOR:
+              type: string
+              enum: ["start", "end"]
   
   FITBIT_DATA_YIELD:
     type: object
@@ -829,9 +871,9 @@ properties:
 
   FITBIT_HEARTRATE_SUMMARY:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -848,9 +890,9 @@ properties:
 
   FITBIT_HEARTRATE_INTRADAY:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -869,13 +911,10 @@ properties:
 
   FITBIT_SLEEP_SUMMARY:
     type: object
-    required: [TABLE, SLEEP_EPISODE_TIMESTAMP, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
-      SLEEP_EPISODE_TIMESTAMP:
-        type: string
-        enum: ["start", "end"]
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -899,9 +938,9 @@ properties:
   
   FITBIT_SLEEP_INTRADAY:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -1029,9 +1068,9 @@ properties:
   
   FITBIT_STEPS_SUMMARY:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE:
+      CONTAINER:
         type: string
       PROVIDERS:
         type: ["null", object]
@@ -1048,9 +1087,9 @@ properties:
   
   FITBIT_STEPS_INTRADAY:
     type: object
-    required: [TABLE, PROVIDERS]
+    required: [CONTAINER, PROVIDERS]
     properties:
-      TABLE: 
+      CONTAINER: 
         type: string
       PROVIDERS:
         type: ["null", object]

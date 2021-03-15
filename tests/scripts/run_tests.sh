@@ -1,151 +1,77 @@
 #!/bin/bash
-# Commmands necessary to setup and run the tests for RAPIDS
 
-echo Setting up for testing...
+run_pipeline() {
+    if [ $TYPE == 'frequency' ]
+    then
+        CONFIG_FILE="./tests/settings/frequency_config.yaml"
+    else
+        CONFIG_FILE="./tests/settings/periodic_config.yaml"
+    fi
 
-clean_old_data() { 
+    echo "Copying participant files"
+    cp -r tests/data/external/participant_files/* data/external/participant_files/
 
-    echo deleting old data...
-    rm -rf data/processed/*
-    rm -rf data/interim/*
+    echo $TYPE
+    echo "Deleting old outputs"
+    snakemake --configfile=$(echo $CONFIG_FILE) --delete-all-output -j1 
 
-    echo Backing up preprocessing...
-    cp rules/preprocessing.smk bak
-} 
-
-run_periodic_pipeline() {
-    
-    echo Running RAPIDS Pipeline periodic segment on testdata...
-    snakemake --profile tests/settings/periodic/ 
-
-    echo Moving produced data from previous pipeline run ...
-    mkdir data/processed/features/periodic
-    mv data/processed/features/test* data/processed/features/periodic/
-    rm -rf data/interim/*
-}
-
-run_frequency_pipeline() {
-
-    echo Running RAPIDS Pipeline frequency segment on testdata...
-    snakemake --profile tests/settings/frequency/ 
-
-    echo Moving produced data from previous pipeline run...
-    mkdir data/processed/features/frequency
-    mv data/processed/features/test* data/processed/features/frequency/
-}
-
-run_periodic_test() {
-
-    echo Re-writing the config file being loaded for testing
-    sed -e  's/tests\/settings\/[a-z]*\/testing_config\.yaml/tests\/settings\/periodic\/testing_config\.yaml/' tests/scripts/test_sensor_features.py > test_tmp
-    mv test_tmp tests/scripts/test_sensor_features.py
-
-    echo Running tests on periodic data produced...
-    python -m unittest discover tests/scripts/ -v 
-}
-
-run_frequency_test() {
-
-    echo Re-writing the config file being loaded for testing
-    sed -e  's/tests\/settings\/[a-z]*\/testing_config\.yaml/tests\/settings\/frequency\/testing_config\.yaml/' tests/scripts/test_sensor_features.py > test_tmp
-    mv test_tmp tests/scripts/test_sensor_features.py
-
-    echo Running tests on frequency data produced...
-    python -m unittest discover tests/scripts/ -v
+    echo "Running RAPIDS"
+    snakemake --configfile=$(echo $CONFIG_FILE) -R pull_phone_data -j1
 }
 
 display_usage() {
-
-    echo "Usage: run_test.sh [-l] all | periodic | frequency [test]"
+    echo "Usage: run_test.sh [-t|--type] [periodic | frequency] [-a|--action] [ all | run | test]"
+    exit 1
 }
 
-echo Copying files... 
-cp -r tests/data/raw/* data/raw
-cp -r tests/data/external/* data/external
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
 
-echo Disabling downloading of dataset...
-sed -e '26,51 s/^/#/' -e  's/rules.download_dataset.output/"data\/raw\/\{pid\}\/\{sensor\}_raw\.csv"/' rules/preprocessing.smk > tmp
-mv tmp rules/preprocessing.smk
+case $key in
+    -t|--type)
+    TYPE="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -a|--action)
+    ACTION="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
 
-if [ $# -eq 1 ]
+if [ $ACTION != 'test' ] && [ $ACTION != 'run' ] && [ $ACTION != 'both' ]
 then
-    if [ $1 == '-l' ] || [ $1 == 'test' ]
-    then
-        display_usage
-    elif [ $1 == 'all' ]
-    then
-        run_periodic_pipeline && run_frequency_pipeline
-    elif [ $1 == 'periodic' ]
-    then
-        run_periodic_pipeline
-    elif [ $1 == 'frequency' ]
-    then
-        run_frequency_pipeline
-    else
-        display_usage
-    fi
-elif [ $# -gt 1 ]
-then
-    if [ $1 == '-l' ]
-    then
-        clean_old_data
-        if [ $2 == 'all' ]
-        then
-            run_periodic_pipeline && run_frequency_pipeline
-            if [ $# -gt 2 ] && [ $3 == 'test' ]
-            then
-                run_periodic_test
-                run_frequency_test
-            fi
-        elif [ $2 == 'periodic' ]
-        then
-            run_periodic_pipeline
-            if [ $# -gt 2 ] && [ $3 == 'test' ]
-            then
-                run_periodic_test
-            fi
-        elif [ $2 == 'frequency' ]
-        then
-            run_frequency_pipeline
-            if [ $# -gt 2 ] && [ $3 == 'test' ]
-            then
-                run_frequency_test
-            fi
-        else
-            display_usage
-        fi
-        mv bak rules/preprocessing.smk
-    elif [ $1 == 'all' ]
-    then
-        run_periodic_pipeline
-        run_frequency_pipeline
-        if [ $2 == 'test' ]
-        then
-            run_periodic_test && run_frequency_test
-        else
-            display_usage
-        fi
-    elif [ $1 == 'periodic' ]
-    then
-        run_periodic_pipeline
-        if [ $2 == 'test' ]
-        then
-            run_periodic_test
-        else
-            display_usage
-        fi
-    elif [ $1 == 'frequency' ]
-    then
-        run_frequency_pipeline
-        if [ $2 == 'test' ]
-        then
-            run_frequency_test
-        else
-            display_usage
-        fi
-    else
-        display_usage
-    fi
-else
     display_usage
+fi
+
+if [[ $TYPE == 'all' ]]
+then
+    TYPE="frequency"
+    run_pipeline
+    python tests/scripts/run_tests.py frequency
+    TYPE="periodic"
+    run_pipeline
+    python tests/scripts/run_tests.py periodic
+else
+    if [ $TYPE != 'frequency' ] && [ $TYPE != 'periodic' ]
+    then
+        display_usage
+    fi
+
+    if { [ $ACTION == 'run' ] || [ $ACTION == 'both' ]; }
+    then
+        run_pipeline
+    fi
+    if { [ $ACTION == 'test' ] || [ $ACTION == 'both' ]; }
+    then
+        python tests/scripts/run_tests.py $(echo $TYPE)
+    fi
 fi

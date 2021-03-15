@@ -19,9 +19,10 @@ if(nrow(battery) > 0){
           status_diff = c(1, diff(battery_status)),
           episode_id = cumsum(level_diff != 0 | status_diff != 0 | time_diff > (episode_threshold_between_rows))) %>%
     group_by(episode_id) %>%
-    summarise(battery_level = first(battery_level), battery_status = first(battery_status), start_timestamp=first(start_timestamp), end_timestamp = last(end_timestamp))
+    summarise(device_id = first(device_id), battery_level = first(battery_level), battery_status = first(battery_status), start_timestamp=first(start_timestamp), end_timestamp = last(end_timestamp))
 } else {
-  battery_episodes <- data.frame(episode_id = numeric(), 
+  battery_episodes <- data.frame(device_id = character(),
+                            episode_id = numeric(), 
                             start_timestamp = numeric(),
                             end_timestamp = character(),
                             battery_level = character(),

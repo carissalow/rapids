@@ -4,7 +4,7 @@ Sensor parameters description for `[PHONE_CALLS]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[TABLE]`| Database table where the calls data is stored
+|`[CONTAINER]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the calls data is stored
 
 ## RAPIDS Provider
 
@@ -16,7 +16,6 @@ Sensor parameters description for `[PHONE_CALLS]`:
     ```bash
     - data/raw/{pid}/phone_calls_raw.csv
     - data/raw/{pid}/phone_calls_with_datetime.csv
-    - data/raw/{pid}/phone_calls_with_datetime_unified.csv
     - data/interim/{pid}/phone_calls_features/phone_calls_{language}_{provider_key}.csv
     - data/processed/features/{pid}/phone_calls.csv
     ```

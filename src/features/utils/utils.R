@@ -15,7 +15,7 @@ filter_data_by_segment <- function(data, time_segment){
 }
 
 chunk_episodes <- function(sensor_episodes){
-  columns_to_drop <- c("^timestamp$", "utc_date_time", "local_date_time", "local_date", "local_time", "local_hour", "local_minute", "segment_start", "segment_end" )
+  columns_to_drop <- c("^timestamp$","local_date_time", "local_date", "local_time", "local_hour", "local_minute", "segment_start", "segment_end" )
 
   chunked_episodes <- sensor_episodes %>% 
     separate(col = timestamps_segment,
@@ -53,16 +53,15 @@ fetch_provider_features <- function(provider, provider_key, sensor_key, sensor_d
         stop(paste0("Provider config[", sensor_key,"][PROVIDERS][", provider_key,"] is missing a FEATURES attribute in config.yaml"))
 
     if(provider[["COMPUTE"]] == TRUE){
-        code_path <- paste0("src/features/", sensor_key,"/", provider[["SRC_FOLDER"]], "/main.R")  
-        source(code_path)
-        features_function <- match.fun(paste0(provider[["SRC_FOLDER"]], "_features"))
+        source(provider[["SRC_SCRIPT"]])
+        features_function <- match.fun(paste0(tolower(provider_key), "_features"))
         time_segments <- time_segments_labels %>% pull(label)
         for (time_segment in time_segments){
             print(paste(rapids_log_tag,"Processing", sensor_key, provider_key, time_segment))
 
             features <- features_function(sensor_data_files, time_segment, provider)
             if(!"local_segment" %in% colnames(features))
-              stop(paste0("The dataframe returned by the ",sensor_key," provider '", provider_key,"' is missing the 'local_segment' column added by the 'filter_data_by_segment()' function. Check the provider script is using such function and is not removing 'local_segment' by accident (", code_path,")\n  The 'local_segment' column is used to index a provider's features (each row corresponds to a different time segment instance (e.g. 2020-01-01, 2020-01-02, 2020-01-03, etc.)"))
+              stop(paste0("The dataframe returned by the ",sensor_key," provider '", provider_key,"' is missing the 'local_segment' column added by the 'filter_data_by_segment()' function. Check the provider script is using such function and is not removing 'local_segment' by accident (", provider[["SRC_SCRIPT"]],")\n  The 'local_segment' column is used to index a provider's features (each row corresponds to a different time segment instance (e.g. 2020-01-01, 2020-01-02, 2020-01-03, etc.)"))
             features <- features %>% rename_at(vars(!matches("local_segment")), ~ paste(sensor_key, provider_key, ., sep = "_"))
             sensor_features <- merge(sensor_features, features, all = TRUE)
         }

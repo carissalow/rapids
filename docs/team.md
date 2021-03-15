@@ -78,6 +78,16 @@ If you are interested in contributing feel free to submit a pull request or cont
 ??? abstract "About"
     - [Personal Website](https://runsdata.org/)
 
+###  Stephen Price
+
+??? abstract "About"
+    Carnegie Mellon University
+
+###  Neil Singh
+
+??? abstract "About"
+    University of Virginia
+
 ## Advisors
 
 ### Afsaneh Doryab

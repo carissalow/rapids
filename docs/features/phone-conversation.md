@@ -4,8 +4,8 @@ Sensor parameters description for `[PHONE_CONVERSATION]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[TABLE][ANDROID]`| Database table where the conversation data from Android devices is stored (the AWARE client saves this data on different tables for Android and iOS)
-|`[TABLE][IOS]`| Database table where the conversation data from iOS devices is stored (the AWARE client saves this data on different tables for Android and iOS)
+|`[CONTAINER][ANDROID]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the conversation data from Android devices is stored (the AWARE client saves this data on different tables for Android and iOS)
+|`[CONTAINER][IOS]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the conversation data from iOS devices is stored (the AWARE client saves this data on different tables for Android and iOS)
 
 ## RAPIDS provider
 
@@ -17,7 +17,6 @@ Sensor parameters description for `[PHONE_CONVERSATION]`:
     ```bash
     - data/raw/{pid}/phone_conversation_raw.csv
     - data/raw/{pid}/phone_conversation_with_datetime.csv
-    - data/raw/{pid}/phone_conversation_with_datetime_unified.csv
     - data/interim/{pid}/phone_conversation_features/phone_conversation_{language}_{provider_key}.csv
     - data/processed/features/{pid}/phone_conversation.csv
     ```

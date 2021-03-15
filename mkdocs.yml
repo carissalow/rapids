@@ -24,6 +24,8 @@ markdown_extensions:
     - pymdownx.mark
     - pymdownx.smartsymbols
     - pymdownx.superfences
+    - pymdownx.snippets:
+        check_paths: True
     - pymdownx.tabbed
     - pymdownx.tasklist:
         custom_checkbox: True
@@ -47,6 +49,7 @@ repo_url: 'https://github.com/carissalow/rapids'
 copyright: 'Released under AGPL'
 theme:
   name: material
+  custom_dir: docs/overrides
   logo: img/logo.png
   favicon: img/logo.png
   palette:
@@ -71,14 +74,29 @@ extra_css:
 nav:
   - Home: 'index.md'
   - Setup:
-    - File Structure: file-structure.md
+    - Overview: setup/overview.md
+    - Minimal Example: workflow-examples/minimal.md
     - Installation: 'setup/installation.md'
     - Configuration: setup/configuration.md
     - Execution: setup/execution.md
     - Citation: citation.md
-  - Example Workflows:
-    - Minimal: workflow-examples/minimal.md
-    - Analysis: workflow-examples/analysis.md
+  - Data Streams:
+      - Introduction: datastreams/data-streams-introduction.md
+      - Phone:
+        - aware_mysql: datastreams/aware-mysql.md
+        - aware_csv: datastreams/aware-csv.md
+        - aware_influxdb (beta): datastreams/aware-influxdb.md
+        - Mandatory Phone Format: datastreams/mandatory-phone-format.md
+      - Fitbit:
+        - fitbitjson_mysql: datastreams/fitbitjson-mysql.md
+        - fitbitjson_csv: datastreams/fitbitjson-csv.md
+        - fitbitparsed_mysql: datastreams/fitbitparsed-mysql.md
+        - fitbitparsed_csv: datastreams/fitbitparsed-csv.md
+        - Mandatory Fitbit Format: datastreams/mandatory-fitbit-format.md
+      - Empatica:
+        - empatica_zip: datastreams/empatica-zip.md
+        - Mandatory Empatica Format: datastreams/mandatory-empatica-format.md
+      - Add New Data Streams: datastreams/add-new-data-streams.md
   - Behavioral Features:
       - Introduction: features/feature-introduction.md
       - Phone:
@@ -87,7 +105,6 @@ nav:
         - Phone Applications Crashes: features/phone-applications-crashes.md
         - Phone Applications Foreground: features/phone-applications-foreground.md
         - Phone Applications Notifications: features/phone-applications-notifications.md
-        - Phone Aware Log: features/phone-aware-log.md
         - Phone Battery: features/phone-battery.md
         - Phone Bluetooth: features/phone-bluetooth.md
         - Phone Calls: features/phone-calls.md
@@ -96,6 +113,7 @@ nav:
         - Phone Keyboard: features/phone-keyboard.md
         - Phone Light: features/phone-light.md
         - Phone Locations: features/phone-locations.md
+        - Phone Log: features/phone-log.md
         - Phone Messages: features/phone-messages.md
         - Phone Screen: features/phone-screen.md
         - Phone WiFI Connected: features/phone-wifi-connected.md
@@ -120,6 +138,8 @@ nav:
   - Visualizations:
     - Data Quality: visualizations/data-quality-visualizations.md
     - Features: visualizations/feature-visualizations.md
+  - Analysis Workflows:
+    - Complete Example: workflow-examples/analysis.md
   - Developers:
     - Git Flow: developers/git-flow.md
     - Remote Support: developers/remote-support.md
@@ -129,8 +149,8 @@ nav:
     - Test cases: developers/test-cases.md
     - Validation schema of config.yaml: developers/validation-schema-config.md
   - Others:
-    - Migrating from beta: migrating-from-old-versions.md
+    - Migrating from an old version: migrating-from-old-versions.md
     - Code of Conduct: code_of_conduct.md
-    - FAQ: faq.md
+    - Common Errors: common-errors.md
     - Team: team.md
     - Change Log: change-log.md

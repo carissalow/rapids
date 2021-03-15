@@ -34,7 +34,6 @@ barnett_features <- function(sensor_data_files, time_segment, params){
 
   location <- location_data
   accuracy_limit <- params[["ACCURACY_LIMIT"]]
-  timezone <- params[["TIMEZONE"]]
   minutes_data_used <- params[["MINUTES_DATA_USED"]]
 
   # Compute what features were requested
@@ -74,8 +73,10 @@ barnett_features <- function(sensor_data_files, time_segment, params){
       location_dates_segments <- location %>% select(local_date, local_segment) %>% distinct(local_date, .keep_all = TRUE)
 
       # Select only the columns that the algorithm needs
+      all_timezones <- table(location %>% pull(local_timezone))
       location <- location %>% select(timestamp, latitude = double_latitude, longitude = double_longitude, altitude = double_altitude, accuracy)
       if(nrow(location %>% filter(accuracy < accuracy_limit)) > 1){
+        timezone <- names(all_timezones)[as.vector(all_timezones)==max(all_timezones)]
         outputMobility <- MobilityFeatures(location, ACCURACY_LIM = accuracy_limit, tz = timezone)
       } else {
         print(paste("Cannot compute Barnett location features because there are no rows with an accuracy value lower than ACCURACY_LIMIT", accuracy_limit))

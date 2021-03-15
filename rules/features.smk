@@ -62,9 +62,9 @@ rule phone_accelerometer_r_features:
 
 rule activity_recognition_episodes:
     input:
-        sensor_data = "data/raw/{pid}/phone_activity_recognition_with_datetime_unified.csv"
+        sensor_data = "data/raw/{pid}/phone_activity_recognition_with_datetime.csv"
     params:
-        episode_threshold_between_rows = config["PHONE_BATTERY"]["EPISODE_THRESHOLD_BETWEEN_ROWS"]
+        episode_threshold_between_rows = config["PHONE_ACTIVITY_RECOGNITION"]["EPISODE_THRESHOLD_BETWEEN_ROWS"]
     output:
         "data/interim/{pid}/phone_activity_recognition_episodes.csv"
     script:
@@ -174,29 +174,29 @@ rule phone_applications_notifications_r_features:
     script:
         "../src/features/entry.R"
 
-rule phone_aware_log_python_features:
+rule phone_log_python_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_aware_log_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/phone_log_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
-        provider = lambda wildcards: config["PHONE_AWARE_LOG"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider = lambda wildcards: config["PHONE_LOG"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
-        sensor_key = "phone_aware_log"
+        sensor_key = "phone_log"
     output:
-        "data/interim/{pid}/phone_aware_log_features/phone_aware_log_python_{provider_key}.csv"
+        "data/interim/{pid}/phone_log_features/phone_log_python_{provider_key}.csv"
     script:
         "../src/features/entry.py"
 
-rule phone_aware_log_r_features:
+rule phone_log_r_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_aware_log_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/phone_log_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
-        provider = lambda wildcards: config["PHONE_AWARE_LOG"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider = lambda wildcards: config["PHONE_LOG"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",
-        sensor_key = "phone_aware_log"
+        sensor_key = "phone_log"
     output:
-        "data/interim/{pid}/phone_aware_log_features/phone_aware_log_r_{provider_key}.csv"
+        "data/interim/{pid}/phone_log_features/phone_log_r_{provider_key}.csv"
     script:
         "../src/features/entry.R"
 
@@ -264,7 +264,7 @@ rule phone_bluetooth_r_features:
 
 rule calls_python_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_calls_with_datetime_unified.csv",
+        sensor_data = "data/raw/{pid}/phone_calls_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CALLS"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -277,7 +277,7 @@ rule calls_python_features:
 
 rule calls_r_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_calls_with_datetime_unified.csv",
+        sensor_data = "data/raw/{pid}/phone_calls_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CALLS"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -290,7 +290,7 @@ rule calls_r_features:
 
 rule conversation_python_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_conversation_with_datetime_unified.csv",
+        sensor_data = "data/raw/{pid}/phone_conversation_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CONVERSATION"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -303,7 +303,7 @@ rule conversation_python_features:
 
 rule conversation_r_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_conversation_with_datetime_unified.csv",
+        sensor_data = "data/raw/{pid}/phone_conversation_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CONVERSATION"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -420,7 +420,7 @@ rule phone_messages_r_features:
 
 rule screen_episodes:
     input:
-        screen = "data/raw/{pid}/phone_screen_with_datetime_unified.csv"
+        screen = "data/raw/{pid}/phone_screen_with_datetime.csv"
     output:
         "data/interim/{pid}/phone_screen_episodes.csv"
     script:
@@ -506,7 +506,7 @@ rule phone_wifi_visible_r_features:
 
 rule fitbit_data_yield_python_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_DATA_YIELD"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -519,7 +519,7 @@ rule fitbit_data_yield_python_features:
 
 rule fitbit_data_yield_r_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_DATA_YIELD"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -532,7 +532,7 @@ rule fitbit_data_yield_r_features:
 
 rule fitbit_heartrate_summary_python_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_heartrate_summary_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_summary_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_HEARTRATE_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -545,7 +545,7 @@ rule fitbit_heartrate_summary_python_features:
 
 rule fitbit_heartrate_summary_r_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_heartrate_summary_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_summary_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_HEARTRATE_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -558,7 +558,7 @@ rule fitbit_heartrate_summary_r_features:
 
 rule fitbit_heartrate_intraday_python_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -571,7 +571,7 @@ rule fitbit_heartrate_intraday_python_features:
 
 rule fitbit_heartrate_intraday_r_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_HEARTRATE_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -584,7 +584,7 @@ rule fitbit_heartrate_intraday_r_features:
 
 rule fitbit_steps_summary_python_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_steps_summary_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_steps_summary_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -597,7 +597,7 @@ rule fitbit_steps_summary_python_features:
 
 rule fitbit_steps_summary_r_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_steps_summary_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_steps_summary_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -610,7 +610,7 @@ rule fitbit_steps_summary_r_features:
 
 rule fitbit_steps_intraday_python_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_steps_intraday_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -623,7 +623,7 @@ rule fitbit_steps_intraday_python_features:
 
 rule fitbit_steps_intraday_r_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_steps_intraday_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -636,7 +636,7 @@ rule fitbit_steps_intraday_r_features:
 
 rule fitbit_sleep_summary_python_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_sleep_summary_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -649,7 +649,7 @@ rule fitbit_sleep_summary_python_features:
 
 rule fitbit_sleep_summary_r_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_sleep_summary_parsed_with_datetime.csv",
+        sensor_data = "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_SLEEP_SUMMARY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -660,13 +660,13 @@ rule fitbit_sleep_summary_r_features:
     script:
         "../src/features/entry.R"
 
-rule resample_sleep_episodes:
+rule sleep_intraday_episodes:
     input:
-        "data/raw/{pid}/fitbit_sleep_intraday_parsed.csv"
+        sleep_intraday = "data/raw/{pid}/fitbit_sleep_intraday_with_datetime.csv"
     output:
-        "data/interim/{pid}/fitbit_sleep_intraday_episodes_resampled.csv"
+        "data/interim/{pid}/fitbit_sleep_intraday_episodes.csv"
     script:
-        "../src/features/utils/resample_episodes.R"
+        "../src/features/fitbit_sleep_intraday/episodes/sleep_intraday_episodes.py"
 
 rule fitbit_sleep_intraday_python_features:
     input:

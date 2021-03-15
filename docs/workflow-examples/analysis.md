@@ -27,7 +27,7 @@ Our example is based on a hypothetical study that recruited 2 participants that 
 
 The goal of this workflow is to find out if we can predict the daily symptom burden score of a participant. Thus, we framed this question as a binary classification problem with two classes, high and low symptom burden based on the scores above and below average of each participant. We also want to compare the performance of individual (personalized) models vs a population model. 
 
-In total, our example workflow has nine steps that are in charge of sensor data preprocessing, feature extraction, feature cleaning, machine learning model training and model evaluation (see figure below). We ship this workflow with RAPIDS and share a database with [test data](https://osf.io/skqfv/files/) in an Open Science Framework repository. 
+In total, our example workflow has nine steps that are in charge of sensor data preprocessing, feature extraction, feature cleaning, machine learning model training and model evaluation (see figure below). We ship this workflow with RAPIDS and share files with [test data](https://osf.io/wbg23/) in an Open Science Framework repository. 
 
 <figure>
   <img src="../../img/analysis_workflow.png" max-width="100%" />
@@ -37,19 +37,17 @@ In total, our example workflow has nine steps that are in charge of sensor data 
 
 ## Configure and run the analysis workflow example
 1.	[Install](../../setup/installation) RAPIDS
-2.	Configure the [user credentials](../../setup/configuration/#database-credentials) of a local or remote MySQL server with writing permissions in your `.env` file. The config file where you need to modify the `DATABASE_GROUP` is at `example_profile/example_config.yaml`.
-3.	*Skip this step if you are using RAPIDS docker container*. Unzip the [test database](https://osf.io/skqfv/files/) to `data/external/rapids_example.sql` and run:
-    ```bash
-    ./rapids -j1 restore_sql_file --profile example_profile
-    ```
-4.	Create the participant files for this example by running:
+2.	Unzip the CSV files inside [rapids_example_csv.zip](https://osf.io/wbg23/) in `data/external/example_workflow/*.csv`.
+3.	Create the participant files for this example by running:
     ```bash
     ./rapids -j1 create_example_participant_files
     ```
-5.	Run the example pipeline with:
+4.	Run the example pipeline with:
     ```bash
     ./rapids -j1 --profile example_profile
     ```
+
+Note you will see a lot of warning messages, you can ignore them since they happen because we ran ML algorithms with a small fake dataset.
 
 ## Modules of our analysis workflow example
 
@@ -57,13 +55,13 @@ In total, our example workflow has nine steps that are in charge of sensor data 
     We extract daily behavioral features for data yield, received and sent messages, missed, incoming and outgoing calls, resample fused location data using Doryab provider, activity recognition, battery, Bluetooth, screen, light, applications foreground, conversations, Wi-Fi connected, Wi-Fi visible, Fitbit heart rate summary and intraday data, Fitbit sleep summary data, and Fitbit step summary and intraday data without excluding sleep periods with an active bout threshold of 10 steps. In total, we obtained 237 daily sensor features over 12 days per participant. 
 
 ??? info "2. Extract demographic data."
-    It is common to have demographic data in addition to mobile and target (ground truth) data. In this example we include participants’ age, gender and the number of days they spent in hospital after their surgery as features in our model. We extract these three columns from the participant_info table of our test database . As these three features remain the same within participants, they are used only on the population model. Refer to the `demographic_features` rule in `rules/models.smk`.
+    It is common to have demographic data in addition to mobile and target (ground truth) data. In this example we include participants’ age, gender and the number of days they spent in hospital after their surgery as features in our model. We extract these three columns from the `data/external/example_workflow/participant_info.csv` file. As these three features remain the same within participants, they are used only on the population model. Refer to the `demographic_features` rule in `rules/models.smk`.
 
 ??? info "3. Create target labels."
-    The two classes for our machine learning binary classification problem are high and low symptom burden. Target values are already stored in the `participant_target` table of our test database and transferred to a CSV file. A new rule/script can be created if further manipulation is necessary. Refer to the `parse_targets` rule in `rules/models.smk`.
+    The two classes for our machine learning binary classification problem are high and low symptom burden. Target values are already stored in the `data/external/example_workflow/participant_target.csv` file. A new rule/script can be created if further manipulation is necessary. Refer to the `parse_targets` rule in `rules/models.smk`.
 
 ??? info "4. Feature merging."
-    These daily features are stored on a CSV file per sensor, a CSV file per participant, and a CSV file including all features from all participants (in every case each column represents a feature and each row represents a day). Refer to the `merge_sensor_features_for_individual_participants` and `merge_features_for_population_model` rules in `rules/features.smk`.
+    These daily features are stored on a CSV file per sensor, a CSV file per participant, and a CSV file including all features from all participants (in every case each column represents a feature and each row represents a day). Refer to the `merge_sensor_features_for_individual_participants` and `merge_sensor_features_for_all_participants` rules in `rules/features.smk`.
 
 ??? info "5. Data visualization."
     At this point the user can use the five plots RAPIDS provides (or implement new ones) to explore and understand the quality of the raw data and extracted features and decide what sensors, days, or participants to include and exclude. Refer to `rules/reports.smk` to find the rules that generate these plots.
@@ -71,7 +69,7 @@ In total, our example workflow has nine steps that are in charge of sensor data 
 ??? info "6. Feature cleaning."
     In this stage we perform four steps to clean our sensor feature file. First, we discard days with a data yield hour ratio less than or equal to 0.75, i.e. we include days with at least 18 hours of data. Second, we drop columns (features) with more than 30% of missing rows. Third, we drop columns with zero variance. Fourth, we drop rows (days) with more than 30% of missing columns (features). In this cleaning stage several parameters are created and exposed in `example_profile/example_config.yaml`. 
 
-    After this step, we kept 162 features over 11 days for the individual model of p01, 107 features over 12 days for the individual model of p02 and 101 features over 20 days for the population model. Note that the difference in the number of features between p01 and p02 is mostly due to iOS restrictions that stops researchers from collecting the same number of sensors than in Android phones. 
+    After this step, we kept 161 features over 11 days for the individual model of p01, 101 features over 12 days for the individual model of p02 and 107 features over 20 days for the population model. Note that the difference in the number of features between p01 and p02 is mostly due to iOS restrictions that stops researchers from collecting the same number of sensors than in Android phones. 
     
     Feature cleaning for the individual models is done in the `clean_sensor_features_for_individual_participants` rule and for the population model in the `clean_sensor_features_for_all_participants` rule in `rules/models.smk`.
 
