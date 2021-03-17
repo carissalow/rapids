@@ -119,9 +119,6 @@ pull_phone_data <- function(){
   device_oss <- replace(device_oss, device_oss == "multiple", "infer") # support multiple for retro compatibility
   validate_deviceid_platforms(devices, device_oss, participant_file)
 
-  if(length(devices) == 0)
-    stop("There were no PHONE device ids in this participant file:", participant_file)
-
   if(length(device_oss) == 1)
     device_oss <- rep(device_oss, length(devices))
 
@@ -129,6 +126,12 @@ pull_phone_data <- function(){
   # ANDROID or IOS RAPIDS_COLUMN_MAPPINGS are guaranteed to be the same at this point (see validate_expected_columns_mapping function)
   expected_columns <- tolower(rapids_schema[[sensor]])
   participant_data <- setNames(data.frame(matrix(ncol = length(expected_columns), nrow = 0)), expected_columns)
+
+  if(length(devices) == 0){
+    warning("There were no PHONE device ids in this participant file:", participant_file)
+    write_csv(participant_data, output_data_file)
+    return()
+  }
 
   container_functions <- load_container_script(stream_container)
   infer_device_os_container <- container_functions$infer_device_os
