@@ -49,8 +49,8 @@ validate_user_timezones <- function(timezone_parameters){
 }
 
 create_mising_temporal_column <- function(data, device_type){
-  if(device_type == "fitbit" && all(data$timestamp == 0)){
-      # For fibit we infere timestamp from Fitbit's local date time
+  if(device_type == "fitbit" && all(data$timestamp == 0) && "local_date_time" %in% colnames(data)){
+      # For fibit we infere timestamp from Fitbit's local date time only right after pulling it
       if(nrow(data) == 0)
         return(data %>% mutate(timestamp = NA_real_))
       if(any(is.na(parse_date_time(data$local_date_time, orders= c("%Y/%m/%d %H:%M:%S","%Y-%m-%d %H:%M:%S"), exact=T))))
