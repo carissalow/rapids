@@ -12,7 +12,7 @@ get_db_engine <- function(group){
   # The working dir is aways RAPIDS root folder, so your credentials file is always /credentials.yaml
   credentials <- read_yaml("./credentials.yaml")
   if(!group %in% names(credentials))
-    stop(paste("The credentials group",group, "does not exist in ./credentials.yaml. The only groups that exist in that file are:", paste(names(credentials), collapse = ",")))
+    stop(paste("The credentials group",group, "does not exist in ./credentials.yaml. The only groups that exist in that file are:", paste(names(credentials), collapse = ","), ". Did you forget to set the group in [PHONE_DATA_STREAMS][fitbitjson_mysql][DATABASE_GROUP] in config.yaml?"))
   dbEngine <- dbConnect(MariaDB(), db = credentials[[group]][["database"]],
                                     username = credentials[[group]][["user"]],
                                     password = credentials[[group]][["password"]],
