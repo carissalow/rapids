@@ -56,7 +56,7 @@ get_screen_episodes <- function(screen){
 }
 
 if(nrow(screen) < 2){
-  episodes <- data.frame(device_id = character(),,
+  episodes <- data.frame(device_id = character(),
                                 episode = character(), 
                                 screen_sequence = character(),
                                 start_timestamp = character(),
