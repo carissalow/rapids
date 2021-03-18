@@ -111,27 +111,30 @@ def haversine(lon1,lat1,lon2,lat2):
 
 origDf = pd.read_csv(snakemake.input[0])
 filteredDf = filterDatafromDf(origDf)
-dbscan_eps = snakemake.params["dbscan_eps"]
-dbscan_minsamples = snakemake.params["dbscan_minsamples"]
-threshold_static = snakemake.params["threshold_static"]
-clustering_algorithm = snakemake.params["clustering_algorithm"]
-
-if clustering_algorithm == "DBSCAN":
-    hyperparameters = {'eps' : distance_to_degrees(dbscan_eps), 'min_samples': dbscan_minsamples}
-elif clustering_algorithm == "OPTICS":
-    hyperparameters = {'max_eps': distance_to_degrees(dbscan_eps), 'min_samples': 2, 'metric':'euclidean', 'cluster_method' : 'dbscan'} 
+if filteredDf.empty:
+    filteredDf.to_csv(snakemake.output[0])
 else:
-    raise ValueError("config[PHONE_LOCATIONS][HOME_INFERENCE][CLUSTERING ALGORITHM] only accepts DBSCAN or OPTICS but you provided ",clustering_algorithm)
+    dbscan_eps = snakemake.params["dbscan_eps"]
+    dbscan_minsamples = snakemake.params["dbscan_minsamples"]
+    threshold_static = snakemake.params["threshold_static"]
+    clustering_algorithm = snakemake.params["clustering_algorithm"]
 
-filteredDf = cluster_and_label(filteredDf,clustering_algorithm,threshold_static,**hyperparameters)
+    if clustering_algorithm == "DBSCAN":
+        hyperparameters = {'eps' : distance_to_degrees(dbscan_eps), 'min_samples': dbscan_minsamples}
+    elif clustering_algorithm == "OPTICS":
+        hyperparameters = {'max_eps': distance_to_degrees(dbscan_eps), 'min_samples': 2, 'metric':'euclidean', 'cluster_method' : 'dbscan'} 
+    else:
+        raise ValueError("config[PHONE_LOCATIONS][HOME_INFERENCE][CLUSTERING ALGORITHM] only accepts DBSCAN or OPTICS but you provided ",clustering_algorithm)
 
-origDf['home_latitude'] = filteredDf[filteredDf['location_label']==1][['double_latitude','double_longitude']].mean()['double_latitude']
-origDf['home_longitude'] = filteredDf[filteredDf['location_label']==1][['double_latitude','double_longitude']].mean()['double_longitude']
+    filteredDf = cluster_and_label(filteredDf,clustering_algorithm,threshold_static,**hyperparameters)
 
-distanceFromHome = haversine(origDf.double_longitude,origDf.double_latitude,origDf.home_longitude,origDf.home_latitude)
+    origDf['home_latitude'] = filteredDf[filteredDf['location_label']==1][['double_latitude','double_longitude']].mean()['double_latitude']
+    origDf['home_longitude'] = filteredDf[filteredDf['location_label']==1][['double_latitude','double_longitude']].mean()['double_longitude']
 
-finalDf = origDf.drop(['home_latitude','home_longitude'], axis=1)
-finalDf.insert(len(finalDf.columns)-1,'distancefromhome',distanceFromHome)
-finalDf.to_csv(snakemake.output[0], index=False)
+    distanceFromHome = haversine(origDf.double_longitude,origDf.double_latitude,origDf.home_longitude,origDf.home_latitude)
+
+    finalDf = origDf.drop(['home_latitude','home_longitude'], axis=1)
+    finalDf.insert(len(finalDf.columns)-1,'distancefromhome',distanceFromHome)
+    finalDf.to_csv(snakemake.output[0], index=False)
 
 

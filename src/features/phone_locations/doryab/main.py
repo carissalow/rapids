@@ -188,12 +188,14 @@ def len_stay_timeattopn(locationData,maximum_gap_allowed,maximum_row_duration):
     calculationDf.loc[calculationDf.timeInSeconds >= maximum_gap_allowed,'timeInSeconds'] = maximum_row_duration
     timeArray = calculationDf.groupby('location_label')['timeInSeconds'].sum().reset_index()['timeInSeconds'].sort_values(ascending=False)/60
     
-    if len(timeArray) > 2:
+    if len(timeArray) == 3:
         return (timeArray[0],timeArray[1],timeArray[2],timeArray.max(),timeArray.min(),timeArray.std(),timeArray.mean())
     elif len(timeArray)==2:
         return (timeArray[0],timeArray[1],None,timeArray.max(),timeArray.min(),timeArray.std(),timeArray.mean())
-    else:
+    elif len(timeArray)==1:
         return (timeArray[0],None,None,timeArray.max(),timeArray.min(),timeArray.std(),timeArray.mean())
+    else:
+        return (None,None,None,timeArray.max(),timeArray.min(),timeArray.std(),timeArray.mean())
     
 
 def getMinutesData(locationData):
