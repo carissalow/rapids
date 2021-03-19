@@ -232,7 +232,7 @@ PHONE_LOCATIONS:
   FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
   FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION: 720 # minutes, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
   HOME_INFERENCE:
-    DBSCAN_EPS: 10 # meters
+    DBSCAN_EPS: 100 # meters
     DBSCAN_MINSAMPLES: 5
     THRESHOLD_STATIC : 1 # km/h
     CLUSTERING_ALGORITHM: DBSCAN #DBSCAN,OPTICS
@@ -242,7 +242,7 @@ PHONE_LOCATIONS:
       COMPUTE: False
       FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed", "numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy","timeathome"]
       ACCURACY_LIMIT: 100 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
-      DBSCAN_EPS: 10 # meters
+      DBSCAN_EPS: 100 # meters
       DBSCAN_MINSAMPLES: 5
       THRESHOLD_STATIC : 1 # km/h
       MAXIMUM_ROW_GAP: 300
