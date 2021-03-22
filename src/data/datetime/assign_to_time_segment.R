@@ -11,7 +11,7 @@ get_segment_dates <- function(data, local_timezone, day_type, delay){
   dates <-  data %>% 
             distinct(local_date) %>% 
             mutate(local_date_obj = date(lubridate::ymd(local_date, tz = local_timezone))) %>% 
-            complete(local_date_obj = seq(date(min(local_date_obj) - delay), max(local_date_obj), by="days")) %>%
+            complete(local_date_obj = seq(date(min(local_date_obj) - delay), date(max(local_date_obj) + delay), by="days")) %>%
             mutate(local_date = replace_na(as.character(date(local_date_obj))))
 
   if(day_type == "every_day")
@@ -26,6 +26,27 @@ get_segment_dates <- function(data, local_timezone, day_type, delay){
     dates <- dates %>% mutate(yday = yday(local_date_obj))
   return(dates)
 }
+
+create_nonoverlapping_periodic_segments <- function(nested_inferred_time_segments){
+  new_segments <- (data.frame(nested_inferred_time_segments %>% 
+    group_by(original_label) %>%
+    mutate(max_groups = max(overlap_id) + 1) %>% 
+    # select(label, segment_id_start, segment_id_end, overlap_id, max_groups) %>% 
+    nest() %>%  
+    mutate(data = map(data, function(nested_data){
+        nested_data <- nested_data %>% arrange( segment_id_start, segment_id_end) %>% 
+        group_by(segment_id_start) %>% 
+        mutate(n_id = ((cur_group_id()-1) %% max_groups)) %>% 
+        filter(overlap_id == n_id) %>% 
+        # select(label, segment_id_start, overlap_id, n_id) %>% 
+        ungroup()
+    })) %>% 
+    unnest(cols = data) %>% 
+    ungroup()
+  ))
+  return(new_segments)
+}
+
 
 assign_rows_to_segments <- function(nested_data, nested_inferred_time_segments){
   nested_data <- nested_data %>% mutate(assigned_segments = "")
@@ -113,10 +134,10 @@ assign_to_time_segment <- function(sensor_data, time_segments, time_segments_typ
                                            pivot_longer(cols = c(every_day,wday, mday, qday, yday), names_to = "day_type", values_to = "day_value") %>%
                                            filter(repeats_on == day_type & repeats_value == day_value) %>%
                                            # The segment ids (segment_id_start and segment_id_end) are computed in UTC to avoid having different labels for instances of a segment that happen in different timezones
-                                           mutate(segment_id_start = lubridate::parse_date_time(paste(local_date, start_time), orders = c("Ymd HMS", "Ymd HM")),
+                                           mutate(segment_id_start = lubridate::parse_date_time(paste(local_date, start_time), orders = c("Ymd HMS", "Ymd HM")) + period(overlap_duration),
                                                   segment_id_end = segment_id_start + lubridate::duration(length),
                                                   # The actual segments are computed using timestamps taking into account the timezone
-                                                  segment_start_ts = as.numeric(lubridate::parse_date_time(paste(local_date, start_time), orders = c("Ymd HMS", "Ymd HM"), tz = local_timezone)) * 1000,
+                                                  segment_start_ts = as.numeric(lubridate::parse_date_time(paste(local_date, start_time), orders = c("Ymd HMS", "Ymd HM"), tz = local_timezone) + period(overlap_duration)) * 1000,
                                                   segment_end_ts = segment_start_ts + as.numeric(lubridate::duration(length)) * 1000 + 999,
                                                   segment_id = paste0("[",
                                                                       paste0(label,"#",
@@ -128,6 +149,7 @@ assign_to_time_segment <- function(sensor_data, time_segments, time_segments_typ
                                                                       "]")) %>% 
                                            # drop time segments with an invalid start or end time (mostly due to daylight saving changes, e.g. 2020-03-08 02:00:00 EST does not exist, clock jumps from 01:59am to 03:00am)
                                            drop_na(segment_start_ts, segment_end_ts)), 
+              inferred_time_segments = map(inferred_time_segments, create_nonoverlapping_periodic_segments),
              data = map2(data, inferred_time_segments, assign_rows_to_segments)
       ) %>%
       select(-existent_dates, -inferred_time_segments, -every_date, -week_dates, -month_dates, -quarter_dates, -year_dates) %>%

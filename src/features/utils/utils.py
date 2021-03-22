@@ -113,6 +113,7 @@ def fetch_provider_features(provider, provider_key, sensor_key, sensor_data_file
             for feature in provider["FEATURES"]:
                     sensor_features[feature] = None
     segment_colums = pd.DataFrame()
+    sensor_features['local_segment'] = sensor_features['local_segment'].str.replace(r'_RR\d+SS', '')
     split_segemnt_columns = sensor_features["local_segment"].str.split(pat="(.*)#(.*),(.*)", expand=True)
     new_segment_columns = split_segemnt_columns.iloc[:,1:4] if split_segemnt_columns.shape[1] == 5 else pd.DataFrame(columns=["local_segment_label", "local_segment_start_datetime","local_segment_end_datetime"])
     segment_colums[["local_segment_label", "local_segment_start_datetime", "local_segment_end_datetime"]] = new_segment_columns

@@ -11,4 +11,4 @@ for(location_features_file in location_features_files){
     location_features <- merge(location_features, read.csv(location_features_file), all = TRUE)
 }
 
-write.csv(location_features, snakemake@output[[1]], row.names = FALSE)
+write.csv(location_features %>% arrange(local_segment), snakemake@output[[1]], row.names = FALSE)

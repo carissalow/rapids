@@ -69,8 +69,8 @@ fetch_provider_features <- function(provider, provider_key, sensor_key, sensor_d
     for(feature in provider[["FEATURES"]])
         sensor_features[,feature] <- NA
     }
-
-    sensor_features <- sensor_features %>% extract(col = local_segment, 
+    sensor_features <- sensor_features %>% mutate(local_segment = str_remove(local_segment, "_RR\\d+SS")) %>% 
+                                            extract(col = local_segment, 
                                                 into = c("local_segment_label", "local_segment_start_datetime", "local_segment_end_datetime"),
                                                 "(.*)#(.*),(.*)", 
                                                 remove = FALSE)

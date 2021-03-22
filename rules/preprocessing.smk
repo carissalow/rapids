@@ -23,10 +23,10 @@ rule pull_phone_data:
     script:
         "../src/data/streams/pull_phone_data.R"
 
-rule compute_time_segments:
+rule process_time_segments:
     input: 
-        config["TIME_SEGMENTS"]["FILE"],
-        "data/external/participant_files/{pid}.yaml"
+        segments_file = config["TIME_SEGMENTS"]["FILE"],
+        participant_file = "data/external/participant_files/{pid}.yaml"
     params:
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         pid = "{pid}"
@@ -34,7 +34,7 @@ rule compute_time_segments:
         segments_file = "data/interim/time_segments/{pid}_time_segments.csv",
         segments_labels_file = "data/interim/time_segments/{pid}_time_segments_labels.csv",
     script:
-        "../src/data/compute_time_segments.py"
+        "../src/data/datetime/process_time_segments.R"
 
 rule phone_readable_datetime:
     input:
