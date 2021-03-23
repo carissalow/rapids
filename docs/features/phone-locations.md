@@ -33,7 +33,7 @@ These features are based on the original open-source implementation by [Barnett 
 
 
 !!! info "Available time segments and platforms"
-    - Available only for segments that start at 00:00:00 and end at 23:59:59 of the same day (daily segments)
+    - Available only for segments that start at 00:00:00 and end at 23:59:59 of the same or a different day (daily, weekly, weekend, etc.)
     - Available for Android and iOS
 
 !!! info "File Sequence"
@@ -78,7 +78,17 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][BARNETT]` adapted from [B
 |wkenddayrtn                            |       -    | Same as circdnrtn but computed separately for weekends and weekdays.
 
 !!! note "Assumptions/Observations"
-    **Barnett\'s et al features**
+    **Multi day segment features**
+    Barnett's features are only available on time segments that span entire days (00:00:00 to 23:59:59). Such segments can be one-day long (daily) or multi-day (weekly, for example). Multi-day segment features are computed based on daily features summarized the following way:
+
+    - sum for `hometime`, `disttravelled`, `siglocsvisited`, and `minutes_data_used`
+    - max for `maxdiam`, and `maxhomedist`
+    - mean for `rog`, `avgflightlen`, `stdflightlen`, `avgflightdur`, `stdflightdur`, `probpause`, `siglocentropy`, `circdnrtn`, `wkenddayrtn`, and `minsmissing`
+
+    **Computation speed**
+    The process to extract these features can be slow compared to other sensors and providers due to the required simulation.
+
+    **How are these features computed?**
     These features are based on a Pause-Flight model. A pause is defined as a mobility trace (location pings) within a certain duration and distance (by default, 300 seconds and 60 meters). A flight is any mobility trace between two pauses. Data is resampled and imputed before the features are computed. See [Barnett et al](../../citation#barnett-locations) for more information. In RAPIDS, we only expose one parameter for these features (accuracy limit). You can change other parameters in `src/features/phone_locations/barnett/library/MobilityFeatures.R`.
 
     **Significant Locations**
