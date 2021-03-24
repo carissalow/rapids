@@ -7,20 +7,23 @@ import yaml
 
 
 
-def getPhoneDataYieldHeatmap(data_for_plot, y_axis_labels, time_segment, type, html_file):
+def getPhoneDataYieldHeatmap(data_for_plot, y_axis_labels, time_segment, type, time, html_file):
 
     fig = go.Figure(data=go.Heatmap(z=data_for_plot.values.tolist(),
                                        x=data_for_plot.columns.tolist(),
                                        y=y_axis_labels,
                                        hovertext=data_for_plot.values.tolist(),
-                                       hovertemplate="Time since first segment: %{x}<br>Participant: %{y}<br>Ratiovalidyielded" + type + ": %{z}<extra></extra>",
+                                       hovertemplate="Time since first segment: %{x}<br>Participant: %{y}<br>Ratiovalidyielded" + type + ": %{z}<extra></extra>" if time == "RELATIVE_TIME" else "Time: %{x}<br>Participant: %{y}<br>Ratiovalidyielded" + type + ": %{z}<extra></extra>",
                                        zmin=0, zmax=1,
                                        colorscale="Viridis"))
 
-    fig.update_layout(title="Heatmap of valid yielded " + type + " ratio for " + time_segment + " segments.<br>y-axis shows participant information (format: pid.label).<br>x-axis shows the time since their first segment.<br>z-axis (color) shows valid yielded " + type + " ratio during a segment instance.")
-        
+    if time == "RELATIVE_TIME":
+        fig.update_layout(title="Heatmap of valid yielded " + type + " ratio for " + time_segment + " segments.<br>y-axis shows participant information (format: pid.label).<br>x-axis shows the time since their first segment.<br>z-axis (color) shows valid yielded " + type + " ratio during a segment instance.")
+    else:
+        fig.update_layout(title="Heatmap of valid yielded " + type + " ratio for " + time_segment + " segments.<br>y-axis shows participant information (format: pid.label).<br>x-axis shows the time.<br>z-axis (color) shows valid yielded " + type + " ratio during a segment instance.")
+
     fig["layout"]["xaxis"].update(side="bottom")
-    fig["layout"].update(xaxis_title="Time Since First Segment")
+    fig["layout"].update(xaxis_title="Time Since First Segment" if time == "RELATIVE_TIME" else "Time")
     fig["layout"].update(margin=dict(t=160))
     
     html_file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
@@ -30,7 +33,7 @@ def getPhoneDataYieldHeatmap(data_for_plot, y_axis_labels, time_segment, type, h
 
 
 
-
+time = snakemake.params["time"]
 y_axis_labels, phone_data_yield_minutes, phone_data_yield_hours = [], {}, {}
 for phone_data_yield_path, participant_file_path, time_segments_path in zip(snakemake.input["phone_data_yield"], snakemake.input["participant_file"], snakemake.input["time_segments_labels"]):
     
@@ -58,8 +61,13 @@ for phone_data_yield_path, participant_file_path, time_segments_path in zip(snak
 
             if not phone_data_yield_per_segment.empty:
 
-                # set number of minutes after the first start date time of local segments as x_axis_label
-                phone_data_yield_per_segment.index = phone_data_yield_per_segment.index - phone_data_yield_per_segment.index.min()
+                if time == "RELATIVE_TIME":
+                    # set number of minutes after the first start date time of local segments as x_axis_label
+                    phone_data_yield_per_segment.index = phone_data_yield_per_segment.index - phone_data_yield_per_segment.index.min()
+                elif time == "ABSOLUTE_TIME":
+                    pass
+                else:
+                    raise ValueError("[HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT][TIME] can only be RELATIVE_TIME or ABSOLUTE_TIME")
 
                 phone_data_yield_minutes_per_segment = phone_data_yield_per_segment[["phone_data_yield_rapids_ratiovalidyieldedminutes"]].rename(columns={"phone_data_yield_rapids_ratiovalidyieldedminutes": y_axis_label})
                 phone_data_yield_hours_per_segment = phone_data_yield_per_segment[["phone_data_yield_rapids_ratiovalidyieldedhours"]].rename(columns={"phone_data_yield_rapids_ratiovalidyieldedhours": y_axis_label})
@@ -79,7 +87,7 @@ for time_segment in phone_data_yield_minutes.keys():
     minutes_data_for_plot = phone_data_yield_minutes[time_segment].transpose().reindex(pd.Index(y_axis_labels)).round(3)
     hours_data_for_plot = phone_data_yield_hours[time_segment].transpose().reindex(pd.Index(y_axis_labels)).round(3)
 
-    getPhoneDataYieldHeatmap(minutes_data_for_plot, y_axis_labels, time_segment, "minutes", html_file)
-    getPhoneDataYieldHeatmap(hours_data_for_plot, y_axis_labels, time_segment, "hours", html_file)
+    getPhoneDataYieldHeatmap(minutes_data_for_plot, y_axis_labels, time_segment, "minutes", time, html_file)
+    getPhoneDataYieldHeatmap(hours_data_for_plot, y_axis_labels, time_segment, "hours", time, html_file)
 
 html_file.close()

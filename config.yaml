@@ -522,6 +522,7 @@ HISTOGRAM_PHONE_DATA_YIELD:
 # See https://www.rapids.science/latest/visualizations/data-quality-visualizations/#2-heatmaps-of-overall-data-yield
 HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT:
   PLOT: False
+  TIME: RELATIVE_TIME # ABSOLUTE_TIME or RELATIVE_TIME
 
 # See https://www.rapids.science/latest/visualizations/data-quality-visualizations/#3-heatmap-of-recorded-phone-sensors
 HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT:
@@ -530,7 +531,7 @@ HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT:
 # See https://www.rapids.science/latest/visualizations/data-quality-visualizations/#4-heatmap-of-sensor-row-count
 HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT:
   PLOT: False
-  SENSORS: [PHONE_ACCELEROMETER, PHONE_ACTIVITY_RECOGNITION, PHONE_APPLICATIONS_FOREGROUND, PHONE_BATTERY, PHONE_BLUETOOTH, PHONE_CALLS, PHONE_CONVERSATION, PHONE_LIGHT, PHONE_LOCATIONS, PHONE_MESSAGES, PHONE_SCREEN, PHONE_WIFI_CONNECTED, PHONE_WIFI_VISIBLE]
+  SENSORS: []
 
 # Features ------
 

@@ -52,6 +52,8 @@ rule heatmap_phone_data_yield_per_participant_per_time_segment:
         phone_data_yield = expand("data/processed/features/{pid}/phone_data_yield.csv", pid=config["PIDS"]),
         participant_file = expand("data/external/participant_files/{pid}.yaml", pid=config["PIDS"]),
         time_segments_labels = expand("data/interim/time_segments/{pid}_time_segments_labels.csv", pid=config["PIDS"])
+    params:
+        time = config["HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT"]["TIME"]
     output:
         "reports/data_exploration/heatmap_phone_data_yield_per_participant_per_time_segment.html"
     script:
