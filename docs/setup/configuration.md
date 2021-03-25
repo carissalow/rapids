@@ -398,6 +398,13 @@ Parameters for `[TIMEZONE]`
     - A screen row sensed at `1587533333333` will be assigned to `America/New_York` because it falls within Interval 1
     - A screen row sensed at `1587400000000` will be discarded because it was logged outside any interval.
 
+??? note "Can I get the `TZCODES_FILE` from the time zone table collected automatically by the AWARE app?"
+    Sure. You can put your timezone table (`timezone.csv`) collected by AWARE app under `data/external` folder and run:
+    ```bash
+    python tools/create_multi_timezones_file.py
+    ```
+    The `TZCODES_FILE` will be saved as `data/external/multiple_timezones.csv` file.
+
 ??? note "What happens if participant X lives in Los Angeles but participant Y lives in Amsterdam and they both stayed there during my study?"
     Add a row per participant and set timestamp to `0`:
     ```csv
