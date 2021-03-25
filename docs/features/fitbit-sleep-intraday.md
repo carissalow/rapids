@@ -35,7 +35,7 @@ Parameters description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS]`:
 |`[REFERENCE_TIME]`| The reference point from which the `[ROUTINE]` features are to be computed. Chosen from `MIDNIGHT` and `START_OF_THE_SEGMENT`, default is `MIDNIGHT`. If you have multiple time segments per day it might be more informative to set this flag to `START_OF_THE_SEGMENT`.
 
 
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS][LEVELS_AND_TYPES]`:
+Features description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS][LEVELS_AND_TYPES]`:
 
 |Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    |Units          |Description                                                  |
 |------------------------------- |-------------- |-------------------------------------------------------------|
@@ -48,7 +48,7 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS][LEVELS_AND_
 |stdduration`[LEVEL][TYPE]`      |minutes        | Standard deviation duration of all `[LEVEL][TYPE]`sleep episodes. `[LEVEL]`is one of `[SLEEP_LEVELS]` (e.g. awake-classic or rem-stages) and `[TYPE]` is one of `[SLEEP_TYPES]` (e.g. main). Both `[LEVEL]` and `[TYPE]`can also be `all` when `LEVELS_AND_TYPES_COMBINING_ALL` is True, which ignores the levels and groups by sleep types.
 
 
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[ACROSS_LEVELS]`:
+Features description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[ACROSS_LEVELS]`:
 
 |Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    |Units |Description                                                        |
 |-------------------------- |-------------- |-------------------------------------------------------------|
@@ -56,7 +56,7 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[A
 |ratioduration`[LEVEL]`      |-|Ratio between the **duration** of episodes of a single sleep `[LEVEL]` and the **duration** of all episodes of all levels during both `main` and `nap` sleep types. This answers the question: what percentage of all `wake`, `deep`, `light`, and `rem` time was `rem`? (e.g., $sumduration[remstages][all] / sumduration[all][all]$)
 
 
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[ACROSS_TYPES]`:
+Features description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[ACROSS_TYPES]`:
 
 |Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    |Units          |Description                                                  |
 |-------------------------- |-------------- |-------------------------------------------------------------|
@@ -64,7 +64,7 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[A
 |ratiodurationmain          |-              |Ratio between the **duration** of all `main` episodes (independently of the levels inside) divided by the **duration** of all `main` and `nap` episodes. This answers the question: what percentage of all sleep time (`main` and `nap`) was `main`? We do not provide the ratio for `nap` because is complementary. ($sumduration[all][main] / sumduration[all][all]$)
 
 
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[WITHIN_LEVELS]`:
+Features description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[WITHIN_LEVELS]`:
 
 |Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                           |Units          |Description                                                  |
 |--------------------------------- |-------------- |-------------------------------------------------------------|
@@ -72,7 +72,7 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[W
 |ratioduration`[TYPE]`within`[LEVEL]` |-              |Ratio between the **duration** of episodes of a single sleep `[LEVEL]` during `main` sleep divided by the **duration** of episodes of a single sleep `[LEVEL]` during `main` **and** `nap`. This answers the question: is `rem` time more frequent during `main` than `nap` sleep? We do not provide the ratio for `nap` because is complementary. ($countepisode[remstages][main] / countepisode[remstages][all]$)
 
 
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[WITHIN_TYPES]`:
+Features description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[WITHIN_TYPES]`:
 
 |Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Units|Description|
 | - |- | - |
@@ -80,7 +80,7 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[W
 |ratioduration`[LEVEL]`within`[TYPE]` |-|Ratio between the **duration** of episodes of a single sleep `[LEVEL]` and the **duration** of all episodes of all levels during either `main` or `nap` sleep types. This answers the question: what percentage of all `wake`, `deep`, `light`, and `rem` time was `rem` during `main`/`nap` sleep time? (e.g., $sumduration[remstages][main] / sumduration[all][main]$)
 
 
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS][ROUTINE]`:
+Features description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS][ROUTINE]`:
 
 |Feature                           |Units          |Description                                                  |
 |--------------------------------- |-------------- |-------------------------------------------------------------|
@@ -125,7 +125,7 @@ Parameters description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][PRICE]`:
 |`[GROUP_EPISODES_WITHIN]`                    | This parameter contains 2 values: `[START_TIME]` and `[LENGTH]`. Only `main` sleep episodes that intersect or contain the period between [`START_TIME`, `START_TIME` + `LENGTH`] are taken into account to compute the features described below. Both `[START_TIME]` and `[LENGTH]` are in minutes. `[START_TIME]` is a number ranging from 0 (midnight) to 1439 (23:59) which denotes the number of minutes after midnight. `[LENGTH]` is a number smaller than 1440 (24 hours).  |
 
 
-Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][PRICE]`:
+Features description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][PRICE]`:
 
 |Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                  |Units          |Description                                                  |
 |------------------------------------- |----------------- |-------------------------------------------------------------|
