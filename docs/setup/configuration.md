@@ -134,14 +134,14 @@ Your CSV file (`[CSV_FILE_PATH]`) should have the following columns (headers) bu
 
 | Column           | Description                                                                                               |
 |------------------|-----------------------------------------------------------------------------------------------------------|
-| phone device id  | The name of this column has to match `[PHONE_SECTION][DEVICE_ID_COLUMN]`. Separate multiple ids with `;`  |
-| fitbit device id | The name of this column has to match `[FITBIT_SECTION][DEVICE_ID_COLUMN]`. Separate multiple ids with `;`  |
-| empatica device id | The name of this column has to match `[EMPATICA_SECTION][DEVICE_ID_COLUMN]`. Since the most common use case involves having multiple zip files from a single device for each person, set this device id to an arbitrary string (we usually use their `pid`)  |
+| device_id        | Phone device id. Separate multiple ids with `;`   |
+| fitbit_id        | Fitbit device id. Separate multiple ids with `;`  |
+| empatica_id      | Empatica device id. Since the most common use case involves having multiple zip files from a single device for each person, set this device id to an arbitrary string (we usually use their `pid`)  |
 | pid              | Unique identifiers with the format pXXX (your participant files will be named with this string)            |
 | platform         | Use `android`, `ios` or `infer` as explained above, separate values with `;`            |
 | label            | A human readable string that is used in reports and visualizations.                                       |
-| start_date       | A string with format `YYY-MM-DD`. |
-| end_date         | A string with format `YYY-MM-DD`. |
+| start_date       | A string with format `YYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`. |
+| end_date         | A string with format `YYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`. |
 
 !!! example
     We added white spaces to this example to make it easy to read but you don't have to.

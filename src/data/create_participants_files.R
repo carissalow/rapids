@@ -9,9 +9,9 @@ library("dplyr", warn.conflicts = F)
 config <- snakemake@params[["config"]]
 group <- config$SOURCE$DATABASE_GROUP
 timezone <- config$SOURCE$TIMEZONE
-phone_device_id_column = config$PHONE_SECTION$DEVICE_ID_COLUMN
-fitbit_device_id_column = config$FITBIT_SECTION$DEVICE_ID_COLUMN
-empatica_device_id_column = config$EMPATICA_SECTION$DEVICE_ID_COLUMN
+phone_device_id_column = "device_id"
+fitbit_device_id_column = "fitbit_id"
+empatica_device_id_column = "empatica_id"
 add_phone_section = config$PHONE_SECTION$ADD
 add_fitbit_section = config$FITBIT_SECTION$ADD
 add_empatica_section = config$EMPATICA_SECTION$ADD
@@ -22,7 +22,7 @@ empatica_ignored = config$EMPATICA_SECTION$IGNORED_DEVICE_IDS
 rmysql.settingsfile <- "./.env"
 
 participants <- read_csv(config$CSV_FILE_PATH, col_types=cols_only(device_id="c",pid="c",label="c",platform="c",
-                          start_date=col_date(format = "%Y-%m-%d"),end_date=col_date(format = "%Y-%m-%d"),fitbit_id="c",empatica_id="c")) %>% 
+                          start_date=col_datetime(),end_date=col_datetime(),fitbit_id="c",empatica_id="c")) %>% 
                           mutate(start_date = as.character(start_date), end_date = as.character(end_date)) # we read as date to validate format
 participants <- participants %>% 
 mutate(!!phone_device_id_column := str_replace(!!rlang::sym(phone_device_id_column), ";",","),

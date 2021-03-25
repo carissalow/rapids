@@ -5,22 +5,6 @@
 # See https://www.rapids.science/latest/setup/configuration/#participant-files
 PIDS: [example01, example02]
 
-# See https://www.rapids.science/latest/setup/configuration/#automatic-creation-of-participant-files
-CREATE_PARTICIPANT_FILES:
-  CSV_FILE_PATH: "data/external/example_participants.csv" # see docs for required format
-  PHONE_SECTION:
-    ADD: True
-    DEVICE_ID_COLUMN: device_id # column name
-    IGNORED_DEVICE_IDS: []
-  FITBIT_SECTION:
-    ADD: True
-    DEVICE_ID_COLUMN: fitbit_id # column name
-    IGNORED_DEVICE_IDS: []
-  EMPATICA_SECTION:
-    ADD: False
-    DEVICE_ID_COLUMN: empatica_id # column name
-    IGNORED_DEVICE_IDS: []
-
 # See https://www.rapids.science/latest/setup/configuration/#time-segments
 TIME_SEGMENTS: &time_segments
   TYPE: PERIODIC # FREQUENCY, PERIODIC, EVENT

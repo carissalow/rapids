@@ -10,15 +10,12 @@ CREATE_PARTICIPANT_FILES:
   CSV_FILE_PATH: "data/external/example_participants.csv" # see docs for required format
   PHONE_SECTION:
     ADD: True
-    DEVICE_ID_COLUMN: device_id # column name
     IGNORED_DEVICE_IDS: []
   FITBIT_SECTION:
     ADD: True
-    DEVICE_ID_COLUMN: fitbit_id # column name
     IGNORED_DEVICE_IDS: []
   EMPATICA_SECTION:
     ADD: True
-    DEVICE_ID_COLUMN: empatica_id # column name
     IGNORED_DEVICE_IDS: []
 
 # See https://www.rapids.science/latest/setup/configuration/#time-segments
