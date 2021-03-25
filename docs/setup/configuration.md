@@ -111,22 +111,18 @@ In your `config.yaml`:
 
 1. Set `CSV_FILE_PATH` to a CSV file path that complies with the specs described below
 2. Set the devices (`PHONE`, `FITBIT`, `EMPATICA`) `[ADD]` flag to `TRUE` depending on what devices you used in your study.
-3. Set `[DEVICE_ID_COLUMN]` to the column's name in your CSV file that uniquely identifies each device.
 
 ```yaml
 CREATE_PARTICIPANT_FILES:
   CSV_FILE_PATH: "your_path/to_your.csv"
   PHONE_SECTION:
     ADD: TRUE # or FALSE
-    DEVICE_ID_COLUMN: device_id # column name
     IGNORED_DEVICE_IDS: []
   FITBIT_SECTION:
-    ADD: FALSE # or FALSE
-    DEVICE_ID_COLUMN: fitbit_id # column name
+    ADD: TRUE # or FALSE
     IGNORED_DEVICE_IDS: []
   EMPATICA_SECTION:
-    ADD: FALSE
-    DEVICE_ID_COLUMN: empatica_id # column name
+    ADD: TRUE # or FALSE
     IGNORED_DEVICE_IDS: []
 ```
 
