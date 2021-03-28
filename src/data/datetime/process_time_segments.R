@@ -105,16 +105,22 @@ validate_frequency_segments <- function(segments){
 }
 
 prepare_frequency_segments <- function(segments){
+  #FREQUENCY segments are just syntactic sugar for PERIODIC
   validate_frequency_segments(segments)
-  stamp_fn <- stamp("23:10", orders = c("HM"), quiet = TRUE)
+  stamp_fn <- stamp("23:10:00", orders = c("HMS"), quiet = TRUE)
   new_segments <- data.frame(start_time = seq.POSIXt(from = ymd_hms("2020-01-01 00:00:00"), 
                                                         to=ymd_hms("2020-01-02 00:00:00"), 
                                                         by=paste(segments$length, "min")))
   new_segments <- new_segments %>%
     head(-1) %>% 
-    mutate(start_time = stamp_fn(start_time),
-           length = segments$length,
-           label = paste0(segments$label, str_pad(row_number()-1, width = 4, pad = "0")))
+    mutate(label = paste0(segments$label, str_pad(row_number()-1, width = 4, pad = "0")),
+           start_time = stamp_fn(start_time),
+           length = paste0((segments$length * 60)-1, "S"),
+           repeats_on = "every_day",
+           repeats_value=0,
+           overlap_id = 0,
+           original_label = label,
+           overlap_duration = "0D")
     
 }
 
