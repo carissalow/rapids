@@ -173,15 +173,10 @@ validate_event_segments <- function(segments){
   return(segments)
 }
 
-prepare_event_segments <- function(segments, participant_data){
-  participant_devices <- get_devices_ids(participant_data)
-  if(length(participant_devices) == 0)
-    stop("There are no devices in the participant file.")
-
+prepare_event_segments <- function(segments, participant_devices){
   new_segments <- segments%>%
     validate_event_segments() %>% 
     filter(device_id %in% participant_devices)
-  return(new_segments)
 }
 
 compute_time_segments <- function(){
@@ -191,6 +186,11 @@ compute_time_segments <- function(){
   participant_file <- snakemake@input[["participant_file"]]
   message("Processing ",type, " time segments for ", pid,"'s ", participant_file)
   
+  participant_data <- yaml::read_yaml(participant_file)
+  participant_devices <- get_devices_ids(participant_data)
+  if(length(participant_devices) == 0)
+    stop("There are no device ids in this participant file for smartphones or wearables: ", participant_file)
+  
   if(type == "FREQUENCY"){
     segments <- read_csv(segments_file, col_types = cols_only(label = "c", length = "i"), trim_ws = TRUE)
     new_segments <- prepare_frequency_segments(segments)
@@ -198,9 +198,8 @@ compute_time_segments <- function(){
     segments <- read_csv(segments_file, col_types = cols_only(label = "c", start_time = "c",length = "c",repeats_on = "c",repeats_value = "i"), trim_ws = TRUE)
     new_segments <- prepare_periodic_segments(segments)
   } else if(type == "EVENT"){
-    participant_data <- yaml::read_yaml(participant_file)
     segments <- read_csv(segments_file, col_types = cols_only(label = "c", event_timestamp = "d",length = "c",shift = "c",shift_direction = "i", device_id = "c"), trim_ws = TRUE)
-    new_segments <- prepare_event_segments(segments, participant_data)
+    new_segments <- prepare_event_segments(segments, participant_devices)
   }
   
   write.csv(new_segments %>% select(label) %>% distinct(label), snakemake@output[["segments_labels_file"]], row.names = FALSE, quote = FALSE)
