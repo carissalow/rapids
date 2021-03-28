@@ -11,6 +11,11 @@ def get_script_language(script_path):
 
 
 # Features.smk #########################################################################################################
+def get_barnett_daily(wildcards):
+    if wildcards.provider_key.upper() == "BARNETT":
+        return "data/interim/{pid}/phone_locations_barnett_daily.csv"
+    return []
+
 def find_features_files(wildcards):
     feature_files = []
     for provider_key, provider in config[(wildcards.sensor_key).upper()]["PROVIDERS"].items():

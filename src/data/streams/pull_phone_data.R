@@ -100,6 +100,22 @@ load_container_script <- function(stream_container){
   }
 }
 
+get_devices_ids <- function(participant_data){
+  devices_ids = c()
+  for(device in participant_data)
+    for(attribute in names(device))
+      if(attribute == "DEVICE_IDS")
+        devices_ids <- c(devices_ids, device[[attribute]])
+  return(devices_ids)
+}
+
+validate_participant_file_without_device_ids <- function(participant_file){
+  participant_data <- yaml::read_yaml(participant_file)
+  participant_devices <- get_devices_ids(participant_data)
+  if(length(participant_devices) == 0)
+    stop("There are no device ids in this participant file for smartphones or wearables: ", participant_file)
+}
+
 pull_phone_data <- function(){
   participant_file <- snakemake@input[["participant_file"]]
   stream_format <- snakemake@input[["stream_format"]]
@@ -111,6 +127,7 @@ pull_phone_data <- function(){
   device_type <- "phone"
   output_data_file <- snakemake@output[[1]]
 
+  validate_participant_file_without_device_ids(participant_file)
   participant_data <- read_yaml(participant_file)
   stream_schema <- read_yaml(stream_format)
   rapids_schema <- read_yaml(rapids_schema_file)

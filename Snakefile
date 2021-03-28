@@ -205,6 +205,9 @@ for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
             else:
                 raise ValueError("Error: Add PHONE_LOCATIONS (and as many PHONE_SENSORS as you have) to [PHONE_DATA_YIELD][SENSORS] in config.yaml. This is necessary to compute phone_yielded_timestamps (time when the smartphone was sensing data) which is used to resample fused location data (ALL_RESAMPLED and RESAMPLED_FUSED)")
 
+        if provider == "BARNETT":
+            files_to_compute.extend(expand("data/interim/{pid}/phone_locations_barnett_daily.csv", pid=config["PIDS"]))
+
         files_to_compute.extend(expand("data/raw/{pid}/phone_locations_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed_with_datetime.csv", pid=config["PIDS"]))
