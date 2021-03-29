@@ -1,4 +1,5 @@
 site_name: RAPIDS
+site_url: https://www.rapids.science/
 markdown_extensions:
     - toc:
         permalink: True
@@ -35,14 +36,13 @@ markdown_extensions:
     - def_list
 extra:
   version:
-    method: mike
+    provider: mike
   social:
     - icon: fontawesome/brands/twitter
       link: 'https://twitter.com/julio_ui'
 extra_javascript:
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
-  - javascripts/extra.js
 
 repo_name: 'carissalow/rapids'
 repo_url: 'https://github.com/carissalow/rapids'

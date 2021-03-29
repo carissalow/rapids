@@ -4,3 +4,10 @@
   <!-- Add custom comment system integration here -->
   {% include "partials/integrations/utterances.html" %}
 {% endblock %}
+
+{% block outdated %}
+  You're not viewing the latest stable version of RAPIDS.
+  <a href="{{ config.site_url | url }}">
+    <strong> Click here to go to latest. </strong>
+  </a>
+{% endblock %}
