@@ -1,6 +1,8 @@
 # Behavioral Features Introduction
 
-Every device sensor has a corresponding config section in `config.yaml`, these sections follow a similar structure and we'll use `PHONE_ACCELEROMETER` as an example to explain this structure.
+A behavioral feature is a metric computed from raw sensor data quantifying the behavior of a participant. For example, the time spent at home computed based on location data. These are also known as digital biomarkers. 
+
+RAPIDS' `config.yaml` has a section for each supported device/sensor (e.g., `PHONE_ACCELEROMETER`, `FITBIT_STEPS`, `EMPATICA_HEARTRATE`). These sections follow a similar structure, and they can have one or more feature `PROVIDERS`, that compute one or more behavioral features.  You will modify the parameters of these `PROVIDERS` to obtain features from different mobile sensors. We'll use `PHONE_ACCELEROMETER` as an example to explain this further.
 
 !!! hint
     - We recommend reading this page if you are using RAPIDS for the first time
@@ -38,6 +40,6 @@ PHONE_ACCELEROMETER: # (1)
 
 --8<--- "docs/snippets/feature_introduction_example.md"
 
-These are descriptions of each marker for accessibility:
+These are the descriptions of each marker for accessibility:
 
 --8<--- "docs/snippets/feature_introduction_example.md"

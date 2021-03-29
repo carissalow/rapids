@@ -16,36 +16,39 @@ Let's review some key concepts we use throughout these docs:
 |Provider| A script that creates behavioral features for a specific sensor. Providers are created by the core RAPIDS team or by the community, which are named after its first author like [[PHONE_LOCATIONS][DORYAB]](../../features/phone-locations/#doryab-provider).|
 |config.yaml| A YAML file where you can modify parameters to process data streams and behavioral features. This is the heart of RAPIDS and the file that you will modify the most.|
 |credentials.yaml| A YAML file where you can define credential groups (user, password, host, etc.) if your data stream needs to connect to a database or Web API|
-|Participant file| A YAML file that links one or more smartphone or wearable devices that a single participant used. RAPIDS needs one file per participant. |
+|Participant file(s)| A YAML file that links one or more smartphone or wearable devices that a single participant used. RAPIDS needs one file per participant. |
 
-You can do one or more of these things with RAPIDS:
+!!! success "What can I do with RAPIDS?"
+    You can do one or more of these things with RAPIDS:
 
-1. [Extract behavioral features](../../features/feature-introduction/) from smartphone, Fitbit, and Empatica's [supported data streams](../../datastreams/data-streams-introduction/)
-1. [Add your own behavioral features](../../features/add-new-features/) (we can include them in RAPIDS if you want to share them with the community)
-1. [Add support for new data streams](../../datastreams/add-new-data-streams/) if yours cannot be processed by RAPIDS yet
-1. Create visualizations for [data quality control](../../visualizations/data-quality-visualizations/)  and [feature inspection](../../visualizations/feature-visualizations/)
-1. [Extending RAPIDS to organize your analysis](../../workflow-examples/analysis/) and publish a code repository along with your code
-
-**In order to follow any of the previous tutorials, you will have to [Install](../installation/), [Configure](../configuration/), and learn how to [Execute](../execution/) RAPIDS.**
+    1. [Extract behavioral features](../../features/feature-introduction/) from smartphone, Fitbit, and Empatica's [supported data streams](../../datastreams/data-streams-introduction/)
+    1. [Add your own behavioral features](../../features/add-new-features/) (we can include them in RAPIDS if you want to share them with the community)
+    1. [Add support for new data streams](../../datastreams/add-new-data-streams/) if yours cannot be processed by RAPIDS yet
+    1. Create visualizations for [data quality control](../../visualizations/data-quality-visualizations/)  and [feature inspection](../../visualizations/feature-visualizations/)
+    1. [Extending RAPIDS to organize your analysis](../../workflow-examples/analysis/) and publish a code repository along with your code
 
 !!! hint
+    - **In order to follow any of the previous tutorials, you will have to [Install](../installation/), [Configure](../configuration/), and learn how to [Execute](../execution/) RAPIDS.**
+
     - We recommend you follow the [Minimal Example](../../workflow-examples/minimal/) tutorial to get familiar with RAPIDS
 
-    - [Email us](../../team), create a [Github issue](https://github.com/carissalow/rapids/issues) or text us in [Slack](http://awareframework.com:3000/) if you have any questions
+    - [Email us](../../team), leave a comment in these docs, create a [Github issue](https://github.com/carissalow/rapids/issues) or text us in [Slack](http://awareframework.com:3000/) if you have any questions
 
 ## Frequently Asked Questions
 
 ### General
 
-??? info "What exactly is RAPIDS?"
+??? question "What exactly is RAPIDS?"
     RAPIDS is a group of configuration files and R and Python scripts that are executed by [Snakemake](https://snakemake.github.io/). You can get a copy of RAPIDS by cloning our Github repository.
 
     RAPIDS is not a web application or server; all the processing is done in your laptop, server, or computer cluster.
 
-??? info "How does RAPIDS work?"
+??? question "How does RAPIDS work?"
     You will most of the time only have to modify configuration files in YAML format (`config.yaml`, `credentials.yaml`, and participant files `pxx.yaml`), and in CSV format (time zones and time segments).
 
-    RAPIDS pulls data from different data containers and processes it in steps. The input/output of each step is saved as a CSV file for inspection; you can check what files are created for each sensor provider on their documentation page. All data is stored in `data/`, and all processing Python and R scripts are stored in `src/`.
+    RAPIDS pulls data from different data containers and processes it in steps. The input/output of each step is saved as a CSV file for inspection; you can check the files that are created for each sensor on its documentation page. 
+    
+    All data is stored in `data/`, and all processing Python and R scripts are stored in `src/`.
 
 
     ??? example "User and File interactions in RAPIDS"
@@ -60,35 +63,37 @@ You can do one or more of these things with RAPIDS:
     ??? example "Data flow in RAPIDS"
         In the figure below, we represent the flow of data in RAPIDS. In broad terms, smartphone and wearable devices log [data streams](../../datastreams/data-streams-introduction/) with a certain format to a data container (database, file, etc.). 
         
-        RAPIDS can connect to these containers if it has a `format.yaml` and a `container.[R|py]` script used to pull the correct data and mutate it to comply with RAPIDS' internal data representation. Once the data stream is in RAPIDS, it goes through some basic transformations (scripts), one that assigns a time segment and a time zone to each data row, and another one that creates "episodes" of data for some sensors that need it (like screen, battery, activity recognition, and sleep intraday day). After this, RAPIDS executes the requested provider script that computes behavioral features per time segment instance. After every feature is computed, they are joined per sensor, per participant, and study. Visualizations are built based on raw data with date-time information or based on computed features. 
+        RAPIDS can connect to these containers if it has a `format.yaml` and a `container.[R|py]` script used to pull the correct data and mutate it to comply with RAPIDS' internal data representation. Once the data stream is in RAPIDS, it goes through some basic transformations (scripts), one that assigns a time segment and a time zone to each data row, and another one that creates "episodes" of data for some sensors that need it (like screen, battery, activity recognition, and sleep intraday data).
+        
+        After this, RAPIDS executes the requested `PROVIDER` script that computes behavioral features per time segment instance. After every feature is computed, they are joined per sensor, per participant, and study. Visualizations are built based on raw data or based on computed features. 
         
         <figure>
         <img src="../../img/dataflow.png" max-width="50%" />
         <figcaption>Data stream flow in RAPIDS</figcaption>
         </figure>
 
-??? info "Is my data private?"
+??? question "Is my data private?"
     Absolutely, you are processing your data with your own copy of RAPIDS in your laptop, server, or computer cluster, so neither we nor anyone else can have access to your datasets.
 
-??? info "Do I need to have coding skills to use RAPIDS?"
+??? question "Do I need to have coding skills to use RAPIDS?"
     If you want to extract the behavioral features or visualizations that RAPIDS offers out of the box, the answer is no. However, you need to be comfortable running commands in your terminal and familiar with editing YAML files and CSV files.
 
     If you want to add support for new data streams or behavioral features, you need to be familiar with R or Python.
 
-??? info "Is RAPIDS open-source or free?"
+??? question "Is RAPIDS open-source or free?"
     Yes, RAPIDS is both open-source and free.
 
-??? info "How do I cite RAPIDS?"
+??? question "How do I cite RAPIDS?"
     Please refer to our [Citation guide](../../citation/); depending on what parts of RAPIDS you used, we also ask you to cite the work of other authors that shared their work.
 
-??? info "I have a lot of data, can RAPIDS handle it/ is RAPIDS fast enough?"
+??? question "I have a lot of data, can RAPIDS handle it/ is RAPIDS fast enough?"
     Yes, we use Snakemake under the hood, so you can automatically distribute RAPIDS execution over multiple [cores](../execution/) or [clusters](https://snakemake.readthedocs.io/en/stable/executing/cluster.html). RAPIDS processes data per sensor and participant, so it can take advantage of this parallel processing.
 
-??? info "What are the advantages of using RAPIDS over implementing my own analysis code?"
+??? question "What are the advantages of using RAPIDS over implementing my own analysis code?"
     We believe RAPIDS can benefit your analysis in several ways:
 
     - RAPIDS has more than 250 [behavioral features](../../features/add-new-features/) available, many of them tested and used by other researchers.
-    - RAPIDS can extract features in dynamic [time segments](../../setup/configuration/#time-segments) (for example, every x minutes, x hours, x days, x weeks, x months, etc.). This is handy because you don't have to deal with time zones, light saving changes, or date arithmetic.
+    - RAPIDS can extract features in dynamic [time segments](../../setup/configuration/#time-segments) (for example, every x minutes, x hours, x days, x weeks, x months, etc.). This is handy because you don't have to deal with time zones, day light saving changes, or date arithmetic.
     - Your analysis is less prone to errors. Every participant sensor dataset is analyzed in the same way and isolated from each other.
     - If you have lots of data, out-of-the-box parallel execution will speed up your analysis and if your computer crashes, RAPIDS will start from where it left of. 
     - You can publish your analysis code along with your papers and be sure it will run exactly as it does in your computer.
@@ -97,40 +102,40 @@ You can do one or more of these things with RAPIDS:
 
 ### Data Streams
 
-??? info "Can I process smartphone data collected with Beiwe, PurpleRobot, or app X?"
+??? question "Can I process smartphone data collected with Beiwe, PurpleRobot, or app X?"
     Yes, but you need to add a new data stream to RAPIDS (a new `format.yaml` and container script in R or Python). Follow this [tutorial](../../datastreams/add-new-data-streams/).  [Email us](../../team), create a [Github issue](https://github.com/carissalow/rapids/issues) or text us in [Slack](http://awareframework.com:3000/) if you have any questions.
 
     If you do so, let us know so we can integrate your work into RAPIDS.
 
-??? info "Can I process data from Oura Rings, Actigraphs, or wearable X?"
+??? question "Can I process data from Oura Rings, Actigraphs, or wearable X?"
     The only wearables we support at the moment are Empatica and Fitbit. However, get in touch if you need to process data from a different wearable. We have limited resources so we add support for different devices on an as-needed basis, but we would be happy to collaborate with you to add new wearables. [Email us](../../team), create a [Github issue](https://github.com/carissalow/rapids/issues) or text us in [Slack](http://awareframework.com:3000/) if you have any questions.
 
-??? info "Can I process smartphone or wearable data stored in PostgreSQL, Oracle, SQLite, CSV files, or data container X?"
+??? question "Can I process smartphone or wearable data stored in PostgreSQL, Oracle, SQLite, CSV files, or data container X?"
     Yes, but you need to add a new data stream to RAPIDS (a new `format.yaml` and container script in R or Python). Follow this [tutorial](../../datastreams/add-new-data-streams/). If you are processing data streams we already support like AWARE, Fitbit, or Empatica and are just connecting to a different container; you can reuse their `format.yaml` and only implement a new container script. [Email us](../../team), create a [Github issue](https://github.com/carissalow/rapids/issues) or text us in [Slack](http://awareframework.com:3000/) if you have any questions.
 
     If you do so, let us know so we can integrate your work into RAPIDS.
 
-??? info "I have participants that live in different time zones and some that travel; can RAPIDS handle this?"
+??? question "I have participants that live in different time zones and some that travel; can RAPIDS handle this?"
     Yes, RAPIDS can handle [single or multiple timezones](../../setup/configuration/#timezone-of-your-study) per participant. You can use time zone data collected by smartphones or collected by hand.
 
-??? info "Some of my participants used more than one device during my study; can RAPIDS handle this?"
+??? question "Some of my participants used more than one device during my study; can RAPIDS handle this?"
     Yes, you can link more than one smartphone or wearable device to a single participant. RAPIDS will merge them and sort them automatically.
 
-??? info "Some of my participants switched from Android to iOS or vice-versa during my study; can RAPIDS handle this?"
+??? question "Some of my participants switched from Android to iOS or vice-versa during my study; can RAPIDS handle this?"
     Yes, data from multiple smartphones can be linked to a single participant. All iOS data is converted to Android data before merging it.
 
 ### Extending RAPIDS
 
-??? info "Can I add my own behavioral features/digital biomarkers?"
+??? question "Can I add my own behavioral features/digital biomarkers?"
     Yes, you can implement your own features in R or Python following this [tutorial](../../features/add-new-features/) 
 
-??? info "Can I extract behavioral features based on two or more sensors?"
+??? question "Can I extract behavioral features based on two or more sensors?"
     Yes, we do this for `PHONE_DATA_YIELD` (combines all phone sensors), `PHONE_LOCATIONS` (combines location and data yield data), `PHONE_APPLICATIONS_BACKGROUND` (combines screen and app usage data), and `FITBIT_INTRADAY_STEPS` (combines Fitbit and sleep and step data). 
     
     However, we haven't come up with a user-friendly way to configure this, and currently, we join sensors on a case-by-case basis. This is mainly because not enough users have needed this functionality so far. Get in touch, and we can set it up together; the more use cases we are aware of, the easier it will be to integrate this into RAPIDS.
 
-??? info "I know how to program in Python or R but not both. Can I still use or extend RAPIDS?"
+??? question "I know how to program in Python or R but not both. Can I still use or extend RAPIDS?"
     Yes, you don't need to write any code to use RAPIDS out of the box. If you need to add support for new [data streams](../../datastreams/add-new-data-streams/)  or [behavioral features](../../features/add-new-features/) you can use scripts in either language.
 
-??? info "I have scripts that clean raw data from X sensor, can I use them with RAPIDS?"
+??? question "I have scripts that clean raw data from X sensor, can I use them with RAPIDS?"
     Yes, you can add them as a [`[MUTATION][SCRIPT]`](../../datastreams/add-new-data-streams/#complex-mapping) in the `format.yaml` of the [data stream](../../datastreams/data-streams-introduction/) you are using. You will add a `main` function that will receive a data frame with the raw data for that sensor that in turn will be used to compute behavioral features.
