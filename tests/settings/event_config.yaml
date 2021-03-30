@@ -1,0 +1,543 @@
+########################################################################################################################
+#                                              GLOBAL CONFIGURATION                                                    #
+########################################################################################################################
+
+# See https://www.rapids.science/latest/setup/configuration/#participant-files
+PIDS: [test01, test03, test04]
+
+# See https://www.rapids.science/latest/setup/configuration/#automatic-creation-of-participant-files
+CREATE_PARTICIPANT_FILES:
+  CSV_FILE_PATH: "data/external/example_participants.csv" # see docs for required format
+  PHONE_SECTION:
+    ADD: True
+    DEVICE_ID_COLUMN: device_id # column name
+    IGNORED_DEVICE_IDS: []
+  FITBIT_SECTION:
+    ADD: True
+    DEVICE_ID_COLUMN: fitbit_id # column name
+    IGNORED_DEVICE_IDS: []
+  EMPATICA_SECTION:
+    ADD: True
+    DEVICE_ID_COLUMN: empatica_id # column name
+    IGNORED_DEVICE_IDS: []
+
+# See https://www.rapids.science/latest/setup/configuration/#time-segments
+TIME_SEGMENTS: &time_segments
+  TYPE: EVENT # FREQUENCY, PERIODIC, EVENT
+  FILE: "data/external/timesegments_event.csv"
+  INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, see docs
+
+# See https://www.rapids.science/latest/setup/configuration/#timezone-of-your-study
+TIMEZONE: 
+    TYPE: SINGLE
+    SINGLE:
+      TZCODE: America/New_York
+    MULTIPLE:
+      TZCODES_FILE: data/external/multiple_timezones_example.csv
+      IF_MISSING_TZCODE: STOP
+      DEFAULT_TZCODE: America/New_York
+      FITBIT: 
+        ALLOW_MULTIPLE_TZ_PER_DEVICE: False
+        INFER_FROM_SMARTPHONE_TZ: False
+
+########################################################################################################################
+#                                                 PHONE                                                                #
+########################################################################################################################
+
+# See https://www.rapids.science/latest/setup/configuration/#data-stream-configuration
+PHONE_DATA_STREAMS:
+  USE: aware_csv
+  
+  # AVAILABLE:
+  aware_mysql: 
+    DATABASE_GROUP: MY_GROUP
+
+  aware_csv:
+    FOLDER: tests/data/external/aware_csv
+  
+  aware_influxdb: 
+    DATABASE_GROUP: MY_GROUP
+
+# Sensors ------
+
+# https://www.rapids.science/latest/features/phone-accelerometer/
+PHONE_ACCELEROMETER:
+  CONTAINER: accelerometer
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
+      SRC_SCRIPT: src/features/phone_accelerometer/rapids/main.py
+    
+    PANDA:
+      COMPUTE: False
+      VALID_SENSED_MINUTES: False
+      FEATURES:
+        exertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
+        nonexertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
+      SRC_SCRIPT: src/features/phone_accelerometer/panda/main.py
+
+# See https://www.rapids.science/latest/features/phone-activity-recognition/
+PHONE_ACTIVITY_RECOGNITION:
+  CONTAINER: 
+    ANDROID: plugin_google_activity_recognition
+    IOS: plugin_ios_activity_recognition
+  EPISODE_THRESHOLD_BETWEEN_ROWS: 5 # minutes. Max time difference for two consecutive rows to be considered within the same AR episode.
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["count", "mostcommonactivity", "countuniqueactivities", "durationstationary", "durationmobile", "durationvehicle"]
+      ACTIVITY_CLASSES:
+        STATIONARY: ["still", "tilting"]
+        MOBILE: ["on_foot", "walking", "running", "on_bicycle"]
+        VEHICLE: ["in_vehicle"]
+      SRC_SCRIPT: src/features/phone_activity_recognition/rapids/main.py
+
+# See https://www.rapids.science/latest/features/phone-applications-crashes/
+PHONE_APPLICATIONS_CRASHES:
+  CONTAINER: applications_crashes
+  APPLICATION_CATEGORIES:
+    CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
+    CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
+    UPDATE_CATALOGUE_FILE: False # if CATALOGUE_SOURCE is equal to FILE, whether or not to update CATALOGUE_FILE, if CATALOGUE_SOURCE is equal to GOOGLE all scraped genres will be saved to CATALOGUE_FILE
+    SCRAPE_MISSING_CATEGORIES: False # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
+
+# See https://www.rapids.science/latest/features/phone-applications-foreground/
+PHONE_APPLICATIONS_FOREGROUND:
+  CONTAINER: applications_foreground
+  APPLICATION_CATEGORIES:
+    CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
+    CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
+    UPDATE_CATALOGUE_FILE: False # if CATALOGUE_SOURCE is equal to FILE, whether or not to update CATALOGUE_FILE, if CATALOGUE_SOURCE is equal to GOOGLE all scraped genres will be saved to CATALOGUE_FILE
+    SCRAPE_MISSING_CATEGORIES: False # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      SINGLE_CATEGORIES: ["all", "email"]
+      MULTIPLE_CATEGORIES:
+        social: ["socialnetworks", "socialmediatools"]
+        entertainment: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
+      SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
+      EXCLUDED_CATEGORIES: []
+      EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
+      FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+      SRC_SCRIPT: src/features/phone_applications_foreground/rapids/main.py
+
+# See https://www.rapids.science/latest/features/phone-applications-notifications/
+PHONE_APPLICATIONS_NOTIFICATIONS:
+  CONTAINER: applications_notifications
+  APPLICATION_CATEGORIES:
+    CATALOGUE_SOURCE: FILE # FILE (genres are read from CATALOGUE_FILE) or GOOGLE (genres are scrapped from the Play Store)
+    CATALOGUE_FILE: "data/external/stachl_application_genre_catalogue.csv"
+    UPDATE_CATALOGUE_FILE: False # if CATALOGUE_SOURCE is equal to FILE, whether or not to update CATALOGUE_FILE, if CATALOGUE_SOURCE is equal to GOOGLE all scraped genres will be saved to CATALOGUE_FILE
+    SCRAPE_MISSING_CATEGORIES: False # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
+
+# See https://www.rapids.science/latest/features/phone-battery/
+PHONE_BATTERY:
+  CONTAINER: phone_battery_raw.csv
+  EPISODE_THRESHOLD_BETWEEN_ROWS: 30 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
+      SRC_SCRIPT: src/features/phone_battery/rapids/main.py
+
+# See https://www.rapids.science/latest/features/phone-bluetooth/
+PHONE_BLUETOOTH:
+  CONTAINER: phone_bluetooth_raw.csv
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: FALSE
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_SCRIPT: src/features/phone_bluetooth/rapids/main.R
+
+    DORYAB:
+      COMPUTE: False
+      FEATURES: 
+        ALL: 
+            DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+            SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+            SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+        OWN: 
+            DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+            SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+            SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+        OTHERS:
+            DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
+            SCANS_MOST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+            SCANS_LEAST_FREQUENT_DEVICE: ["withinsegments", "acrosssegments", "acrossdataset"]
+      SRC_SCRIPT: src/features/phone_bluetooth/doryab/main.py
+
+# See https://www.rapids.science/latest/features/phone-calls/
+PHONE_CALLS:
+  CONTAINER: phone_calls_raw.csv
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      CALL_TYPES: [missed, incoming, outgoing]
+      FEATURES:
+        missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]
+        incoming: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+        outgoing: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
+      SRC_SCRIPT: src/features/phone_calls/rapids/main.R
+
+# See https://www.rapids.science/latest/features/phone-conversation/
+PHONE_CONVERSATION:
+  CONTAINER: 
+    ANDROID: phone_conversation_raw.csv
+    IOS: phone_conversation_raw.csv
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: FALSE
+      FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
+    "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
+    "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
+    "voiceavgenergy","voicesdenergy","voiceminenergy","voicemaxenergy","silencesensedfraction","noisesensedfraction",
+    "voicesensedfraction","unknownsensedfraction","silenceexpectedfraction","noiseexpectedfraction","voiceexpectedfraction",
+    "unknownexpectedfraction","countconversation"]
+      RECORDING_MINUTES: 1
+      PAUSED_MINUTES : 3
+      SRC_SCRIPT: src/features/phone_conversation/rapids/main.py
+
+# See https://www.rapids.science/latest/features/phone-data-yield/
+PHONE_DATA_YIELD:
+  SENSORS: []
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: [ratiovalidyieldedminutes, ratiovalidyieldedhours]
+      MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 # 0 to 1, minimum percentage of valid minutes in an hour to be considered valid.
+      SRC_SCRIPT: src/features/phone_data_yield/rapids/main.R
+
+# See https://www.rapids.science/latest/features/phone-keyboard/
+PHONE_KEYBOARD:
+  CONTAINER: keyboard
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
+
+# See https://www.rapids.science/latest/features/phone-light/
+PHONE_LIGHT:
+  CONTAINER: phone_light_raw.csv
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: FALSE
+      FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
+      SRC_SCRIPT: src/features/phone_light/rapids/main.py
+
+# See https://www.rapids.science/latest/features/phone-locations/
+PHONE_LOCATIONS:
+  CONTAINER: locations
+  LOCATIONS_TO_USE: ALL_RESAMPLED # ALL, GPS, ALL_RESAMPLED, OR FUSED_RESAMPLED
+  FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD: 30 # minutes, only replicate location samples to the next sensed bin if the phone did not stop collecting data for more than this threshold
+  FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION: 720 # minutes, only replicate location samples to consecutive sensed bins if they were logged within this threshold after a valid location row
+  HOME_INFERENCE:
+    DBSCAN_EPS: 10 # meters
+    DBSCAN_MINSAMPLES: 5
+    THRESHOLD_STATIC : 1 # km/h
+    CLUSTERING_ALGORITHM: DBSCAN #DBSCAN,OPTICS
+  
+  PROVIDERS:
+    DORYAB:
+      COMPUTE: False
+      FEATURES: ["locationvariance","loglocationvariance","totaldistance","averagespeed","varspeed", "numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","meanlengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy","timeathome"]
+      ACCURACY_LIMIT: 100 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
+      DBSCAN_EPS: 10 # meters
+      DBSCAN_MINSAMPLES: 5
+      THRESHOLD_STATIC : 1 # km/h
+      MAXIMUM_ROW_GAP: 300
+      MAXIMUM_ROW_DURATION: 60
+      MINUTES_DATA_USED: False
+      CLUSTER_ON: PARTICIPANT_DATASET # PARTICIPANT_DATASET,TIME_SEGMENT
+      CLUSTERING_ALGORITHM: DBSCAN #DBSCAN,OPTICS
+      RADIUS_FOR_HOME: 100  
+      SRC_SCRIPT: src/features/phone_locations/doryab/main.py
+
+    BARNETT:
+      COMPUTE: False
+      FEATURES: ["hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","circdnrtn","wkenddayrtn"]
+      ACCURACY_LIMIT: 100 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
+      IF_MULTIPLE_TIMEZONES: USE_MOST_COMMON
+      MINUTES_DATA_USED: False # Use this for quality control purposes, how many minutes of data (location coordinates gruped by minute) were used to compute features
+      SRC_SCRIPT: src/features/phone_locations/barnett/main.R
+
+# See https://www.rapids.science/latest/features/phone-log/
+PHONE_LOG:
+  CONTAINER: 
+    ANDROID: aware_log
+    IOS: ios_aware_log
+  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
+
+# See https://www.rapids.science/latest/features/phone-messages/
+PHONE_MESSAGES:
+  CONTAINER: phone_messages_raw.csv
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: FALSE
+      MESSAGES_TYPES : [received, sent]
+      FEATURES: 
+        received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+        sent: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
+      SRC_SCRIPT: src/features/phone_messages/rapids/main.R
+
+# See https://www.rapids.science/latest/features/phone-screen/
+PHONE_SCREEN:
+  CONTAINER: screen
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      REFERENCE_HOUR_FIRST_USE: 0
+      IGNORE_EPISODES_SHORTER_THAN: 0 # in minutes, set to 0 to disable
+      IGNORE_EPISODES_LONGER_THAN: 0 # in minutes, set to 0 to disable
+      FEATURES: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"] # "episodepersensedminutes" needs to be added later
+      EPISODE_TYPES: ["unlock"]
+      SRC_SCRIPT: src/features/phone_screen/rapids/main.py
+
+# See https://www.rapids.science/latest/features/phone-wifi-connected/
+PHONE_WIFI_CONNECTED:
+  CONTAINER: phone_wifi_connected_raw.csv
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: FALSE
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_SCRIPT: src/features/phone_wifi_connected/rapids/main.R
+
+# See https://www.rapids.science/latest/features/phone-wifi-visible/
+PHONE_WIFI_VISIBLE:
+  CONTAINER: phone_wifi_visible_raw.csv
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: FALSE
+      FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
+      SRC_SCRIPT: src/features/phone_wifi_visible/rapids/main.R
+
+
+
+########################################################################################################################
+#                                                 FITBIT                                                               #
+########################################################################################################################
+
+# See https://www.rapids.science/latest/setup/configuration/#data-stream-configuration
+FITBIT_DATA_STREAMS:
+  USE: fitbitjson_mysql
+  
+  # AVAILABLE:
+  fitbitjson_mysql: 
+    DATABASE_GROUP: MY_GROUP
+    SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
+  
+  fitbitparsed_mysql: 
+    DATABASE_GROUP: MY_GROUP
+    SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
+
+  fitbitjson_csv: 
+    FOLDER: data/external/fitbit_csv
+    SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
+
+  fitbitparsed_csv: 
+    FOLDER: data/external/fitbit_csv
+    SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
+
+# Sensors ------
+
+# See https://www.rapids.science/latest/features/fitbit-data-yield/
+FITBIT_DATA_YIELD:
+  SENSOR: FITBIT_HEARTRATE_INTRADAY
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: [ratiovalidyieldedminutes, ratiovalidyieldedhours]
+      MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 #  0 to 1, minimum percentage of valid minutes in an hour to be considered valid.
+      SRC_SCRIPT: src/features/fitbit_data_yield/rapids/main.R
+
+
+# See https://www.rapids.science/latest/features/fitbit-heartrate-summary/
+FITBIT_HEARTRATE_SUMMARY:
+  CONTAINER: heartrate_summary
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["maxrestinghr", "minrestinghr", "avgrestinghr", "medianrestinghr", "moderestinghr", "stdrestinghr", "diffmaxmoderestinghr", "diffminmoderestinghr", "entropyrestinghr"] # calories features' accuracy depend on the accuracy of the participants fitbit profile (e.g. height, weight) use these with care: ["sumcaloriesoutofrange", "maxcaloriesoutofrange", "mincaloriesoutofrange", "avgcaloriesoutofrange", "mediancaloriesoutofrange", "stdcaloriesoutofrange", "entropycaloriesoutofrange", "sumcaloriesfatburn", "maxcaloriesfatburn", "mincaloriesfatburn", "avgcaloriesfatburn", "mediancaloriesfatburn", "stdcaloriesfatburn", "entropycaloriesfatburn", "sumcaloriescardio", "maxcaloriescardio", "mincaloriescardio", "avgcaloriescardio", "mediancaloriescardio", "stdcaloriescardio", "entropycaloriescardio", "sumcaloriespeak", "maxcaloriespeak", "mincaloriespeak", "avgcaloriespeak", "mediancaloriespeak", "stdcaloriespeak", "entropycaloriespeak"]
+      SRC_SCRIPT: src/features/fitbit_heartrate_summary/rapids/main.py
+
+# See https://www.rapids.science/latest/features/fitbit-heartrate-intraday/
+FITBIT_HEARTRATE_INTRADAY:
+  CONTAINER: heartrate_intraday
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
+      SRC_SCRIPT: src/features/fitbit_heartrate_intraday/rapids/main.py
+
+# See https://www.rapids.science/latest/features/fitbit-sleep-summary/
+FITBIT_SLEEP_SUMMARY:
+  CONTAINER: sleep_summary
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["countepisode", "avgefficiency", "sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgdurationafterwakeup", "avgdurationasleep", "avgdurationawake", "avgdurationtofallasleep", "avgdurationinbed"]
+      SLEEP_TYPES: ["main", "nap", "all"]
+      SRC_SCRIPT: src/features/fitbit_sleep_summary/rapids/main.py
+
+# See https://www.rapids.science/latest/features/fitbit-sleep-intraday/
+FITBIT_SLEEP_INTRADAY:
+  CONTAINER: sleep_intraday
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES:
+        LEVELS_AND_TYPES_COMBINING_ALL: True
+        LEVELS_AND_TYPES: [countepisode, sumduration, maxduration, minduration, avgduration, medianduration, stdduration]
+        RATIOS_TYPE: [count, duration]
+        RATIOS_SCOPE: [ACROSS_LEVELS, ACROSS_TYPES, WITHIN_LEVELS, WITHIN_TYPES]
+        ROUTINE: [starttimefirstmainsleep, endtimelastmainsleep, starttimefirstnap, endtimelastnap]
+      SLEEP_LEVELS:
+        CLASSIC: [awake, restless, asleep]
+        STAGES: [wake, deep, light, rem]
+        UNIFIED: [awake, asleep]
+      SLEEP_TYPES: [main, nap]
+      INCLUDE_SLEEP_LATER_THAN: 0 # a number ranged from 0 (midnight) to 1439 (23:59)
+      REFERENCE_TIME: MIDNIGHT # chosen from "MIDNIGHT" and "START_OF_THE_SEGMENT"
+      SRC_SCRIPT: src/features/fitbit_sleep_intraday/rapids/main.py
+  
+    PRICE:
+      COMPUTE: False
+      FEATURES: [avgduration, avgratioduration, avgstarttimeofepisodemain, avgendtimeofepisodemain, avgmidpointofepisodemain, "stdstarttimeofepisodemain", "stdendtimeofepisodemain", "stdmidpointofepisodemain", socialjetlag, meanssdstarttimeofepisodemain, meanssdendtimeofepisodemain, meanssdmidpointofepisodemain, medianssdstarttimeofepisodemain, medianssdendtimeofepisodemain, medianssdmidpointofepisodemain]
+      SLEEP_LEVELS:
+        CLASSIC: [awake, restless, asleep]
+        STAGES: [wake, deep, light, rem]
+        UNIFIED: [awake, asleep]
+      DAY_TYPES: [WEEKEND, WEEK, ALL]
+      GROUP_EPISODES_WITHIN: # by default: today's 6pm to tomorrow's noon
+        START_TIME: 1080 # number of minutes after the midnight (18:00) 18*60
+        LENGTH: 1080 # in minutes (18 hours) 18*60
+      SRC_SCRIPT: src/features/fitbit_sleep_intraday/price/main.py
+
+# See https://www.rapids.science/latest/features/fitbit-steps-summary/
+FITBIT_STEPS_SUMMARY:
+  CONTAINER: steps_summary
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES: ["maxsumsteps", "minsumsteps", "avgsumsteps", "mediansumsteps", "stdsumsteps"]
+      SRC_SCRIPT: src/features/fitbit_steps_summary/rapids/main.py
+
+# See https://www.rapids.science/latest/features/fitbit-steps-intraday/
+FITBIT_STEPS_INTRADAY:
+  CONTAINER: steps_intraday
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      FEATURES:
+        STEPS: ["sum", "max", "min", "avg", "std"]
+        SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+        ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+      THRESHOLD_ACTIVE_BOUT: 10 # steps
+      INCLUDE_ZERO_STEP_ROWS: False
+      SRC_SCRIPT: src/features/fitbit_steps_intraday/rapids/main.py
+
+########################################################################################################################
+#                                                 EMPATICA                                                             #
+########################################################################################################################
+
+EMPATICA_DATA_STREAMS:
+  USE: empatica_zip
+  
+  # AVAILABLE:
+  empatica_zip: 
+    FOLDER: data/external/empatica
+
+# Sensors ------
+
+# See https://www.rapids.science/latest/features/empatica-accelerometer/
+EMPATICA_ACCELEROMETER:
+  CONTAINER: ACC
+  PROVIDERS:
+    DBDP:
+      COMPUTE: False
+      FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
+      SRC_SCRIPT: src/features/empatica_accelerometer/dbdp/main.py
+
+# See https://www.rapids.science/latest/features/empatica-heartrate/
+EMPATICA_HEARTRATE:
+  CONTAINER: HR
+  PROVIDERS:
+    DBDP:
+      COMPUTE: False
+      FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr"]
+      SRC_SCRIPT: src/features/empatica_heartrate/dbdp/main.py
+
+# See https://www.rapids.science/latest/features/empatica-temperature/
+EMPATICA_TEMPERATURE:
+  CONTAINER: TEMP
+  PROVIDERS:
+    DBDP:
+      COMPUTE: False
+      FEATURES: ["maxtemp", "mintemp", "avgtemp", "mediantemp", "modetemp", "stdtemp", "diffmaxmodetemp", "diffminmodetemp", "entropytemp"]
+      SRC_SCRIPT: src/features/empatica_temperature/dbdp/main.py
+
+# See https://www.rapids.science/latest/features/empatica-electrodermal-activity/
+EMPATICA_ELECTRODERMAL_ACTIVITY:
+  CONTAINER: EDA
+  PROVIDERS:
+    DBDP:
+      COMPUTE: False
+      FEATURES: ["maxeda", "mineda", "avgeda", "medianeda", "modeeda", "stdeda", "diffmaxmodeeda", "diffminmodeeda", "entropyeda"]
+      SRC_SCRIPT: src/features/empatica_electrodermal_activity/dbdp/main.py
+
+# See https://www.rapids.science/latest/features/empatica-blood-volume-pulse/
+EMPATICA_BLOOD_VOLUME_PULSE:
+  CONTAINER: BVP
+  PROVIDERS:
+    DBDP:
+      COMPUTE: False
+      FEATURES: ["maxbvp", "minbvp", "avgbvp", "medianbvp", "modebvp", "stdbvp", "diffmaxmodebvp", "diffminmodebvp", "entropybvp"]
+      SRC_SCRIPT: src/features/empatica_blood_volume_pulse/dbdp/main.py
+
+# See https://www.rapids.science/latest/features/empatica-inter-beat-interval/
+EMPATICA_INTER_BEAT_INTERVAL:
+  CONTAINER: IBI
+  PROVIDERS:
+    DBDP:
+      COMPUTE: False
+      FEATURES: ["maxibi", "minibi", "avgibi", "medianibi", "modeibi", "stdibi", "diffmaxmodeibi", "diffminmodeibi", "entropyibi"]
+      SRC_SCRIPT: src/features/empatica_inter_beat_interval/dbdp/main.py
+
+# See https://www.rapids.science/latest/features/empatica-tags/
+EMPATICA_TAGS:
+  CONTAINER: TAGS
+  PROVIDERS:  # None implemented yet
+
+
+########################################################################################################################
+#                                                 PLOTS                                                                #
+########################################################################################################################
+
+# Data quality ------
+
+# See https://www.rapids.science/latest/visualizations/data-quality-visualizations/#1-histograms-of-phone-data-yield
+HISTOGRAM_PHONE_DATA_YIELD:
+  PLOT: False
+
+# See https://www.rapids.science/latest/visualizations/data-quality-visualizations/#2-heatmaps-of-overall-data-yield
+HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT:
+  PLOT: False
+
+# See https://www.rapids.science/latest/visualizations/data-quality-visualizations/#3-heatmap-of-recorded-phone-sensors
+HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT:
+  PLOT: False
+
+# See https://www.rapids.science/latest/visualizations/data-quality-visualizations/#4-heatmap-of-sensor-row-count
+HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT:
+  PLOT: False
+  SENSORS: [PHONE_ACCELEROMETER, PHONE_ACTIVITY_RECOGNITION, PHONE_APPLICATIONS_FOREGROUND, PHONE_BATTERY, PHONE_BLUETOOTH, PHONE_CALLS, PHONE_CONVERSATION, PHONE_LIGHT, PHONE_LOCATIONS, PHONE_MESSAGES, PHONE_SCREEN, PHONE_WIFI_CONNECTED, PHONE_WIFI_VISIBLE]
+
+# Features ------
+
+# See https://www.rapids.science/latest/visualizations/feature-visualizations/#1-heatmap-correlation-matrix
+HEATMAP_FEATURE_CORRELATION_MATRIX:
+  PLOT: False
+  MIN_ROWS_RATIO: 0.5
+  CORR_THRESHOLD: 0.1
+  CORR_METHOD: "pearson" # choose from {"pearson", "kendall", "spearman"}
+
