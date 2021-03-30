@@ -124,6 +124,16 @@ PHONE_BLUETOOTH:
     MUTATION:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      BT_ADDRESS: bt_address
+      BT_NAME: bt_name
+      BT_RSSI: bt_rssi
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
 
 PHONE_CALLS:
   ANDROID:
@@ -301,6 +311,18 @@ PHONE_WIFI_CONNECTED:
 
 PHONE_WIFI_VISIBLE:
   ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      SSID: ssid
+      BSSID: bssid
+      SECURITY: security
+      FREQUENCY: frequency
+      RSSI: rssi
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+  IOS:
     RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
       DEVICE_ID: device_id

@@ -254,7 +254,7 @@ For some sensors, we need to transform iOS data into Android format; you can ref
 
     === "IOS"
 
-        This sensor is not supported by iOS devices.
+        Only old iOS versions supported this sensor (same mapping as Android).
 
 
 ??? info "PHONE_CALLS"
@@ -602,5 +602,5 @@ For some sensors, we need to transform iOS data into Android format; you can ref
 
     === "IOS"
 
-        This sensor is not supported by iOS devices.
+        Only old iOS versions supported this sensor (same mapping as Android).
 
