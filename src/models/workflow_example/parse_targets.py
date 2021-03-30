@@ -19,6 +19,7 @@ for time_segment in time_segments_labels["label"]:
     all_targets = all_targets.merge(filtered_targets, how="outer")
 
 segment_colums = pd.DataFrame()
+all_targets["local_segment"] = all_targets["local_segment"].str.replace(r'_RR\d+SS', '')
 split_segemnt_columns = all_targets["local_segment"].str.split(pat="(.*)#(.*),(.*)", expand=True)
 new_segment_columns = split_segemnt_columns.iloc[:,1:4] if split_segemnt_columns.shape[1] == 5 else pd.DataFrame(columns=["local_segment_label", "local_segment_start_datetime","local_segment_end_datetime"])
 segment_colums[["local_segment_label", "local_segment_start_datetime", "local_segment_end_datetime"]] = new_segment_columns
