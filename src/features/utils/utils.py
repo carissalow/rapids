@@ -81,10 +81,10 @@ def chunk_episodes(sensor_episodes):
 
     # Compute datetime
     merged_sensor_episodes["local_start_date_time"] = pd.to_datetime(merged_sensor_episodes["start_timestamp"], unit="ms", utc=True)
-    merged_sensor_episodes["local_start_date_time"] = pd.concat([data["local_start_date_time"].dt.tz_convert(tz) for tz, data in merged_sensor_episodes.groupby("local_timezone")]).dt.tz_localize(None).apply(lambda x: x.replace(microsecond=0))
+    merged_sensor_episodes["local_start_date_time"] = pd.concat([data["local_start_date_time"].dt.tz_convert(tz) for tz, data in merged_sensor_episodes.groupby("local_timezone")])
 
     merged_sensor_episodes["local_end_date_time"] = pd.to_datetime(merged_sensor_episodes["end_timestamp"], unit="ms", utc=True)
-    merged_sensor_episodes["local_end_date_time"] = pd.concat([data["local_end_date_time"].dt.tz_convert(tz) for tz, data in merged_sensor_episodes.groupby("local_timezone")]).dt.tz_localize(None).apply(lambda x: x.replace(microsecond=0))
+    merged_sensor_episodes["local_end_date_time"] = pd.concat([data["local_end_date_time"].dt.tz_convert(tz) for tz, data in merged_sensor_episodes.groupby("local_timezone")])
 
     return merged_sensor_episodes
 
