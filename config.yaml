@@ -211,7 +211,13 @@ PHONE_DATA_YIELD:
 # See https://www.rapids.science/latest/features/phone-keyboard/
 PHONE_KEYBOARD:
   CONTAINER: keyboard
-  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      FEATURES: ["sessioncount","avereageinterkeydelay","changeintextlengthlessthanminusone","changeintextlengthequaltominusone","changeintextlengthequaltoone","changeintextlengthmorethanone","maxtextlength","lastmessagelength"]
+      SRC_FOLDER: "rapids" # inside src/features/phone_keyboard
+      SRC_LANGUAGE: "python"
+      SRC_SCRIPT: src/features/phone_keyboard/rapids/main.py
 
 # See https://www.rapids.science/latest/features/phone-light/
 PHONE_LIGHT:
