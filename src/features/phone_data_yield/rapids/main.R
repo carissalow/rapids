@@ -4,6 +4,8 @@ library(readr)
 
 compute_data_yield_features <- function(data, feature_name, time_segment, provider){
   data <- data %>% filter_data_by_segment(time_segment)
+  if(nrow(data) == 0)
+    return(tibble(ratiovalidyieldedminutes = numeric(), ratiovalidyieldedhours = numeric()))
   features <- data %>%
     separate(timestamps_segment, into = c("start_timestamp", "end_timestamp"), convert = T, sep = ",") %>% 
     mutate(duration_minutes = (end_timestamp - start_timestamp) / 60000,
