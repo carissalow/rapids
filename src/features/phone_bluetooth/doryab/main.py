@@ -73,21 +73,22 @@ def ownership_based_on_clustering(bt_frequency):
     diff_k2 = [(X_array[xi] - centers_k2[labels_k2[xi]])**2 for xi in range(0, len(X_array))]
     sum_dist_k2 = sum(diff_k2)
 
-    # K = 3, devices I own VS devices my partner/roommate owns (can also be other devices I own though) VS devices other people own
-    kmeans_k3 = KMeans(n_clusters=3, init=initial_k3,  n_init = 1).fit(X)
-    labels_k3 = kmeans_k3.labels_
-    centers_k3 = [c[0] for c in kmeans_k3.cluster_centers_]
-    diff_k3 = [(X_array[xi] - centers_k3[labels_k3[xi]])**2 for xi in range(0, len(X_array))]
-    sum_dist_k3 = sum(diff_k3)
-
-    if sum_dist_k2 < sum_dist_k3: # K = 2 is better
-        labels = labels_k2
-        centers = centers_k2
-        numclust = 2
-    else:
-        labels = labels_k3
-        centers = centers_k3
-        numclust = 3
+    # By default, model with K = 2 is chosen
+    labels = labels_k2
+    centers = centers_k2
+    numclust = 2
+    if len(X_array) > 2:
+        # K = 3, devices I own VS devices my partner/roommate owns (can also be other devices I own though) VS devices other people own
+        kmeans_k3 = KMeans(n_clusters=3, init=initial_k3,  n_init = 1).fit(X)
+        labels_k3 = kmeans_k3.labels_
+        centers_k3 = [c[0] for c in kmeans_k3.cluster_centers_]
+        diff_k3 = [(X_array[xi] - centers_k3[labels_k3[xi]])**2 for xi in range(0, len(X_array))]
+        sum_dist_k3 = sum(diff_k3)
+        # Model with K = 3 is chosen if sum of squared distances between clustered points and cluster centers is smaller or equal to what we get with K = 2
+        if sum_dist_k3 <= sum_dist_k2:
+            labels = labels_k3
+            centers = centers_k3
+            numclust = 3
     
     maxcluster = np.where(labels == np.argmax(centers), 1, 0)
     bt_frequency["own_device"] = maxcluster
