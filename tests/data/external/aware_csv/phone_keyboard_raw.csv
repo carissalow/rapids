@@ -1,0 +1,93 @@
+timestamp,device_id,package_name,before_text,current_text,is_password
+1583514753953,android,com.google.android.apps.messaging,,[O],0
+1583514754953,android,com.google.android.apps.messaging,Omw,[Omw ],0
+1583514757953,android,com.metricwire.android3,many assignments to c,[many assignments to co],0
+1583514758953,android,com.metricwire.android3,many assignments to co,[many assignments to com],0
+1583514759953,android,com.metricwire.android3,many assignments to com,[many assignments to comp],0
+1583514767953,android,com.metricwire.android3,many assignments to comp,[many assignments to compl],0
+1583514768953,android,com.metricwire.android3,many assignments to compl,[many assignments to comple],0
+1583514769953,android,com.metricwire.android3,many assignments to comple,[many assignments to complet],0
+1583514772953,android,com.metricwire.android3,many assignments to complet,[many assignments to complete],0
+1583514774953,android,com.metricwire.android3,many assignments to complete,[many assignments to complete ],0
+1583610672953,android,com.facebook.orca,,[N],0
+1583610673953,android,com.facebook.orca,N,[No],0
+1583610673953,android,com.facebook.orca,No,[Nop],0
+1583610673953,android,com.facebook.orca,Nop,[Nope],0
+1583610734953,android,com.facebook.orca,Nope,[Nope ],0
+1583610735953,android,com.facebook.orca,H,[Ha],0
+1583610735153,android,com.facebook.orca,Ha,[Ha ],0
+1583610735553,android,com.facebook.orca,Ha ,[Ha t],0
+1583610736953,android,com.facebook.orca,Ha t,[Ha th],0
+1583610742433,android,com.facebook.orca,Ha tha,[Ha that],0
+1583610744953,android,com.facebook.orca,Ha that,[Ha that ],0
+1583672394650,android,com.android.systemui,,[F],0
+1583672400000,android,com.android.systemui,F,[Fo],0
+1583683262650,android,com.android.systemui,Fo,[For],0
+1583724474650,android,com.android.systemui,,[F],0
+1583724475650,android,com.android.systemui,F,[Fo],0
+1583724476650,android,com.android.systemui,Fo,[For],0
+1583724477650,android,com.android.systemui,For,[For ],0
+1583724477650,android,com.android.systemui,For ,[For d],0
+1583724478650,android,com.android.systemui,For d,[For da],0
+1583724479650,android,com.android.systemui,For da ,[For da s],0
+1583724484750,android,com.android.systemui,For da s,[For da se],0
+1583724485650,android,com.android.systemui,For da se,[For da sex],0
+1583724486650,android,com.android.systemui,For da sex,[For da se],0
+1583724487650,android,com.android.systemui,For da se,[For da s],0
+1583724488650,android,com.android.systemui,For da s,[For da ],0
+1583724489650,android,com.android.systemui,For da ,[For da],0
+1583724489650,android,com.android.systemui,For da,[For d],0
+1583724490150,android,com.android.systemui,For d,[For ],0
+1583724491789,android,com.android.systemui,F,[Reply],0
+1583724492789,android,com.google.android.apps.messaging,,[Idk],0
+1583724493789,android,com.google.android.apps.messaging,Id,[Idk],0
+1583742493789,android,com.google.android.apps.messaging,Idk,[Idk.],0
+1583742494789,android,com.google.android.apps.messaging,Idk.,[Idk..],0
+1583742501789,android,com.google.android.apps.messaging,Idk..,[Idk...],0
+1583742508789,android,com.google.android.apps.messaging,Idk...,[Idk....],0
+1604074353953,android,com.google.android.apps.messaging,,[O],0
+1604074354953,android,com.google.android.apps.messaging,Omw,[Omw ],0
+1604074357953,android,com.metricwire.android3,many assignments to c,[many assignments to co],0
+1604074358953,android,com.metricwire.android3,many assignments to co,[many assignments to com],0
+1604074359953,android,com.metricwire.android3,many assignments to com,[many assignments to comp],0
+1604074367953,android,com.metricwire.android3,many assignments to comp,[many assignments to compl],0
+1604074368953,android,com.metricwire.android3,many assignments to compl,[many assignments to comple],0
+1604074369953,android,com.metricwire.android3,many assignments to comple,[many assignments to complet],0
+1604074372953,android,com.metricwire.android3,many assignments to complet,[many assignments to complete],0
+1604074374953,android,com.metricwire.android3,many assignments to complete,[many assignments to complete ],0
+1604170272953,android,com.facebook.orca,,[N],0
+1604170273953,android,com.facebook.orca,N,[No],0
+1604170273953,android,com.facebook.orca,No,[Nop],0
+1604170273953,android,com.facebook.orca,Nop,[Nope],0
+1604170334953,android,com.facebook.orca,Nope,[Nope ],0
+1604170335953,android,com.facebook.orca,H,[Ha],0
+1604170335153,android,com.facebook.orca,Ha,[Ha ],0
+1604170335553,android,com.facebook.orca,Ha ,[Ha t],0
+1604170336953,android,com.facebook.orca,Ha t,[Ha th],0
+1604170342433,android,com.facebook.orca,Ha tha,[Ha that],0
+1604170344953,android,com.facebook.orca,Ha that,[Ha that ],0
+1604239194650,android,com.android.systemui,,[F],0
+1604239200000,android,com.android.systemui,F,[Fo],0
+1604250062650,android,com.android.systemui,Fo,[For],0
+1604291274650,android,com.android.systemui,,[F],0
+1604291275650,android,com.android.systemui,F,[Fo],0
+1604291276650,android,com.android.systemui,Fo,[For],0
+1604291277650,android,com.android.systemui,For,[For ],0
+1604291277650,android,com.android.systemui,For ,[For d],0
+1604291278650,android,com.android.systemui,For d,[For da],0
+1604291279650,android,com.android.systemui,For da ,[For da s],0
+1604291284750,android,com.android.systemui,For da s,[For da se],0
+1604291285650,android,com.android.systemui,For da se,[For da sex],0
+1604291286650,android,com.android.systemui,For da sex,[For da se],0
+1604291287650,android,com.android.systemui,For da se,[For da s],0
+1604291288650,android,com.android.systemui,For da s,[For da ],0
+1604291289650,android,com.android.systemui,For da ,[For da],0
+1604291289650,android,com.android.systemui,For da,[For d],0
+1604291290150,android,com.android.systemui,For d,[For ],0
+1604291291789,android,com.android.systemui,F,[Reply],0
+1604291292789,android,com.google.android.apps.messaging,,[Idk],0
+1604291293789,android,com.google.android.apps.messaging,Id,[Idk],0
+1604309293789,android,com.google.android.apps.messaging,Idk,[Idk.],0
+1604309294789,android,com.google.android.apps.messaging,Idk.,[Idk..],0
+1604309301789,android,com.google.android.apps.messaging,Idk..,[Idk...],0
+1604309308789,android,com.google.android.apps.messaging,Idk...,[Idk....],0

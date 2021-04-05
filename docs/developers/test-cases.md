@@ -215,6 +215,26 @@ Due to the difference in the format of the raw battery data for iOS and Android 
 -   Finally, there are also additional empty data files for both
     android and iOS for testing empty data files
 
+## Keyboard
+
+- The raw keyboard data file contains data for 4 days.
+- The raw keyboard data contains records with difference in `timestamp` ranging from
+  milliseconds to seconds.  
+  
+- With difference in timestamps between consecutive records more than 5 seconds helps us to create separate 
+  sessions within the usage of the same app. This helps to verify the case where sessions have to be different. 
+
+- The raw keyboard data contains records where the difference in text is less 
+  than 5 seconds which makes it into 1 session but because of difference of app
+  new session starts. This edge case determines the behaviour within particular app
+  and also within 5 seconds.
+
+- The raw keyboard data also contains the records where length of `current_text` varies between consecutive rows. This helps us to tests on the cases where input text is entered by auto-suggested
+  or auto-correct operations.
+
+- One three-minute episode with a 1-minute row on Sun 08:59:54.65 and 09:00:00,another on Sun 12:01:02 that are considering a single episode in multi-timezone event segments to showcase how
+ inferring time zone data for Keyboard from phone data can produce inaccurate results around the tz change. This happens because the device was on LA time until 11:59 and switched to NY time at 12pm, in terms of actual time 09 am LA and 12 pm NY represent the same moment in time so 09:00 LA and 12:01 NY are consecutive minutes.
+
 ## Fitbit Calories Intraday
 
 Description
