@@ -211,9 +211,6 @@ PHONE_DATA_YIELD:
 # See https://www.rapids.science/latest/features/phone-keyboard/
 PHONE_KEYBOARD:
   CONTAINER: keyboard
-<<<<<<< HEAD
-  PROVIDERS: # None implemented yet but this sensor can be used in PHONE_DATA_YIELD
-=======
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
@@ -221,7 +218,6 @@ PHONE_KEYBOARD:
       SRC_FOLDER: "rapids" # inside src/features/phone_keyboard
       SRC_LANGUAGE: "python"
       SRC_SCRIPT: src/features/phone_keyboard/rapids/main.py
->>>>>>> 50075d2... Added more keyboard features.
 
 # See https://www.rapids.science/latest/features/phone-light/
 PHONE_LIGHT:
