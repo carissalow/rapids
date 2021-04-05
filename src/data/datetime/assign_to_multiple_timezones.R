@@ -1,42 +1,50 @@
-
 library(tibble)
 library(dplyr)
 library(tidyr)
 library(purrr)
 library(yaml)
+library(glue)
+library(lubridate)
 options(scipen = 999)
 
-buils_tz_intervals <- function(tz_codes){
+buils_tz_intervals <- function(tz_codes, device_type){
   tz_codes <- tz_codes %>%
-    group_by(device_id) %>% 
-    mutate(end_timestamp = lead(timestamp)) %>% 
-    ungroup() %>% 
-    replace_na(list(end_timestamp = as.numeric(Sys.time())*1000))
+    group_by(device_id) %>%
+    arrange(timestamp)
+  
+  if(device_type == "fitbit" )
+    tz_codes <- tz_codes %>%
+      mutate(end_timestamp = lead(timestamp), end_local_date_time = lead(local_date_time)) %>% 
+      ungroup() %>% 
+      replace_na(list(end_timestamp = as.numeric(Sys.time())*1000, end_local_date_time = format(Sys.time(), format="%Y-%m-%d %H:%M:%S") )) %>% 
+      mutate(local_date_time = lubridate::ymd_hms(local_date_time), end_local_date_time = lubridate::ymd_hms(end_local_date_time))
+  else
+    tz_codes <- tz_codes %>%
+      mutate(end_timestamp = lead(timestamp)) %>% 
+      ungroup() %>% 
+      replace_na(list(end_timestamp = as.numeric(Sys.time())*1000 ))
   return(tz_codes)
 }
 
-filter_tz_per_device <- function(device_id, tz_codes, default, IF_MISSING_TZCODE){
-  device_tz_codes <- tz_codes %>% filter(device_id == !!device_id) %>% select(-device_id)
 
-  if(nrow(device_tz_codes) > 0)
-    return(device_tz_codes)
-  else if(IF_MISSING_TZCODE == "STOP")
-    stop(paste("The device id '", device_id, "' does not have any time zone codes in your [MULTIPLE][TZCODES_FILE], add one or set IF_MISSING_TZCODE to 'USE_DEFAULT'"))
-  else if(IF_MISSING_TZCODE == "USE_DEFAULT")
-    return(data.frame(timestamp = c(0), tzcode = default, end_timestamp = as.numeric(Sys.time())*1000))
+assign_tz_code <- function(data, device_id, tz_codes, device_type){
+  tz_codes <- tz_codes %>% filter(device_id == !!device_id) %>% select(-device_id)
   
-  stop("We should have obtained the time zones for a device, stop the execution or use the default tz but this didn't happen. Create an issue on Github")
-}
-
-assign_tz_code <- function(data, tz_codes){
-
+  if(device_type == "fitbit" && all(data$timestamp == 0) && "local_date_time" %in% colnames(data)){
+    # Only do this for Fitbit raw data, other devices and Fitbit sleep episodes can use timestamps
+    column <- "local_date_time"
+    data <- data %>% mutate(local_date_time=lubridate::ymd_hms(local_date_time))
+  } else
+    column <- "timestamp"
+  
   for(i in 1:nrow(tz_codes)) {
-    start_timestamp <- tz_codes[[i, "timestamp"]]
-    end_timestamp <- tz_codes[[i, "end_timestamp"]]
+    start <- tz_codes[[i, column]]
+    end <- tz_codes[[i, paste0("end_", column)]]
     time_zone <- trimws(tz_codes[[i, "tzcode"]], which="both")
-    
-    data$local_timezone <- if_else(start_timestamp <= data$timestamp & data$timestamp < end_timestamp, time_zone, data$local_timezone)
+
+    data$local_timezone <- if_else(start <= data[[column]] & data[[column]] < end, time_zone, data$local_timezone)
   }
+
   return(data %>% filter(!is.na(local_timezone)))
   
 }
@@ -47,59 +55,84 @@ validate_single_tz_per_fitbit_device <- function(tz_codes, INFER_FROM_SMARTPHONE
     stop("If [TIMEZONE][MULTIPLE][FITBIT][INFER_FROM_SMARTPHONE_TZ] is True (you want to infer Fitbit time zones with smartphone data), you need to set ALLOW_MULTIPLE_TZ_PER_DEVICE to True. However, read the docs to understand why this can be innacurate")
   
   tz_per_device <- tz_codes %>% group_by(device_id) %>% summarise(n = n(), .groups = "drop_last") %>% filter(n > 1)
-  
   if(nrow(tz_per_device) > 0)
-    stop(paste("The following Fitbit device ids have more than one time zone change which is not allowed if [TIMEZONE][MULTIPLE][FITBIT][ALLOW_MULTIPLE_TZ_PER_DEVICE] is False:", paste(tz_per_device %>% pull(device_id), collapse = ",")))
+    stop("If [TIMEZONE][MULTIPLE][FITBIT][ALLOW_MULTIPLE_TZ_PER_DEVICE] is False, every fitbit device id in [MULTIPLE][TZCODES_FILE] must have only one timezone with a timestamp equal to 0. The following device ids do not comply:", paste(tz_per_device %>% pull(device_id), collapse = ","))
   
   zero_ts <- tz_codes %>% filter(timestamp > 0)
-
   if(nrow(zero_ts) > 0)
-    stop(paste("The following Fitbit device ids have a time zone change with a timestamp bigger than 0 which is not allowed if [TIMEZONE][MULTIPLE][FITBIT][ALLOW_MULTIPLE_TZ_PER_DEVICE] is False: ", paste(zero_ts %>% pull(device_id), collapse = ",")))
+    stop("If [TIMEZONE][MULTIPLE][FITBIT][ALLOW_MULTIPLE_TZ_PER_DEVICE] is False, every fitbit device id in [MULTIPLE][TZCODES_FILE] must have only one timezone with a timestamp equal to 0. The following device ids do not comply:", paste(zero_ts %>% pull(device_id), collapse = ","))
   
 }
 
-validate_devies_exist_in_participant_file <- function(devices, device_type, pid, participant_file){
-  if(length(devices) == 0)
-    stop("[TIMEZONE][MULTIPLE][FITBIT][ALLOW_MULTIPLE_TZ_PER_DEVICE] is True (you want to infer Fitbit time zones with smartphone data), however participant ", pid," does not have any [",device_type,"][DEVICE_IDS] in ", participant_file)
+infer_tz_codes_from_phones <- function(data_device_ids, tz_codes, participant_file){
+  participant_data <- read_yaml(participant_file)
+  phone_device_ids <- participant_data$PHONE$DEVICE_IDS
+  phone_tz_codes <- tz_codes %>% filter(device_id %in% phone_device_ids)
   
+  if(nrow(phone_tz_codes) == 0)
+    warning("The PHONE device ids that we were supposed to use to infer fitbit devices timezones do not have timezone data in [MULTIPLE][TZCODES_FILE]. ",
+            " Problematic phone devices ids: ", paste0(phone_device_ids, collapse = ", "))
+  
+  data_tz_codes <- NULL
+  for(data_device_id in data_device_ids)
+    data_tz_codes <- bind_rows(data_tz_codes, phone_tz_codes %>% mutate(device_id = data_device_id) %>% arrange(timestamp))
+  data_tz_codes
 }
 
 # TODO include CSV timezone file in rule
 multiple_time_zone_assignment <- function(sensor_data, timezone_parameters, device_type, pid, participant_file){
-    tz_codes <- read.csv(timezone_parameters$MULTIPLE$TZCODES_FILE)
-    default <- timezone_parameters$MULTIPLE$DEFAULT_TZCODE
-    IF_MISSING_TZCODE <- timezone_parameters$MULTIPLE$IF_MISSING_TZCODE
-    ALLOW_MULTIPLE_TZ_PER_DEVICE <- timezone_parameters$MULTIPLE$FITBIT$ALLOW_MULTIPLE_TZ_PER_DEVICE
-    INFER_FROM_SMARTPHONE_TZ <- timezone_parameters$MULTIPLE$FITBIT$INFER_FROM_SMARTPHONE_TZ
+  if(nrow(sensor_data) == 0)
+    return(sensor_data %>% mutate(local_timezone = NA_character_))
+  
+  tz_codes <- read.csv(timezone_parameters$MULTIPLE$TZCODES_FILE)
+  default <- timezone_parameters$MULTIPLE$DEFAULT_TZCODE
+  IF_MISSING_TZCODE <- timezone_parameters$MULTIPLE$IF_MISSING_TZCODE
+  ALLOW_MULTIPLE_TZ_PER_DEVICE <- timezone_parameters$MULTIPLE$FITBIT$ALLOW_MULTIPLE_TZ_PER_DEVICE
+  INFER_FROM_SMARTPHONE_TZ <- timezone_parameters$MULTIPLE$FITBIT$INFER_FROM_SMARTPHONE_TZ
+  data_device_ids <- sensor_data %>% distinct(device_id) %>% pull(device_id)
+  
+  if(INFER_FROM_SMARTPHONE_TZ && device_type == "fitbit")
+    data_tz_codes <- infer_tz_codes_from_phones(data_device_ids, tz_codes, participant_file)
+  else
+    data_tz_codes <- tz_codes %>% filter(device_id %in% data_device_ids)
 
-    participant_data <- read_yaml(participant_file)
-    phone_ids <- participant_data$PHONE$DEVICE_IDS
-    fitbit_ids <- participant_data$FITBIT$DEVICE_IDS
-
-    if(device_type == "fitbit"){
-        if(!ALLOW_MULTIPLE_TZ_PER_DEVICE){
-            validate_single_tz_per_fitbit_device(tz_codes, INFER_FROM_SMARTPHONE_TZ)
-        } else if(INFER_FROM_SMARTPHONE_TZ){
-            validate_devies_exist_in_participant_file(phone_ids, "PHONE", pid, participant_file)
-            validate_devies_exist_in_participant_file(fitbit_ids, "FITBIT", pid, participant_file)
-            unified_device_id <- paste0("unified_device_id", pid)
-            
-            sensor_data <- sensor_data %>% mutate(device_id = if_else(device_id %in% phone_ids, unified_device_id, device_id))
-            tz_codes <- tz_codes %>% mutate(device_id = if_else(device_id %in% fitbit_ids, unified_device_id, device_id))
-        }
+  # Check if we have timezones for all device ids
+  if(length(unique(data_tz_codes$device_id)) < length(data_device_ids)){
+    if(IF_MISSING_TZCODE == "STOP")
+      stop(glue("One or more device ids do not have any time zone codes in your [MULTIPLE][TZCODES_FILE].",
+                "You can add one or set [MULTIPLE][IF_MISSING_TZCODE] to 'USE_DEFAULT'. The missing device ids are [{ids}]",
+                ids=paste0(setdiff(data_device_ids, data_tz_codes %>% pull(device_id)), collapse = ",")))
+    else if(IF_MISSING_TZCODE == "USE_DEFAULT"){
+      warning("Using DEFAULT time zone for ", paste0(setdiff(data_device_ids, data_tz_codes %>% pull(device_id)), collapse = ","))
+      default_tz_codes <- data.frame(timestamp = rep_along(c(data_device_ids),0), tzcode = rep_along(c(data_device_ids),default), device_id=data_device_ids) %>% 
+        filter(!device_id %in% data_tz_codes$device_id)
+      data_tz_codes <- bind_rows(data_tz_codes, default_tz_codes)
     }
-    
-    tz_intervals <- buils_tz_intervals(tz_codes)
-    sensor_data <- sensor_data %>% mutate(local_timezone = NA_character_)
-
-    if(nrow(sensor_data) > 0){
-      sensor_data <- sensor_data %>%
-          group_by(device_id) %>% 
-          nest() %>% 
-          mutate(tz_codes_per_device = map(device_id, filter_tz_per_device, tz_intervals, default, IF_MISSING_TZCODE)) %>% 
-          mutate(data = map2(data, tz_codes_per_device, assign_tz_code )) %>% 
-          select(-tz_codes_per_device) %>% 
-          unnest(cols = data)
-    }
-    return(sensor_data)
+  }
+  
+  if(device_type == "fitbit"){
+    if(!ALLOW_MULTIPLE_TZ_PER_DEVICE)
+      validate_single_tz_per_fitbit_device(data_tz_codes, INFER_FROM_SMARTPHONE_TZ)
+    # We only use datetimes for raw Fitbit data  
+    data_tz_codes <- data_tz_codes %>% 
+      group_by(tzcode) %>% 
+      nest() %>% 
+      mutate(data = map2(data, tzcode, function(nested_data, tz){
+        nested_data %>% mutate(local_date_time = format(as_datetime(timestamp / 1000, tz=tz), format="%Y-%m-%d %H:%M:%S"))  
+      })) %>% 
+      unnest(cols=everything())
+  }
+  
+  tz_intervals <- buils_tz_intervals(data_tz_codes, device_type)
+  sensor_data <- sensor_data %>% mutate(local_timezone = NA_character_)
+  
+  if(nrow(sensor_data) > 0){
+    sensor_data <- sensor_data %>%
+      group_by(device_id) %>% 
+      nest() %>% 
+      mutate(data = map2(data, device_id, assign_tz_code, tz_intervals, device_type)) %>% 
+      unnest(cols = data)
+  }
+  
+  return(sensor_data)
 }
