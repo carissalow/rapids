@@ -79,6 +79,31 @@ infer_tz_codes_from_phones <- function(data_device_ids, tz_codes, participant_fi
   data_tz_codes
 }
 
+get_devices_ids <- function(participant_data){
+  devices_ids = c()
+  for(device in participant_data)
+    for(attribute in names(device))
+      if(attribute == "DEVICE_IDS")
+        devices_ids <- c(devices_ids, device[[attribute]])
+      return(devices_ids)
+}
+
+get_participant_most_common_tz <- function(tz_codes_file, participant_file){
+  tz_codes <- read.csv(tz_codes_file)
+  participant_device_ids <- get_devices_ids(read_yaml(participant_file))
+  
+  participant_tz_codes <- tz_codes %>% filter(device_id %in% participant_device_ids)
+  most_common_tz <- buils_tz_intervals(participant_tz_codes, "all") %>% 
+    mutate(duration = end_timestamp - timestamp) %>% 
+    filter(duration == max(duration)) %>% 
+    head(1) %>% 
+    pull(tzcode)
+
+  if(length(most_common_tz)==0)
+    most_common_tz <- "UTC"
+  return(most_common_tz)
+}
+
 # TODO include CSV timezone file in rule
 multiple_time_zone_assignment <- function(sensor_data, timezone_parameters, device_type, pid, participant_file){
   if(nrow(sensor_data) == 0)

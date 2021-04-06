@@ -16,7 +16,7 @@ assign_rows_to_segments <- function(data, segments){
   data
 }
 
-assign_to_time_segment <- function(sensor_data, time_segments, time_segments_type, include_past_periodic_segments){
+assign_to_time_segment <- function(sensor_data, time_segments, time_segments_type, include_past_periodic_segments, most_common_tz){
   
   if(nrow(sensor_data) == 0 || nrow(time_segments) == 0)
     return(sensor_data %>% mutate(assigned_segments = NA))
@@ -28,7 +28,7 @@ assign_to_time_segment <- function(sensor_data, time_segments, time_segments_typ
     
   } else if ( time_segments_type == "EVENT"){
     source("src/data/datetime/assign_to_event_segments.R")
-    sensor_data <- assign_to_event_segments(sensor_data, time_segments)
+    sensor_data <- assign_to_event_segments(sensor_data, time_segments, most_common_tz)
     return(sensor_data)
   }
 }

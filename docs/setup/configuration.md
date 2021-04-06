@@ -271,6 +271,19 @@ Time segments (or epochs) are the time windows on which you want to extract beha
         
         The three `mood` segments are 1 hour, 1 day and 7 days long and have no shift. In addition, these `mood` segments are grouped together, meaning that although RAPIDS will compute features on each one of them, some necessary information to compute a few of such features will be extracted from all three segments, for example the phone contact that called a participant the most or the location clusters visited by a participant.
 
+    ??? info "Date time labels of event segments"
+        In the final feature file, you will find a row per event segment. The `local_segment` column of each row has a `label`, a start date-time string, and an end date-time string.
+
+        ```bash
+        weeklysurvey2060#2020-09-12 01:00:00,2020-09-18 23:59:59
+        ```
+
+        All sensor data is always segmented based on timestamps, and the date-time strings are attached for informative purposes. For example, you can plot your features based on these strings. 
+
+        When you configure RAPIDS to work with a single time zone, such tz code will be used to convert start/end timestamps (the ones you typed in the event segments file) into start/end date-time strings. However, when you configure RAPIDS to work with multiple time zones, RAPIDS will use the most common time zone across all devices of every participant to do the conversion. The most common time zone is the one in which a participant spent the most time.
+
+        In practical terms, this means that the date-time strings of event segments that happened in uncommon time zones will have shifted start/end date-time labels. However, the data within each segment was correctly filtered based on timestamps.
+
 ### Segment Examples
 
 === "5-minutes"

@@ -111,14 +111,18 @@ readable_datetime <- function(){
 
   validate_user_timezones(timezone_parameters)
   
-  if(timezone_parameters$TYPE == "SINGLE")
+  if(timezone_parameters$TYPE == "SINGLE"){
     output <- input %>% mutate(local_timezone = timezone_parameters$SINGLE$TZCODE)
-  else if(timezone_parameters$TYPE == "MULTIPLE")
+    most_common_tz <- timezone_parameters$SINGLE$TZCODE
+  }
+  else if(timezone_parameters$TYPE == "MULTIPLE"){
     output <- multiple_time_zone_assignment(input, timezone_parameters, device_type, pid, participant_file)
+    most_common_tz <- get_participant_most_common_tz(timezone_parameters$MULTIPLE$TZCODES_FILE, participant_file) # in assign_to_multiple_timezones.R
+  }
 
   output <- create_mising_temporal_column(output, device_type)
   output <- split_local_date_time(output)
-  output <- assign_to_time_segment(output, time_segments, time_segments_type, include_past_periodic_segments)
+  output <- assign_to_time_segment(output, time_segments, time_segments_type, include_past_periodic_segments, most_common_tz)
   output <- filter_wanted_dates(output, participant_file, device_type)
   output <- output %>% arrange(timestamp)
 

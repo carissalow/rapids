@@ -29,14 +29,9 @@ infer_event_segments <- function(tz, segments){
   return(inferred)
 }
 
-assign_to_event_segments <- function(sensor_data, time_segments){
+assign_to_event_segments <- function(sensor_data, time_segments, most_common_tz){
+  inferred_time_segments <- infer_event_segments(most_common_tz, time_segments)
   sensor_data <- sensor_data %>% 
-    group_by(local_timezone) %>% 
-    nest() %>% 
-    mutate(inferred_time_segments = map(local_timezone, infer_event_segments, time_segments),
-           data = map2(data, inferred_time_segments, assign_rows_to_segments)) %>% 
-    select(-inferred_time_segments) %>% 
-    unnest(data) %>% 
-    arrange(timestamp) %>%
-    ungroup()
+    assign_rows_to_segments(inferred_time_segments) %>% 
+    arrange(timestamp)
 }
