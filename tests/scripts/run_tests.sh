@@ -4,6 +4,9 @@ run_pipeline() {
     if [ $TYPE == 'frequency' ]
     then
         CONFIG_FILE="./tests/settings/frequency_config.yaml"
+    elif [ $TYPE == 'event' ]
+    then 
+        CONFIG_FILE="./tests/settings/event_config.yaml"
     else
         CONFIG_FILE="./tests/settings/periodic_config.yaml"
     fi
@@ -47,7 +50,7 @@ case $key in
 esac
 done
 
-if [ $ACTION != 'test' ] && [ $ACTION != 'run' ] && [ $ACTION != 'both' ]
+if [ $ACTION != 'test' ] && [ $ACTION != 'run' ] && [ $ACTION != 'both' ] 
 then
     display_usage
 fi
@@ -61,7 +64,7 @@ then
     run_pipeline
     python tests/scripts/run_tests.py periodic
 else
-    if [ $TYPE != 'frequency' ] && [ $TYPE != 'periodic' ]
+    if [ $TYPE != 'frequency' ] && [ $TYPE != 'periodic' ] && [ $TYPE != 'event' ]
     then
         display_usage
     fi
