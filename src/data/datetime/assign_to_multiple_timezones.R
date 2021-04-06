@@ -44,6 +44,9 @@ assign_tz_code <- function(data, device_id, tz_codes, device_type){
 
     data$local_timezone <- if_else(start <= data[[column]] & data[[column]] < end, time_zone, data$local_timezone)
   }
+  
+  if(column == "local_date_time")
+    data$local_date_time <- format(data$local_date_time, format="%Y-%m-%d %H:%M:%S")
 
   return(data %>% filter(!is.na(local_timezone)))
   
