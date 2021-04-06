@@ -76,6 +76,14 @@ class TestPeriodic(RapidsTests):
         with open(r'tests/settings/periodic_config.yaml') as file:
             cls.configs = yaml.full_load(file)
 
+class TestEvent(RapidsTests):
+    @classmethod
+    def setUpClass(cls):
+        # Runs once to Setup env
+        # global configs 
+        with open(r'tests/settings/event_config.yaml') as file:
+            cls.configs = yaml.full_load(file)
+
 
 def run_some_tests(test_type):
     # Run only the tests in the specified classes
@@ -83,6 +91,8 @@ def run_some_tests(test_type):
         test_class = TestFrequency
     elif test_type == "periodic":
         test_class = TestPeriodic
+    elif test_type == "event":
+        test_class = TestEvent
     else:
         raise ValueError("Only frequency or periodic are valid arguments")
     loader = unittest.TestLoader()
