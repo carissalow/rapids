@@ -354,7 +354,7 @@ TIMEZONE:
 
 ### Multiple timezones
 
-If your participants lived on different time zones or they travelled across time zones, and you know when participants' devices were in a specific time zone, RAPIDS can use this data to process your data streams with the correct date-time. You need to provide RAPIDS with the time zone data in a CSV file (`[TZCODES_FILE]`) in the format described below.
+If your participants lived in different time zones or they traveled across time zones, and you know when participants' devices were in a specific time zone, RAPIDS can use this data to process your data streams with the correct date-time. You need to provide RAPIDS with the time zone data in a CSV file (`[TZCODES_FILE]`) in the format described below.
 
 ``` yaml
 TIMEZONE: 
@@ -376,7 +376,7 @@ Parameters for `[TIMEZONE]`
 |--|--|
 |`[TYPE]`| Either `SINGLE` or `MULTIPLE` as explained above |
 |`[SINGLE][TZCODE]`| The time zone code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to be used across all devices |
-|`[MULTIPLE][TZCODES_FILE]`| A CSV file containing the time and code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) visited by each device in the study. Multiple devices can be linked to the same person, read more in [Participants Files](#participant-files) |
+|`[MULTIPLE][TZCODES_FILE]`| A CSV file containing the time zones in which participants' devices sensed data (see the required format below). Multiple devices can be linked to the same person, read more in [Participants Files](#participant-files) |
 |`[MULTIPLE][IF_MISSING_TZCODE]`| When a device is missing from `[TZCODES_FILE]` Set this flag to `STOP` to stop RAPIDS execution and show an error, or to `USE_DEFAULT` to assign the time zone specified in `[DEFAULT_TZCODE]` to any such devices  |
 |`[MULTIPLE][FITBIT][ALLOW_MULTIPLE_TZ_PER_DEVICE]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more time zones, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
 |`[MULTIPLE][FITBIT][INFER_FROM_SMARTPHONE_TZ]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more time zones, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
@@ -412,7 +412,7 @@ Parameters for `[TIMEZONE]`
     - A screen row sensed at `1587400000000` will be discarded because it was logged outside any interval.
 
 ??? note "Can I get the `TZCODES_FILE` from the time zone table collected automatically by the AWARE app?"
-    Sure. You can put your timezone table (`timezone.csv`) collected by AWARE app under `data/external` folder and run:
+    Sure. You can put your timezone table (`timezone.csv`) collected by the AWARE app under `data/external` folder and run:
     ```bash
     python tools/create_multi_timezones_file.py
     ```

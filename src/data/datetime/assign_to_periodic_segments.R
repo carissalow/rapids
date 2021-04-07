@@ -1,32 +1,18 @@
-day_type_delay <- function(time_segments, day_type, include_past_periodic_segments){
-  # Return a delay in days to consider or not the first row of data
-  delay <- time_segments %>% 
-    mutate(length_duration = duration(length)) %>%  
-    filter(repeats_on == day_type) %>% arrange(-length_duration) %>% 
-    pull(length_duration) %>% 
-    first()
-  return(if_else(is.na(delay) | include_past_periodic_segments == FALSE, duration("0days"), delay))
-}
-
-get_segment_dates <- function(data, local_timezone, day_type, delay){
-  # Based on the data we are processing we extract unique dates to build segments
-  dates <-  data %>% 
-    distinct(local_date) %>% 
-    mutate(local_date_obj = date(lubridate::ymd(local_date, tz = local_timezone))) %>% 
-    complete(local_date_obj = seq(date(min(local_date_obj) - delay), date(max(local_date_obj) + delay), by="days")) %>%
-    mutate(local_date = replace_na(as.character(date(local_date_obj))))
+get_existent_dates <- function(data, time_segments, include_past_periodic_segments){
+  max_delay = max(time_segments$length_duration)
+  max_delay <- (if_else(is.na(max_delay) | include_past_periodic_segments == FALSE, duration("0days"), max_delay))
   
-  if(day_type == "every_day")
-    dates <- dates %>% mutate(every_day = 0)
-  else if (day_type == "wday")
-    dates <- dates %>% mutate(wday = wday(local_date_obj, week_start = 1))
-  else if (day_type == "mday")
-    dates <- dates %>% mutate(mday = mday(local_date_obj))
-  else if (day_type == "qday")
-    dates <- dates %>% mutate(qday = qday(local_date_obj))
-  else if (day_type == "yday")
-    dates <- dates %>% mutate(yday = yday(local_date_obj))
-  return(dates)
+  existent_dates <- data %>% 
+    distinct(local_date, .keep_all = FALSE) %>% 
+    mutate(local_date_obj = date(lubridate::ymd(local_date))) %>% 
+    complete(local_date_obj = seq(date(min(local_date_obj) - max_delay), date(max(local_date_obj)), by="days")) %>%
+    mutate(local_date = replace_na(as.character(date(local_date_obj))),
+           every_day = 0,
+           wday = wday(local_date_obj, week_start = 1),
+           mday = mday(local_date_obj),
+           qday = qday(local_date_obj),
+           yday = yday(local_date_obj)) %>% 
+    select(-local_date_obj)
 }
 
 infer_existent_periodic_segments <- function(existent_dates, segments){
@@ -36,7 +22,8 @@ infer_existent_periodic_segments <- function(existent_dates, segments){
     pivot_longer(cols = c(every_day,wday, mday, qday, yday), names_to = "day_type", values_to = "day_value") %>%
     filter(repeats_on == day_type & repeats_value == day_value) %>%
     mutate(segment_id_start = lubridate::parse_date_time(paste(local_date, start_time), orders = c("Ymd HMS", "Ymd HM")) + period(overlap_duration),
-            segment_id_end = segment_id_start + lubridate::duration(length))
+            segment_id_end = segment_id_start + lubridate::duration(length)) %>% 
+    select(original_label, label, segment_id_start, segment_id_end, overlap_id, length)
 }
 
 dedup_nonoverlapping_periodic_segments <- function(nested_inferred_time_segments){
@@ -48,6 +35,8 @@ dedup_nonoverlapping_periodic_segments <- function(nested_inferred_time_segments
   # d2,r2,twoday0 twoday1 
   # d3,r3,twoday1 twoday0 
   # d4,r4,twoday0 twoday1 
+  if(nrow(nested_inferred_time_segments) == 0)
+    return(nested_inferred_time_segments)
   new_segments <- data.frame(nested_inferred_time_segments %>% 
                                 group_by(original_label) %>%
                                 mutate(max_groups = max(overlap_id) + 1) %>% 
@@ -67,7 +56,7 @@ dedup_nonoverlapping_periodic_segments <- function(nested_inferred_time_segments
 
 
 
-add_periodic_segment_timestamps_and_id <- function(segments, local_timezone){
+add_periodic_segment_timestamps_and_id <- function(data, segments, local_timezone){
   # segment timestamps are computed on the data's timezone(s)
   time_format_fn <- stamp("23:51:15", orders="HMS", quiet = TRUE)
   segments %>% mutate(segment_start_ts = as.numeric(lubridate::force_tz(segment_id_start, tzone = local_timezone)) * 1000,
@@ -82,28 +71,18 @@ add_periodic_segment_timestamps_and_id <- function(segments, local_timezone){
 
 assign_to_periodic_segments <- function(sensor_data, time_segments, include_past_periodic_segments){
   time_segments <- time_segments %>% mutate(length_duration = duration(length))
-  every_day_delay <- duration("0days")
-  wday_delay <- day_type_delay(time_segments, "wday", include_past_periodic_segments)
-  mday_delay <- day_type_delay(time_segments, "mday", include_past_periodic_segments)
-  qday_delay <- day_type_delay(time_segments, "qday", include_past_periodic_segments)
-  yday_delay <- day_type_delay(time_segments, "yday", include_past_periodic_segments)
-  
+  existent_dates <- get_existent_dates(sensor_data, time_segments, include_past_periodic_segments)
+  inferred_segments <- infer_existent_periodic_segments(existent_dates, time_segments) %>%
+    dedup_nonoverlapping_periodic_segments()
+
   sensor_data <- sensor_data %>%
-    group_by(local_timezone) %>% 
-    nest() %>% 
-    mutate(every_date = map2(data, local_timezone, get_segment_dates, "every_day", every_day_delay),
-           week_dates = map2(data, local_timezone, get_segment_dates, "wday", wday_delay),
-           month_dates = map2(data, local_timezone, get_segment_dates, "mday", mday_delay),
-           quarter_dates = map2(data, local_timezone, get_segment_dates, "qday", qday_delay),
-           year_dates = map2(data, local_timezone, get_segment_dates, "yday", yday_delay),
-           existent_dates = pmap(list(every_date, week_dates, month_dates, quarter_dates, year_dates), function(every_date, week_dates, month_dates, quarter_dates, year_dates) reduce(list(every_date, week_dates,month_dates, quarter_dates, year_dates), .f=full_join)),
-           inferred_time_segments = map(existent_dates, infer_existent_periodic_segments, time_segments), 
-           inferred_time_segments = map(inferred_time_segments, dedup_nonoverlapping_periodic_segments),
-           inferred_time_segments = map(inferred_time_segments, add_periodic_segment_timestamps_and_id, local_timezone),
-           data = map2(data, inferred_time_segments, assign_rows_to_segments)) %>%
-    select(-existent_dates, -inferred_time_segments, -every_date, -week_dates, -month_dates, -quarter_dates, -year_dates) %>%
-    unnest(cols = data) %>% 
-    arrange(timestamp) %>% 
+    group_by(local_timezone) %>%
+    nest() %>%
+    mutate(localised_time_segments = map(data, add_periodic_segment_timestamps_and_id, inferred_segments, local_timezone),
+          data = map2(data, localised_time_segments, assign_rows_to_segments)) %>%
+    select(-localised_time_segments) %>%
+    unnest(cols = data) %>%
+    arrange(timestamp) %>%
     ungroup()
   
   return(sensor_data)
