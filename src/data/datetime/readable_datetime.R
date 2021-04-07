@@ -61,8 +61,8 @@ create_mising_temporal_column <- function(data, device_type){
           mutate(data = map2(data, local_timezone, function(nested_data, tz){
             return(nested_data %>%  mutate(timestamp = as.numeric(ymd_hms(local_date_time, tz=tz)) * 1000) %>% drop_na(timestamp))
             })) %>% 
-          unnest(cols = everything())) %>% 
-          ungroup()
+          unnest(cols = everything()) %>% 
+          ungroup())
     } else {
       # For the rest of devices we infere local date time from timestamp
       if(nrow(data) == 0)
@@ -73,8 +73,8 @@ create_mising_temporal_column <- function(data, device_type){
           mutate(data = map2(data, local_timezone, function(nested_data, tz){
             return(nested_data %>%  mutate(local_date_time = format(as_datetime(timestamp / 1000, tz=tz), format="%Y-%m-%d %H:%M:%S")) %>% drop_na(local_date_time) )
             })) %>% 
-          unnest(cols = everything())) %>% 
-          ungroup()
+          unnest(cols = everything()) %>% 
+          ungroup())
     }
 }
 
@@ -120,11 +120,12 @@ readable_datetime <- function(){
     most_common_tz <- get_participant_most_common_tz(timezone_parameters$MULTIPLE$TZCODES_FILE, participant_file) # in assign_to_multiple_timezones.R
   }
 
-  output <- create_mising_temporal_column(output, device_type)
-  output <- split_local_date_time(output)
-  output <- assign_to_time_segment(output, time_segments, time_segments_type, include_past_periodic_segments, most_common_tz)
-  output <- filter_wanted_dates(output, participant_file, device_type)
-  output <- output %>% arrange(timestamp)
+  output  %<>%  
+    create_mising_temporal_column(device_type)  %>% 
+    split_local_date_time() %>% 
+    assign_to_time_segment(time_segments, time_segments_type, include_past_periodic_segments, most_common_tz) %>% 
+    filter_wanted_dates(participant_file, device_type) %>% 
+    arrange(timestamp)
 
   write_csv(output, snakemake@output[[1]])
 }

@@ -148,7 +148,8 @@ multiple_time_zone_assignment <- function(sensor_data, timezone_parameters, devi
       mutate(data = map2(data, tzcode, function(nested_data, tz){
         nested_data %>% mutate(local_date_time = format(as_datetime(timestamp / 1000, tz=tz), format="%Y-%m-%d %H:%M:%S"))  
       })) %>% 
-      unnest(cols=everything())
+      unnest(cols=everything()) %>% 
+      ungroup()
   }
   
   tz_intervals <- buils_tz_intervals(data_tz_codes, device_type)
@@ -159,7 +160,8 @@ multiple_time_zone_assignment <- function(sensor_data, timezone_parameters, devi
       group_by(device_id) %>% 
       nest() %>% 
       mutate(data = map2(data, device_id, assign_tz_code, tz_intervals, device_type)) %>% 
-      unnest(cols = data)
+      unnest(cols = data) %>% 
+      ungroup()
   }
   
   return(sensor_data)

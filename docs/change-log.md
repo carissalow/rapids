@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.0.1
+- Fix crash in `chunk_episodes` of `utils.py` for multi time zone data
+- Fix crash in BT Doryab provider when the number of clusters is 2
+- Fix Fitbit multi time zone inference from phone data (simplify)
+- Fix missing columns when the input for phone data yield is empty
+- Fix wrong date time labels for event segments for multi time zone data (all labels are computed based on a single tz)
+- Fix periodic segment crash when there are no segments to assign (only affects wday, mday, qday, or yday) 
+- Fix crash in Analysis Workflow with new suffix in segments' labels
 ## v1.0.0
 - Add a new [Overview](../setup/overview/) page.
 - You can [extend](../datastreams/add-new-data-streams/) RAPIDS with your own [data streams](../datastreams/data-streams-introduction/). Data streams are data collected with other sensing apps besides AWARE (like Beiwe, mindLAMP), and stored in other data containers (databases, files) besides MySQL.
