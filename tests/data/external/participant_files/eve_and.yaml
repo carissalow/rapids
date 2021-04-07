@@ -1,0 +1,6 @@
+PHONE:
+  DEVICE_IDS: [eve_and, a748ee1a-1d0b-4ae9-9074-279a2b6ba524]
+  PLATFORMS: [android]
+  LABEL: event android
+  START_DATE: 2020/01/01
+  END_DATE: 2020/08/01 

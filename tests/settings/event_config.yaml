@@ -3,7 +3,7 @@
 ########################################################################################################################
 
 # See https://www.rapids.science/latest/setup/configuration/#participant-files
-PIDS: [test07]
+PIDS: [eve_and, eve_ios, eve_emp]
 
 # See https://www.rapids.science/latest/setup/configuration/#automatic-creation-of-participant-files
 CREATE_PARTICIPANT_FILES:

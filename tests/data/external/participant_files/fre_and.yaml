@@ -1,11 +1,11 @@
 PHONE:
-  DEVICE_IDS: [test03]
+  DEVICE_IDS: [fre_and]
   PLATFORMS: [android]
-  LABEL: test03 android
+  LABEL: frequency android
   START_DATE: 2020/01/01
   END_DATE: 2021/06/01 
 FITBIT:
-  DEVICE_IDS: [test03]
-  LABEL: test03 android
+  DEVICE_IDS: [fre_and]
+  LABEL: frequency android
   START_DATE: 2020/01/01
   END_DATE: 2020/06/01 

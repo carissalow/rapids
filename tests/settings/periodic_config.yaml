@@ -3,7 +3,7 @@
 ########################################################################################################################
 
 # See https://www.rapids.science/latest/setup/configuration/#participant-files
-PIDS: [test01, test03, test04]
+PIDS: [per_and, per_emp, per_ios]
 
 # See https://www.rapids.science/latest/setup/configuration/#automatic-creation-of-participant-files
 CREATE_PARTICIPANT_FILES:
@@ -149,7 +149,7 @@ PHONE_BLUETOOTH:
   CONTAINER: phone_bluetooth_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: FALSE
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_SCRIPT: src/features/phone_bluetooth/rapids/main.R
 
@@ -190,7 +190,7 @@ PHONE_CONVERSATION:
     IOS: phone_conversation_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: FALSE
       FEATURES: ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
     "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
     "noiseavgenergy","noisesdenergy","noiseminenergy","noisemaxenergy","voicesumenergy",
@@ -221,7 +221,7 @@ PHONE_LIGHT:
   CONTAINER: phone_light_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: FALSE
       FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
       SRC_SCRIPT: src/features/phone_light/rapids/main.py
 
@@ -273,7 +273,7 @@ PHONE_MESSAGES:
   CONTAINER: phone_messages_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: FALSE
       MESSAGES_TYPES : [received, sent]
       FEATURES: 
         received: [count, distinctcontacts, timefirstmessage, timelastmessage, countmostfrequentcontact]
@@ -298,7 +298,7 @@ PHONE_WIFI_CONNECTED:
   CONTAINER: phone_wifi_connected_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: FALSE
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_SCRIPT: src/features/phone_wifi_connected/rapids/main.R
 
@@ -307,7 +307,7 @@ PHONE_WIFI_VISIBLE:
   CONTAINER: phone_wifi_visible_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: FALSE
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_SCRIPT: src/features/phone_wifi_visible/rapids/main.R
 
