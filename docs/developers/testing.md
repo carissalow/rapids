@@ -71,8 +71,10 @@ The sample data includes 7 tests cases. Take phone battery as an example, on thi
 
         | timestamp | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
         |---|---|---|---|---|---|---|---|---|---|
-        | 00:17:38.602 | test02 | 4 | 77 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
-        | 03:20:30.415 | test02 | 2 | 77 | 100 | 4170 | 23 | 0 | 2 | Li-ion |
+        | 00:08:10.415 | per_ios | 4 | 80 | 100 | 4170 | 23 | 0 | 2 | Li-ion |
+        | 00:17:38.602 | per_ios | 4 | 77 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
+        | 03:20:30.415 | per_ios | 2 | 77 | 100 | 4170 | 23 | 0 | 2 | Li-ion |
+        | 03:30:35.875 | per_ios | 2 | 80 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
 
         Output results
 
@@ -91,17 +93,17 @@ The sample data includes 7 tests cases. Take phone battery as an example, on thi
 
         | timestamp             | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
         |-----------------------|-----------|----------------|---------------|---------------|-----------------|---------------------|-----------------|----------------|--------------------|
-        | 17:59:41.434 | test02    | 4              | 59            | 100           | 4094            | 23                  | 0               | 2              | Li-ion             |
-        | 18:04:14.321 | test02    | 4              | 58            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-        | 18:07:24.456 | test02    | 4              | 57            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-        | 20:03:03.415 | test02    | 2              | 72            | 100           | 4170            | 23                  | 0               | 2              | Li-ion             |
-        | 20:05:12.434 | test02    | 2              | 73            | 100           | 4094            | 23                  | 0               | 2              | Li-ion             |
-        | 20:07:24.678 | test02    | 2              | 74            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-        | 20:10:34.875 | test02    | 2              | 75            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-        | 21:30:04.415 | test02    | 4              | 74            | 100           | 4170            | 23                  | 0               | 2              | Li-ion             |
-        | 21:32:14.434 | test02    | 4              | 73            | 100           | 4094            | 23                  | 0               | 2              | Li-ion             |
-        | 21:35:23.678 | test02    | 4              | 72            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-        | 21:37:47.875 | test02    | 4              | 71            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+        | 17:59:41.434 | per_ios    | 4              | 59            | 100           | 4094            | 23                  | 0               | 2              | Li-ion             |
+        | 18:04:14.321 | per_ios    | 4              | 58            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+        | 18:07:24.456 | per_ios    | 4              | 57            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+        | 20:03:03.415 | per_ios    | 2              | 72            | 100           | 4170            | 23                  | 0               | 2              | Li-ion             |
+        | 20:05:12.434 | per_ios    | 2              | 73            | 100           | 4094            | 23                  | 0               | 2              | Li-ion             |
+        | 20:07:24.678 | per_ios    | 2              | 74            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+        | 20:10:34.875 | per_ios    | 2              | 75            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+        | 21:30:04.415 | per_ios    | 4              | 74            | 100           | 4170            | 23                  | 0               | 2              | Li-ion             |
+        | 21:32:14.434 | per_ios    | 4              | 73            | 100           | 4094            | 23                  | 0               | 2              | Li-ion             |
+        | 21:35:23.678 | per_ios    | 4              | 72            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+        | 21:37:47.875 | per_ios    | 4              | 71            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
 
         Output results:
 
@@ -116,8 +118,8 @@ The sample data includes 7 tests cases. Take phone battery as an example, on thi
 
         | timestamp | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
         |---|---|---|---|---|---|---|---|---|---|
-        | 20:10:34.875 | test06 | 2 | 75 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
-        | 20:20:17.171 | test06 | 4 | 74 | 100 | 4170 | 23 | 0 | 2 | Li-ion |
+        | 20:10:34.875 | fre_ios | 2 | 75 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
+        | 20:20:17.171 | fre_ios | 4 | 74 | 100 | 4170 | 23 | 0 | 2 | Li-ion |
 
         Output results
 
@@ -134,8 +136,8 @@ The sample data includes 7 tests cases. Take phone battery as an example, on thi
 
         | timestamp | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
         |---|---|---|---|---|---|---|---|---|---|
-        | 11:59:28.434 | test02 | 2 | 63 | 100 | 4094 | 23 | 0 | 2 | Li-ion |
-        | 12:04:37.678 | test02 | 2 | 64 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
+        | 11:59:28.434 | per_ios | 2 | 63 | 100 | 4094 | 23 | 0 | 2 | Li-ion |
+        | 12:04:37.678 | per_ios | 2 | 64 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
 
     ??? "Frequency (30 mins)"
 
@@ -143,8 +145,8 @@ The sample data includes 7 tests cases. Take phone battery as an example, on thi
 
         | timestamp | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
         |---|---|---|---|---|---|---|---|---|---|
-        | 11:59:28.434 | test06 | 2 | 63 | 100 | 4094 | 23 | 0 | 2 | Li-ion |
-        | 12:04:37.678 | test06 | 2 | 64 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
+        | 11:59:28.434 | fre_ios | 2 | 63 | 100 | 4094 | 23 | 0 | 2 | Li-ion |
+        | 12:04:37.678 | fre_ios | 2 | 64 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
 
 ??? "4. A daily segment instance with a discharge episode that spans to the next daily instance"
 
@@ -154,8 +156,8 @@ The sample data includes 7 tests cases. Take phone battery as an example, on thi
 
         | timestamp | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
         |---|---|---|---|---|---|---|---|---|---|
-        | 05:59:49.434 | test02 | 4 | 79 | 100 | 4094 | 23 | 0 | 2 | Li-ion |
-        | 06:02:19.321 | test02 | 4 | 78 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
+        | 05:59:49.434 | per_ios | 4 | 79 | 100 | 4094 | 23 | 0 | 2 | Li-ion |
+        | 06:02:19.321 | per_ios | 4 | 78 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
 
     ??? "Frequency (30 mins)"
 
@@ -163,8 +165,8 @@ The sample data includes 7 tests cases. Take phone battery as an example, on thi
 
         | timestamp | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
         |---|---|---|---|---|---|---|---|---|---|
-        | 17:59:41.434 | test06 | 4 | 59 | 100 | 4094 | 23 | 0 | 2 | Li-ion |
-        | 18:04:14.321 | test06 | 4 | 58 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
+        | 17:59:41.434 | fre_ios | 4 | 59 | 100 | 4094 | 23 | 0 | 2 | Li-ion |
+        | 18:04:14.321 | fre_ios | 4 | 58 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
     
 ??? "5. Three-day segments that repeat everyday"
 
@@ -181,20 +183,20 @@ The sample data includes 7 tests cases. Take phone battery as an example, on thi
 
     | timestamp             | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
     |-----------------------|-----------|----------------|---------------|---------------|-----------------|---------------------|-----------------|----------------|--------------------|
-    | 2020-07-02 00:03:47.875 | test01    | 3              | 63            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-02 00:05:47.875 | test01    | 3              | 62            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-02 23:55:47.875 | test01    | 3              | 55            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-02 23:59:47.875 | test01    | 3              | 54            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 00:06:47.875 | test01    | 3              | 53            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 00:09:47.875 | test01    | 3              | 52            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 23:47:05.000 | test01    | 3              | 60            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 23:55:05.000 | test01    | 3              | 59            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 00:15:05.000 | test01    | 3              | 58            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 00:18:05.000 | test01    | 3              | 57            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 23:51:00.000 | test01    | 3              | 41            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 23:57:00.000 | test01    | 3              | 40            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-05 00:21:00.000 | test01    | 3              | 39            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-05 00:23:00.000 | test01    | 3              | 38            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-02 00:03:47.875 | per_and    | 3              | 63            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-02 00:05:47.875 | per_and    | 3              | 62            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-02 23:55:47.875 | per_and    | 3              | 55            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-02 23:59:47.875 | per_and    | 3              | 54            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-03 00:06:47.875 | per_and    | 3              | 53            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-03 00:09:47.875 | per_and    | 3              | 52            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-03 23:47:05.000 | per_and    | 3              | 60            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-03 23:55:05.000 | per_and    | 3              | 59            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-04 00:15:05.000 | per_and    | 3              | 58            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-04 00:18:05.000 | per_and    | 3              | 57            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-04 23:51:00.000 | per_and    | 3              | 41            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-04 23:57:00.000 | per_and    | 3              | 40            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-05 00:21:00.000 | per_and    | 3              | 39            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-05 00:23:00.000 | per_and    | 3              | 38            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
 
 
     Output results:
@@ -220,16 +222,16 @@ The sample data includes 7 tests cases. Take phone battery as an example, on thi
 
     | timestamp             | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
     |-----------------------|-----------|----------------|---------------|---------------|-----------------|---------------------|-----------------|----------------|--------------------|
-    | 2020-07-03 00:06:47.875 | test01    | 3              | 53            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 00:09:47.875 | test01    | 3              | 52            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 23:47:05.000 | test01    | 3              | 60            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 23:55:05.000 | test01    | 3              | 59            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 00:15:05.000 | test01    | 3              | 58            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 00:18:05.000 | test01    | 3              | 57            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 23:51:00.000 | test01    | 3              | 41            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 23:57:00.000 | test01    | 3              | 40            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-05 00:21:00.000 | test01    | 3              | 39            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-05 00:23:00.000 | test01    | 3              | 38            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-03 00:06:47.875 | per_and    | 3              | 53            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-03 00:09:47.875 | per_and    | 3              | 52            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-03 23:47:05.000 | per_and    | 3              | 60            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-03 23:55:05.000 | per_and    | 3              | 59            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-04 00:15:05.000 | per_and    | 3              | 58            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-04 00:18:05.000 | per_and    | 3              | 57            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-04 23:51:00.000 | per_and    | 3              | 41            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-04 23:57:00.000 | per_and    | 3              | 40            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-05 00:21:00.000 | per_and    | 3              | 39            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
+    | 2020-07-05 00:23:00.000 | per_and    | 3              | 38            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
 
     Output results:
 

@@ -1,6 +1,0 @@
-PHONE:
-  DEVICE_IDS: [a748ee1a-1d0b-4ae9-9074-279a2b6ba524]
-  PLATFORMS: [android]
-  LABEL: test01 android
-  START_DATE: 2020/01/01
-  END_DATE: 2020/08/01 
