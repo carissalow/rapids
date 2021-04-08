@@ -3,7 +3,7 @@ import numpy as np
 
 
 def mergeSleepEpisodes(sleep_data, cols_for_groupby):
-    sleep_episodes = pd.DataFrame(columns=["type_episode_id", "level_episode_id", "level", "unified_level", "is_main_sleep", "type", "timestamp", "duration"])
+    sleep_episodes = pd.DataFrame(columns=["device_id", "type_episode_id", "level_episode_id", "level", "unified_level", "is_main_sleep", "type", "timestamp", "duration"])
     if not sleep_data.empty:
         sleep_data = sleep_data.groupby(by=cols_for_groupby)
         sleep_episodes = sleep_data[["timestamp"]].first()
@@ -15,7 +15,7 @@ def mergeSleepEpisodes(sleep_data, cols_for_groupby):
 sleep_intraday = pd.read_csv(snakemake.input["sleep_intraday"])
 
 # discard useless columns
-for col in ["device_id", "local_timezone", "local_date_time", "local_date", "local_time", "local_hour", "local_minute", "assigned_segments"]:
+for col in ["local_timezone", "local_date_time", "local_date", "local_time", "local_hour", "local_minute", "assigned_segments"]:
     del sleep_intraday[col]
 
 # Extract "unified_level" based on "level" field
@@ -25,7 +25,7 @@ sleep_intraday["unified_level"] = np.where(sleep_intraday["level"].isin(["awake"
 
 # Put consecutive rows with the same "level" field together and merge episodes
 sleep_intraday.insert(2, "level_episode_id", (sleep_intraday[["type_episode_id", "level"]] != sleep_intraday[["type_episode_id", "level"]].shift()).any(axis=1).cumsum())
-sleep_intraday_episodes = mergeSleepEpisodes(sleep_intraday, ["type_episode_id", "level_episode_id", "level", "unified_level", "is_main_sleep", "type"])
+sleep_intraday_episodes = mergeSleepEpisodes(sleep_intraday, ["device_id", "type_episode_id", "level_episode_id", "level", "unified_level", "is_main_sleep", "type"])
 
 
 # Generate "start_timestamp" and "end_timestamp"
