@@ -1,10 +1,10 @@
 #!/bin/bash
 
 run_pipeline() {
-    if [ $TYPE == 'frequency' ]
+    if [ "$TYPE" == 'frequency' ]
     then
         CONFIG_FILE="./tests/settings/frequency_config.yaml"
-    elif [ $TYPE == 'event' ]
+    elif [ "$TYPE" == 'event' ]
     then 
         CONFIG_FILE="./tests/settings/event_config.yaml"
     else
@@ -12,6 +12,7 @@ run_pipeline() {
     fi
 
     echo "Copying participant files"
+    mkdir -p data/external/participant_files/
     cp -r tests/data/external/participant_files/* data/external/participant_files/
 
     echo $TYPE
@@ -23,7 +24,7 @@ run_pipeline() {
 }
 
 display_usage() {
-    echo "Usage: run_test.sh [-t|--type] [periodic | frequency] [-a|--action] [ all | run | test]"
+    echo "Usage: run_test.sh [-t|--type] [periodic | frequency | event] [-a|--action] [ all | run | both]"
     exit 1
 }
 
@@ -50,12 +51,7 @@ case $key in
 esac
 done
 
-if [ $ACTION != 'test' ] && [ $ACTION != 'run' ] && [ $ACTION != 'both' ] 
-then
-    display_usage
-fi
-
-if [[ $TYPE == 'all' ]]
+if { [ "$TYPE" == 'all' ]; }
 then
     TYPE="frequency"
     run_pipeline
@@ -63,17 +59,25 @@ then
     TYPE="periodic"
     run_pipeline
     python tests/scripts/run_tests.py periodic
+    TYPE="event"
+    run_pipeline
+    python tests/scripts/run_tests.py event
 else
-    if [ $TYPE != 'frequency' ] && [ $TYPE != 'periodic' ] && [ $TYPE != 'event' ]
+    if { [ "$ACTION" != 'test' ] && [ "$ACTION" != 'run' ] && [ "$ACTION" != 'both' ]; }
     then
         display_usage
     fi
 
-    if { [ $ACTION == 'run' ] || [ $ACTION == 'both' ]; }
+    if { [ "$TYPE" != 'frequency' ] && [ "$TYPE" != 'periodic' ] && [ "$TYPE" != 'event' ]; }
+    then
+        display_usage
+    fi
+
+    if { [ "$ACTION" == 'run' ] || [ "$ACTION" == 'both' ]; }
     then
         run_pipeline
     fi
-    if { [ $ACTION == 'test' ] || [ $ACTION == 'both' ]; }
+    if { [ "$ACTION" == 'test' ] || [ "$ACTION" == 'both' ]; }
     then
         python tests/scripts/run_tests.py $(echo $TYPE)
     fi
