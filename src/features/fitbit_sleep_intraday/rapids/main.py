@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import datetime
 import itertools
 
-def featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, sleep_types_to_compute, consider_all):
+def featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, sleep_types_to_compute, levels_include_all_groups):
     
     features_fullname = ["local_segment"]
 
@@ -11,8 +11,8 @@ def featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, sle
         for sleep_level in sleep_levels_to_compute[sleep_level_group]:
             sleep_level_with_group.append(sleep_level + sleep_level_group.lower())
     
-    if consider_all:
-        features_fullname.extend([x[0] + x[1] + x[2] for x in itertools.product(intraday_features_to_compute["LEVELS_AND_TYPES"], sleep_level_with_group + ["all"], sleep_types_to_compute + ["all"])])
+    if levels_include_all_groups:
+        features_fullname.extend([x[0] + x[1] + x[2] for x in itertools.product(intraday_features_to_compute["LEVELS_AND_TYPES"], sleep_level_with_group + ["all"], sleep_types_to_compute)])
     else:
         features_fullname.extend([x[0] + x[1] + x[2] for x in itertools.product(intraday_features_to_compute["LEVELS_AND_TYPES"], sleep_level_with_group, sleep_types_to_compute)])
     if "ACROSS_LEVELS" in intraday_features_to_compute["RATIOS_SCOPE"]:
@@ -20,9 +20,9 @@ def featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, sle
     if "ACROSS_TYPES" in intraday_features_to_compute["RATIOS_SCOPE"] and "main" in sleep_types_to_compute:
         features_fullname.extend(["ratio" + x + "main" for x in intraday_features_to_compute["RATIOS_TYPE"]])
     if "WITHIN_LEVELS" in intraday_features_to_compute["RATIOS_SCOPE"]:
-        features_fullname.extend(["ratio" + x[0] + x[1] + "within" + x[2] for x in itertools.product(intraday_features_to_compute["RATIOS_TYPE"], sleep_types_to_compute, sleep_level_with_group)])
+        features_fullname.extend(["ratio" + x[0] + x[1] + "within" + x[2] for x in itertools.product(intraday_features_to_compute["RATIOS_TYPE"], set(sleep_types_to_compute) & set(["main", "nap"]), sleep_level_with_group)])
     if "WITHIN_TYPES" in intraday_features_to_compute["RATIOS_SCOPE"]:
-        features_fullname.extend(["ratio" + x[0] + x[1] + "within" + x[2] for x in itertools.product(intraday_features_to_compute["RATIOS_TYPE"], sleep_level_with_group, sleep_types_to_compute)])
+        features_fullname.extend(["ratio" + x[0] + x[1] + "within" + x[2] for x in itertools.product(intraday_features_to_compute["RATIOS_TYPE"], sleep_level_with_group,  set(sleep_types_to_compute) & set(["main", "nap"]))])
     features_fullname.extend(intraday_features_to_compute["ROUTINE"])
     return features_fullname
 
@@ -68,26 +68,28 @@ def statsFeatures(sleep_episodes, features, episode_type):
 def allStatsFeatures(sleep_data, base_sleep_levels, base_sleep_types, features, sleep_intraday_features):
 
     # For CLASSIC
-    for sleep_level, sleep_type in itertools.product(base_sleep_levels["CLASSIC"] + ["all"], base_sleep_types + ["all"]):
-        sleep_episodes_classic = sleep_data[sleep_data["is_main_sleep"] == (1 if sleep_type == "main" else 0)] if sleep_type != "all" else sleep_data
+    for sleep_level, sleep_type in itertools.product(base_sleep_levels["CLASSIC"] + ["all"], base_sleep_types):
+        sleep_episodes_classic = sleep_data[sleep_data["type"] == "classic"]
+        sleep_episodes_classic = sleep_episodes_classic[sleep_episodes_classic["is_main_sleep"] == (1 if sleep_type == "main" else 0)] if sleep_type != "all" else sleep_episodes_classic
         sleep_episodes_classic = sleep_episodes_classic[sleep_episodes_classic["level"] == sleep_level] if sleep_level != "all" else sleep_episodes_classic
         sleep_intraday_features = pd.concat([sleep_intraday_features, statsFeatures(sleep_episodes_classic, features, sleep_level + "classic" + sleep_type)], axis=1)
     
     # For STAGES
-    for sleep_level, sleep_type in itertools.product(base_sleep_levels["STAGES"] + ["all"], base_sleep_types + ["all"]):
-        sleep_episodes_stages = sleep_data[sleep_data["is_main_sleep"] == (1 if sleep_type == "main" else 0)] if sleep_type != "all" else sleep_data
+    for sleep_level, sleep_type in itertools.product(base_sleep_levels["STAGES"] + ["all"], base_sleep_types):
+        sleep_episodes_stages = sleep_data[sleep_data["type"] == "stages"]
+        sleep_episodes_stages = sleep_episodes_stages[sleep_episodes_stages["is_main_sleep"] == (1 if sleep_type == "main" else 0)] if sleep_type != "all" else sleep_episodes_stages
         sleep_episodes_stages = sleep_episodes_stages[sleep_episodes_stages["level"] == sleep_level] if sleep_level != "all" else sleep_episodes_stages
         sleep_intraday_features = pd.concat([sleep_intraday_features, statsFeatures(sleep_episodes_stages, features, sleep_level + "stages" + sleep_type)], axis=1)
     
     # For UNIFIED
-    for sleep_level, sleep_type in itertools.product(base_sleep_levels["UNIFIED"] + ["all"], base_sleep_types + ["all"]):
+    for sleep_level, sleep_type in itertools.product(base_sleep_levels["UNIFIED"] + ["all"], base_sleep_types):
         sleep_episodes_unified = sleep_data[sleep_data["is_main_sleep"] == (1 if sleep_type == "main" else 0)] if sleep_type != "all" else sleep_data
         sleep_episodes_unified = sleep_episodes_unified[sleep_episodes_unified["unified_level"] == (0 if sleep_level == "awake" else 1)] if sleep_level != "all" else sleep_episodes_unified
         sleep_episodes_unified = mergeSleepEpisodes(sleep_episodes_unified, ["local_segment", "unified_level_episode_id"]) 
         sleep_intraday_features = pd.concat([sleep_intraday_features, statsFeatures(sleep_episodes_unified, features, sleep_level + "unified" + sleep_type)], axis=1)
     
     # Ignore the levels (e.g. countepisode[all][main])
-    for sleep_type in base_sleep_types + ["all"]:
+    for sleep_type in base_sleep_types:
         sleep_episodes_none = sleep_data[sleep_data["is_main_sleep"] == (1 if sleep_type == "main" else 0)] if sleep_type != "all" else sleep_data
         sleep_episodes_none = mergeSleepEpisodes(sleep_episodes_none, ["local_segment", "type_episode_id"])
         sleep_intraday_features = pd.concat([sleep_intraday_features, statsFeatures(sleep_episodes_none, features, "all" + sleep_type)], axis=1)
@@ -151,6 +153,11 @@ def ratiosFeatures(sleep_intraday_features, ratios_types, ratios_scopes, sleep_l
     # 7) ratios_type: "duration", sleep_levels_combined: ("unified", "asleep"), sleep_type: "main"
     # 8) ratios_type: "duration", sleep_levels_combined: ("unified", "asleep"), sleep_type: "nap"    
     for ratios_type, sleep_levels_combined, sleep_type in itertools.product(ratios_types, sleep_level_with_group, sleep_types):
+        
+        # "all" sleep type will not be cosidered for any ratios features since it will be 1 all the time
+        if sleep_type == "all":
+            continue
+
         sleep_level_group, sleep_level = sleep_levels_combined[0], sleep_levels_combined[1]
         agg_func = "countepisode" if ratios_type == "count" else "sumduration"
 
@@ -167,36 +174,36 @@ def ratiosFeatures(sleep_intraday_features, ratios_types, ratios_scopes, sleep_l
     return sleep_intraday_features
 
 
-def singleSleepTypeRoutineFeatures(sleep_intraday_data, routine, reference_time, sleep_type, sleep_intraday_features):
+def singleSleepTypeRoutineFeatures(sleep_intraday_data, routine, routine_reference_time, sleep_type, sleep_intraday_features):
 
     sleep_intraday_data = sleep_intraday_data[sleep_intraday_data["is_main_sleep"] == (1 if sleep_type == "mainsleep" else 0)]
     if "starttimefirst" + sleep_type in routine:
         grouped_first = sleep_intraday_data.groupby(["local_segment"]).first()
-        if reference_time == "MIDNIGHT":
+        if routine_reference_time == "MIDNIGHT":
             sleep_intraday_features["starttimefirst" + sleep_type] = grouped_first["local_start_date_time"].apply(lambda x: x.hour * 60 + x.minute + x.second / 60)
-        elif reference_time == "START_OF_THE_SEGMENT":
+        elif routine_reference_time == "START_OF_THE_SEGMENT":
             sleep_intraday_features["starttimefirst" + sleep_type] = (grouped_first["start_timestamp"] - grouped_first["segment_start_timestamp"]) / (60 * 1000)
         else:
-            raise ValueError("Please check FITBIT_SLEEP_INTRADAY section of config.yaml: REFERENCE_TIME can only be MIDNIGHT or START_OF_THE_SEGMENT.")
+            raise ValueError("Please check FITBIT_SLEEP_INTRADAY section of config.yaml: ROUTINE_REFERENCE_TIME can only be MIDNIGHT or START_OF_THE_SEGMENT.")
     
     if "endtimelast" + sleep_type in routine:
         grouped_last = sleep_intraday_data.groupby(["local_segment"]).last()
-        if reference_time == "MIDNIGHT":
+        if routine_reference_time == "MIDNIGHT":
             sleep_intraday_features["endtimelast" + sleep_type] = grouped_last["local_end_date_time"].apply(lambda x: x.hour * 60 + x.minute + x.second / 60)
-        elif reference_time == "START_OF_THE_SEGMENT":
+        elif routine_reference_time == "START_OF_THE_SEGMENT":
             sleep_intraday_features["endtimelast" + sleep_type] = (grouped_last["end_timestamp"] - grouped_last["segment_start_timestamp"]) / (60 * 1000)
         else:
-            raise ValueError("Please check FITBIT_SLEEP_INTRADAY section of config.yaml: REFERENCE_TIME can only be MIDNIGHT or START_OF_THE_SEGMENT.")
+            raise ValueError("Please check FITBIT_SLEEP_INTRADAY section of config.yaml: ROUTINE_REFERENCE_TIME can only be MIDNIGHT or START_OF_THE_SEGMENT.")
 
     return sleep_intraday_features
 
-def routineFeatures(sleep_intraday_data, routine, reference_time, sleep_type, sleep_intraday_features):        
+def routineFeatures(sleep_intraday_data, routine, routine_reference_time, sleep_type, sleep_intraday_features):        
     
     if "starttimefirstmainsleep" in routine or "endtimelastmainsleep" in routine:
-        sleep_intraday_features = singleSleepTypeRoutineFeatures(sleep_intraday_data, routine, reference_time, "mainsleep", sleep_intraday_features)
+        sleep_intraday_features = singleSleepTypeRoutineFeatures(sleep_intraday_data, routine, routine_reference_time, "mainsleep", sleep_intraday_features)
     
     if "starttimefirstnap" in routine or "endtimelastnap" in routine:
-        sleep_intraday_features = singleSleepTypeRoutineFeatures(sleep_intraday_data, routine, reference_time, "nap", sleep_intraday_features)
+        sleep_intraday_features = singleSleepTypeRoutineFeatures(sleep_intraday_data, routine, routine_reference_time, "nap", sleep_intraday_features)
     
     return sleep_intraday_features
 
@@ -205,11 +212,11 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
     sleep_intraday_data = pd.read_csv(sensor_data_files["sensor_data"])
 
-    consider_all = provider["FEATURES"]["LEVELS_AND_TYPES_COMBINING_ALL"]
-    include_sleep_later_than = provider["INCLUDE_SLEEP_LATER_THAN"]
-    reference_time = provider["REFERENCE_TIME"]
+    last_night_end = provider["LAST_NIGHT_END"]
+    routine_reference_time = provider["ROUTINE_REFERENCE_TIME"]
 
     requested_intraday_features = provider["FEATURES"]
+    levels_include_all_groups = provider["SLEEP_LEVELS"]["INCLUDE_ALL_GROUPS"]
     requested_sleep_levels = provider["SLEEP_LEVELS"]
     requested_sleep_types = provider["SLEEP_TYPES"]
 
@@ -221,7 +228,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
     base_sleep_levels = {"CLASSIC": ["awake", "restless", "asleep"],
                             "STAGES": ["wake", "deep", "light", "rem"],
                             "UNIFIED": ["awake", "asleep"]}
-    base_sleep_types = ["main", "nap"]
+    base_sleep_types = ["main", "nap", "all"]
 
     # The subset of requested features this function can compute
     intraday_features_to_compute = {key: list(set(requested_intraday_features[key]) & set(base_intraday_features[key])) for key in requested_intraday_features if key in base_intraday_features}
@@ -229,13 +236,13 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
     sleep_types_to_compute = list(set(requested_sleep_types) & set(base_sleep_types))
 
     # Full names
-    features_fullnames = featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, sleep_types_to_compute, consider_all)
+    features_fullnames = featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, sleep_types_to_compute, levels_include_all_groups)
     sleep_intraday_features = pd.DataFrame(columns=features_fullnames)
     
-    # Include sleep later than
+    # Any 1-minute sleep chuncks with a local time before LAST_NIGHT_END will be discarded.
     start_minutes = sleep_intraday_data.groupby("start_timestamp").first()["local_time"].apply(lambda x: int(x.split(":")[0]) * 60 + int(x.split(":")[1]) + int(x.split(":")[2]) / 60).to_frame().rename(columns={"local_time": "start_minutes"}).reset_index()
     sleep_intraday_data = sleep_intraday_data.merge(start_minutes, on="start_timestamp", how="left")
-    sleep_intraday_data = sleep_intraday_data[sleep_intraday_data["start_minutes"] >= include_sleep_later_than]
+    sleep_intraday_data = sleep_intraday_data[sleep_intraday_data["start_minutes"] >= last_night_end]
     del sleep_intraday_data["start_minutes"]
 
     sleep_intraday_data = filter_data_by_segment(sleep_intraday_data, time_segment)
@@ -254,7 +261,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
         sleep_intraday_features = ratiosFeatures(sleep_intraday_features, intraday_features_to_compute["RATIOS_TYPE"], intraday_features_to_compute["RATIOS_SCOPE"], sleep_levels_to_compute, sleep_types_to_compute)
         
         # ROUTINE: only compute requested features
-        sleep_intraday_features = routineFeatures(sleep_intraday_data, intraday_features_to_compute["ROUTINE"], reference_time, sleep_types_to_compute, sleep_intraday_features)
+        sleep_intraday_features = routineFeatures(sleep_intraday_data, intraday_features_to_compute["ROUTINE"], routine_reference_time, sleep_types_to_compute, sleep_intraday_features)
 
         # Reset index and discard features which are not requested by user
         sleep_intraday_features.index.name = "local_segment"

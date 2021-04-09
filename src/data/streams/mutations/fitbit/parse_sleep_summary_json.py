@@ -58,15 +58,18 @@ def parseSleepData(sleep_data):
 
 def main(json_raw, stream_parameters):
     parsed_data = parseSleepData(json_raw)
+    parsed_data["local_date_time"] = (parsed_data["local_start_date_time"] - pd.Timedelta(minutes=stream_parameters["SLEEP_SUMMARY_LAST_NIGHT_END"])).dt.strftime('%Y-%m-%d 00:00:00')
+
+    # complete missing dates
+    missed_dates = list(set([x.strftime('%Y-%m-%d 00:00:00') for x in pd.date_range(parsed_data["local_date_time"].min(), parsed_data["local_date_time"].max()).to_pydatetime()]) - set(parsed_data["local_date_time"]))
+    parsed_data = pd.concat([parsed_data, pd.DataFrame({"local_date_time": missed_dates})], axis=0)
+    parsed_data.sort_values(by=["local_date_time", "local_start_date_time"], inplace=True)
+    parsed_data["device_id"] = parsed_data["device_id"].interpolate(method="pad")
+
     parsed_data["timestamp"] = 0 # this column is added at readable_datetime.R because we neeed to take into account multiple timezones
     if pd.api.types.is_datetime64_any_dtype( parsed_data['local_start_date_time']):
         parsed_data['local_start_date_time'] = parsed_data['local_start_date_time'].dt.strftime('%Y-%m-%d %H:%M:%S')
     if pd.api.types.is_datetime64_any_dtype( parsed_data['local_end_date_time']):
         parsed_data['local_end_date_time'] = parsed_data['local_end_date_time'].dt.strftime('%Y-%m-%d %H:%M:%S')
-
-    if stream_parameters["SLEEP_SUMMARY_EPISODE_DAY_ANCHOR"] == "start":
-        parsed_data["local_date_time"] = parsed_data['local_start_date_time']
-    else:
-        parsed_data["local_date_time"] = parsed_data['local_end_date_time']
 
     return(parsed_data)

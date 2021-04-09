@@ -43,6 +43,21 @@ def extractSleepFeaturesFromSummaryData(sleep_summary_data, summary_features, sl
     
     if "countepisode" in summary_features:
         sleep_summary_features = sleep_summary_features.join(features_count[["timestamp"]], how="outer").rename(columns={"timestamp": "countepisode" + sleep_type})
+    
+    features_first = sleep_summary_data[["local_segment", "minutes_start_episode", "minutes_end_episode"]].groupby(["local_segment"]).first()
+    
+    if "firstwaketime" in summary_features:
+        sleep_summary_features = sleep_summary_features.join(features_first[["minutes_end_episode"]].shift(), how="outer").rename(columns={"minutes_end_episode": "firstwaketime" + sleep_type})
+    if "firstbedtime" in summary_features:
+        sleep_summary_features = sleep_summary_features.join(features_first[["minutes_start_episode"]], how="outer").rename(columns={"minutes_start_episode": "firstbedtime" + sleep_type})
+    
+    features_last = sleep_summary_data[["local_segment", "minutes_start_episode", "minutes_end_episode"]].groupby(["local_segment"]).last()
+
+    if "lastwaketime" in summary_features:
+        sleep_summary_features = sleep_summary_features.join(features_last[["minutes_end_episode"]].shift(), how="outer").rename(columns={"minutes_end_episode": "lastwaketime" + sleep_type})
+    if "lastbedtime" in summary_features:
+        sleep_summary_features = sleep_summary_features.join(features_last[["minutes_start_episode"]], how="outer").rename(columns={"minutes_start_episode": "lastbedtime" + sleep_type})
+
 
     return sleep_summary_features
 
@@ -55,7 +70,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
     requested_sleep_types = provider["SLEEP_TYPES"]
 
     # name of the features this function can compute
-    base_summary_features = ["countepisode", "avgefficiency", "sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgdurationafterwakeup", "avgdurationasleep", "avgdurationawake", "avgdurationtofallasleep", "avgdurationinbed"]
+    base_summary_features = ["firstwaketime", "lastwaketime", "firstbedtime", "lastbedtime", "countepisode", "avgefficiency", "sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgdurationafterwakeup", "avgdurationasleep", "avgdurationawake", "avgdurationtofallasleep", "avgdurationinbed"]
     base_sleep_types = ["main", "nap", "all"]
     # the subset of requested features this function can compute
     summary_features_to_compute = list(set(requested_summary_features) & set(base_summary_features))
@@ -63,12 +78,14 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
     # full names
     features_fullnames_to_compute = ["".join(feature) for feature in itertools.product(summary_features_to_compute, sleep_types_to_compute)]
     
-    colnames_can_be_zero = [col for col in features_fullnames_to_compute if "avgefficiency" not in col]
+    colnames_can_be_zero = ["".join(feature) for feature in itertools.product(set(summary_features_to_compute) - set(["firstwaketime", "lastwaketime", "firstbedtime", "lastbedtime", "avgefficiency"]), sleep_types_to_compute)]
     
     # extract features from summary data
     sleep_summary_features = pd.DataFrame(columns=["local_segment"] + features_fullnames_to_compute)
     if not sleep_summary_data.empty:
         sleep_summary_data = filter_data_by_segment(sleep_summary_data, time_segment)
+
+        notna_segments = sleep_summary_data[sleep_summary_data["type"].notna()]["local_segment"].unique()
 
         if not sleep_summary_data.empty:
             # only keep the segments start at 00:00:00 and end at 23:59:59
@@ -78,13 +95,19 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
             segment_regex = "{}#{},{}".format(time_segment, datetime_start_regex, datetime_end_regex)
             sleep_summary_data = sleep_summary_data[sleep_summary_data["local_segment"].str.match(segment_regex)]
 
+            # calculate number of minutes after segment's start date time
+            dt_cols = ["local_start_date_time", "local_end_date_time", "local_date_time"]
+            sleep_summary_data[dt_cols] = sleep_summary_data[dt_cols].apply(pd.to_datetime)
+            sleep_summary_data["minutes_start_episode"] = (sleep_summary_data["local_start_date_time"] - sleep_summary_data["local_date_time"]) / pd.Timedelta(minutes=1)
+            sleep_summary_data["minutes_end_episode"] = (sleep_summary_data["local_end_date_time"] - (sleep_summary_data["local_date_time"] + pd.Timedelta(days=1))) / pd.Timedelta(minutes=1)
+
             if not sleep_summary_data.empty:
                 sleep_summary_features = pd.DataFrame()
 
                 for sleep_type in sleep_types_to_compute:
                     sleep_summary_features = extractSleepFeaturesFromSummaryData(sleep_summary_data, summary_features_to_compute, sleep_type, sleep_summary_features)
 
-                sleep_summary_features[colnames_can_be_zero] = sleep_summary_features[colnames_can_be_zero].fillna(0)
+                sleep_summary_features.loc[notna_segments, colnames_can_be_zero] = sleep_summary_features.loc[notna_segments, colnames_can_be_zero].fillna(0)
 
                 sleep_summary_features = sleep_summary_features.reset_index()
     

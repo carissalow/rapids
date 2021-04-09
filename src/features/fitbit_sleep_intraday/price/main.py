@@ -3,7 +3,7 @@ import itertools
 
 
 
-def featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, day_types_to_compute):
+def featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, day_types_to_compute, levels_include_all_groups):
 
     features_fullnames = ["local_segment"]
 
@@ -14,7 +14,7 @@ def featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, day
 
     for feature in intraday_features_to_compute:
         if feature == "avgduration":
-            features_fullnames.extend(["avgduration" + x[0] + "main" + x[1].lower() for x in itertools.product(sleep_level_with_group, day_types_to_compute)])
+            features_fullnames.extend(["avgduration" + x[0] + "main" + x[1].lower() for x in itertools.product(sleep_level_with_group + (["all"] if levels_include_all_groups else []), day_types_to_compute)])
         elif feature == "avgratioduration":
             features_fullnames.extend(["avgratioduration" + x[0] + "withinmain" + x[1].lower() for x in itertools.product(sleep_level_with_group, day_types_to_compute)])
         elif feature in ["avgstarttimeofepisodemain", "avgendtimeofepisodemain", "avgmidpointofepisodemain", "stdstarttimeofepisodemain", "stdendtimeofepisodemain", "stdmidpointofepisodemain"]:
@@ -69,7 +69,7 @@ def extractDailyFeatures(sleep_data):
     
     return daily_features
 
-def statsOfDailyFeatures(daily_features, day_type, sleep_levels, intraday_features_to_compute, sleep_intraday_features):
+def statsOfDailyFeatures(daily_features, day_type, sleep_levels, intraday_features_to_compute, sleep_intraday_features, levels_include_all_groups):
     if day_type == "WEEKEND":
         daily_features = daily_features[daily_features["is_weekend"] == 0]
     elif day_type == "WEEK":
@@ -110,6 +110,8 @@ def statsOfDailyFeatures(daily_features, day_type, sleep_levels, intraday_featur
             if "avgratioduration" in intraday_features_to_compute:
                 col = "ratioduration" + sleep_level + sleep_level_group.lower() + "withinmain"
                 sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment", col]].groupby("local_segment")[col].mean().to_frame().rename(columns={col: "avg" + col + day_type.lower()})], axis=1)
+    if levels_include_all_groups and ("avgduration" in intraday_features_to_compute):
+        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment", "durationinbedmain"]].groupby("local_segment")["durationinbedmain"].mean().to_frame().rename(columns={"durationinbedmain": "avgdurationallmain" + day_type.lower()})], axis=1)
 
     return sleep_intraday_features
 
@@ -127,28 +129,28 @@ def socialJetLagFeature(daily_features, sleep_intraday_features):
     
     return sleep_intraday_features
     
-def MSSDFeatures(daily_features, intraday_features_to_compute, sleep_intraday_features):
+def RMSSDFeatures(daily_features, intraday_features_to_compute, sleep_intraday_features):
     
     date_idx = pd.DataFrame(pd.date_range(start=daily_features["fake_date"].min(), end=daily_features["fake_date"].max(), freq="D"), columns=["fake_date"])
     date_idx["fake_date"] = date_idx["fake_date"].dt.date
     daily_features = daily_features.merge(date_idx, on="fake_date", how="right")
 
     for col in ["starttimeofepisodemain", "endtimeofepisodemain", "midpointofepisodemain"]:
-        daily_features[col + "_diff"] = daily_features[col].diff()
+        daily_features[col + "_diff"] = daily_features[col].diff().pow(2)
 
-    if "meanssdstarttimeofepisodemain" in intraday_features_to_compute:
-        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment","starttimeofepisodemain_diff"]].groupby("local_segment")["starttimeofepisodemain_diff"].mean().to_frame().rename(columns={"starttimeofepisodemain_diff": "meanssdstarttimeofepisodemain"})], axis=1)
-    if "meanssdendtimeofepisodemain" in intraday_features_to_compute:
-        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment","endtimeofepisodemain_diff"]].groupby("local_segment")["endtimeofepisodemain_diff"].mean().to_frame().rename(columns={"endtimeofepisodemain_diff": "meanssdendtimeofepisodemain"})], axis=1)
-    if "meanssdmidpointofepisodemain" in intraday_features_to_compute:
-        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment","midpointofepisodemain_diff"]].groupby("local_segment")["midpointofepisodemain_diff"].mean().to_frame().rename(columns={"midpointofepisodemain_diff": "meanssdmidpointofepisodemain"})], axis=1)
+    if "rmssdmeanstarttimeofepisodemain" in intraday_features_to_compute:
+        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment","starttimeofepisodemain_diff"]].groupby("local_segment")["starttimeofepisodemain_diff"].mean().pow(0.5).to_frame().rename(columns={"starttimeofepisodemain_diff": "rmssdmeanstarttimeofepisodemain"})], axis=1)
+    if "rmssdmeanendtimeofepisodemain" in intraday_features_to_compute:
+        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment","endtimeofepisodemain_diff"]].groupby("local_segment")["endtimeofepisodemain_diff"].mean().pow(0.5).to_frame().rename(columns={"endtimeofepisodemain_diff": "rmssdmeanendtimeofepisodemain"})], axis=1)
+    if "rmssdmeanmidpointofepisodemain" in intraday_features_to_compute:
+        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment","midpointofepisodemain_diff"]].groupby("local_segment")["midpointofepisodemain_diff"].mean().pow(0.5).to_frame().rename(columns={"midpointofepisodemain_diff": "rmssdmeanmidpointofepisodemain"})], axis=1)
 
-    if "medianssdstarttimeofepisodemain" in intraday_features_to_compute:
-        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment","starttimeofepisodemain_diff"]].groupby("local_segment")["starttimeofepisodemain_diff"].median().to_frame().rename(columns={"starttimeofepisodemain_diff": "medianssdstarttimeofepisodemain"})], axis=1)
-    if "medianssdendtimeofepisodemain" in intraday_features_to_compute:
-        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment","endtimeofepisodemain_diff"]].groupby("local_segment")["endtimeofepisodemain_diff"].median().to_frame().rename(columns={"endtimeofepisodemain_diff": "medianssdendtimeofepisodemain"})], axis=1)
-    if "medianssdmidpointofepisodemain" in intraday_features_to_compute:
-        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment","midpointofepisodemain_diff"]].groupby("local_segment")["midpointofepisodemain_diff"].median().to_frame().rename(columns={"midpointofepisodemain_diff": "medianssdmidpointofepisodemain"})], axis=1)
+    if "rmssdmedianstarttimeofepisodemain" in intraday_features_to_compute:
+        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment","starttimeofepisodemain_diff"]].groupby("local_segment")["starttimeofepisodemain_diff"].median().pow(0.5).to_frame().rename(columns={"starttimeofepisodemain_diff": "rmssdmedianstarttimeofepisodemain"})], axis=1)
+    if "rmssdmedianendtimeofepisodemain" in intraday_features_to_compute:
+        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment","endtimeofepisodemain_diff"]].groupby("local_segment")["endtimeofepisodemain_diff"].median().pow(0.5).to_frame().rename(columns={"endtimeofepisodemain_diff": "rmssdmedianendtimeofepisodemain"})], axis=1)
+    if "rmssdmedianmidpointofepisodemain" in intraday_features_to_compute:
+        sleep_intraday_features = pd.concat([sleep_intraday_features, daily_features[["local_segment","midpointofepisodemain_diff"]].groupby("local_segment")["midpointofepisodemain_diff"].median().pow(0.5).to_frame().rename(columns={"midpointofepisodemain_diff": "rmssdmedianmidpointofepisodemain"})], axis=1)
 
     return sleep_intraday_features
 
@@ -157,16 +159,16 @@ def MSSDFeatures(daily_features, intraday_features_to_compute, sleep_intraday_fe
 
 def price_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
-    daily_start_time = provider["GROUP_EPISODES_WITHIN"]["START_TIME"]
-    daily_end_time = daily_start_time + provider["GROUP_EPISODES_WITHIN"]["LENGTH"]
+    last_night_end = provider["LAST_NIGHT_END"]
 
     sleep_intraday_data = pd.read_csv(sensor_data_files["sensor_data"])
     requested_intraday_features = provider["FEATURES"]
+    levels_include_all_groups = provider["SLEEP_LEVELS"]["INCLUDE_ALL_GROUPS"]
     requested_sleep_levels = provider["SLEEP_LEVELS"]
     requested_day_types = provider["DAY_TYPES"]
 
     # Name of the features this function can compute
-    base_intraday_features = ["avgduration", "avgratioduration", "avgstarttimeofepisodemain", "avgendtimeofepisodemain", "avgmidpointofepisodemain", "stdstarttimeofepisodemain", "stdendtimeofepisodemain", "stdmidpointofepisodemain", "socialjetlag", "meanssdstarttimeofepisodemain", "meanssdendtimeofepisodemain", "meanssdmidpointofepisodemain", "medianssdstarttimeofepisodemain", "medianssdendtimeofepisodemain", "medianssdmidpointofepisodemain"]
+    base_intraday_features = ["avgduration", "avgratioduration", "avgstarttimeofepisodemain", "avgendtimeofepisodemain", "avgmidpointofepisodemain", "stdstarttimeofepisodemain", "stdendtimeofepisodemain", "stdmidpointofepisodemain", "socialjetlag", "rmssdmeanstarttimeofepisodemain", "rmssdmeanendtimeofepisodemain", "rmssdmeanmidpointofepisodemain", "rmssdmedianstarttimeofepisodemain", "rmssdmedianendtimeofepisodemain", "rmssdmedianmidpointofepisodemain"]
     base_sleep_levels = {"CLASSIC": ["awake", "restless", "asleep"],
                         "STAGES": ["wake", "deep", "light", "rem"],
                         "UNIFIED": ["awake", "asleep"]}
@@ -178,7 +180,7 @@ def price_features(sensor_data_files, time_segment, provider, filter_data_by_seg
     day_types_to_compute = list(set(requested_day_types) & set(base_day_types))
 
     # Full names
-    features_fullnames = featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, day_types_to_compute)
+    features_fullnames = featuresFullNames(intraday_features_to_compute, sleep_levels_to_compute, day_types_to_compute, levels_include_all_groups)
     sleep_intraday_features = pd.DataFrame(columns=features_fullnames)
 
     # Filter by segemnts and chunk episodes
@@ -206,25 +208,17 @@ def price_features(sensor_data_files, time_segment, provider, filter_data_by_seg
     main_sleep_episodes["end_minutes"] = main_sleep_episodes["start_minutes"] + main_sleep_episodes["durationinbed"]
     # Extract fake date
     """ The rule used for fake date extraction
-    set DS = daily_start_time, DE = daily_end_time
-    set start = start_minutes, end = end_minutes
-
-    if (DS <= start < DE) or (DS < end <= DE) or (start <= DS and end >= DE):
+    if start_minutes >= last_night_end
         assign today
-    elif if end <= DS:
+    else:
         assign yesterday
-    else: (same as start >=DE)
-        assign tomorrow
     """
-    main_sleep_episodes["fake_date_delta"] = main_sleep_episodes[["start_minutes", "end_minutes"]].apply(lambda row: 0 if ((row["start_minutes"] >= daily_start_time and row["start_minutes"] < daily_end_time) or (row["end_minutes"] > daily_start_time and row["end_minutes"] <= daily_end_time) or (row["start_minutes"] <= daily_start_time and row["end_minutes"] >= daily_end_time)) else -1 if (row["end_minutes"] <= daily_start_time) else 1, axis=1)
+    main_sleep_episodes["fake_date_delta"] = main_sleep_episodes[["start_minutes"]].apply(lambda row: 0 if row["start_minutes"] >= last_night_end else -1, axis=1)
     main_sleep_episodes["fake_date"] = (main_sleep_episodes["local_start_date_time"] + pd.to_timedelta(main_sleep_episodes["fake_date_delta"], unit="d")).dt.date
 
     # Update "start_minutes" column based on START_TIME
     main_sleep_episodes["start_minutes"] = main_sleep_episodes[["start_minutes", "fake_date_delta"]].apply(lambda row: row["start_minutes"] - 24 * 60 * row["fake_date_delta"], axis=1)
     main_sleep_episodes["end_minutes"] = main_sleep_episodes["start_minutes"] + main_sleep_episodes["durationinbed"]
-    
-    # We keep a sleep episode that intersects or contains the period between [START_TIME, START_TIME + LENGTH], aka [daily_start_time, daily_end_time].
-    main_sleep_episodes = main_sleep_episodes.query("(start_minutes >= @daily_start_time and start_minutes < @daily_end_time) or (end_minutes > @daily_start_time and end_minutes <= @daily_end_time) or (start_minutes <= @daily_start_time and end_minutes >= @daily_end_time)")
     
     # Sort main sleep episodes based on fake_date and start_minutes
     main_sleep_episodes = main_sleep_episodes.sort_values(["fake_date", "start_minutes"])
@@ -233,10 +227,10 @@ def price_features(sensor_data_files, time_segment, provider, filter_data_by_seg
     
     # Extract features per segment based on daily features
     for day_type in day_types_to_compute:
-        sleep_intraday_features = statsOfDailyFeatures(daily_features, day_type, sleep_levels_to_compute, intraday_features_to_compute, sleep_intraday_features)
+        sleep_intraday_features = statsOfDailyFeatures(daily_features, day_type, sleep_levels_to_compute, intraday_features_to_compute, sleep_intraday_features, levels_include_all_groups)
     if "socialjetlag" in intraday_features_to_compute:
         sleep_intraday_features = socialJetLagFeature(daily_features, sleep_intraday_features)
-    sleep_intraday_features = MSSDFeatures(daily_features, intraday_features_to_compute, sleep_intraday_features)
+    sleep_intraday_features = RMSSDFeatures(daily_features, intraday_features_to_compute, sleep_intraday_features)
 
     sleep_intraday_features.index.name = "local_segment"
     sleep_intraday_features.reset_index(inplace=True)
