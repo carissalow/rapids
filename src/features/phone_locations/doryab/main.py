@@ -273,30 +273,33 @@ def circadian_movement(locationData):
     energy_latitude, energy_longitude = circadian_movement_energies(locationData)
     return np.log10(energy_latitude + energy_longitude)
 
-def cluster_and_label(df,clustering_algorithm,threshold_static,**kwargs):
+def cluster_and_label(location_data, clustering_algorithm, threshold_static, **kwargs):
     """
 
-    :param df:   a df with columns "latitude", "longitude", and "datetime"
+    :param location_data:   
+        a data frame with "latitude", "longitude", and "datetime" columns
                                      or
-               a df with comlumns "latitude","longitude" and a datetime index
-    :param kwargs: arguments for sklearn's DBSCAN
-    :return: a new df of labeled locations with moving points removed, where the cluster
-             labeled as "1" is the largest, "2" the second largest, and so on
+        a data frame with "latitude", "longitude", and a datetime index
+    :param kwargs: arguments for sklearn's DBSCAN or OPTICS
+    :return: 
+        a new data frame of labeled locations with moving points removed, where the cluster 
+        labeled as "0" is the largest, "1" is the second largest, and so on
     """
-    if not df.empty:
-        location_data = df
-        if not isinstance(df.index, pd.DatetimeIndex):
-            location_data = df.set_index("local_date_time")
+    if not location_data.empty:
+        if not isinstance(location_data.index, pd.DatetimeIndex):
+            location_data = location_data.set_index("local_date_time")
 
-        stationary = mark_moving(location_data,threshold_static)
+        stationary = mark_moving(location_data, threshold_static)
 
-        counts_df = stationary[["double_latitude" ,"double_longitude"]].groupby(["double_latitude" ,"double_longitude"]).size().reset_index()
+        counts_df = stationary[["double_latitude", "double_longitude"]].groupby(["double_latitude", "double_longitude"]).size().reset_index()
         counts = counts_df[0]
-        lat_lon = counts_df[["double_latitude","double_longitude"]].values
+        lat_lon = counts_df[["double_latitude", "double_longitude"]].values
 
-        if clustering_algorithm == "DBSCAN":
+        if counts_df.shape[0] == 1:
+            cluster_results = np.array([-1])
+        elif clustering_algorithm == "DBSCAN":
             clusterer = DBSCAN(**kwargs)
-            cluster_results = clusterer.fit_predict(lat_lon, sample_weight= counts)
+            cluster_results = clusterer.fit_predict(lat_lon, sample_weight=counts)
         else:
             clusterer = OPTICS(**kwargs)
             cluster_results = clusterer.fit_predict(lat_lon)
@@ -306,7 +309,7 @@ def cluster_and_label(df,clustering_algorithm,threshold_static,**kwargs):
         # remove the old count column
         del counts_df[0]
 
-        merged = pd.merge(stationary,counts_df, on = ["double_latitude" ,"double_longitude"])
+        merged = pd.merge(stationary, counts_df, on=["double_latitude", "double_longitude"])
 
         #Now compute the label mapping:
         cluster_results = merged["location_label"].values
@@ -315,11 +318,11 @@ def cluster_and_label(df,clustering_algorithm,threshold_static,**kwargs):
 
         #And remap the labels:
         merged.index = stationary.index
-        stationary = stationary.assign(location_label = merged["location_label"].map(label_map).values)
+        stationary = stationary.assign(location_label=merged["location_label"].map(label_map).values)
         stationary.loc[:, "location_label"] = merged["location_label"].map(label_map)
         return stationary
     else:
-        return df
+        return location_data
 
 def rank_count_map(clusters):
     """ Returns a function which will map each element of a list 'l' to its rank,
