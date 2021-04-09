@@ -160,6 +160,15 @@ Due to the difference in the format of the raw battery data for iOS and Android 
     that contains data for Android. All other files (i.e. for iPhone)
     are empty data files.
 
+## Locations
+
+Description
+
+- The participant's home location is (latitude=1, longitude=1).
+- From Sat 10:56:00 to Sat 11:04:00, the center of the cluster is (latitude=-100, longitude=-100).
+- From Sun 03:30:00 to Sun 03:47:00, the center of the cluster is (latitude=1, longitude=1). Home location is extracted from this period.
+- From Sun 11:30:00 to Sun 11:38:00, the center of the cluster is (latitude=100, longitude=100).
+
 ## Application Foreground
 
 -   The raw application foreground data file contains data for 1 day.

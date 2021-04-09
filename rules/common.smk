@@ -21,6 +21,12 @@ def get_barnett_daily(wildcards):
         return "data/interim/{pid}/phone_locations_barnett_daily.csv"
     return []
 
+def get_locations_python_input(wildcards):
+    if wildcards.provider_key.upper() == "DORYAB":
+        return "data/interim/{pid}/phone_locations_processed_with_datetime_with_doryab_columns.csv"
+    else:
+        return "data/interim/{pid}/phone_locations_processed_with_datetime.csv"
+
 def find_features_files(wildcards):
     feature_files = []
     for provider_key, provider in config[(wildcards.sensor_key).upper()]["PROVIDERS"].items():

@@ -6,6 +6,8 @@
 - Add the `EXCLUDE_SLEEP` module for steps intraday features
 - Fix bug when no phone data yield is needed to process location data
 - Remove location rows with the same timestamp based on their accuracy
+- Refactor location features from Doryab provider
+- Add a new strategy to infer home location
 ## v1.2.0
 - Sleep summary and intraday features are more consistent.
 - Add wake and bedtime features for sleep summary data.
