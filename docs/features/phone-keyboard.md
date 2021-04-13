@@ -6,6 +6,13 @@ Sensor parameters description for `[PHONE_KEYBOARD]`:
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
 |`[CONTAINER]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the keyboard data is stored
 
+!!! info "File Sequence"
+    ```bash
+    - data/raw/{pid}/phone_keyboard_raw.csv
+    - data/raw/{pid}/phone_keyboard_with_datetime.csv
+    - data/interim/{pid}/phone_keyboard_features/phone_keyboard_{language}_{provider_key}.csv
+    - data/processed/features/{pid}/phone_keyboard.csv
+    ```
 
 Features description for `[PHONE_KEYBOARD]`:
 
@@ -24,3 +31,5 @@ Features description for `[PHONE_KEYBOARD]`:
 |totalkeyboardtouches                                               |       | Number of times keyboard was touched in a session averaged over the sessions.
 
 !!! note
+    Given the set of features, it was difficult to distinguish between AutoCorrect or AutoComplete event. Since both can be applied using a single touch and can decrease or increase the length of the text, there was no visible pattern in the raw data.
+    
