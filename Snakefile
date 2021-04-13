@@ -122,6 +122,10 @@ for provider in config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/phone_applications_foreground_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/phone_applications_foreground_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv", pid=config["PIDS"]))
+        if config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][provider]["INCLUDE_EPISODE_FEATURES"]:
+            files_to_compute.extend(expand("data/interim/{pid}/phone_app_episodes.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/phone_app_episodes_resampled.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/phone_app_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_applications_foreground_features/phone_applications_foreground_{language}_{provider_key}.csv", pid=config["PIDS"], language=get_script_language(config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][provider]["SRC_SCRIPT"]), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_applications_foreground.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))

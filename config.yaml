@@ -3,7 +3,7 @@
 ########################################################################################################################
 
 # See https://www.rapids.science/latest/setup/configuration/#participant-files
-PIDS: [test01]
+PIDS: [p132, p150]
 
 # See https://www.rapids.science/latest/setup/configuration/#automatic-creation-of-participant-files
 CREATE_PARTICIPANT_FILES:
@@ -20,8 +20,8 @@ CREATE_PARTICIPANT_FILES:
 
 # See https://www.rapids.science/latest/setup/configuration/#time-segments
 TIME_SEGMENTS: &time_segments
-  TYPE: PERIODIC # FREQUENCY, PERIODIC, EVENT
-  FILE: "data/external/timesegments_periodic.csv"
+  TYPE: FREQUENCY # FREQUENCY, PERIODIC, EVENT
+  FILE: "data/external/timesegments_frequency.csv"
   INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # Only relevant if TYPE=PERIODIC, see docs
 
 # See https://www.rapids.science/latest/setup/configuration/#timezone-of-your-study
@@ -30,7 +30,7 @@ TIMEZONE:
     SINGLE:
       TZCODE: America/New_York
     MULTIPLE:
-      TZCODES_FILE: data/external/multiple_timezones_example.csv
+      TZCODES_FILE: "time_zones.csv"
       IF_MISSING_TZCODE: STOP
       DEFAULT_TZCODE: America/New_York
       FITBIT: 
@@ -110,7 +110,8 @@ PHONE_APPLICATIONS_FOREGROUND:
     SCRAPE_MISSING_CATEGORIES: False # whether or not to scrape missing genres, only effective if CATALOGUE_SOURCE is equal to FILE. If CATALOGUE_SOURCE is equal to GOOGLE, all genres are scraped anyway
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: TRUE
+      INCLUDE_EPISODE_FEATURES: TRUE
       SINGLE_CATEGORIES: ["all", "email"]
       MULTIPLE_CATEGORIES:
         social: ["socialnetworks", "socialmediatools"]
@@ -118,7 +119,9 @@ PHONE_APPLICATIONS_FOREGROUND:
       SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
       EXCLUDED_CATEGORIES: []
       EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
-      FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+      FEATURES: 
+        APP_EVENTS: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+        APP_EPISODES: ["minduration", "maxduration", "meanduration", "sumduration"]
       SRC_SCRIPT: src/features/phone_applications_foreground/rapids/main.py
 
 # See https://www.rapids.science/latest/features/phone-applications-notifications/
