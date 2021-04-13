@@ -27,14 +27,39 @@ def compute_features(filtered_data, apps_type, requested_features, apps_features
     if "count" in requested_features:
         apps_features["count" + apps_type] = filtered_data.groupby(["local_segment"]).count()["timestamp"]
         apps_features.fillna(value={"count" + apps_type: 0}, inplace=True)
+
+    if "minduration" in requested_features:
+        grouped_data = filtered_data.groupby(by = ['local_segment'])['duration'].min()
+        if grouped_data.empty:
+            apps_features["minduration" + apps_type] = np.nan
+        else:
+            apps_features["minduration" + apps_type] = grouped_data
+            
+    if "maxduration" in requested_features:
+        grouped_data = filtered_data.groupby(by = ['local_segment'])['duration'].max()
+        if grouped_data.empty:
+            apps_features["maxduration" + apps_type] = np.nan
+        else:
+            apps_features["maxduration" + apps_type] = grouped_data
+            
+    if "meanduration" in requested_features:
+        grouped_data = filtered_data.groupby(by = ['local_segment'])['duration'].mean()
+        if grouped_data.empty:
+            apps_features["meanduration" + apps_type] = np.nan
+        else:
+            apps_features["meanduration" + apps_type] = grouped_data
+            
+    if "sumduration" in requested_features:
+        grouped_data = filtered_data.groupby(by = ['local_segment'])['duration'].sum()
+        if grouped_data.empty:
+            apps_features["sumduration" + apps_type] = np.nan
+        else:
+            apps_features["sumduration" + apps_type] = grouped_data
+
     return apps_features
 
-
-def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
+def process_app_features(data, requested_features, time_segment, provider, filter_data_by_segment):
     
-    apps_data = pd.read_csv(sensor_data_files["sensor_data"])
-
-    requested_features = provider["FEATURES"]
     excluded_categories = provider["EXCLUDED_CATEGORIES"]
     excluded_apps = provider["EXCLUDED_APPS"]
     multiple_categories_with_genres = provider["MULTIPLE_CATEGORIES"]
@@ -48,43 +73,64 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
     # exclude categories in the excluded_categories list
     if "system_apps" in excluded_categories:
-        apps_data = apps_data[apps_data["is_system_app"] == 0]
-    apps_data = apps_data[~apps_data["genre"].isin(excluded_categories)]
+        data = data[data["is_system_app"] == 0]
+    data = data[~data["genre"].isin(excluded_categories)]
     # exclude apps in the excluded_apps list
-    apps_data = apps_data[~apps_data["package_name"].isin(excluded_apps)]
-    
-    apps_features = pd.DataFrame(columns=["local_segment"] + ["".join(feature) for feature in itertools.product(requested_features, single_categories + multiple_categories + single_apps)])
-    if not apps_data.empty:
-        # deep copy the apps_data for the top1global computation
-        apps_data_global = apps_data.copy()
+    data = data[~data["package_name"].isin(excluded_apps)]
+            
+    features = pd.DataFrame(columns=["local_segment"] + ["".join(feature) for feature in itertools.product(requested_features, single_categories + multiple_categories + single_apps)])
+    if not data.empty:
+        # deep copy the data for the top1global computation
+        data_global = data.copy()
         
-        apps_data = filter_data_by_segment(apps_data, time_segment)
-        
-        if not apps_data.empty:
-            apps_features = pd.DataFrame()
+        data = filter_data_by_segment(data, time_segment)
+
+        if not data.empty:
+            features = pd.DataFrame()
             # single category
             single_categories.sort()
             for sc in single_categories:
                 if sc == "all":
-                    apps_features = compute_features(apps_data, "all", requested_features, apps_features, time_segment)
+                    features = compute_features(data, "all", requested_features, features, time_segment)
                 else:
-                    filtered_data = apps_data[apps_data["genre"].isin([sc])]
-                    apps_features = compute_features(filtered_data, sc, requested_features, apps_features, time_segment)
+                    filtered_data = data[data["genre"].isin([sc])]
+                    features = compute_features(filtered_data, sc, requested_features, features, time_segment)
             # multiple category
             for mc in multiple_categories:
-                filtered_data = apps_data[apps_data["genre"].isin(multiple_categories_with_genres[mc])]
-                apps_features = compute_features(filtered_data, mc, requested_features, apps_features, time_segment)
+                filtered_data = data[data["genre"].isin(multiple_categories_with_genres[mc])]
+                features = compute_features(filtered_data, mc, requested_features, features, time_segment)
             # single apps
             for app in single_apps:
                 col_name = app
                 if app == "top1global":
                     # get the most used app
-                    apps_with_count = apps_data_global.groupby(["package_name"]).count().sort_values(by="timestamp", ascending=False).reset_index()
+                    apps_with_count = data_global.groupby(["package_name"]).count().sort_values(by="timestamp", ascending=False).reset_index()
                     app = apps_with_count.iloc[0]["package_name"]
                     col_name = "top1global"
-                filtered_data = apps_data[apps_data["package_name"].isin([app])]
-                apps_features = compute_features(filtered_data, col_name, requested_features, apps_features, time_segment)
+                filtered_data = data[data["package_name"].isin([app])]
+                features = compute_features(filtered_data, col_name, requested_features, features, time_segment)
  
-            apps_features = apps_features.reset_index()
+            features = features.reset_index()
+
+    return features
+
+def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
     
-    return apps_features
+    apps_events_data = pd.read_csv(sensor_data_files["sensor_data"])
+    requested_events_features = provider["FEATURES"]["APP_EVENTS"]
+    
+    app_episodes_requirement = provider["INCLUDE_EPISODE_FEATURES"]
+    
+    features = process_app_features(apps_events_data, requested_events_features, time_segment, provider, filter_data_by_segment)
+    
+    if app_episodes_requirement:
+        episode_data = pd.read_csv(sensor_data_files["episode_data"])
+        requested_episodes_features = provider["FEATURES"]["APP_EPISODES"]
+
+        episode_data = episode_data.drop(episode_data[ (episode_data['duration'] < provider["IGNORE_EPISODES_SHORTER_THAN"]) & (episode_data['duration'] > provider["IGNORE_EPISODES_LONGER_THAN"])].index)
+        
+        episodes_features = process_app_features(episode_data, requested_episodes_features, time_segment, provider, filter_data_by_segment)
+        
+        features = pd.merge(episodes_features, features, how='outer', on='local_segment')
+        
+    return features

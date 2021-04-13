@@ -125,6 +125,7 @@ rule phone_applications_crashes_r_features:
 rule phone_applications_foreground_python_features:
     input:
         sensor_data = "data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv",
+        episode_data = "data/interim/{pid}/phone_app_episodes_resampled_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -138,6 +139,7 @@ rule phone_applications_foreground_python_features:
 rule phone_applications_foreground_r_features:
     input:
         sensor_data = "data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv",
+        episode_data = "data/interim/{pid}/phone_app_episodes_resampled_with_datetime.csv",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -447,6 +449,15 @@ rule screen_episodes:
         "data/interim/{pid}/phone_screen_episodes.csv"
     script:
         "../src/features/phone_screen/episodes/screen_episodes.R"
+
+rule app_episodes:
+    input:
+        screen = "data/interim/{pid}/phone_screen_episodes.csv",
+        app = "data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv"
+    output:
+        "data/interim/{pid}/phone_app_episodes.csv"
+    script:
+        "../src/features/phone_applications_foreground/episodes/app_episodes.R"
 
 rule phone_screen_python_features:
     input:
