@@ -310,6 +310,18 @@ Checklist
 
 - One three-minute episode with a 1-minute row on Sun 08:59:54.65 and 09:00:00,another on Sun 12:01:02 that are considering a single episode in multi-timezone event segments to showcase how
  inferring time zone data for Keyboard from phone data can produce inaccurate results around the tz change. This happens because the device was on LA time until 11:59 and switched to NY time at 12pm, in terms of actual time 09 am LA and 12 pm NY represent the same moment in time so 09:00 LA and 12:01 NY are consecutive minutes.
+## Application Episodes
+
+-   The feature requires raw application foreground data file and raw phone screen data file
+-   The raw data files contains data for 4 day.
+-   The raw conversation data contains records with difference in `timestamp` ranging from milliseconds to minutes.
+-   An app episode starts when an app is launched and ends when another app is launched, marking the episode end of the first one,
+or when the screen locks. Thus, we are taking into account the screen unlock episodes.
+-   There are multiple apps usage within each screen unlock episode to verify creation of different app episodes in each 
+screen unlock session. In the screen unlock episode starting from Fri 05:56:51, Fri 10:00:24, Sat 17:48:01, Sun 22:02:00, and Mon 21:05:00 we have multiple apps, both system and non-system apps, to check this.
+-   The 22 minute chunk starting from Fri 10:03:56 checks app episodes for system apps only.
+-   The screen unlock episode starting from Mon 21:05:00 and Sat 17:48:01 checks if the screen lock marks the end of episode for that particular app which was launched a few milliseconds to 8 mins before the screen lock.
+-   Finally, since application foreground is only for Android devices, this feature is also for Android devices only. All other files are empty data files
 
 ## Fitbit Calories Intraday
 

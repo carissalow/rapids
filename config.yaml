@@ -111,6 +111,7 @@ PHONE_APPLICATIONS_FOREGROUND:
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
+      INCLUDE_EPISODE_FEATURES: False
       SINGLE_CATEGORIES: ["all", "email"]
       MULTIPLE_CATEGORIES:
         social: ["socialnetworks", "socialmediatools"]
@@ -118,7 +119,11 @@ PHONE_APPLICATIONS_FOREGROUND:
       SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
       EXCLUDED_CATEGORIES: []
       EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
-      FEATURES: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+      FEATURES: 
+        APP_EVENTS: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+        APP_EPISODES: ["minduration", "maxduration", "meanduration", "sumduration"]
+      IGNORE_EPISODES_SHORTER_THAN: 0 # in minutes, set to 0 to disable
+      IGNORE_EPISODES_LONGER_THAN: 300 # in minutes, set to 0 to disable
       SRC_SCRIPT: src/features/phone_applications_foreground/rapids/main.py
 
 # See https://www.rapids.science/latest/features/phone-applications-notifications/
