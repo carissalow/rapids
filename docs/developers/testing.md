@@ -4,269 +4,168 @@ The following is a simple guide to run RAPIDS' tests. All files necessary for te
 
 ## Steps for Testing
 
-1. **Add raw data.**
-    1. Add the raw data to the corresponding sensor CSV file in `tests/data/external/aware_csv`. Create the CSV if it does not exist.
-2. **Link raw data.**
-    1. Make sure that you link the new raw data to a participant by using the same `device_id` in the data and in `[DEVICE_IDS]` inside their participant file (`tests/data/external/participant_files/testXX.yaml`). 
-    2. Create the participant file if it does not exist, and don't forget to edit `[PIDS]` in the config file of the time segments you are testing (see below). For simplicity, we use a participant's id (`testXX`) as their `device_id`.
-3. **Edit the config file.**
-    1. Activate the sensor provider you are testing if it isn't already. Set `[SENSOR][PROVIDER][COMPUTE]` to `TRUE` in the `config.yaml` of the time segments you are testing:
-    ```yaml
-    - tests/settings/frequency_config.yaml # For frequency time segments
-    - tests/settings/periodic_config.yaml # For periodic time segments
-    # We have not tested events time segments yet
-    ```
-4. **Run the pipeline and tests.**
-    1. You can run all time segments pipelines and their tests
+??? check "**Testing Overview**"
+    1. You have to create a single four day test dataset for the sensor you are working on. 
+    2. You will adjust your dataset with `tests/script/assign_test_timestamps.py` to fit `Fri March 6th 2020 - Mon March 9th 2020` and `Fri Oct 30th 2020 - Mon Nov 2nd 2020`. We test daylight saving times with these dates.
+    2. We have a one test participant per platform (`pids`: `android`, `ios`, `fitbit`, `empatica`, `empty`). The data `device_id` should be equal to the `pid`.
+    2. We will run this test dataset against six test pipelines, three for `frequency`, `periodic`, and `event` time segments in a `single` time zone, and the same three in `multiple` time zones.
+    3. You will have to create your test data to cover as many corner cases as possible. These cases depend on the sensor you are working on.
+    4. The time segments and time zones to be tested are:
+
+    ??? example "Frequency"
+        - 30 minutes (`30min, 30`)
+
+    ??? example "Periodic"
+        - morning (`morning, 06:00:00,5H 59M 59S, every_day, 0`)
+        - daily (`daily, 00:00:00,23H 59M 59S, every_day, 0`)
+        - three-day segments that repeat every day (`threeday, 00:00:00,71H 59M 59S, every_day, 0`)
+        - three-day segments that repeat every Friday (`weekend, 00:00:00,71H 59M 59S, wday, 5`)
+
+    ??? example "Event"
+        - A segment that starts 10 hours before an event (Sat Mar 07 2020 19:00:00) and lasts for 10 hours (09:00 to 19:00) (`beforeMarchEvent,1583625600000,10H,10H,-1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524`)
+        - A segment that starts 1 hour after an event (Sat Mar 07 2020 19:00:00) and lasts for 10 hours (18:00 to 04:00) (`afterMarchEvent,1583625600000,10H,1H,1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524`)
+        - A segment that starts 10 hours before an event (Sat Oct 31 2020 19:00:00) and lasts for 10 hours (09:00 to 19:00) (`beforeNovemberEvent,1583625600000,10H,10H,-1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524`)
+        - A segment that starts 1 hour after an event (Sat Oct 31 2020 19:00:00) and lasts for 10 hours (18:00 to 04:00) (`afterNovemberEvent,1583625600000,10H,1H,1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524`)
+
+    ??? example "Single time zone to test"
+        America/New_York
+
+    ??? example "Multi time zones to test"
+        - America/New_York starting at `0`
+        - America/Los_Angeles starting at `1583600400000` (Sat Mar 07 2020 12:00:00)
+        - America/New_York starting at `1583683200000` (Sun Mar 08 2020 12:00:00)
+        - America/Los_Angeles starting at `1604160000000` (Sat Oct 31 2020 12:00:00)
+        - America/New_York starting at `1604250000000` (Sun Nov 01 2020 12:00:00)
+
+??? check "**Document your tests**"
+
+    - Before you start implementing any test data you need to document your tests. 
+    - The documentation of your tests should be added to `docs/developers/test-cases.md` under the corresponding sensor. 
+    - You will need to add two subsections `Description` and the `Checklist`
+    - The amount of data you need depends on each sensor but you can be efficient by creating data that covers corner cases in more than one time segment. For example, a battery episode from 11am to 1pm, covers the case when an episode has to be split for 30min frequency segments and for morning segments.
+    - As a rule of thumb think about corner cases for 30min segments as they will give you the most flexibility.
+    - Only add tests for iOS if the raw data format is different than Android's (for example for screen)
+    - Create specific tests for Sunday before and after 02:00. These will test daylight saving switches, in March 02:00 to 02:59 do not exist, and in November 01:00 to 01:59 exist twice (read below how `tests/script/assign_test_timestamps.py` handles this)
+
+
+    ??? example "Example of Description"
+        `Description` is a list and every item describes the different scenarios your test data is covering. For example, if we are testing PHONE_BATTERY:
+
+        ```
+        - We test 24 discharge episodes, 24 charge episodes and 2 episodes with a 0 discharge rate
+        - One episode is shorter than 30 minutes (`start timestamp` to `end timestamp`)
+        - One episode is 120 minutes long from 11:00 to 13:00 (`start timestamp` to `end timestamp`). This one covers the case when an episode has to be chunked for 30min frequency segments and for morning segments
+        - One episode is 60 minutes long from 23:30 to 00:30 (`start timestamp` to `end timestamp`). This one covers the case when an episode has to be chunked for 30min frequency segments and for daly segments (overnight)
+        - One 0 discharge rate episode 10 minutes long that happens within a 30-minute segment (10:00 to 10:29) (`start timestamp` to `end timestamp`)
+        - Three discharge episodes that happen between during beforeMarchEvent (start/end timestamps of those discharge episodes)
+        - Three charge episodes that happen between during beforeMarchEvent (start/end timestamps of those charge episodes)
+        - One discharge episode that happen between 00:30 and 04:00 to test for daylight saving times in March and Novemeber 2020.
+        - ... any other test corner cases you can think of
+        ```
+
+        Describe your test cases in as much detail as possible so in the future if we find a bug in RAPIDS, we know what test case we did not include and should add.
+
+    
+    ??? example "Example of Checklist"
+        `Checklist` is a table where you confirm you have verified the output of your dataset for the different time segments and time zones
+
+        |time segment| single tz | multi tz|platform|
+        |-|-|-|-|
+        |30min|OK|OK|android and iOS|
+        |morning|OK|OK|android and iOS|
+        |daily|OK|OK|android and iOS|
+        |threeday|OK|OK|android and iOS|
+        |weekend|OK|OK|android and iOS|
+        |beforeMarchEvent|OK|OK|android and iOS|
+        |afterMarchEvent|OK|OK|android and iOS|
+        |beforeNovemberEvent|OK|OK|android and iOS|
+        |afterNovemberEvent|OK|OK|android and iOS|
+
+
+??? check "**Add raw input data.**"
+    1. Add the raw test data to the corresponding sensor CSV file in `tests/data/manual/aware_csv/SENSOR_raw.csv`. Create the CSV if it does not exist.
+    2. The test data you create will have the same columns as normal raw data except `test_time` replaces `timestamp`. To make your life easier, you can place a test data row in time using the `test_time` column with the following format: `Day HH:MM:SS.XXX`, for example `Fri 22:54:30.597`.
+    2. You will convert your manual test data to actual raw test data by running `python tests/script/assign_test_timestamps.py`
+    2. The script `assign_test_timestamps.py` converts you `test_time` column into a `timestamp`. For example, `Fri 22:54:30.597` is converted to `1583553270597` (`Fri Mar 06 2020 22:54:30 GMT-0500`) and to `1604112870597` (`Fri Oct 30 2020 22:54:30 GMT-0400`). Note we respect milliseconds and our test timezones (`New_York` and `Los_Angeles`)
+    2. The `device_id` should be the `pid`
+    2. Create your participant file if it does not exist yet (`tests/data/external/participant_files/{pid}.yaml`). 
+    2. Don't forget to add the `pid` to  `[PIDS]` in the config file of the time segments you are testing (see below). 
+
+    ??? example "Example of test data you need to create"
+        The `test_time` column will be automatically converted to a timestamp that fitst our testing periods in March and November by `tests/script/assign_test_timestamps.py`
+
+        ```
+        test_time,device_id,battery_level,battery_scale,battery_status
+        Fri 01:00:00.000,ios,90,100,4
+        Fri 01:00:30.500,ios,89,100,4
+        Fri 01:01:00.000,ios,80,100,4
+        Fri 01:01:45.500,ios,79,100,4
+        ...
+        Sat 08:00:00.000,ios,78,100,4
+        Sat 08:01:00.000,ios,50,100,4
+        Sat 08:02:00.000,ios,49,100,4
+        ```
+
+??? check "**Add expected output data.**"
+    1. Add or update the expected output feature file of the participant and sensor you are testing:
     ```bash
-    tests/scripts/run_tests.sh -t all
+    tests/data/processed/features/{type_of_time_segment}/{pid}/device_sensor.csv 
+    
+    # this example is expected output data for battery tests for periodic segments in a single timezone
+    tests/data/processed/features/stz_periodic/android/phone_sensor.csv 
+
+    # this example is expected output data for battery tests for periodic segments in multi timezones
+    tests/data/processed/features/mtz_periodic/android/phone_sensor.csv 
+    ```
+
+??? check "**Edit the config file(s).**"
+    1. Activate the sensor provider you are testing if it isn't already. Set `[SENSOR][PROVIDER][COMPUTE]` to `TRUE` in the `config.yaml` of the time segments and time zones you are testing:
+    ```yaml
+    - tests/settings/stz_frequency_config.yaml # For single-timezone frequency time segments
+    - tests/settings/stz_periodic_config.yaml # For single-timezone periodic time segments
+    - tests/settings/stz_event_config.yaml # For single-timezone event time segments
+
+    - tests/settings/mtz_frequency_config.yaml # For multi-timezone frequency time segments
+    - tests/settings/mtz_periodic_config.yaml # For multi-timezone periodic time segments
+    - tests/settings/mtz_event_config.yaml # For multi-timezone event time segments
+    ```
+??? check "**Run the pipeline and tests.**"
+    1. You can run all six segment pipelines and their tests
+    ```bash
+    bash tests/scripts/run_tests.sh -t all
     ```
     2. You can run only the pipeline of a specific time segment and its tests
     ```bash
-    tests/scripts/run_tests.sh -t frequency -a both
+    bash tests/scripts/run_tests.sh -t stz_frequency -a both # swap stz_frequency for mtz_frequency, stz_event, mtz_event, etc
     ```
     2. Or, if you are working on your tests and you want to run a pipeline and its tests independently
     ```bash
-    tests/scripts/run_tests.sh -t frequency -a run
-    tests/scripts/run_tests.sh -t frequency -a test
+    bash tests/scripts/run_tests.sh -t stz_frequency -a run
+    bash tests/scripts/run_tests.sh -t stz_frequency -a test
     ```
 
-## Output example
-The following is a snippet of the output you should see after running your test.
-
-```bash
-test_sensors_files_exist (test_sensor_features.TestSensorFeatures) ... periodic
-ok
-test_sensors_features_calculations (test_sensor_features.TestSensorFeatures) ... periodic
-ok
-
-test_sensors_files_exist (test_sensor_features.TestSensorFeatures) ... frequency
-ok
-test_sensors_features_calculations (test_sensor_features.TestSensorFeatures) ... frequency
-FAIL
-```
-
-The results above show that the for periodic both `test_sensors_files_exist` and `test_sensors_features_calculations` passed while for frequency first test `test_sensors_files_exist` passed while `test_sensors_features_calculations` failed. Additionally, you should get the traceback of the failure (not shown here). For more information on how to implement test scripts and use unittest please see [Unittest Documentation](https://docs.python.org/3.7/library/unittest.html#command-line-interface)
-
-Testing of the RAPIDS sensors and features is a work-in-progress. Please see [Test Cases](../test-cases) for a list of sensors and features that have testing currently available.
-
-## How do we execute the tests?
-This bash script `tests/scripts/run_tests.sh` executes one or all pipelines for different time segment types (`frequency`, `periodic`, and `events`) as well as their tests (see below).
-
-This python script `tests/scripts/run_tests.py` runs the tests. It parses the involved participants and active sensor providers in the `config.yaml` file of the time segment type being tested. We test that the output file we expect exists and that its content matches the expected values.
-
-??? example "Example of raw data for PHONE_APPLICATIONS_FOREGROUND testing"
-    ```json hl_lines="1 2 4" linenums="1"
-    --8<---- "tests/data/external/aware_csv/phone_applications_foreground_raw.csv"
-    ```
-
-## What cases do we test?
-The sample data includes 7 tests cases. Take phone battery as an example, on this platform, battery status 2 represents `charging` and battery status 4 represents `discharge`. 
-
-??? "1. A daily segment instance with no battery episodes"
-
-    ??? "Example"
-
-        Input time segments:
-
-        | timestamp | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
-        |---|---|---|---|---|---|---|---|---|---|
-        | 00:08:10.415 | per_ios | 4 | 80 | 100 | 4170 | 23 | 0 | 2 | Li-ion |
-        | 00:17:38.602 | per_ios | 4 | 77 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
-        | 03:20:30.415 | per_ios | 2 | 77 | 100 | 4170 | 23 | 0 | 2 | Li-ion |
-        | 03:30:35.875 | per_ios | 2 | 80 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
-
-        Output results
-
-        | local_segment | local_segment_label | local_segment_start_datetime | local_segment_end_datetime | phone_battery_rapids_countdischarge | phone_battery_rapids_sumdurationdischarge | phone_battery_rapids_avgconsumptionrate | phone_battery_rapids_maxconsumptionrate | phone_battery_rapids_countcharge | phone_battery_rapids_sumdurationcharge |
-        | --- |---|---|---|---|---|---|---|---|---|
-        | 00:00:00,00:29:59  | thirtyminutes0000 | 2020-07-01 00:00:00 | 2020-07-01 00:29:59 | 1 | 21.8259833333333 | 0.137450851775292 | 0.137450851775292 | 0 | 0 |
-        | 00:03:00,03:29:59  | thirtyminutes0006 | 2020-07-01 03:00:00 | 2020-07-01 03:29:59 | 0 | 0 | 0 | 0 | 1 | 9.49288333333333 |
-    
-        Since there is no battery episode between 00:00:30 and 03:00:00, no result will be generated for this epoch.
-
-??? "2. A daily segment instance with two battery episodes (one charging, one discharge)"
-
-    ??? "Periodic (daily)"
-
-        Input time segments:
-
-        | timestamp             | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
-        |-----------------------|-----------|----------------|---------------|---------------|-----------------|---------------------|-----------------|----------------|--------------------|
-        | 17:59:41.434 | per_ios    | 4              | 59            | 100           | 4094            | 23                  | 0               | 2              | Li-ion             |
-        | 18:04:14.321 | per_ios    | 4              | 58            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-        | 18:07:24.456 | per_ios    | 4              | 57            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-        | 20:03:03.415 | per_ios    | 2              | 72            | 100           | 4170            | 23                  | 0               | 2              | Li-ion             |
-        | 20:05:12.434 | per_ios    | 2              | 73            | 100           | 4094            | 23                  | 0               | 2              | Li-ion             |
-        | 20:07:24.678 | per_ios    | 2              | 74            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-        | 20:10:34.875 | per_ios    | 2              | 75            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-        | 21:30:04.415 | per_ios    | 4              | 74            | 100           | 4170            | 23                  | 0               | 2              | Li-ion             |
-        | 21:32:14.434 | per_ios    | 4              | 73            | 100           | 4094            | 23                  | 0               | 2              | Li-ion             |
-        | 21:35:23.678 | per_ios    | 4              | 72            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-        | 21:37:47.875 | per_ios    | 4              | 71            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-
-        Output results:
-
-        | local_segment | local_segment_label | local_segment_start_datetime | local_segment_end_datetime | phone_battery_rapids_countdischarge | phone_battery_rapids_sumdurationdischarge | phone_battery_rapids_avgconsumptionrate | phone_battery_rapids_maxconsumptionrate | phone_battery_rapids_countcharge | phone_battery_rapids_sumdurationcharge |
-        | --- |---|---|---|---|---|---|---|---|---|
-        | 18:00:00,23:59:59  | evening | 2020-07-01 18:00:00 | 2020-07-01 23:59:59 | 2 | 75.1306166666666 | 0.0664958369201784 | 0.079525673538274 | 1 | 37.5236666666667 |
-
-
-    ??? "Frequency (30 mins)"
-        
-        Input time segments:
-
-        | timestamp | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
-        |---|---|---|---|---|---|---|---|---|---|
-        | 20:10:34.875 | fre_ios | 2 | 75 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
-        | 20:20:17.171 | fre_ios | 4 | 74 | 100 | 4170 | 23 | 0 | 2 | Li-ion |
-
-        Output results
-
-        | local_segment | local_segment_label | local_segment_start_datetime | local_segment_end_datetime | phone_battery_rapids_countdischarge | phone_battery_rapids_sumdurationdischarge | phone_battery_rapids_avgconsumptionrate | phone_battery_rapids_maxconsumptionrate | phone_battery_rapids_countcharge | phone_battery_rapids_sumdurationcharge |
-        | --- |---|---|---|---|---|---|---|---|---|
-        | 20:00:00,20:29:59 | thirtyminutes0040 | 2020-07-01 20:00:00 | 2020-07-01 20:29:59 | 1 | 14.6351666666667 | 0.0683285693136395 | 0.0683285693136395 | 1 | 12.3074 |
-
-
-??? "3. A daily segment instance with a charging episode that spans to the next daily instance"
-
-    ??? "Periodic (daily)"
-
-        Input time segments:
-
-        | timestamp | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
-        |---|---|---|---|---|---|---|---|---|---|
-        | 11:59:28.434 | per_ios | 2 | 63 | 100 | 4094 | 23 | 0 | 2 | Li-ion |
-        | 12:04:37.678 | per_ios | 2 | 64 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
-
-    ??? "Frequency (30 mins)"
-
-        Input time segements:
-
-        | timestamp | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
-        |---|---|---|---|---|---|---|---|---|---|
-        | 11:59:28.434 | fre_ios | 2 | 63 | 100 | 4094 | 23 | 0 | 2 | Li-ion |
-        | 12:04:37.678 | fre_ios | 2 | 64 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
-
-??? "4. A daily segment instance with a discharge episode that spans to the next daily instance"
-
-    ??? "Periodic (daily)"
-
-        Input time segements:
-
-        | timestamp | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
-        |---|---|---|---|---|---|---|---|---|---|
-        | 05:59:49.434 | per_ios | 4 | 79 | 100 | 4094 | 23 | 0 | 2 | Li-ion |
-        | 06:02:19.321 | per_ios | 4 | 78 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
-
-    ??? "Frequency (30 mins)"
-
-        Input time segements:
-
-        | timestamp | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
-        |---|---|---|---|---|---|---|---|---|---|
-        | 17:59:41.434 | fre_ios | 4 | 59 | 100 | 4094 | 23 | 0 | 2 | Li-ion |
-        | 18:04:14.321 | fre_ios | 4 | 58 | 100 | 4157 | 23 | 0 | 2 | Li-ion |
-    
-??? "5. Three-day segments that repeat everyday"
-
-    [Time segment tested:](../setup/configuration.md#time-segments)
-
-    | label | start_time | length | repeats_on | repeats_value |
-    |---|---|---|---|---|
-    | daily | 00:00:00 | 23H 59M 59S | every_day | 0 |
-
-
-    Data tested:
-
-    We test 14 segments, one at the beginning of the first day, one at the end of the last day
-
-    | timestamp             | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
-    |-----------------------|-----------|----------------|---------------|---------------|-----------------|---------------------|-----------------|----------------|--------------------|
-    | 2020-07-02 00:03:47.875 | per_and    | 3              | 63            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-02 00:05:47.875 | per_and    | 3              | 62            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-02 23:55:47.875 | per_and    | 3              | 55            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-02 23:59:47.875 | per_and    | 3              | 54            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 00:06:47.875 | per_and    | 3              | 53            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 00:09:47.875 | per_and    | 3              | 52            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 23:47:05.000 | per_and    | 3              | 60            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 23:55:05.000 | per_and    | 3              | 59            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 00:15:05.000 | per_and    | 3              | 58            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 00:18:05.000 | per_and    | 3              | 57            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 23:51:00.000 | per_and    | 3              | 41            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 23:57:00.000 | per_and    | 3              | 40            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-05 00:21:00.000 | per_and    | 3              | 39            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-05 00:23:00.000 | per_and    | 3              | 38            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-
-
-    Output results:
-
-    | local_segment                                    | local_segment_label | local_segment_start_datetime | local_segment_end_datetime | phone_battery_rapids_countdischarge | phone_battery_rapids_sumdurationdischarge | phone_battery_rapids_avgconsumptionrate | phone_battery_rapids_maxconsumptionrate | phone_battery_rapids_countcharge | phone_battery_rapids_sumdurationcharge |
-    |--------------------------------------------------|---------------------|------------------------------|----------------------------|-------------------------------------|-------------------------------------------|-----------------------------------------|-----------------------------------------|----------------------------------|----------------------------------------|
-    | threeday#2020-07-02 00:00:00,2020-07-04 23:59:59 | threeday            | 2020-07-02 00:00:00          | 2020-07-04 23:59:59        | 4                                   | 149.7954                                  | 0.0710868450815781                      | 0.111113168762384                       | 0                                | 0                                      |
-    | threeday#2020-07-03 00:00:00,2020-07-05 23:59:59 | threeday            | 2020-07-03 00:00:00          | 2020-07-05 23:59:59        | 3                                   | 162.7952                                  | 0.0492745931499224                      | 0.0502547286558745                      | 0                                | 0                                      |
-    | threeday#2020-07-04 00:00:00,2020-07-06 23:59:59 | threeday            | 2020-07-04 00:00:00          | 2020-07-06 23:59:59        | 2                                   | 110.0815                                  | 0.0449915246814979                      | 0.0483879032392475                      | 0                                | 0                                      |
-    | threeday#2020-07-05 00:00:00,2020-07-07 23:59:59 | threeday            | 2020-07-05 00:00:00          | 2020-07-07 23:59:59        | 1                                   | 52.9991166666667                          | 0.0377364779979038                      | 0.0377364779979038                      | 0                                | 0                                      |
-
-??? "6. A three-day segment that repeats on a fixed day"
-    
-    [Time segment tested:](../setup/configuration.md#time-segments)
-
-    | label | start_time | length | repeats_on | repeats_value |
-    |---|---|---|---|---|
-    | weekends | 00:00:00 | 2D 23H 59M 59S | wday | 5 |
-
-    Data tested:
-
-    We test 10 segments, one at the beginning of the first day, one at the end of the last day
-
-    | timestamp             | device_id | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
-    |-----------------------|-----------|----------------|---------------|---------------|-----------------|---------------------|-----------------|----------------|--------------------|
-    | 2020-07-03 00:06:47.875 | per_and    | 3              | 53            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 00:09:47.875 | per_and    | 3              | 52            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 23:47:05.000 | per_and    | 3              | 60            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-03 23:55:05.000 | per_and    | 3              | 59            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 00:15:05.000 | per_and    | 3              | 58            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 00:18:05.000 | per_and    | 3              | 57            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 23:51:00.000 | per_and    | 3              | 41            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-04 23:57:00.000 | per_and    | 3              | 40            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-05 00:21:00.000 | per_and    | 3              | 39            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-07-05 00:23:00.000 | per_and    | 3              | 38            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-
-    Output results:
-
-    | local_segment                                    | local_segment_label | local_segment_start_datetime | local_segment_end_datetime | phone_battery_rapids_countdischarge | phone_battery_rapids_sumdurationdischarge | phone_battery_rapids_avgconsumptionrate | phone_battery_rapids_maxconsumptionrate | phone_battery_rapids_countcharge | phone_battery_rapids_sumdurationcharge |
-    |--------------------------------------------------|---------------------|------------------------------|----------------------------|-------------------------------------|-------------------------------------------|-----------------------------------------|-----------------------------------------|----------------------------------|----------------------------------------|
-    | weekends#2020-07-03 00:00:00,2020-07-05 23:59:59 | weekends            | 2020-07-03 00:00:00          | 2020-07-05 23:59:59        | 3                                   | 162.7952                                  | 0.0492745931499224                      | 0.0502547286558745                      | 0                                | 0                                      |
-
-??? "7. Event segements"
-
-    [Time segments tested:](../setup/configuration.md#time-segments)
-
-    | label | event_timestamp | length | shift | shift_direction | device_id |
-    |---|---|---|---|---|---|
-    | survey1 | 1587661220000 | 10H | 10H | -1 | a748ee1a-1d0b-4ae9-9074-279a2b6ba524 |
-    | survey2 | 1587661220000 | 10H | 5H | -1 | a748ee1a-1d0b-4ae9-9074-279a2b6ba524 |
-    | survey3 | 1587661220000 | 10H | 0H | 1 | a748ee1a-1d0b-4ae9-9074-279a2b6ba524 |
-
-    Data tested: 
-
-    We test 7 segments, one at the beginning of the first day, one at the end of the last day
-
-    | timestamp             | device_id                            | battery_status | battery_level | battery_scale | battery_voltage | battery_temperature | battery_adaptor | battery_health | battery_technology |
-    |-----------------------|--------------------------------------|----------------|---------------|---------------|-----------------|---------------------|-----------------|----------------|--------------------|
-    | 2020-04-23 03:15:00.000 | a748ee1a-1d0b-4ae9-9074-279a2b6ba524 | 3              | 90            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-04-23 03:21:00.000 | a748ee1a-1d0b-4ae9-9074-279a2b6ba524 | 3              | 89            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-04-23 07:50:00.000 | a748ee1a-1d0b-4ae9-9074-279a2b6ba524 | 3              | 80            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-04-23 08:05:00.000 | a748ee1a-1d0b-4ae9-9074-279a2b6ba524 | 3              | 79            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-04-23 08:12:00.000 | a748ee1a-1d0b-4ae9-9074-279a2b6ba524 | 3              | 78            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-04-23 22:50:00.000 | a748ee1a-1d0b-4ae9-9074-279a2b6ba524 | 3              | 50            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-    | 2020-04-23 22:53:00.000 | a748ee1a-1d0b-4ae9-9074-279a2b6ba524 | 3              | 49            | 100           | 4157            | 23                  | 0               | 2              | Li-ion             |
-
-    Output results:
-
-    | local_segment                                   | local_segment_label | local_segment_start_datetime | local_segment_end_datetime | phone_battery_rapids_sumdurationcharge | phone_battery_rapids_countdischarge | phone_battery_rapids_sumdurationdischarge | phone_battery_rapids_maxconsumptionrate | phone_battery_rapids_avgconsumptionrate | phone_battery_rapids_countcharge |
-    |-------------------------------------------------|---------------------|------------------------------|----------------------------|----------------------------------------|-------------------------------------|-------------------------------------------|-----------------------------------------|-----------------------------------------|----------------------------------|
-    | survey1#2020-04-23 03:00:20,2020-04-23 13:00:20 | survey1             | 2020-04-23 03:00:20          | 2020-04-23 13:00:20        | 0                                      | 2                                   | 87.9985333333333                          | 0.0384621794978634                      | 0.0331202101231602                      | 0                                |
-    | survey2#2020-04-23 08:00:20,2020-04-23 18:00:20 | survey2             | 2020-04-23 08:00:20          | 2020-04-23 18:00:20        | 0                                      | 1                                   | 41.6659833333333                          | 0.0480007872129103                      | 0.0480007872129103                      | 0                                |
-    | survey3#2020-04-23 13:00:20,2020-04-23 23:00:20 | survey3             | 2020-04-23 13:00:20          | 2020-04-23 23:00:20        | 0                                      | 1                                   | 10.3498                                   | 0.0966202245454018                      | 0.0966202245454018                      | 0                                |
+    ??? hint "How does the test execution work?"
+        This bash script `tests/scripts/run_tests.sh` executes one or all test pipelines for different time segment types (`frequency`, `periodic`, and `events`) and single or multiple timezones.
+
+        The python script `tests/scripts/run_tests.py` runs the tests. It parses the involved participants and active sensor providers in the `config.yaml` file of the time segment type and time zone being tested. We test that the output file we expect exists and that its content matches the expected values.
+
+        ??? example "Example of raw data for PHONE_APPLICATIONS_FOREGROUND testing"
+            ```json hl_lines="1 2 4" linenums="1"
+            --8<---- "tests/data/external/aware_csv/phone_applications_foreground_raw.csv"
+            ```
+    ??? example "Output Example"
+        The following is a snippet of the output you should see after running your test.
+
+        ```bash
+        test_sensors_files_exist (test_sensor_features.TestSensorFeatures) ... stz_periodic
+        ok
+        test_sensors_features_calculations (test_sensor_features.TestSensorFeatures) ... stz_periodic
+        ok
+
+        test_sensors_files_exist (test_sensor_features.TestSensorFeatures) ... stz_frequency
+        ok
+        test_sensors_features_calculations (test_sensor_features.TestSensorFeatures) ... stz_frequency
+        FAIL
+        ```
+
+        The results above show that the for stz_periodic, both `test_sensors_files_exist` and `test_sensors_features_calculations` passed. While for stz_frequency, the first test `test_sensors_files_exist` passed while `test_sensors_features_calculations` failed. Additionally, you should get the traceback of the failure (not shown here).
