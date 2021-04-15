@@ -7,35 +7,33 @@ The following is a simple guide to run RAPIDS' tests. All files necessary for te
 ??? check "**Testing Overview**"
     1. You have to create a single four day test dataset for the sensor you are working on. 
     2. You will adjust your dataset with `tests/script/assign_test_timestamps.py` to fit `Fri March 6th 2020 - Mon March 9th 2020` and `Fri Oct 30th 2020 - Mon Nov 2nd 2020`. We test daylight saving times with these dates.
-    2. We have a one test participant per platform (`pids`: `android`, `ios`, `fitbit`, `empatica`, `empty`). The data `device_id` should be equal to the `pid`.
+    2. We have one test participant per platform (`pids`: `android`, `ios`, `fitbit`, `empatica`, `empty`). The data `device_id` should be equal to the `pid`.
     2. We will run this test dataset against six test pipelines, three for `frequency`, `periodic`, and `event` time segments in a `single` time zone, and the same three in `multiple` time zones.
     3. You will have to create your test data to cover as many corner cases as possible. These cases depend on the sensor you are working on.
     4. The time segments and time zones to be tested are:
 
     ??? example "Frequency"
-        - 30 minutes (`30min, 30`)
+        - 30 minutes (`30min,30`)
 
     ??? example "Periodic"
-        - morning (`morning, 06:00:00,5H 59M 59S, every_day, 0`)
-        - daily (`daily, 00:00:00,23H 59M 59S, every_day, 0`)
-        - three-day segments that repeat every day (`threeday, 00:00:00,71H 59M 59S, every_day, 0`)
-        - three-day segments that repeat every Friday (`weekend, 00:00:00,71H 59M 59S, wday, 5`)
+        - morning (`morning,06:00:00,5H 59M 59S,every_day,0`)
+        - daily (`daily,00:00:00,23H 59M 59S,every_day,0`)
+        - three-day segments that repeat every day (`threeday,00:00:00,71H 59M 59S,every_day,0`)
+        - three-day segments that repeat every Friday (`weekend,00:00:00,71H 59M 59S,wday,5`)
 
     ??? example "Event"
-        - A segment that starts 10 hours before an event (Sat Mar 07 2020 19:00:00) and lasts for 10 hours (09:00 to 19:00) (`beforeMarchEvent,1583625600000,10H,10H,-1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524`)
-        - A segment that starts 1 hour after an event (Sat Mar 07 2020 19:00:00) and lasts for 10 hours (18:00 to 04:00) (`afterMarchEvent,1583625600000,10H,1H,1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524`)
-        - A segment that starts 10 hours before an event (Sat Oct 31 2020 19:00:00) and lasts for 10 hours (09:00 to 19:00) (`beforeNovemberEvent,1583625600000,10H,10H,-1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524`)
-        - A segment that starts 1 hour after an event (Sat Oct 31 2020 19:00:00) and lasts for 10 hours (18:00 to 04:00) (`afterNovemberEvent,1583625600000,10H,1H,1,a748ee1a-1d0b-4ae9-9074-279a2b6ba524`)
+        - A segment that starts 3 hour before an event (Sat Mar 07 2020 19:00:00 EST) and lasts for 12 hours. Note that the last part of this segment will happen during a daylight saving change on Sunday at 2am when the clock moves forward and the period 2am-3am does not exist. In this case, the segment would start on Sat Mar 07 2020 16:00:00 EST (timestamp: 1583614800000) and end on Sun Mar 08 2020 05:00:00 EST (timestamp: 1583658000000). (`beforeMarchEvent,1583625600000,12H,3H,-1,android`)
+        - A segment that starts 3 hour before an event (Sat Oct 31 2020 19:00:00 EST) and lasts for 12 hours. Note that the last part of this segment will happen during a daylight saving change on Sunday at 2am when the clock moves back and the period 1am-2am exists twice. In this case, the segment would start on Sat Oct 31 2020 16:00:00 EST (timestamp: 1604174400000) and end on Sun Nov 01 2020 03:00:00 EST (timestamp: 1604217600000). (`beforeNovemberEvent,1604185200000,12H,3H,-1,android`)
 
     ??? example "Single time zone to test"
         America/New_York
 
     ??? example "Multi time zones to test"
         - America/New_York starting at `0`
-        - America/Los_Angeles starting at `1583600400000` (Sat Mar 07 2020 12:00:00)
-        - America/New_York starting at `1583683200000` (Sun Mar 08 2020 12:00:00)
-        - America/Los_Angeles starting at `1604160000000` (Sat Oct 31 2020 12:00:00)
-        - America/New_York starting at `1604250000000` (Sun Nov 01 2020 12:00:00)
+        - America/Los_Angeles starting at `1583600400000` (Sat Mar 07 2020 12:00:00 EST)
+        - America/New_York starting at `1583683200000` (Sun Mar 08 2020 12:00:00 EST)
+        - America/Los_Angeles starting at `1604160000000` (Sat Oct 31 2020 12:00:00 EST)
+        - America/New_York starting at `1604250000000` (Sun Nov 01 2020 12:00:00 EST)
 
 ??? check "**Document your tests**"
 
@@ -85,11 +83,20 @@ The following is a simple guide to run RAPIDS' tests. All files necessary for te
 ??? check "**Add raw input data.**"
     1. Add the raw test data to the corresponding sensor CSV file in `tests/data/manual/aware_csv/SENSOR_raw.csv`. Create the CSV if it does not exist.
     2. The test data you create will have the same columns as normal raw data except `test_time` replaces `timestamp`. To make your life easier, you can place a test data row in time using the `test_time` column with the following format: `Day HH:MM:SS.XXX`, for example `Fri 22:54:30.597`.
-    2. You will convert your manual test data to actual raw test data by running `python tests/script/assign_test_timestamps.py`
-    2. The script `assign_test_timestamps.py` converts you `test_time` column into a `timestamp`. For example, `Fri 22:54:30.597` is converted to `1583553270597` (`Fri Mar 06 2020 22:54:30 GMT-0500`) and to `1604112870597` (`Fri Oct 30 2020 22:54:30 GMT-0400`). Note we respect milliseconds and our test timezones (`New_York` and `Los_Angeles`)
-    2. The `device_id` should be the `pid`
-    2. Create your participant file if it does not exist yet (`tests/data/external/participant_files/{pid}.yaml`). 
-    2. Don't forget to add the `pid` to  `[PIDS]` in the config file of the time segments you are testing (see below). 
+    2. You can convert your manual test data to actual raw test data with the following commands:
+        
+        - For the selected files: (It could be a single file name or multiple file names separated by whitespace(s))
+            ```
+            python tests/script/assign_test_timestamps.py -f file_name_1 file_name_2
+            ```
+
+        - For all files under the `tests/data/manual/aware_csv` folder: 
+            ```
+            python tests/script/assign_test_timestamps.py -a
+            ```
+    
+    2. The script `assign_test_timestamps.py` converts you `test_time` column into a `timestamp`. For example, `Fri 22:54:30.597` is converted to `1583553270597` (`Fri Mar 06 2020 22:54:30 GMT-0500`) and to `1604112870597` (`Fri Oct 30 2020 22:54:30 GMT-0400`). Note you can include milliseconds.
+    2. The `device_id` should be the same as `pid`.
 
     ??? example "Example of test data you need to create"
         The `test_time` column will be automatically converted to a timestamp that fitst our testing periods in March and November by `tests/script/assign_test_timestamps.py`
@@ -149,10 +156,6 @@ The following is a simple guide to run RAPIDS' tests. All files necessary for te
 
         The python script `tests/scripts/run_tests.py` runs the tests. It parses the involved participants and active sensor providers in the `config.yaml` file of the time segment type and time zone being tested. We test that the output file we expect exists and that its content matches the expected values.
 
-        ??? example "Example of raw data for PHONE_APPLICATIONS_FOREGROUND testing"
-            ```json hl_lines="1 2 4" linenums="1"
-            --8<---- "tests/data/external/aware_csv/phone_applications_foreground_raw.csv"
-            ```
     ??? example "Output Example"
         The following is a snippet of the output you should see after running your test.
 

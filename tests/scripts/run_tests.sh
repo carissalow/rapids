@@ -1,14 +1,23 @@
 #!/bin/bash
 
 run_pipeline() {
-    if [ "$TYPE" == 'frequency' ]
+    if [ "$TYPE" == 'stz_frequency' ]
     then
-        CONFIG_FILE="./tests/settings/frequency_config.yaml"
-    elif [ "$TYPE" == 'event' ]
+        CONFIG_FILE="./tests/settings/stz_frequency_config.yaml"
+    elif [ "$TYPE" == 'mtz_frequency' ]
+    then
+        CONFIG_FILE="./tests/settings/mtz_frequency_config.yaml"
+    elif [ "$TYPE" == 'stz_event' ]
     then 
-        CONFIG_FILE="./tests/settings/event_config.yaml"
+        CONFIG_FILE="./tests/settings/stz_event_config.yaml"
+    elif [ "$TYPE" == 'mtz_event' ]
+    then
+        CONFIG_FILE="./tests/settings/mtz_event_config.yaml"
+    elif [ "$TYPE" == 'stz_periodic' ]
+    then
+        CONFIG_FILE="./tests/settings/stz_periodic_config.yaml"
     else
-        CONFIG_FILE="./tests/settings/periodic_config.yaml"
+        CONFIG_FILE="./tests/settings/mtz_periodic_config.yaml"
     fi
 
     echo "Copying participant files"
@@ -24,7 +33,7 @@ run_pipeline() {
 }
 
 display_usage() {
-    echo "Usage: run_test.sh [-t|--type] [periodic | frequency | event] [-a|--action] [ all | run | both]"
+    echo "Usage: run_test.sh [-t|--type] [all | stz_periodic | mtz_periodic | stz_frequency | mtz_frequency | stz_event | mtz_event] [-a|--action] [test | run | both]"
     exit 1
 }
 
@@ -53,22 +62,31 @@ done
 
 if { [ "$TYPE" == 'all' ]; }
 then
-    TYPE="frequency"
+    TYPE="stz_frequency"
     run_pipeline
-    python tests/scripts/run_tests.py frequency
-    TYPE="periodic"
+    python tests/scripts/run_tests.py stz_frequency
+    TYPE="mtz_frequency"
     run_pipeline
-    python tests/scripts/run_tests.py periodic
-    TYPE="event"
+    python tests/scripts/run_tests.py mtz_frequency
+    TYPE="stz_periodic"
     run_pipeline
-    python tests/scripts/run_tests.py event
+    python tests/scripts/run_tests.py stz_periodic
+    TYPE="mtz_periodic"
+    run_pipeline
+    python tests/scripts/run_tests.py mtz_periodic
+    TYPE="stz_event"
+    run_pipeline
+    python tests/scripts/run_tests.py stz_event
+    TYPE="mtz_event"
+    run_pipeline
+    python tests/scripts/run_tests.py mtz_event
 else
     if { [ "$ACTION" != 'test' ] && [ "$ACTION" != 'run' ] && [ "$ACTION" != 'both' ]; }
     then
         display_usage
     fi
 
-    if { [ "$TYPE" != 'frequency' ] && [ "$TYPE" != 'periodic' ] && [ "$TYPE" != 'event' ]; }
+    if { [ "$TYPE" != 'stz_frequency' ] && [ "$TYPE" != 'mtz_frequency' ] && [ "$TYPE" != 'stz_periodic' ] && [ "$TYPE" != 'mtz_periodic' ] && [ "$TYPE" != 'stz_event' ] && [ "$TYPE" != 'mtz_event' ]; }
     then
         display_usage
     fi
