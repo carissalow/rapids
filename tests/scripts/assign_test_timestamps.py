@@ -8,21 +8,28 @@ DayOfWeek2Date = {"Fri": ["2020-03-06", "2020-10-30"],
                   "Mon": ["2020-03-09", "2020-11-02"]}
 
 def assign_test_timestamps(file_path):
+
+    columns_to_delete = ["test_time", "day_of_week", "time"]
+
     data = pd.read_csv(file_path)
-    data[["day_of_week","time"]] = data["test_time"].str.split(pat=" ", n=1, expand=True)
+    data[["day_of_week", "time"]] = data["test_time"].str.split(pat=" ", n=1, expand=True)
 
     data_with_timestamps = pd.DataFrame()
 
     # 0 is for March and 1 is for Nov
     for i in [0, 1]:
-        data["datetime"] = pd.to_datetime(data.apply(lambda row: DayOfWeek2Date[row["day_of_week"]][i] + " " + row["time"], axis=1))
+        data["local_date_time"] = pd.to_datetime(data.apply(lambda row: DayOfWeek2Date[row["day_of_week"]][i] + " " + row["time"], axis=1))
         data_with_timestamps = pd.concat([data_with_timestamps, data], axis=0)
-
-    # Convert datetime with timezone to timestamp
-    data_with_timestamps.insert(0, "timestamp", data_with_timestamps["datetime"].dt.tz_localize(tz="America/New_York").astype(np.int64) // 10**6)
-
+    
+    if "fitbit" in file_path:
+        data_with_timestamps.insert(0, "timestamp", 0)
+    else:
+        # Convert local_date_time with timezone to timestamp
+        data_with_timestamps.insert(0, "timestamp", data_with_timestamps["local_date_time"].dt.tz_localize(tz="America/New_York").astype(np.int64) // 10**6)
+        columns_to_delete.add("local_date_time")
+    
     # Discard useless columns
-    for col in ["test_time", "day_of_week", "time", "datetime"]:
+    for col in columns_to_delete:
         del data_with_timestamps[col]
     
     return data_with_timestamps
