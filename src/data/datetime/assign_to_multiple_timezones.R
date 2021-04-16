@@ -107,7 +107,6 @@ get_participant_most_common_tz <- function(tz_codes_file, participant_file){
   return(most_common_tz)
 }
 
-# TODO include CSV timezone file in rule
 multiple_time_zone_assignment <- function(sensor_data, timezone_parameters, device_type, pid, participant_file){
   if(nrow(sensor_data) == 0)
     return(sensor_data %>% mutate(local_timezone = NA_character_))

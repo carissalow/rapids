@@ -115,7 +115,7 @@ pull_wearable_data_main <- function(){
   
   pull_data_container <- load_container_script(stream_container)
 
-  for(idx in seq_along(devices)){ #TODO remove length    
+  for(idx in seq_along(devices)){ 
     device <- devices[idx]
     message(paste0("\nProcessing ", sensor, " for ", device))
 

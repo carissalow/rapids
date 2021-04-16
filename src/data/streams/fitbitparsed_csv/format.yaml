@@ -81,3 +81,16 @@ FITBIT_STEPS_INTRADAY:
     COLUMN_MAPPINGS:
     SCRIPTS: # List any python or r scripts that mutate your raw data
       - src/data/streams/mutations/fitbit/add_zero_timestamp.py
+
+FITBIT_CALORIES_INTRADAY:
+  RAPIDS_COLUMN_MAPPINGS:
+    TIMESTAMP: FLAG_TO_MUTATE
+    DEVICE_ID: device_id
+    LOCAL_DATE_TIME: local_date_time
+    LEVEL: level
+    METS: mets
+    VALUE: value
+  MUTATION:
+    COLUMN_MAPPINGS:
+    SCRIPTS: # List any python or r scripts that mutate your raw data
+      - src/data/streams/mutations/fitbit/add_zero_timestamp.py

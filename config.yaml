@@ -337,6 +337,19 @@ FITBIT_DATA_STREAMS:
 
 # Sensors ------
 
+FITBIT_CALORIES_INTRADAY:
+  CONTAINER: fitbit_data
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      EPISODE_TYPE: [sedentary, lightlyactive, fairlyactive, veryactive, mvpa, lowmet, highmet]
+      EPISODE_TIME_THRESHOLD: 5 # minutes
+      EPISODE_MET_THRESHOLD: 3
+      EPISODE_MVPA_CATEGORIES: [fairlyactive, veryactive]
+      EPISODE_REFERENCE_TIME: MIDNIGHT # or START_OF_THE_SEGMENT
+      FEATURES: [count, sumduration, avgduration, minduration, maxduration, stdduration, starttimefirst, endtimefirst, starttimelast, endtimelast, starttimelongest, endtimelongest, summet, avgmet, maxmet, minmet, stdmet, sumcalories, avgcalories, maxcalories, mincalories, stdcalories]
+      SRC_SCRIPT: src/features/fitbit_calories_intraday/rapids/main.R
+
 # See https://www.rapids.science/latest/features/fitbit-data-yield/
 FITBIT_DATA_YIELD:
   SENSOR: FITBIT_HEARTRATE_INTRADAY

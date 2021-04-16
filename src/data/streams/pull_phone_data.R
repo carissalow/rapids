@@ -154,7 +154,7 @@ pull_phone_data <- function(){
   infer_device_os_container <- container_functions$infer_device_os
   pull_data_container <- container_functions$pull_data
 
-  for(idx in seq_along(devices)){ #TODO remove length
+  for(idx in seq_along(devices)){ 
     
     device <- devices[idx]
     message(paste0("\nProcessing ", sensor, " for ", device))

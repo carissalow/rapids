@@ -1125,6 +1125,47 @@ properties:
                   INCLUDE_ZERO_STEP_ROWS:
                     type: boolean    
 
+                    
+  FITBIT_CALORIES_INTRADAY:
+    type: object
+    required: [CONTAINER, PROVIDERS]
+    properties:
+      CONTAINER:
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: [count, sumduration, avgduration, minduration, maxduration, stdduration, starttimefirst, endtimefirst, starttimelast, endtimelast, starttimelongest, endtimelongest, summet, avgmet, maxmet, minmet, stdmet, sumcalories, avgcalories, maxcalories, mincalories, stdcalories]
+                  EPISODE_TYPE:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: [sedentary, lightlyactive, fairlyactive, veryactive, mvpa, lowmet, highmet]
+                  EPISODE_TIME_THRESHOLD: 
+                    type: integer
+                    minimum: 1
+                  EPISODE_MET_THRESHOLD: 
+                    type: integer
+                    minimum: 1
+                  EPISODE_MVPA_CATEGORIES: 
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: [sedentary, lightlyactive, fairlyactive, veryactive]
+                  EPISODE_REFERENCE_TIME:
+                    type: string
+                    enum: [MIDNIGHT, START_OF_THE_SEGMENT]
+        additionalProperties: 
+          $ref: "#/definitions/PROVIDER"
+
   HISTOGRAM_PHONE_DATA_YIELD:
     type: object
     required: [PLOT]

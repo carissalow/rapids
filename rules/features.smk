@@ -516,6 +516,32 @@ rule phone_wifi_visible_r_features:
     script:
         "../src/features/entry.R"
 
+rule fitbit_calories_intraday_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_calories_intraday_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_CALORIES_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_calories_intraday"
+    output:
+        "data/interim/{pid}/fitbit_calories_intraday_features/fitbit_calories_intraday_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule fitbit_calories_intraday_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_calories_intraday_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_CALORIES_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_calories_intraday"
+    output:
+        "data/interim/{pid}/fitbit_calories_intraday_features/fitbit_calories_intraday_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
 rule fitbit_data_yield_python_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv",
