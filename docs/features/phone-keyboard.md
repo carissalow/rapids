@@ -18,7 +18,7 @@ Features description for `[PHONE_KEYBOARD]`:
 
 |Feature                    |Units      |Description|
 |-------------------------- |---------- |---------------------------|
-|sessioncount                                            | -    |Number of sessions: A session begins when a keypress is initiated and ≥5 s has elapsed since the last key was pressed. A session ends when ≥5 s has elapsed since the last key was pressed.
+|sessioncount                                            | -    |Number of sessions: A session begins when a keypress is initiated and ≥5 s has elapsed since the last key was pressed. A session ends when ≥5 s has elapsed since the last key was pressed or the application is changed.
 |averagesessionlength                                           | milliseconds          | Length of sessions in milliseconds averaged over the segment.
 |averageinterkeydelay                                                |milliseconds        |The average time between keystrokes measured in milliseconds.
 |changeintextlengthlessthanminusone                                                 |         | Number of times the keyboard touch changed the length of the text to less than -1.
