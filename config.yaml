@@ -214,7 +214,7 @@ PHONE_KEYBOARD:
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
-      FEATURES: ["sessioncount","averageinterkeydelay","averagesessionlength","changeintextlengthlessthanminusone","changeintextlengthequaltominusone","changeintextlengthequaltoone","changeintextlengthmorethanone","maxtextlength","lastmessagelength","totalkeyboardtouches","uniqueapplications"]
+      FEATURES: ["sessioncount","averageinterkeydelay","averagesessionlength","changeintextlengthlessthanminusone","changeintextlengthequaltominusone","changeintextlengthequaltoone","changeintextlengthmorethanone","maxtextlength","lastmessagelength","totalkeyboardtouches"]
       SRC_FOLDER: "rapids" # inside src/features/phone_keyboard
       SRC_LANGUAGE: "python"
       SRC_SCRIPT: src/features/phone_keyboard/rapids/main.py

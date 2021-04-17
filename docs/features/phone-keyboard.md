@@ -27,7 +27,6 @@ Features description for `[PHONE_KEYBOARD]`:
 |changeintextlengthmorethanone                                                 |         | Number of times the keyboard touch changed the length of the text to more than 1.
 |maxtextlength                                                      |        | Length of the biggest text in a session averaged over the sessions.
 |lastmessagelength                                                  |       | Length of the last text in a session averaged over the sessions.
-|uniqueapplications                                                 |       | Number of distinct applications in a session averaged over the sessions.
 |totalkeyboardtouches                                               |       | Number of times keyboard was touched in a session averaged over the sessions.
 
 !!! note
