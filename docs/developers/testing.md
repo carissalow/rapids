@@ -22,8 +22,8 @@ The following is a simple guide to run RAPIDS' tests. All files necessary for te
         - three-day segments that repeat every Friday (`weekend,00:00:00,71H 59M 59S,wday,5`)
 
     ??? example "Event"
-        - A segment that starts 3 hour before an event (Sat Mar 07 2020 19:00:00 EST) and lasts for 12 hours. Note that the last part of this segment will happen during a daylight saving change on Sunday at 2am when the clock moves forward and the period 2am-3am does not exist. In this case, the segment would start on Sat Mar 07 2020 16:00:00 EST (timestamp: 1583614800000) and end on Sun Mar 08 2020 05:00:00 EST (timestamp: 1583658000000). (`beforeMarchEvent,1583625600000,12H,3H,-1,android`)
-        - A segment that starts 3 hour before an event (Sat Oct 31 2020 19:00:00 EST) and lasts for 12 hours. Note that the last part of this segment will happen during a daylight saving change on Sunday at 2am when the clock moves back and the period 1am-2am exists twice. In this case, the segment would start on Sat Oct 31 2020 16:00:00 EST (timestamp: 1604174400000) and end on Sun Nov 01 2020 03:00:00 EST (timestamp: 1604217600000). (`beforeNovemberEvent,1604185200000,12H,3H,-1,android`)
+        - A segment that starts 3 hour before an event (Sat Mar 07 2020 19:00:00 EST) and lasts for 22 hours. Note that the last part of this segment will happen during a daylight saving change on Sunday at 2am when the clock moves forward and the period 2am-3am does not exist. In this case, the segment would start on Sat Mar 07 2020 16:00:00 EST (timestamp: 1583614800000) and end on Sun Mar 08 2020 15:00:00 EST (timestamp: 1583694000000). (`beforeMarchEvent,1583625600000,22H,3H,-1,android`)
+        - A segment that starts 3 hour before an event (Sat Oct 31 2020 19:00:00 EST) and lasts for 22 hours. Note that the last part of this segment will happen during a daylight saving change on Sunday at 2am when the clock moves back and the period 1am-2am exists twice. In this case, the segment would start on Sat Oct 31 2020 16:00:00 EST (timestamp: 1604174400000) and end on Sun Nov 01 2020 13:00:00 EST (timestamp: 1604253600000). (`beforeNovemberEvent,1604185200000,22H,3H,-1,android`)
 
     ??? example "Single time zone to test"
         America/New_York
@@ -34,6 +34,11 @@ The following is a simple guide to run RAPIDS' tests. All files necessary for te
         - America/New_York starting at `1583683200000` (Sun Mar 08 2020 12:00:00 EST)
         - America/Los_Angeles starting at `1604160000000` (Sat Oct 31 2020 12:00:00 EST)
         - America/New_York starting at `1604250000000` (Sun Nov 01 2020 12:00:00 EST)
+    
+    ??? hint "Understanding event segments with multi timezones"
+        <figure>
+            <img src="../../img/testing_eventsegments_mtz.png" max-width="100%" />
+        </figure>
 
 ??? check "**Document your tests**"
 
@@ -99,7 +104,7 @@ The following is a simple guide to run RAPIDS' tests. All files necessary for te
     2. The `device_id` should be the same as `pid`.
 
     ??? example "Example of test data you need to create"
-        The `test_time` column will be automatically converted to a timestamp that fitst our testing periods in March and November by `tests/script/assign_test_timestamps.py`
+        The `test_time` column will be automatically converted to a timestamp that fits our testing periods in March and November by `tests/script/assign_test_timestamps.py`
 
         ```
         test_time,device_id,battery_level,battery_scale,battery_status
