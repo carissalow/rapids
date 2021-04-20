@@ -64,22 +64,22 @@ if { [ "$TYPE" == 'all' ]; }
 then
     TYPE="stz_frequency"
     run_pipeline
-    python tests/scripts/run_tests.py stz_frequency
+    python tests/scripts/run_tests.py stz_frequency || exit
     TYPE="mtz_frequency"
     run_pipeline
-    python tests/scripts/run_tests.py mtz_frequency
+    python tests/scripts/run_tests.py mtz_frequency || exit
     TYPE="stz_periodic"
     run_pipeline
-    python tests/scripts/run_tests.py stz_periodic
+    python tests/scripts/run_tests.py stz_periodic || exit
     TYPE="mtz_periodic"
     run_pipeline
-    python tests/scripts/run_tests.py mtz_periodic
+    python tests/scripts/run_tests.py mtz_periodic || exit
     TYPE="stz_event"
     run_pipeline
-    python tests/scripts/run_tests.py stz_event
+    python tests/scripts/run_tests.py stz_event || exit
     TYPE="mtz_event"
     run_pipeline
-    python tests/scripts/run_tests.py mtz_event
+    python tests/scripts/run_tests.py mtz_event || exit
 else
     if { [ "$ACTION" != 'test' ] && [ "$ACTION" != 'run' ] && [ "$ACTION" != 'both' ]; }
     then

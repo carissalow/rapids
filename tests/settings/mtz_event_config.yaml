@@ -38,7 +38,7 @@ TIMEZONE:
       DEFAULT_TZCODE: America/New_York
       FITBIT: 
         ALLOW_MULTIPLE_TZ_PER_DEVICE: True
-        INFER_FROM_SMARTPHONE_TZ: True
+        INFER_FROM_SMARTPHONE_TZ: False
 
 ########################################################################################################################
 #                                                 PHONE                                                                #
