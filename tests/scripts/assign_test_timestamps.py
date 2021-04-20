@@ -26,7 +26,7 @@ def assign_test_timestamps(file_path):
     else:
         # Convert local_date_time with timezone to timestamp
         data_with_timestamps.insert(0, "timestamp", data_with_timestamps["local_date_time"].dt.tz_localize(tz="America/New_York").astype(np.int64) // 10**6)
-        columns_to_delete.add("local_date_time")
+        columns_to_delete.append("local_date_time")
     
     # Discard useless columns
     for col in columns_to_delete:

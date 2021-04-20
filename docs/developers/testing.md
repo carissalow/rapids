@@ -90,12 +90,12 @@ The following is a simple guide to run RAPIDS' tests. All files necessary for te
         
         - For the selected files: (It could be a single file name or multiple file names separated by whitespace(s))
             ```
-            python tests/script/assign_test_timestamps.py -f file_name_1 file_name_2
+            python tests/scripts/assign_test_timestamps.py -f file_name_1 file_name_2
             ```
 
         - For all files under the `tests/data/manual/aware_csv` folder: 
             ```
-            python tests/script/assign_test_timestamps.py -a
+            python tests/scripts/assign_test_timestamps.py -a
             ```
     
     2. The script `assign_test_timestamps.py` converts you `test_time` column into a `timestamp`. For example, `Fri 22:54:30.597` is converted to `1583553270597` (`Fri Mar 06 2020 22:54:30 GMT-0500`) and to `1604112870597` (`Fri Oct 30 2020 22:54:30 GMT-0400`). Note you can include milliseconds.
