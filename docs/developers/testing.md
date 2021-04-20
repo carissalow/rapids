@@ -80,9 +80,7 @@ The following is a simple guide to run RAPIDS' tests. All files necessary for te
         |threeday|OK|OK|android and iOS|
         |weekend|OK|OK|android and iOS|
         |beforeMarchEvent|OK|OK|android and iOS|
-        |afterMarchEvent|OK|OK|android and iOS|
         |beforeNovemberEvent|OK|OK|android and iOS|
-        |afterNovemberEvent|OK|OK|android and iOS|
 
 
 ??? check "**Add raw input data.**"

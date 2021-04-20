@@ -211,3 +211,34 @@ Due to the difference in the format of the raw battery data for iOS and Android 
     `plugin_studentlife_audio_raw.csv` respectively).
 -   Finally, there are also additional empty data files for both
     android and iOS for testing empty data files
+
+## Fitbit Calories Intraday
+
+Description
+
+- A five-minute sedentary episode on Fri 11:00:00
+- A one-minute sedentary episode on Sun 02:00:00. It exists in November but not in February in STZ
+- A five-minute sedentary episode on Fri 11:58:00. It is split within two 30-min segments and the morning
+- A three-minute lightly active episode on Fri 11:10:00, a one-minute at 11:18:00 and a one-minute 11:24:00. These check for start and end times of first/last/longest episode
+- A three-minute fairly active episode on Fri 11:40:00, a one-minute at 11:48:00 and a one-minute 11:54:00. These check for start and end times of first/last/longest episode
+- A three-minute very active episode on Fri 12:10:00, a one-minute at 12:18:00 and a one-minute 12:24:00. These check for start and end times of first/last/longest episode
+- A eight-minute MVPA episode with intertwined fairly and very active rows on Fri 12:30:00
+- The above episodes contain six higmet (>= 3 MET) episodes and nine lowmet episodes.
+- One two-minute sedentary episode with a 1-minute row on Sun 09:00:00 and another on Sun 12:01:01 that are considering a single episode in multi-timezone event segments to showcase how inferring time zone data for Fitbit from phone data can produce inaccurate results around the tz change. This happens because the device was on LA time until 11:59 and switched to NY time at 12pm, in terms of actual time 09 am LA and 12 pm NY represent the same moment in time so 09:00 LA and 12:01 NY are consecutive minutes.
+- A three-minute sedentary episode on Sat 08:59 that will be ignored for multi-timezone event segments.
+- A three-minute sedentary episode on Sat 12:59 of which the first minute will be ignored for multi-timezone event segments since the test segment starts at 13:00
+- A three-minute sedentary episode on Sat 16:00
+- A four-minute sedentary episode on Sun 10:01 that will be ignored for Novembers's multi-timezone event segments since the test segment ends at 10am on that weekend.
+- A three-minute very active episode on Sat 16:03. This episode and the one at 16:00 are counted as one for lowmet episodes
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|fitbit|
+|morning|OK|OK|fitbit|
+|daily|OK|OK|fitbit|
+|threeday|OK|OK|fitbit|
+|weekend|OK|OK|fitbit|
+|beforeMarchEvent|OK|OK|fitbit|
+|beforeNovemberEvent|OK|OK|fitbit|

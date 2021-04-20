@@ -37,8 +37,8 @@ TIMEZONE:
       IF_MISSING_TZCODE: STOP
       DEFAULT_TZCODE: America/New_York
       FITBIT: 
-        ALLOW_MULTIPLE_TZ_PER_DEVICE: False
-        INFER_FROM_SMARTPHONE_TZ: False
+        ALLOW_MULTIPLE_TZ_PER_DEVICE: True
+        INFER_FROM_SMARTPHONE_TZ: True
 
 ########################################################################################################################
 #                                                 PHONE                                                                #
@@ -140,7 +140,7 @@ PHONE_BATTERY:
   EPISODE_THRESHOLD_BETWEEN_ROWS: 30 # minutes. Max time difference for two consecutive rows to be considered within the same battery episode.
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
       SRC_SCRIPT: src/features/phone_battery/rapids/main.py
 
@@ -339,6 +339,18 @@ FITBIT_DATA_STREAMS:
     SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
 
 # Sensors ------
+FITBIT_CALORIES_INTRADAY:
+  CONTAINER: fitbit_calories_intraday_raw.csv
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      EPISODE_TYPE: [sedentary, lightlyactive, fairlyactive, veryactive, mvpa, lowmet, highmet]
+      EPISODE_TIME_THRESHOLD: 5 # minutes
+      EPISODE_MET_THRESHOLD: 3
+      EPISODE_MVPA_CATEGORIES: [fairlyactive, veryactive]
+      EPISODE_REFERENCE_TIME: MIDNIGHT # MIDNIGHT or START_OF_THE_SEGMENT
+      FEATURES: [count, sumduration, avgduration, minduration, maxduration, stdduration, starttimefirst, endtimefirst, starttimelast, endtimelast, starttimelongest, endtimelongest, summet, avgmet, maxmet, minmet, stdmet, sumcalories, avgcalories, maxcalories, mincalories, stdcalories]
+      SRC_SCRIPT: src/features/fitbit_calories_intraday/rapids/main.R
 
 # See https://www.rapids.science/latest/features/fitbit-data-yield/
 FITBIT_DATA_YIELD:

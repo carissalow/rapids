@@ -26,10 +26,10 @@ run_pipeline() {
 
     echo $TYPE
     echo "Deleting old outputs"
-    snakemake --configfile=$(echo $CONFIG_FILE) --delete-all-output -j1 
+    snakemake --configfile=$(echo $CONFIG_FILE) --delete-all-output -j1 || exit
 
     echo "Running RAPIDS"
-    snakemake --configfile=$(echo $CONFIG_FILE) -R pull_phone_data -j1
+    snakemake --configfile=$(echo $CONFIG_FILE) -R pull_phone_data -j2 || exit
 }
 
 display_usage() {
@@ -97,6 +97,6 @@ else
     fi
     if { [ "$ACTION" == 'test' ] || [ "$ACTION" == 'both' ]; }
     then
-        python tests/scripts/run_tests.py $(echo $TYPE)
+        python tests/scripts/run_tests.py $(echo $TYPE) || exit
     fi
 fi
