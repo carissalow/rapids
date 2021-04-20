@@ -57,7 +57,7 @@ class RapidsTests(unittest.TestCase):
                 print("Comparing {} and {}".format(act_result, exp_result))
                 df_exp = df_exp.reindex(sorted(df_exp.columns), axis=1)
                 df_act = df_act.reindex(sorted(df_act.columns), axis=1)
-                pd.testing.assert_frame_equal(df_exp, df_act, obj=df_exp)
+                pd.testing.assert_frame_equal(df_exp, df_act, obj="df_exp")
 
 
 class TestStzFrequency(RapidsTests):
@@ -132,6 +132,7 @@ def run_some_tests(test_type):
     big_suite = unittest.TestSuite(suite)
     runner = unittest.TextTestRunner()
     results = runner.run(big_suite)
+    sys.exit(not results.wasSuccessful())
 
 
 if __name__ == '__main__':

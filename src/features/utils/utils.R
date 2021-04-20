@@ -11,6 +11,10 @@ filter_data_by_segment <- function(data, time_segment){
     mutate(local_segment = str_extract(assigned_segments, paste0("\\[", time_segment, "#", datetime_regex, ",", datetime_regex, ";", timestamp_regex, ",", timestamp_regex, "\\]"))) %>% 
     extract(local_segment, into = c("local_segment", "timestamps_segment"), paste0("\\[(", time_segment, "#", datetime_regex, ",", datetime_regex, ");(", timestamp_regex, ",", timestamp_regex, ")\\]")) %>% 
     select(-assigned_segments)
+  
+  # chunk episodes
+  if (nrow(data) > 0 && all(c("start_timestamp","end_timestamp") %in% colnames(data)) )
+      data <- chunk_episodes(data)
   return(data)
 }
 
