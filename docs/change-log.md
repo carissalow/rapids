@@ -1,5 +1,7 @@
 # Change Log
 
+## v1.1.0
+- Add Fitbit calories intraday features
 ## v1.0.1
 - Fix crash in `chunk_episodes` of `utils.py` for multi time zone data
 - Fix crash in BT Doryab provider when the number of clusters is 2

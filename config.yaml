@@ -337,6 +337,7 @@ FITBIT_DATA_STREAMS:
 
 # Sensors ------
 
+# See https://www.rapids.science/latest/features/fitbit-calories-intraday/
 FITBIT_CALORIES_INTRADAY:
   CONTAINER: fitbit_data
   PROVIDERS:
