@@ -282,7 +282,7 @@ PHONE_MESSAGES:
 
 # See https://www.rapids.science/latest/features/phone-screen/
 PHONE_SCREEN:
-  CONTAINER: screen
+  CONTAINER: phone_screen_raw.csv
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
