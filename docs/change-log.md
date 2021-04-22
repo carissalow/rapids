@@ -1,5 +1,9 @@
 # Change Log
 
+## v1.1.1 (in-progress)
+- Fix length of periodic segments on days with DLS
+- Fix crash when scraping data for an app that does not exist
+- Add tests for phone screen data
 ## v1.1.0
 - Add Fitbit calories intraday features
 ## v1.0.1
