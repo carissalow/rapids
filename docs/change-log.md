@@ -1,6 +1,6 @@
 # Change Log
 
-## v1.1.1 (in-progress)
+## v1.1.1
 - Fix length of periodic segments on days with DLS
 - Fix crash when scraping data for an app that does not exist
 - Add tests for phone screen data
