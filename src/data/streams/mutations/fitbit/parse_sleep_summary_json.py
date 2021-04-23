@@ -59,10 +59,4 @@ def parseSleepData(sleep_data):
 
 def main(json_raw, stream_parameters):
     parsed_data = parseSleepData(json_raw)
-
-    if pd.api.types.is_datetime64_any_dtype( parsed_data['local_start_date_time']):
-        parsed_data['local_start_date_time'] = parsed_data['local_start_date_time'].dt.strftime('%Y-%m-%d %H:%M:%S')
-    if pd.api.types.is_datetime64_any_dtype( parsed_data['local_end_date_time']):
-        parsed_data['local_end_date_time'] = parsed_data['local_end_date_time'].dt.strftime('%Y-%m-%d %H:%M:%S')
-
     return parsed_data
