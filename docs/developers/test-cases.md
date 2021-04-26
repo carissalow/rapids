@@ -24,10 +24,13 @@ The following is a list of the sensors that testing is currently available.
 | Phone Screen                  | RAPIDS   | Y        | N         | N     |
 | Phone WiFi Connected          | RAPIDS   | Y        | Y         | N     |
 | Phone WiFi Visible            | RAPIDS   | Y        | Y         | N     |
+| Fitbit Calories Intraday      | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Data Yield             | RAPIDS   | N        | N         | N     |
 | Fitbit Heart Rate Summary     | RAPIDS   | N        | N         | N     |
 | Fitbit Heart Rate Intraday    | RAPIDS   | N        | N         | N     |
 | Fitbit Sleep Summary          | RAPIDS   | N        | N         | N     |
+| Fitbit Sleep Intraday         | RAPIDS   | Y        | Y         | Y     |
+| Fitbit Sleep Intraday         | PRICE    | Y        | Y         | Y     |
 | Fitbit Steps Summary          | RAPIDS   | N        | N         | N     |
 | Fitbit Steps Intraday         | RAPIDS   | N        | N         | N     |
 
@@ -230,6 +233,54 @@ Description
 - A three-minute sedentary episode on Sat 16:00
 - A four-minute sedentary episode on Sun 10:01 that will be ignored for Novembers's multi-timezone event segments since the test segment ends at 10am on that weekend.
 - A three-minute very active episode on Sat 16:03. This episode and the one at 16:00 are counted as one for lowmet episodes
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|fitbit|
+|morning|OK|OK|fitbit|
+|daily|OK|OK|fitbit|
+|threeday|OK|OK|fitbit|
+|weekend|OK|OK|fitbit|
+|beforeMarchEvent|OK|OK|fitbit|
+|beforeNovemberEvent|OK|OK|fitbit|
+
+## Fitbit Sleep Summary
+
+Description
+
+- A main sleep episode that starts on Fri 20:00:00 and ends on Sat 02:00:00. This episode starts after 11am (Last Night End) which will be considered as today's (Fri) data.
+- A nap that starts on Sat 04:00:00 and ends on Sat 06:00:00. This episode starts before 11am (Last Night End) which will be considered as yesterday's (Fri) data.
+- A nap that starts on Sat 13:00:00 and ends on Sat 15:00:00. This episode starts after 11am (Last Night End) which will be considered as today's (Sat) data.
+- A main sleep that starts on Sun 01:00:00 and ends on Sun 12:00:00. This episode starts before 11am (Last Night End) which will be considered as yesterday's (Sat) data.
+- A main sleep that starts on Sun 23:00:00 and ends on Mon 07:00:00. This episode starts after 11am (Last Night End) which will be considered as today's (Sun) data.
+- Any segment shorter than one day will be ignored for sleep RAPIDS features.
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|fitbit|
+|morning|OK|OK|fitbit|
+|daily|OK|OK|fitbit|
+|threeday|OK|OK|fitbit|
+|weekend|OK|OK|fitbit|
+|beforeMarchEvent|OK|OK|fitbit|
+|beforeNovemberEvent|OK|OK|fitbit|
+
+## Fitbit Sleep Intraday
+
+Description
+
+- A five-minute main sleep episode with asleep-classic level on Fri 11:00:00.
+- An eight-hour main sleep episode on Fri 17:00:00. It is split into 2 parts for daily segment: a seven-hour sleep episode on Fri 17:00:00 and an one-hour sleep episode on Sat 00:00:00.
+- A two-hour nap on Sat 01:00:00 that will be ignored for main sleep features.
+- An one-hour nap on Sat 13:00:00 that will be ignored for main sleep features.
+- An eight-hour main sleep episode on Sat 22:00:00. This episode ends on Sun 08:00:00 (NY) for March and Sun 06:00:00 (NY) for Novembers due to daylight savings. It will be considered for `beforeMarchEvent` segment and ignored for `beforeNovemberEvent` segment.
+- A nine-hour main sleep episode on Sun 11:00:00. Start time will be assigned as NY time zone and converted to 14:00:00.
+- A seven-hour main sleep episode on Mon 06:00:00. This episode will be split into two parts: a five-hour sleep episode on Mon 06:00:00 and a two-hour sleep episode on Mon 11:00:00. The first part will be discarded as it is before 11am (Last Night End)
+- Any segment shorter than one day will be ignored for sleep PRICE features.
 
 Checklist
 

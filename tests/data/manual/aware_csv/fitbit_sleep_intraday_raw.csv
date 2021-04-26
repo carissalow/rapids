@@ -1,0 +1,12 @@
+test_time,device_id,type_episode_id,duration,level,is_main_sleep,type
+Fri 11:00:00,fitbit,0,300,asleep,1,classic
+Fri 17:00:00,fitbit,1,14400,deep,1,stages
+Fri 21:00:00,fitbit,1,7200,wake,1,stages
+Fri 23:00:00,fitbit,1,7200,light,1,stages
+Sat 01:00:00,fitbit,2,3600,restless,0,classic
+Sat 02:00:00,fitbit,2,3600,asleep,0,classic
+Sat 13:00:00,fitbit,3,3600,restless,0,classic
+Sat 22:00:00,fitbit,4,3600,rem,1,stages
+Sat 23:00:00,fitbit,4,28800,deep,1,stages
+Sun 11:00:00,fitbit,5,32400,deep,1,stages
+Mon 06:00:00,fitbit,6,25200,deep,1,stages

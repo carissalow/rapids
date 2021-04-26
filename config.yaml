@@ -321,19 +321,19 @@ FITBIT_DATA_STREAMS:
   # AVAILABLE:
   fitbitjson_mysql: 
     DATABASE_GROUP: MY_GROUP
-    SLEEP_SUMMARY_LAST_NIGHT_END: 660 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after the midnight. By default, 660 (11:00).
+    SLEEP_SUMMARY_LAST_NIGHT_END: 660 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after midnight. By default, 660 (11:00).
   
   fitbitparsed_mysql: 
     DATABASE_GROUP: MY_GROUP
-    SLEEP_SUMMARY_LAST_NIGHT_END: 660 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after the midnight. By default, 660 (11:00).
+    SLEEP_SUMMARY_LAST_NIGHT_END: 660 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after midnight. By default, 660 (11:00).
   
   fitbitjson_csv: 
     FOLDER: data/external/fitbit_csv
-    SLEEP_SUMMARY_LAST_NIGHT_END: 660 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after the midnight. By default, 660 (11:00).
+    SLEEP_SUMMARY_LAST_NIGHT_END: 660 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after midnight. By default, 660 (11:00).
 
   fitbitparsed_csv: 
     FOLDER: data/external/fitbit_csv
-    SLEEP_SUMMARY_LAST_NIGHT_END: 660 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after the midnight. By default, 660 (11:00).
+    SLEEP_SUMMARY_LAST_NIGHT_END: 660 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after midnight. By default, 660 (11:00).
 
 # Sensors ------
 
@@ -400,15 +400,12 @@ FITBIT_SLEEP_INTRADAY:
         LEVELS_AND_TYPES: [countepisode, sumduration, maxduration, minduration, avgduration, medianduration, stdduration]
         RATIOS_TYPE: [count, duration]
         RATIOS_SCOPE: [ACROSS_LEVELS, ACROSS_TYPES, WITHIN_LEVELS, WITHIN_TYPES]
-        ROUTINE: [starttimefirstmainsleep, endtimelastmainsleep, starttimefirstnap, endtimelastnap]
       SLEEP_LEVELS:
         INCLUDE_ALL_GROUPS: True
         CLASSIC: [awake, restless, asleep]
         STAGES: [wake, deep, light, rem]
         UNIFIED: [awake, asleep]
       SLEEP_TYPES: [main, nap, all]
-      LAST_NIGHT_END: 0 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after the midnight
-      ROUTINE_REFERENCE_TIME: MIDNIGHT # chosen from "MIDNIGHT" and "START_OF_THE_SEGMENT"
       SRC_SCRIPT: src/features/fitbit_sleep_intraday/rapids/main.py
   
     PRICE:
@@ -420,7 +417,7 @@ FITBIT_SLEEP_INTRADAY:
         STAGES: [wake, deep, light, rem]
         UNIFIED: [awake, asleep]
       DAY_TYPES: [WEEKEND, WEEK, ALL]
-      LAST_NIGHT_END: 660 # number of minutes after the midnight (11:00) 11*60
+      LAST_NIGHT_END: 660 # number of minutes after midnight (11:00) 11*60
       SRC_SCRIPT: src/features/fitbit_sleep_intraday/price/main.py
 
 # See https://www.rapids.science/latest/features/fitbit-steps-summary/

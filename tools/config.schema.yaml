@@ -973,7 +973,7 @@ properties:
               - properties:
                   FEATURES:
                     type: object
-                    required: [LEVELS_AND_TYPES, RATIOS_TYPE, RATIOS_SCOPE, ROUTINE]
+                    required: [LEVELS_AND_TYPES, RATIOS_TYPE, RATIOS_SCOPE]
                     properties:
                       LEVELS_AND_TYPES:
                         type: array
@@ -993,12 +993,6 @@ properties:
                         items:
                           type: string
                           enum: [ACROSS_LEVELS, ACROSS_TYPES, WITHIN_LEVELS, WITHIN_TYPES]
-                      ROUTINE:
-                        type: array
-                        uniqueItems: True
-                        items:
-                          type: string
-                          enum: [starttimefirstmainsleep, endtimelastmainsleep, starttimefirstnap, endtimelastnap]
                   SLEEP_LEVELS:
                     type: object
                     required: [INCLUDE_ALL_GROUPS, CLASSIC, STAGES, UNIFIED]
@@ -1029,13 +1023,6 @@ properties:
                     items:
                       type: string
                       enum: [main, nap, all]
-                  LAST_NIGHT_END:
-                      type: number
-                      minimum: 0
-                      maximum: 1439
-                  ROUTINE_REFERENCE_TIME:
-                    type: string
-                    enum: [MIDNIGHT, START_OF_THE_SEGMENT]
           PRICE:
             allOf:
               - $ref: "#/definitions/PROVIDER"

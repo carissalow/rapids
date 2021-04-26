@@ -9,7 +9,7 @@ Sensor parameters description for `[FITBIT_SLEEP_INTRADAY]`:
 ## RAPIDS provider
 
 !!! hint "Understanding RAPIDS features"
-    [This diagram](../../img/sleep_intraday_rapids.png) will help you understand how sleep episodes are chunked and grouped within time segments and `LNE-LNE` intervals for the RAPIDS provider.
+    [This diagram](../../img/sleep_intraday_rapids.png) will help you understand how sleep episodes are chunked and grouped within time segments for the RAPIDS provider.
 
 
 !!! info "Available time segments"
@@ -35,8 +35,6 @@ Parameters description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS]`:
 |`[FEATURES]`                                 |         Features to be computed from sleep intraday data, see table below           |
 |`[SLEEP_LEVELS]`                             | Fitbit’s sleep API Version 1 only provides `CLASSIC` records. However, Version 1.2 provides 2 types of records: `CLASSIC` and `STAGES`. `STAGES` is only available in devices with a heart rate sensor and even those devices will fail to report it if the battery is low or the device is not tight enough. While `CLASSIC` contains 3 sleep levels (`awake`, `restless`, and `asleep`), `STAGES` contains 4 sleep levels (`wake`, `deep`, `light`, `rem`). To make it consistent, RAPIDS groups them into 2 `UNIFIED` sleep levels: `awake` (`CLASSIC`: `awake` and `restless`; `STAGES`: `wake`) and `asleep` (`CLASSIC`: `asleep`; `STAGES`: `deep`, `light`, and `rem`). In this section, there is a boolean flag named `INCLUDE_ALL_GROUPS` that if set to TRUE, computes LEVELS_AND_TYPES features grouping all levels together in a single `all` category.
 |`[SLEEP_TYPES]`                              | Types of sleep to be included in the feature extraction computation. There are three sleep types: `main`, `nap`, and `all`. The `all` type means both main sleep and naps are considered.
-|`[LAST_NIGHT_END]`| All resampled sleep rows (bin interval: one minute) that started after this time will be included in the feature computation. It ranges from 0 (midnight) to 1439 (23:59) which denotes the number of minutes after midnight. If a segment is longer than one day, this value is applied every day.
-|`[ROUTINE_REFERENCE_TIME]`| The reference point from which the `[ROUTINE]` features are computed, it can be `MIDNIGHT` or `START_OF_THE_SEGMENT`, default is `MIDNIGHT`. If you have multiple time segments per day it might be more informative to set this flag to `START_OF_THE_SEGMENT`.
 
 
 Features description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS][LEVELS_AND_TYPES]`:
@@ -72,8 +70,8 @@ Features description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[W
 
 |Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                           |Units          |Description                                                  |
 |--------------------------------- |-------------- |-------------------------------------------------------------|
-|ratiocount`[TYPE]`within`[LEVEL]`    |-              |Ratio between the **count** of episodes of a single sleep `[LEVEL]` during `main` sleep divided by the **count** of episodes of a single sleep `[LEVEL]` during `main` **and** `nap`. This answers the question: are `rem` episodes more frequent during `main` than `nap` sleep? We do not provide the ratio for `nap` because is complementary. ($countepisode[remstages][main] / countepisode[remstages][all]$)
-|ratioduration`[TYPE]`within`[LEVEL]` |-              |Ratio between the **duration** of episodes of a single sleep `[LEVEL]` during `main` sleep divided by the **duration** of episodes of a single sleep `[LEVEL]` during `main` **and** `nap`. This answers the question: is `rem` time more frequent during `main` than `nap` sleep? We do not provide the ratio for `nap` because is complementary. ($countepisode[remstages][main] / countepisode[remstages][all]$)
+|ratiocountmainwithin`[LEVEL]`    |-              |Ratio between the **count** of episodes of a single sleep `[LEVEL]` during `main` sleep divided by the **count** of episodes of a single sleep `[LEVEL]` during `main` **and** `nap`. This answers the question: are `rem` episodes more frequent during `main` than `nap` sleep? We do not provide the ratio for `nap` because is complementary. ($countepisode[remstages][main] / countepisode[remstages][all]$)
+|ratiodurationmainwithin`[LEVEL]` |-              |Ratio between the **duration** of episodes of a single sleep `[LEVEL]` during `main` sleep divided by the **duration** of episodes of a single sleep `[LEVEL]` during `main` **and** `nap`. This answers the question: is `rem` time more frequent during `main` than `nap` sleep? We do not provide the ratio for `nap` because is complementary. ($countepisode[remstages][main] / countepisode[remstages][all]$)
 
 
 Features description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[WITHIN_TYPES]`:
@@ -84,27 +82,15 @@ Features description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS]` RATIOS `[W
 |ratioduration`[LEVEL]`within`[TYPE]` |-|Ratio between the **duration** of episodes of a single sleep `[LEVEL]` and the **duration** of all episodes of all levels during either `main` or `nap` sleep types. This answers the question: what percentage of all `wake`, `deep`, `light`, and `rem` time was `rem` during `main`/`nap` sleep time? (e.g., $sumduration[remstages][main] / sumduration[all][main]$)
 
 
-Features description for `[FITBIT_SLEEP_INTRADAY][PROVIDERS][RAPIDS][ROUTINE]`:
-
-|Feature                           |Units          |Description                                                  |
-|--------------------------------- |-------------- |-------------------------------------------------------------|
-|starttimefirstmainsleep           |minutes        |Start time (in minutes since `ROUTINE_REFERENCE_TIME`) of the first main sleep episode after `INCLUDE_EPISODES_LATER_THAN`.
-|endtimelastmainsleep              |minutes        |End time (in minutes since `ROUTINE_REFERENCE_TIME`) of the last main sleep episode after `INCLUDE_EPISODES_LATER_THAN`.
-|starttimefirstnap                 |minutes        |Start time (in minutes since `ROUTINE_REFERENCE_TIME`) of the first nap episode after `INCLUDE_EPISODES_LATER_THAN`.
-|endtimelastnap                    |minutes        |End time (in minutes since `ROUTINE_REFERENCE_TIME`) of the last nap episode after `INCLUDE_EPISODES_LATER_THAN`.
-
-
-
-
 
 !!! note "Assumptions/Observations"
-    1. [This diagram](../../img/sleep_intraday_rapids.png) will help you understand how sleep episodes are chunked and grouped within time segments and `LNE-LNE` intervals for the RAPIDS provider.
+    1. [This diagram](../../img/sleep_intraday_rapids.png) will help you understand how sleep episodes are chunked and grouped within time segments for the RAPIDS provider.
     1. Features listed in `[LEVELS_AND_TYPES]` are computed for any levels and types listed in `[SLEEP_LEVELS]` or `[SLEEP_TYPES]`. For example if `STAGES` only contains `[rem, light]` you will not get `countepisode[wake|deep][TYPE]` or sum, max, min, avg, median, or std `duration`. Levels or types in these lists do not influence `RATIOS` or `ROUTINE` features.
     2. Any `[LEVEL]` grouping is done within the elements of each class `CLASSIC`, `STAGES`, and `UNIFIED`. That is, we never combine `CLASSIC` or `STAGES` types to compute features.
     3. The categories for `all` levels (when `INCLUDE_ALL_GROUPS` is `True`) and `all` `SLEEP_TYPES` are not considered for `RATIOS` features as they are always 1.
     3. These features can be computed in time segments of any length, but only the 1-minute sleep chunks within each segment instance will be used.
-    4. Within any time segment instance, any chunks with a local time before `LAST_NIGHT_END` will be discarded. The default `LNE` is 00:00 so no chunks are ignored.
-    5. `ROUTINE_REFERENCE_TIME` influences all the `[ROUTINE]` features. If `MIDNIGHT`, the reference for these times is 00:00, if `START_OF_THE_SEGMENT`, the reference time is the start of each segment instance.
+
+
 
 ## PRICE provider
 

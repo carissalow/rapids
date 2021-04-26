@@ -34,7 +34,7 @@ def mergeSleepEpisodes(sleep_data, cols_for_groupby, base_sleep_levels):
     sleep_episodes = pd.DataFrame(columns=["local_segment", "durationinbed", "start_timestamp", "end_timestamp", "local_start_date_time", "local_end_date_time"] + ["duration" + x for x in sleep_level_with_group])
 
     if cols_for_groupby and (not sleep_data.empty):
-        sleep_data = sleep_data.groupby(by=cols_for_groupby)
+        sleep_data = sleep_data.groupby(by=cols_for_groupby, sort=False)
         sleep_episodes = sleep_data[["duration"]].sum().rename(columns={"duration": "durationinbed"})
 
         sleep_episodes["start_timestamp"] = sleep_data["start_timestamp"].first()
@@ -64,6 +64,9 @@ def extractDailyFeatures(sleep_data):
             daily_features["ratio" + col + "withinmain"] = daily_features[col + "main"] / daily_features["durationinbedmain"]
     daily_features.reset_index(inplace=True)
 
+    # Only keep one row per fake_date
+    daily_features.drop_duplicates(subset=["fake_date"], keep="first", inplace=True)
+
     # The day of the week with Monday=0, Sunday=6. Set Friday and Saturday as Weekend, others as Weekday.
     daily_features["is_weekend"] = pd.to_datetime(daily_features["fake_date"]).dt.dayofweek.apply(lambda x: 1 if (x == 4 or x == 5) else 0)
     
@@ -71,9 +74,9 @@ def extractDailyFeatures(sleep_data):
 
 def statsOfDailyFeatures(daily_features, day_type, sleep_levels, intraday_features_to_compute, sleep_intraday_features, levels_include_all_groups):
     if day_type == "WEEKEND":
-        daily_features = daily_features[daily_features["is_weekend"] == 0]
-    elif day_type == "WEEK":
         daily_features = daily_features[daily_features["is_weekend"] == 1]
+    elif day_type == "WEEK":
+        daily_features = daily_features[daily_features["is_weekend"] == 0]
     elif day_type == "ALL":
         pass
     else:
@@ -190,10 +193,11 @@ def price_features(sensor_data_files, time_segment, provider, filter_data_by_seg
         return sleep_intraday_features
 
     # Discard segments shorter than one day
-    sleep_intraday_data["segment_length"] = (sleep_intraday_data["segment_end_timestamp"] - sleep_intraday_data["segment_start_timestamp"]) / 1000 # in seconds
+    sleep_intraday_data[["segment_start_datetime", "segment_end_datetime"]] = sleep_intraday_data["local_segment"].str.split("#", expand=True)[1].str.split(",", expand=True).astype("datetime64[ns]")
+    sleep_intraday_data["segment_length"] = (sleep_intraday_data["segment_end_datetime"] - sleep_intraday_data["segment_start_datetime"]).dt.total_seconds()
     sleep_intraday_data = sleep_intraday_data[sleep_intraday_data["segment_length"] >= 24 * 60 * 60 - 1]
-    del sleep_intraday_data["segment_length"]
-
+    for col in ["segment_start_datetime", "segment_end_datetime", "segment_length"]:
+        del sleep_intraday_data[col]
     # Select main sleep records
     sleep_intraday_data = sleep_intraday_data[sleep_intraday_data["is_main_sleep"] == 1]
 
