@@ -69,7 +69,7 @@ Note you will see a lot of warning messages, you can ignore them since they happ
 ??? info "6. Feature cleaning."
     In this stage we perform four steps to clean our sensor feature file. First, we discard days with a data yield hour ratio less than or equal to 0.75, i.e. we include days with at least 18 hours of data. Second, we drop columns (features) with more than 30% of missing rows. Third, we drop columns with zero variance. Fourth, we drop rows (days) with more than 30% of missing columns (features). In this cleaning stage several parameters are created and exposed in `example_profile/example_config.yaml`. 
 
-    After this step, we kept 161 features over 11 days for the individual model of p01, 101 features over 12 days for the individual model of p02 and 107 features over 20 days for the population model. Note that the difference in the number of features between p01 and p02 is mostly due to iOS restrictions that stops researchers from collecting the same number of sensors than in Android phones. 
+    After this step, we kept 158 features over 11 days for the individual model of p01, 101 features over 12 days for the individual model of p02 and 106 features over 20 days for the population model. Note that the difference in the number of features between p01 and p02 is mostly due to iOS restrictions that stops researchers from collecting the same number of sensors than in Android phones. 
     
     Feature cleaning for the individual models is done in the `clean_sensor_features_for_individual_participants` rule and for the population model in the `clean_sensor_features_for_all_participants` rule in `rules/models.smk`.
 
