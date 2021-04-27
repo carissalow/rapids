@@ -500,19 +500,19 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
       # AVAILABLE:
       fitbitjson_mysql:
         DATABASE_GROUP: MY_GROUP
-        SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: False
+        SLEEP_SUMMARY_LAST_NIGHT_END: 660
 
       fitbitjson_csv:
         FOLDER: data/external/fitbit_csv
-        SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: False
+        SLEEP_SUMMARY_LAST_NIGHT_END: 660
 
       fitbitparsed_mysql:
         DATABASE_GROUP: MY_GROUP
-        SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: False
+        SLEEP_SUMMARY_LAST_NIGHT_END: 660
         
       fitbitparsed_csv:
         FOLDER: data/external/fitbit_csv
-        SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: False
+        SLEEP_SUMMARY_LAST_NIGHT_END: 660
 
     ```
 
@@ -524,7 +524,7 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
         | Key                  | Description                                                                                                                |
         |---------------------|----------------------------------------------------------------------------------------------------------------------------|
         | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
-        | `[SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]`   | One of `start` or `end`. Summary sleep episodes are considered as events based on either the start timestamp or end timestamp (they will belong to the day where they start or end).  |
+        | `[SLEEP_SUMMARY_LAST_NIGHT_END]`   | Segments are assigned based on this parameter. Any sleep episodes starts between today's SLEEP_SUMMARY_LAST_NIGHT_END (LNE) and tomorrow's LNE is regarded as today's sleep episode. While today's bedtime is based on today's sleep episodes, today's wake time is based on yesterday's sleep episodes.  |
 
         --8<---- "docs/snippets/database.md"
 
@@ -535,7 +535,7 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
         | Key                  | Description                                                                                                                |
         |---------------------|----------------------------------------------------------------------------------------------------------------------------|
         | `[FOLDER]`   | Folder where you have to place a CSV file **per** Fitbit sensor. Each file has to contain all the data from every participant you want to process.     |
-        | `[SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]`   | One of `start` or `end`. Summary sleep episodes are considered as events based on either the start timestamp or end timestamp (they will belong to the day where they start or end).  |
+        | `[SLEEP_SUMMARY_LAST_NIGHT_END]`   | Segments are assigned based on this parameter. Any sleep episodes starts between today's SLEEP_SUMMARY_LAST_NIGHT_END (LNE) and tomorrow's LNE is regarded as today's sleep episode. While today's bedtime is based on today's sleep episodes, today's wake time is based on yesterday's sleep episodes.  |
 
 
     === "fitbitparsed_mysql"
@@ -546,7 +546,7 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
         | Key                  | Description                                                                                                                |
         |---------------------|----------------------------------------------------------------------------------------------------------------------------|
         | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
-        | `[SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]`   | One of `start` or `end`. Summary sleep episodes are considered as events based on either the start timestamp or end timestamp (they will belong to the day where they start or end).  |
+        | `[SLEEP_SUMMARY_LAST_NIGHT_END]`   | Segments are assigned based on this parameter. Any sleep episodes starts between today's SLEEP_SUMMARY_LAST_NIGHT_END (LNE) and tomorrow's LNE is regarded as today's sleep episode. While today's bedtime is based on today's sleep episodes, today's wake time is based on yesterday's sleep episodes.  |
 
         --8<---- "docs/snippets/database.md"
         
@@ -557,7 +557,7 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
         | Key                  | Description                                                                                                                |
         |---------------------|----------------------------------------------------------------------------------------------------------------------------|
         | `[FOLDER]`   | Folder where you have to place a CSV file **per** Fitbit sensor. Each file has to contain all the data from every participant you want to process.     |
-        | `[SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]`   | One of `start` or `end`. Summary sleep episodes are considered as events based on either the start timestamp or end timestamp (they will belong to the day where they start or end).  |
+        | `[SLEEP_SUMMARY_LAST_NIGHT_END]`   | Segments are assigned based on this parameter. Any sleep episodes starts between today's SLEEP_SUMMARY_LAST_NIGHT_END (LNE) and tomorrow's LNE is regarded as today's sleep episode. While today's bedtime is based on today's sleep episodes, today's wake time is based on yesterday's sleep episodes.  |
 
 === "Empatica"
 

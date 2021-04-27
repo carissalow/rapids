@@ -1,5 +1,9 @@
 # Change Log
 
+## v1.2.0
+- Sleep summary and intraday features are more consistent.
+- Add wake and bedtime features for sleep summary data.
+- Fix bugs with sleep PRICE features.
 ## v1.1.1
 - Fix length of periodic segments on days with DLS
 - Fix crash when scraping data for an app that does not exist

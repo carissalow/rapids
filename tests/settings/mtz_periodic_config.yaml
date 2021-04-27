@@ -324,19 +324,19 @@ FITBIT_DATA_STREAMS:
   # AVAILABLE:
   fitbitjson_mysql: 
     DATABASE_GROUP: MY_GROUP
-    SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
+    SLEEP_SUMMARY_LAST_NIGHT_END: 660 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after midnight. By default, 660 (11:00).
   
   fitbitparsed_mysql: 
     DATABASE_GROUP: MY_GROUP
-    SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
+    SLEEP_SUMMARY_LAST_NIGHT_END: 660 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after midnight. By default, 660 (11:00).
 
   fitbitjson_csv: 
     FOLDER: data/external/fitbit_csv
-    SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
+    SLEEP_SUMMARY_LAST_NIGHT_END: 660 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after midnight. By default, 660 (11:00).
 
   fitbitparsed_csv: 
     FOLDER: tests/data/external/aware_csv
-    SLEEP_SUMMARY_EPISODE_DAY_ANCHOR: end # summary sleep episodes are considered as events based on either the start timestamp or end timestamp.
+    SLEEP_SUMMARY_LAST_NIGHT_END: 660 # a number ranged from 0 (midnight) to 1439 (23:59) which denotes number of minutes after midnight. By default, 660 (11:00).
 
 # Sensors ------
 FITBIT_CALORIES_INTRADAY:
@@ -383,46 +383,42 @@ FITBIT_HEARTRATE_INTRADAY:
 
 # See https://www.rapids.science/latest/features/fitbit-sleep-summary/
 FITBIT_SLEEP_SUMMARY:
-  CONTAINER: sleep_summary
+  CONTAINER: fitbit_sleep_summary_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
-      FEATURES: ["countepisode", "avgefficiency", "sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgdurationafterwakeup", "avgdurationasleep", "avgdurationawake", "avgdurationtofallasleep", "avgdurationinbed"]
+      COMPUTE: True
+      FEATURES: ["firstwaketime", "lastwaketime", "firstbedtime", "lastbedtime", "countepisode", "avgefficiency", "sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgdurationafterwakeup", "avgdurationasleep", "avgdurationawake", "avgdurationtofallasleep", "avgdurationinbed"]
       SLEEP_TYPES: ["main", "nap", "all"]
       SRC_SCRIPT: src/features/fitbit_sleep_summary/rapids/main.py
 
 # See https://www.rapids.science/latest/features/fitbit-sleep-intraday/
 FITBIT_SLEEP_INTRADAY:
-  CONTAINER: sleep_intraday
+  CONTAINER: fitbit_sleep_intraday_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES:
-        LEVELS_AND_TYPES_COMBINING_ALL: True
         LEVELS_AND_TYPES: [countepisode, sumduration, maxduration, minduration, avgduration, medianduration, stdduration]
         RATIOS_TYPE: [count, duration]
         RATIOS_SCOPE: [ACROSS_LEVELS, ACROSS_TYPES, WITHIN_LEVELS, WITHIN_TYPES]
-        ROUTINE: [starttimefirstmainsleep, endtimelastmainsleep, starttimefirstnap, endtimelastnap]
       SLEEP_LEVELS:
+        INCLUDE_ALL_GROUPS: True
         CLASSIC: [awake, restless, asleep]
         STAGES: [wake, deep, light, rem]
         UNIFIED: [awake, asleep]
-      SLEEP_TYPES: [main, nap]
-      INCLUDE_SLEEP_LATER_THAN: 0 # a number ranged from 0 (midnight) to 1439 (23:59)
-      REFERENCE_TIME: MIDNIGHT # chosen from "MIDNIGHT" and "START_OF_THE_SEGMENT"
+      SLEEP_TYPES: [main, nap, all]
       SRC_SCRIPT: src/features/fitbit_sleep_intraday/rapids/main.py
   
     PRICE:
-      COMPUTE: False
-      FEATURES: [avgduration, avgratioduration, avgstarttimeofepisodemain, avgendtimeofepisodemain, avgmidpointofepisodemain, "stdstarttimeofepisodemain", "stdendtimeofepisodemain", "stdmidpointofepisodemain", socialjetlag, meanssdstarttimeofepisodemain, meanssdendtimeofepisodemain, meanssdmidpointofepisodemain, medianssdstarttimeofepisodemain, medianssdendtimeofepisodemain, medianssdmidpointofepisodemain]
+      COMPUTE: True
+      FEATURES: [avgduration, avgratioduration, avgstarttimeofepisodemain, avgendtimeofepisodemain, avgmidpointofepisodemain, stdstarttimeofepisodemain, stdendtimeofepisodemain, stdmidpointofepisodemain, socialjetlag, rmssdmeanstarttimeofepisodemain, rmssdmeanendtimeofepisodemain, rmssdmeanmidpointofepisodemain, rmssdmedianstarttimeofepisodemain, rmssdmedianendtimeofepisodemain, rmssdmedianmidpointofepisodemain]
       SLEEP_LEVELS:
+        INCLUDE_ALL_GROUPS: True
         CLASSIC: [awake, restless, asleep]
         STAGES: [wake, deep, light, rem]
         UNIFIED: [awake, asleep]
       DAY_TYPES: [WEEKEND, WEEK, ALL]
-      GROUP_EPISODES_WITHIN: # by default: today's 6pm to tomorrow's noon
-        START_TIME: 1080 # number of minutes after the midnight (18:00) 18*60
-        LENGTH: 1080 # in minutes (18 hours) 18*60
+      LAST_NIGHT_END: 660 # number of minutes after midnight (11:00) 11*60
       SRC_SCRIPT: src/features/fitbit_sleep_intraday/price/main.py
 
 # See https://www.rapids.science/latest/features/fitbit-steps-summary/

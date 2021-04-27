@@ -71,7 +71,7 @@ def chunk_episodes(sensor_episodes):
     # Merge episodes
     cols_for_groupby = [col for col in sensor_episodes.columns if col not in ["timestamps_segment", "timestamp", "assigned_segments", "start_datetime", "end_datetime", "start_timestamp", "end_timestamp", "duration", "chunked_start_timestamp", "chunked_end_timestamp"]]
 
-    sensor_episodes_grouped = sensor_episodes.groupby(by=cols_for_groupby)
+    sensor_episodes_grouped = sensor_episodes.groupby(by=cols_for_groupby, sort=False)
     merged_sensor_episodes = sensor_episodes_grouped[["duration"]].sum()
 
     merged_sensor_episodes["start_timestamp"] = sensor_episodes_grouped["chunked_start_timestamp"].first()
