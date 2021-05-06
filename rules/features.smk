@@ -366,9 +366,38 @@ rule phone_light_r_features:
     script:
         "../src/features/entry.R"
 
+rule phone_locations_processed_with_datetime_with_home:
+    input:
+        sensor_input = "data/interim/{pid}/phone_locations_processed_with_datetime.csv",
+    params:
+        accuracy_limit = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["ACCURACY_LIMIT"],
+        maximum_row_gap = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["MAXIMUM_ROW_GAP"],
+        maximum_row_duration = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["MAXIMUM_ROW_DURATION"],
+        dbscan_eps = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["DBSCAN_EPS"],
+        dbscan_minsamples = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["DBSCAN_MINSAMPLES"],
+        threshold_static = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["THRESHOLD_STATIC"],
+        clustering_algorithm = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["CLUSTERING_ALGORITHM"]
+    output: 
+        "data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv"
+    script:
+        "../src/features/phone_locations/doryab/infer_home_location.py"
+
+rule phone_locations_processed_with_datetime_with_home_and_clusters:
+    input:
+        sensor_input = "data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv"
+    params:
+        dbscan_eps = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["DBSCAN_EPS"],
+        dbscan_minsamples = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["DBSCAN_MINSAMPLES"],
+        threshold_static = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["THRESHOLD_STATIC"],
+        clustering_algorithm = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["CLUSTERING_ALGORITHM"]
+    output:
+        "data/interim/{pid}/phone_locations_processed_with_datetime_with_home_and_clusters.csv"
+    script:
+        "../src/features/phone_locations/doryab/cluster_and_assign_labels.py"
+
 rule phone_locations_python_features:
     input:
-        sensor_data = "data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv",
+        sensor_data = doryab_locations_input,
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_LOCATIONS"]["PROVIDERS"][wildcards.provider_key.upper()],

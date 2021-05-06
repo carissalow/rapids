@@ -207,6 +207,8 @@ for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
 
         if provider == "BARNETT":
             files_to_compute.extend(expand("data/interim/{pid}/phone_locations_barnett_daily.csv", pid=config["PIDS"]))
+        if (provider == "DORYAB") and (config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["CLUSTER_ON"] == "PARTICIPANT_DATASET"):
+            files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed_with_datetime_with_home_and_clusters.csv", pid=config["PIDS"]))
 
         files_to_compute.extend(expand("data/raw/{pid}/phone_locations_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed.csv", pid=config["PIDS"]))

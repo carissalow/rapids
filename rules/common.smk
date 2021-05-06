@@ -16,6 +16,12 @@ def get_barnett_daily(wildcards):
         return "data/interim/{pid}/phone_locations_barnett_daily.csv"
     return []
 
+def doryab_locations_input(wildcards):
+    if (wildcards.provider_key.upper() == "DORYAB") and (config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["CLUSTER_ON"] == "PARTICIPANT_DATASET"):
+        return "data/interim/{pid}/phone_locations_processed_with_datetime_with_home_and_clusters.csv"
+    else:
+        return "data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv"
+
 def find_features_files(wildcards):
     feature_files = []
     for provider_key, provider in config[(wildcards.sensor_key).upper()]["PROVIDERS"].items():
