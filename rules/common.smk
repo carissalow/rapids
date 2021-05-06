@@ -18,7 +18,7 @@ def get_barnett_daily(wildcards):
 
 def doryab_locations_input(wildcards):
     if (wildcards.provider_key.upper() == "DORYAB") and (config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["CLUSTER_ON"] == "PARTICIPANT_DATASET"):
-        return "data/interim/{pid}/phone_locations_processed_with_datetime_with_home_and_clusters.csv"
+        return "data/interim/{pid}/phone_locations_processed_with_datetime_with_home_and_datasetclusters.csv"
     else:
         return "data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv"
 

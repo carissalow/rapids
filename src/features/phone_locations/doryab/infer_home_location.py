@@ -19,8 +19,7 @@ def infer_home_location(location_data, clustering_algorithm, dbscan_eps, dbscan_
         location_data_filtered = cluster(location_data_filtered, clustering_algorithm, threshold_static, **hyperparameters)
 
         home_location = location_data_filtered[location_data_filtered["cluster_label"] == 1][["double_latitude", "double_longitude"]].mean()
-        distance_from_home = haversine(location_data["double_longitude"], location_data["double_latitude"], [home_location["double_longitude"]] * location_data.shape[0], [home_location["double_latitude"]] * location_data.shape[0])
-        location_data["distance_from_home"] = distance_from_home
+        location_data["distance_from_home"] = haversine(location_data["double_longitude"], location_data["double_latitude"], [home_location["double_longitude"]] * location_data.shape[0], [home_location["double_latitude"]] * location_data.shape[0])
 
     else:
         raise ValueError("It only support TIME_CLUSTER strategy currently.")    
@@ -48,7 +47,7 @@ if rows_before_accuracy_filter > 0 and len(location_data) == 0:
 if not location_data.timestamp.is_monotonic:
     location_data.sort_values(by=["timestamp"], inplace=True)
 
-location_data["duration_in_seconds"] = (location_data.timestamp.diff(-1) * (-1)) / 1000
+location_data["duration_in_seconds"] = location_data.timestamp.diff() / 1000
 location_data.loc[location_data["duration_in_seconds"] >= maximum_row_gap, "duration_in_seconds"] = maximum_row_duration
 
 location_data_with_home = infer_home_location(location_data, clustering_algorithm, dbscan_eps, dbscan_minsamples, threshold_static, strategy)

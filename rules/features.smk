@@ -382,7 +382,7 @@ rule phone_locations_processed_with_datetime_with_home:
     script:
         "../src/features/phone_locations/doryab/infer_home_location.py"
 
-rule phone_locations_processed_with_datetime_with_home_and_clusters:
+rule phone_locations_cluster_accross_participant_dataset:
     input:
         sensor_input = "data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv"
     params:
@@ -391,9 +391,9 @@ rule phone_locations_processed_with_datetime_with_home_and_clusters:
         threshold_static = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["THRESHOLD_STATIC"],
         clustering_algorithm = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["CLUSTERING_ALGORITHM"]
     output:
-        "data/interim/{pid}/phone_locations_processed_with_datetime_with_home_and_clusters.csv"
+        "data/interim/{pid}/phone_locations_processed_with_datetime_with_home_and_datasetclusters.csv"
     script:
-        "../src/features/phone_locations/doryab/cluster_and_assign_labels.py"
+        "../src/features/phone_locations/doryab/cluster_accross_participant_dataset.py"
 
 rule phone_locations_python_features:
     input:

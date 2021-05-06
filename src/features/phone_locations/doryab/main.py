@@ -9,6 +9,7 @@ def apply_cluster_strategy(location_data, time_segment, clustering_algorithm, db
     hyperparameters = create_clustering_hyperparameters(clustering_algorithm, dbscan_eps, dbscan_minsamples)
 
     if cluster_on == "PARTICIPANT_DATASET":
+        # clusters are created in cluster_accross_participant_dataset.py script
         location_data = filter_data_by_segment(location_data, time_segment)
     elif cluster_on == "TIME_SEGMENT":
         location_data = filter_data_by_segment(location_data, time_segment)
@@ -101,7 +102,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
         requested_features.append("minutesdataused")
 
     # name of the features this function can compute
-    base_features_names = ["locationvariance","loglocationvariance","totaldistance","avgspeed","varspeed","circadianmovement","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","avglengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy","minutesdataused","timeathome"]    
+    base_features_names = ["locationvariance","loglocationvariance","totaldistance","avgspeed","varspeed","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","avglengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy","minutesdataused","timeathome"]    
     # the subset of requested features this function can compute
     features_to_compute = list(set(requested_features) & set(base_features_names))
     
@@ -119,8 +120,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
     # distance and speed features
     moving_data = location_data[location_data["is_stationary"] == 0]
-    distance_and_speed = distance_and_speed_features(moving_data)
-    location_features = location_features.merge(distance_and_speed, how="outer", left_index=True, right_index=True)
+    location_features = location_features.merge(distance_and_speed_features(moving_data), how="outer", left_index=True, right_index=True)
 
     # stationary features
     stationary_data = location_data[location_data["is_stationary"] == 1]
@@ -132,8 +132,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     location_features["radiusgyration"] = radius_of_gyration(stationary_data_without_outliers)
     
     # stay at topn clusters features
-    stay_at_clusters_features = stay_at_topn_clusters(stationary_data_without_outliers)
-    location_features = location_features.merge(stay_at_clusters_features, how="outer", left_index=True, right_index=True)
+    location_features = location_features.merge(stay_at_topn_clusters(stationary_data_without_outliers), how="outer", left_index=True, right_index=True)
 
     # moving to static ratio
     static_time = stationary_data.groupby(["local_segment"])["duration_in_seconds"].sum()
@@ -145,11 +144,10 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     location_features["outlierstimepercent"] = outliers_time / static_time
 
     # entropy features
-    entropy = location_entropy(stationary_data_without_outliers)
-    location_features = location_features.merge(entropy, how="outer", left_index=True, right_index=True)
+    location_features = location_features.merge(location_entropy(stationary_data_without_outliers), how="outer", left_index=True, right_index=True)
 
     # time at home
-    location_features["timeathome"] = stationary_data[stationary_data["distance_from_home"] <= radius_from_home].groupby(["local_segment"])["duration_in_seconds"].sum() / 60)
+    location_features["timeathome"] = stationary_data[stationary_data["distance_from_home"] <= radius_from_home].groupby(["local_segment"])["duration_in_seconds"].sum() / 60
 
     location_features = location_features[features_to_compute].reset_index()
 

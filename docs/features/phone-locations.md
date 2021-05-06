@@ -112,7 +112,7 @@ These features are based on the original implementation by [Doryab et al.](../..
     - data/interim/{pid}/phone_locations_processed.csv
     - data/interim/{pid}/phone_locations_processed_with_datetime.csv
     - data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv
-    - data/interim/{pid}/phone_locations_processed_with_datetime_with_home_and_clusters.csv (Only when CLUSTER_ON=PARTICIPANT_DATASET)
+    - data/interim/{pid}/phone_locations_processed_with_datetime_with_home_and_datasetclusters.csv (Only when CLUSTER_ON=PARTICIPANT_DATASET)
     - data/interim/{pid}/phone_locations_features/phone_locations_{language}_{provider_key}.csv
     - data/processed/features/{pid}/phone_locations.csv
     ```
@@ -129,7 +129,7 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 | `[DBSCAN_MINSAMPLES]`      | The number of samples (or total weight) in a neighborhood for a point to be considered as a core point of a cluster. This includes the point itself.
 | `[THRESHOLD_STATIC]`       | It is the threshold value in km/hr which labels a row as Static or Moving.
 | `[MAXIMUM_ROW_GAP]`   | The maximum gap (in seconds) allowed between any two consecutive rows for them to be considered part of the same displacement. If this threshold is too high, it can throw speed and distance calculations off for periods when the phone was not sensing.
-| `[MAXIMUM_ROW_DURATION]`  | The time difference between any two consecutive rows `A` and `B` is considered as the time a participant spent in `A`. If this difference is bigger than MAXIMUM_ROW_GAP we substitute it with `MAXIMUM_ROW_DURATION`.
+| `[MAXIMUM_ROW_DURATION]`  | We compute the time, distance, and speed of each row with respect to the one before. If the time difference is bigger than `MAXIMUM_ROW_GAP`, we substitute it with `MAXIMUM_ROW_DURATION`.
 | `[MINUTES_DATA_USED]`     | Set to `True` to include an extra column in the final location feature file containing the number of minutes used to compute the features on each time segment. Use this for quality control purposes; the more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
 | `[CLUSTER_ON]`             | Set this flag to `PARTICIPANT_DATASET` to create clusters based on the entire participant's dataset or to `TIME_SEGMENT` to create clusters based on all the instances of the corresponding time segment (e.g. all mornings) or to `TIME_SEGMENT_INSTANCE` to create clusters based on a single instance (e.g. 2020-05-20's morning).
 | `[CLUSTERING_ALGORITHM]`   | The original Doryab et al. implementation uses `DBSCAN`, `OPTICS` is also available with similar (but not identical) clustering results and lower memory consumption.
@@ -152,8 +152,8 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 |timeattop1location                                           |minutes       |Time spent at the most significant location.
 |timeattop2location                                           |minutes       |Time spent at the 2nd most significant location.
 |timeattop3location                                           |minutes       |Time spent at the 3rd most significant location. 
-|movingtostaticratio                                          | -   |  Ratio between stationary time and total location sensed time. A lat/long coordinate pair is labeled as stationary if its speed (distance/time) to the next coordinate pair is less than 1km/hr. A higher value represents a more stationary routine. These times are computed using `duration_in_seconds` feature.
-|outlierstimepercent                                          | -   | Ratio between the time spent in non-significant clusters divided by the time spent in all clusters (stationary time. Only stationary samples are clustered). A higher value represents more time spent in non-significant clusters. These times are computed using `duration_in_seconds` feature.
+|movingtostaticratio                                          | -   |  Ratio between stationary time and total location sensed time. A lat/long coordinate pair is labeled as stationary if its speed (distance/time) to the next coordinate pair is less than 1km/hr. A higher value represents a more stationary routine.
+|outlierstimepercent                                          | -   | Ratio between the time spent in non-significant clusters divided by the time spent in all clusters (stationary time. Only stationary samples are clustered). A higher value represents more time spent in non-significant clusters.
 |maxlengthstayatclusters                                      |minutes       |Maximum time spent in a cluster (significant location).
 |minlengthstayatclusters                                      |minutes       |Minimum time spent in a cluster (significant location).
 |avglengthstayatclusters                                      |minutes       |Average time spent in a cluster (significant location).

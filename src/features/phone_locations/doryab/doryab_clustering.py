@@ -24,36 +24,32 @@ def meters_to_degrees(distance):
     return distance
 
 # Add "is_stationary" column to denote whether it is stationary or not
-# "distance", "duration_in_seconds" (if it does not exist), and "speed" columns are also added
+# "distance" and "speed" columns are also added
 def mark_as_stationary(location_data, threshold_static):
 
-    if not location_data.index.is_monotonic:
-        location_data.sort_index(inplace=True)
-
     # Distance in meters
-    location_data["distance"] = haversine(location_data["double_longitude"], location_data["double_latitude"], location_data["double_longitude"].shift(-1), location_data["double_latitude"].shift(-1))
-    # Duration in seconds
-    if "duration_in_seconds" not in location_data.columns:
-        location_data["duration_in_seconds"] = (location_data.timestamp.diff(-1) * (-1)) / 1000
+    location_data = location_data.assign(distance=haversine(location_data["double_longitude"], location_data["double_latitude"], location_data["double_longitude"].shift(), location_data["double_latitude"].shift()))
     # Speed in km/h
-    location_data["speed"] = (location_data["distance"] / location_data["duration_in_seconds"]).replace(np.inf, np.nan) * 3.6
+    location_data.loc[:, "speed"] = (location_data["distance"] / location_data["duration_in_seconds"]).replace(np.inf, np.nan) * 3.6
 
-    location_data["is_stationary"] = np.where(location_data["speed"] < threshold_static, 1, 0)
+    location_data.loc[:, "is_stationary"] = np.where(location_data["speed"] < threshold_static, 1, 0)
 
     return location_data
 
 # Relabel clusters: -1 denotes the outliers (insignificant or rarely visited locations), 1 denotes the most visited significant location, 2 denotes the 2nd most significant location,...
 def label(location_data):
 
-    location_data["count"] = location_data.groupby(["cluster_label"], sort=False)["cluster_label"].transform("count")
-    location_data.loc[location_data["cluster_label"] == -1, "count"] = -1
-    
-    num_clusters = location_data["cluster_label"].nunique()
-    cluster_label = num_clusters - (location_data.groupby(["count", "cluster_label"], sort=True).grouper.group_info[0])
-    cluster_label[cluster_label == num_clusters] = -1
+    # Exclude outliers (cluster_label = -1) while counting number of locations in a cluster
+    label2count = pd.DataFrame({"count": location_data["cluster_label"].replace(-1, np.nan).value_counts(ascending=False, sort=True)})
+    # Add the row number as the new cluster label since value_counts() will order it by default
+    label2count["new_cluster_label"] = np.arange(len(label2count)) + 1
+    # Still use -1 to denote the outliers
+    label2count.loc[-1, "new_cluster_label"] = -1
+    # Merge the new cluster label with the original location data
+    location_data = location_data.merge(label2count[["new_cluster_label"]], left_on="cluster_label", right_index=True, how="left")
 
-    location_data["cluster_label"] = cluster_label
-    del location_data["count"]
+    del location_data["cluster_label"]
+    location_data.rename(columns={"new_cluster_label": "cluster_label"}, inplace=True)
 
     return location_data
 
@@ -71,15 +67,13 @@ def cluster(location_data, clustering_algorithm, threshold_static, **kwargs):
     if location_data.empty:
         return pd.DataFrame(columns=location_data.columns.tolist() + ["is_stationary", "cluster_label"])
 
-    location_data = location_data.set_index("local_date_time")
-
     location_data = mark_as_stationary(location_data, threshold_static)
     
     # Only keep stationary samples for clustering
-    stationary_data = location_data[location_data["is_stationary"] == 1][["double_latitude", "double_longitude"]]
+    stationary_data = location_data[location_data["is_stationary"] == 1][["double_latitude", "double_longitude", "is_stationary"]]
 
     # Remove duplicates and apply sample_weight (only available for DBSCAN currently) to reduce memory usage
-    stationary_data_dedup = stationary_data.groupby(["double_latitude", "double_longitude"]).size().reset_index()
+    stationary_data_dedup = stationary_data.groupby(["double_latitude", "double_longitude", "is_stationary"]).size().reset_index()
     lat_lon = stationary_data_dedup[["double_latitude", "double_longitude"]].values
 
     if stationary_data_dedup.shape[0] < kwargs["min_samples"]:
@@ -93,7 +87,6 @@ def cluster(location_data, clustering_algorithm, threshold_static, **kwargs):
 
     # Add cluster labels
     stationary_data_dedup["cluster_label"] = cluster_results
-    stationary_data_with_labels = label(stationary_data.reset_index().merge(stationary_data_dedup[["double_latitude", "double_longitude", "cluster_label"]], how="left", on=["double_latitude", "double_longitude"])).set_index("local_date_time")
-    location_data["cluster_label"] = stationary_data_with_labels["cluster_label"]
+    location_data_with_labels = label(location_data.merge(stationary_data_dedup[["double_latitude", "double_longitude", "is_stationary", "cluster_label"]], how="left", on=["double_latitude", "double_longitude", "is_stationary"]))
 
-    return location_data
+    return location_data_with_labels
