@@ -215,6 +215,22 @@ Due to the difference in the format of the raw battery data for iOS and Android 
 -   Finally, there are also additional empty data files for both
     android and iOS for testing empty data files
 
+## Keyboard
+
+- The raw keyboard data file contains data for 4 days.
+- The raw keyboard data contains records with difference in `timestamp` from
+  few milliseconds to seconds more than 5. This helps us to create separate 
+  sessions within the usage of the same app.
+
+- The raw keyboard data contains records where the difference in text is less 
+  than 5 seconds which makes it into 1 session but because of difference of app
+  new session starts. This edge case determines the behaviour within particular app
+  and also within 5 seconds.
+
+- The raw keyboard data also contains the records where difference in text is varying
+  with different records. Which indicates the records to be either pressed by auto-suggested
+  or auto-correct.
+
 ## Fitbit Calories Intraday
 
 Description
