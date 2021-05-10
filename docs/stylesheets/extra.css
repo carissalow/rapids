@@ -31,3 +31,21 @@ div[data-md-component=announce]>div#announce-msg>a{
     min-width: 0rem;
 }
 
+/*  Users and contributors grid */
+.users {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-rows: auto;
+    grid-gap: 15px;
+}
+
+.users > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.users > div >  img {
+    max-height: 100px;
+    object-fit: contain;
+}

@@ -7,28 +7,16 @@ assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+This form is only for bug reports. For questions, feature requests, or feedback use our [Github discussions](https://github.com/carissalow/rapids/discussions)
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Enable ... feature provider
-2. Setup ... sensor parameters
-3. Run RAPIDS
-4. etc ...
+Please make sure to:
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+* [ ] Debug and simplify the problem to create a minimal example. For example, reduce the problem to a single participant, sensor, and a few rows of data.
+* [ ] Provide a clear and succinct description of the problem (expected behavior vs actual behavior).
+* [ ] Attach your `config.yaml`, time segments file, and time zones file if appropriate.
+* [ ] Attach test data if possible, and any screenshots or extra resources that will help us debug the problem.
+* [ ] Share the commit you are running: `git rev-parse --short HEAD`
+* [ ] Share your OS version (e.g. Windows 10)
+* [ ] Share the device/sensor your are processing (e.g. phone accelerometer)
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Please complete the following information:**
- - OS: [e.g. MacOS]
- - RAPIDS current commit, paste the output of `git rev-parse --short HEAD`
- - A link to your `config.yaml`
- - Type of mobile data you are dealing with (Android/iOS)
-
-
-**Additional context**
-Add any other context about the problem here.
+<!-- You can erase any parts of this template not applicable to your Issue. -->

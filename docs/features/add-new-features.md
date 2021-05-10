@@ -90,7 +90,7 @@ In this step, you need to add your provider configuration section under the rele
 |`[COMPUTE]`| Flag to activate/deactivate your provider
 |`[FEATURES]`| List of features your provider supports. Your provider code should only return the features on this list
 |`[MY_PARAMTER]`| An arbitrary parameter that our example provider `VEGA` needs. This can be a boolean, integer, float, string, or an array of any of such types.
-|`[SRC_SCRIPT]`| The relative path from RAPIDS' root folder to an script that computes the features for this provider. It can be implemented in R or Python.
+|`[SRC_SCRIPT]`| The relative path from RAPIDS' root folder to a script that computes the features for this provider. It can be implemented in R or Python.
 
 ### Create a feature provider script
 
@@ -121,8 +121,8 @@ Every feature script (`main.[py|R]`) needs a `[providername]_features` function 
 |---|---|
 |`sensor_data_files`| Path to the CSV file containing the data of a single participant. This data has been cleaned and preprocessed. Your function will be automatically called for each participant in your study (in the `[PIDS]` array in `config.yaml`) 
 |`time_segment`| The label of the time segment that should be processed.
-|`provider`| The parameters you configured for your provider in `config.yaml` will be available in this variable as a dictionary in Python or a list in R. In our example this dictionary contains `{MY_PARAMETER:"a_string"}`
-|`filter_data_by_segment`| Python only. A function that you will use to filter your data. In R this function is already available in the environment.
+|`provider`| The parameters you configured for your provider in `config.yaml` will be available in this variable as a dictionary in Python or a list in R. In our example, this dictionary contains `{MY_PARAMETER:"a_string"}`
+|`filter_data_by_segment`| Python only. A function that you will use to filter your data. In R, this function is already available in the environment.
 |`*args`| Python only. Not used for now
 |`**kwargs`| Python only. Not used for now
 
@@ -180,4 +180,4 @@ The next step is to implement the code that computes your behavioral features in
 
 ## New Features for Non-Existing Sensors
 
-If you want to add features for a device or a sensor that we do not support at the moment (those that do not appear in the `"Existing Sensors"` list above), [contact us](../../team) or request it on [Slack](http://awareframework.com:3000/) and we can add the necessary code so you can follow the instructions above.
+If you want to add features for a device or a sensor that we do not support at the moment (those that do not appear in the `"Existing Sensors"` list above), [open a new discussion](https://github.com/carissalow/rapids/discussions) in Github and we can add the necessary code so you can follow the instructions above.

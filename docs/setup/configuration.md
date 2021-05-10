@@ -1,27 +1,27 @@
 
 # Configuration
 
-You need to follow these steps to configure your RAPIDS deployment before you can extract behavioral features
+You need to follow these steps to configure your RAPIDS deployment before you can extract behavioral features.
 
 0. Verify RAPIDS can process your [data streams](#supported-data-streams)
 3. Create your [participants files](#participant-files)
 4. Select what [time segments](#time-segments) you want to extract features on
-2. Choose the [timezone of your study](#timezone-of-your-study)
+2. Select the [timezone of your study](#timezone-of-your-study)
 5. Configure your [data streams](#data-stream-configuration)
 6. Select what [sensors and features](#sensor-and-features-to-process) you want to process
 
 When you are done with this configuration, go to [executing RAPIDS](../execution).
 
 !!! hint
-    Every time you see `config["KEY"]` or `[KEY]` in these docs we are referring to the corresponding key in the `config.yaml` file.
+    Every time you see `config["KEY"]` or `[KEY]` in these docs, we are referring to the corresponding key in the `config.yaml` file.
 
 ---
 
 ## Supported data streams
 
-A data stream refers to sensor data collected using a specific type of **device** with a specific **format** and stored in a specific **container**. For example, the `aware_mysql` data stream handles smartphone data (**device**) collected with the [AWARE Framework](https://awareframework.com/) (**format**) stored in a MySQL database (**container**).
+A data stream refers to sensor data collected using a specific **device** with a specific **format** and stored in a specific **container**. For example, the `aware_mysql` data stream handles smartphone data (**device**) collected with the [AWARE Framework](https://awareframework.com/) (**format**) stored in a MySQL database (**container**).
 
-Check the table in [introduction to data streams](../../datastreams/data-streams-introduction) to know what data streams we support. If your data stream is supported, continue to the next configuration section, **you will use its label later in this guide** (e.g. `aware_mysql`). If your steam is not supported but you want to implement it, follow the tutorial to [add support for new data streams](../../datastreams/add-new-data-streams) and get in touch by email or in Slack if you have any questions.
+Check the table in [introduction to data streams](../../datastreams/data-streams-introduction) to know what data streams we support. If your data stream is supported, continue to the next configuration section, **you will use its label later in this guide** (e.g. `aware_mysql`). If your steam is not supported, but you want to implement it, follow the tutorial to [add support for new data streams](../../datastreams/add-new-data-streams) and [open a new discussion](https://github.com/carissalow/rapids/discussions) in Github with any questions.
 
 ---
 
@@ -36,7 +36,7 @@ Participant files link together multiple devices (smartphones and wearables) to 
     ```
 
 ??? info "Optional: Migrating participants files with the old format"
-    If you were using the pre-release version of RAPIDS with participant files in plain text (as opposed to yaml), you can run the following command and your old files will be converted into yaml files stored in `data/external/participant_files/`
+    If you were using the pre-release version of RAPIDS with participant files in plain text (as opposed to yaml), you could run the following command, and your old files will be converted into yaml files stored in `data/external/participant_files/`
 
     ```bash
     python tools/update_format_participant_files.py
@@ -46,9 +46,9 @@ Participant files link together multiple devices (smartphones and wearables) to 
 
 ??? example "Example of the structure of a participant file"
 
-    In this example, the participant used an android phone, an ios phone, a fitbit device, and a Empatica device throughout the study between Apr 23rd 2020 and Oct 28th 2020
+    In this example, the participant used an android phone, an ios phone, a Fitbit device, and an Empatica device throughout the study between April 23rd, 2020, and October 28th, 2020
 
-     If your participants didn't use a `[PHONE]`, `[FITBIT]` or `[EMPATICA]` device, it is not necessary to include that section in their participant file. In other words, you can analyse data from 1 or more devices per participant.
+     If your participants didn't use a `[PHONE]`, `[FITBIT]` or `[EMPATICA]` device, it is not necessary to include that section in their participant file. In other words, you can analyze data from 1 or more devices per participant.
 
     ```yaml
     PHONE:
@@ -74,10 +74,10 @@ Participant files link together multiple devices (smartphones and wearables) to 
     | Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description                                                                                                                                                                                                                                                                                                                                |
     |-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
     | `[DEVICE_IDS]` | An array of the strings that uniquely identify each smartphone, you can have more than one for when participants changed phones in the middle of the study.                                                                           |
-    | `[PLATFORMS]`  | An array that specifies the OS of each smartphone in  `[DEVICE_IDS]` , use a combination of  `android`  or  `ios`  (we support participants that changed platforms in the middle of your study!). You can set `[PLATFORMS]: [infer]`  and RAPIDS will infer them automatically (each phone data stream infer this differently, e.g. `aware_mysql` uses the `aware_device` table). |
+    | `[PLATFORMS]`  | An array that specifies the OS of each smartphone in  `[DEVICE_IDS]` , use a combination of  `android`  or  `ios`  (we support participants that changed platforms in the middle of your study!). You can set `[PLATFORMS]: [infer]`, and RAPIDS will infer them automatically (each phone data stream infer this differently, e.g., `aware_mysql` uses the `aware_device` table). |
     | `[LABEL]`      | A string that is used in reports and visualizations.        |
-    | `[START_DATE]` | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *after*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                               |
-    | `[END_DATE]`   | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *before*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                              |
+    | `[START_DATE]` | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *after*  this date-time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                               |
+    | `[END_DATE]`   | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *before*  this date-time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                              |
 
 === "[FITBIT]"
 
@@ -85,8 +85,8 @@ Participant files link together multiple devices (smartphones and wearables) to 
     |------------------|-----------------------------------------------------------------------------------------------------------|
     | `[DEVICE_IDS]`   | An array of the strings that uniquely identify each Fitbit, you can have more than one in case the participant changed devices in the middle of the study. |
     | `[LABEL]`        | A string that is used in reports and visualizations.                                              |
-    | `[START_DATE]`   | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *after*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                               |
-    | `[END_DATE]`     | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *before*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                              |
+    | `[START_DATE]`   | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *after*  this date-time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                               |
+    | `[END_DATE]`     | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *before*  this date-time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                              |
 
 === "[EMPATICA]"
 
@@ -94,14 +94,14 @@ Participant files link together multiple devices (smartphones and wearables) to 
     |------------------|-----------------------------------------------------------------------------------------------------------|
     | `[DEVICE_IDS]`   | An array of the strings that uniquely identify each Empatica device used by this participant. Since the most common use case involves having multiple zip files from a single device for each person, set this device id to an arbitrary string (we usually use their `pid`) |
     | `[LABEL]`        | A string that is used in reports and visualizations.                                                                                              |
-    | `[START_DATE]`   | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *after*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                               |
-    | `[END_DATE]`     | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *before*  this date time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                              |
+    | `[START_DATE]`   | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *after*  this date-time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                               |
+    | `[END_DATE]`     | A string with format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. Only data collected  *before*  this date-time will be included in the analysis. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`.                              |
 ### Automatic creation of participant files
 
 You can use a CSV file with a row per participant to automatically create participant files. 
 
 ??? "`AWARE_DEVICE_TABLE` was deprecated"
-    In previous versions of RAPIDS, you could create participant files automatically using the `aware_device` table. We deprecated this option but you can still achieve the same results if you export the output of the following SQL query as a CSV file and follow the instructions below:
+    In previous versions of RAPIDS, you could create participant files automatically using the `aware_device` table. We deprecated this option, but you can still achieve the same results if you export the output of the following SQL query as a CSV file and follow the instructions below:
     
     ```sql
     SELECT device_id, device_id as fitbit_id, CONCAT("p", _id) as empatica_id, CONCAT("p", _id) as pid, if(brand = "iPhone", "ios", "android") as platform, CONCAT("p", _id)  as label, DATE_FORMAT(FROM_UNIXTIME((timestamp/1000)- 86400), "%Y-%m-%d") as start_date, CURRENT_DATE as end_date from aware_device order by _id;
@@ -126,21 +126,21 @@ CREATE_PARTICIPANT_FILES:
     IGNORED_DEVICE_IDS: []
 ```
 
-Your CSV file (`[CSV_FILE_PATH]`) should have the following columns (headers) but the values within each column can be empty:
+Your CSV file (`[CSV_FILE_PATH]`) should have the following columns (headers), but the values within each column can be empty:
 
 | Column           | Description                                                                                               |
 |------------------|-----------------------------------------------------------------------------------------------------------|
 | device_id        | Phone device id. Separate multiple ids with `;`   |
 | fitbit_id        | Fitbit device id. Separate multiple ids with `;`  |
-| empatica_id      | Empatica device id. Since the most common use case involves having multiple zip files from a single device for each person, set this device id to an arbitrary string (we usually use their `pid`)  |
+| empatica_id      | Empatica device id. Since the most common use case involves having various zip files from a single device for each person, set this device id to an arbitrary string (we usually use their `pid`)  |
 | pid              | Unique identifiers with the format pXXX (your participant files will be named with this string)            |
 | platform         | Use `android`, `ios` or `infer` as explained above, separate values with `;`            |
-| label            | A human readable string that is used in reports and visualizations.                                       |
+| label            | A human-readable string that is used in reports and visualizations.                                       |
 | start_date       | A string with format `YYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`. |
 | end_date         | A string with format `YYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`. By default, `YYYY-MM-DD` is interpreted as `YYYY-MM-DD 00:00:00`. |
 
 !!! example
-    We added white spaces to this example to make it easy to read but you don't have to.
+    We added white spaces to this example to make it easy to read, but you don't have to.
 
     ```csv
     device_id                                                                ,fitbit_id, empatica_id ,pid ,label ,platform    ,start_date ,end_date
@@ -158,11 +158,11 @@ snakemake -j1 create_participants_files
 
 ## Time Segments
 
-Time segments (or epochs) are the time windows on which you want to extract behavioral features. For example, you might want to process data on every day, every morning, or only during weekends. RAPIDS offers three categories of time segments that are flexible enough to cover most use cases: **frequency** (short time windows every day), **periodic** (arbitrary time windows on any day), and **event** (arbitrary time windows around events of interest). See also our [examples](#segment-examples).
+Time segments (or epochs) are the time windows on which you want to extract behavioral features. For example, you might want to process data every day, every morning, or only during weekends. RAPIDS offers three categories of time segments that are flexible enough to cover most use cases: **frequency** (short time windows every day), **periodic** (arbitrary time windows on any day), and **event** (arbitrary time windows around events of interest). See also our [examples](#segment-examples).
 
 === "Frequency Segments"
 
-    These segments are computed on every day and all have the same duration (for example 30 minutes). Set the following keys in your `config.yaml`
+    These segments are computed every day, and all have the same duration (for example, 30 minutes). Set the following keys in your `config.yaml`
 
     ```yaml
     TIME_SEGMENTS: &time_segments
@@ -171,7 +171,7 @@ Time segments (or epochs) are the time windows on which you want to extract beha
       INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE
     ```
 
-    The file pointed by `[TIME_SEGMENTS][FILE]` should have the following format and can only have 1 row.
+    The file pointed by `[TIME_SEGMENTS][FILE]` should have the following format and only have 1 row.
 
     | Column | Description                                                          |
     |--------|----------------------------------------------------------------------|
@@ -198,7 +198,7 @@ Time segments (or epochs) are the time windows on which you want to extract beha
 
 === "Periodic Segments"
 
-    These segments can be computed every day, or on specific days of the week, month, quarter, and year. Their minimum duration is 1 minute but they can be as long as you want. Set the following keys in your `config.yaml`.
+    These segments can be computed every day or on specific days of the week, month, quarter, and year. Their minimum duration is 1 minute, but they can be as long as you want. Set the following keys in your `config.yaml`.
 
     ```yaml
     TIME_SEGMENTS: &time_segments
@@ -207,7 +207,7 @@ Time segments (or epochs) are the time windows on which you want to extract beha
       INCLUDE_PAST_PERIODIC_SEGMENTS: FALSE # or TRUE
     ```
 
-    If `[INCLUDE_PAST_PERIODIC_SEGMENTS]` is set to `TRUE`, RAPIDS will consider instances of your segments back enough in the past as to include the first row of data of each participant. For example, if the first row of data from a participant happened on Saturday March 7th 2020 and the requested segment duration is 7 days starting on every Sunday, the first segment to be considered would start on Sunday March 1st if `[INCLUDE_PAST_PERIODIC_SEGMENTS]` is `TRUE` or on Sunday March 8th if `FALSE`.
+    If `[INCLUDE_PAST_PERIODIC_SEGMENTS]` is set to `TRUE`, RAPIDS will consider instances of your segments back enough in the past to include the first row of data of each participant. For example, if the first row of data from a participant happened on Saturday, March 7th, 2020, and the requested segment duration is 7 days starting on every Sunday, the first segment to be considered would begin on Sunday, March 1st if `[INCLUDE_PAST_PERIODIC_SEGMENTS]` is `TRUE` or on Sunday, March 8th if `FALSE`.
 
     The file pointed by `[TIME_SEGMENTS][FILE]` should have the following format and can have multiple rows.
 
@@ -215,9 +215,9 @@ Time segments (or epochs) are the time windows on which you want to extract beha
     |---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
     | label         | A string that is used as a prefix in the name of your time segments. It has to be **unique** between rows                                                                                                      |
     | start_time    | A string with format `HH:MM:SS` representing the starting time of this segment on any day                                                                                                                                 |
-    | length        | A string representing the length of this segment.It can have one or more of the following strings **`XXD XXH XXM XXS`** to represent days, hours, minutes and seconds. For example `7D 23H 59M 59S`                        |
-    | repeats_on    | One of the follow options `every_day`, `wday`, `qday`, `mday`, and `yday`. The last four represent a week, quarter, month and year day                                                                        |
-    | repeats_value | An integer complementing `repeats_on`. If you set `repeats_on` to `every_day` set this to `0`, otherwise `1-7` represent a `wday` starting from Mondays, `1-31` represent a `mday`, `1-91` represent a `qday`, and `1-366` represent a `yday` |
+    | length        | A string representing the length of this segment. It can have one or more of the following strings **`XXD XXH XXM XXS`** to represent days, hours, minutes, and seconds. For example, `7D 23H 59M 59S`                        |
+    | repeats_on    | One of the following options `every_day`, `wday`, `qday`, `mday`, and `yday`. The last four represent a week, quarter, month, and year day                                                                        |
+    | repeats_value | An integer complementing `repeats_on`. If you set `repeats_on` to `every_day`, set this to `0`, otherwise `1-7` represent a `wday` starting from Mondays, `1-31` represent a `mday`, `1-91` represent a `qday`, and `1-366` represent a `yday` |
 
     !!! example
 
@@ -230,11 +230,11 @@ Time segments (or epochs) are the time windows on which you want to extract beha
         night,00:00:00,5H 59M 59S,every_day,0
         ```
 
-        This configuration will create five segments instances (`daily`, `morning`, `afternoon`, `evening`, `night`) on any given day (`every_day` set to 0). The `daily` segment will start at midnight and will last `23:59:59`, the other four segments will start at 6am, 12pm, 6pm, and 12am respectively and last for `05:59:59`. 
+        This configuration will create five segment instances (`daily`, `morning`, `afternoon`, `evening`, `night`) on any given day (`every_day` set to 0). The `daily` segment will start at midnight and last `23:59:59`; the other four segments will begin at 6am, 12pm, 6pm, and 12am, respectively, and last for `05:59:59`. 
 
 === "Event segments"
 
-    These segments can be computed before or after an event of interest (defined as any UNIX timestamp). Their minimum duration is 1 minute but they can be as long as you want. The start of each segment can be shifted backwards or forwards from the specified timestamp. Set the following keys in your `config.yaml`.
+    These segments can be computed before or after an event of interest (defined as any UNIX timestamp). Their minimum duration is 1 minute, but they can be as long as you want. The start of each segment can be shifted backward or forwards from the specified timestamp. Set the following keys in your `config.yaml`.
 
     ```yaml
     TIME_SEGMENTS: &time_segments
@@ -247,12 +247,12 @@ Time segments (or epochs) are the time windows on which you want to extract beha
 
     | Column        | Description                                                                                                                                                                                                   |
     |---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    | label         | A string that is used as a prefix in the name of your time segments. If labels are unique, every segment is independent; if two or more segments have the same label, their data will be grouped when computing auxiliary data for features like the `most frequent contact` for calls (the most frequent contact will be computed across all these segments). There cannot be two *overlaping* event segments with the same label (RAPIDS will throw an error)                                                                                                      |
+    | label         | A string that is used as a prefix in the name of your time segments. If labels are unique, every segment is independent; if two or more segments have the same label, their data will be grouped when computing auxiliary data for features like the `most frequent contact` for calls (the most frequent contact will be calculated across all these segments). There cannot be two *overlapping* event segments with the same label (RAPIDS will throw an error)                                                                                                      |
     | event_timestamp    | A UNIX timestamp that represents the moment an event of interest happened (clinical relapse, survey, readmission, etc.). The corresponding time segment will be computed around this moment using `length`, `shift`, and `shift_direction`                                                                                            |
-    | length        | A string representing the length of this segment. It can have one or more of the following keys `XXD XXH XXM XXS` to represent a number of days, hours, minutes, and seconds. For example `7D 23H 59M 59S`                        |
-    | shift    | A string representing the time shift from `event_timestamp`. It can have one or more of the following keys `XXD XXH XXM XXS` to represent a number of days, hours, minutes and seconds. For example `7D 23H 59M 59S`. Use this value to  change the start of a segment with respect to its `event_timestamp`. For example, set this variable to `1H` to create a segment that starts 1 hour from an event of interest (`shift_direction` determines if it's before or after).                                                                        |
+    | length        | A string representing the length of this segment. It can have one or more of the following keys `XXD XXH XXM XXS` to represent days, hours, minutes, and seconds. For example, `7D 23H 59M 59S`                        |
+    | shift    | A string representing the time shift from `event_timestamp`. It can have one or more of the following keys `XXD XXH XXM XXS` to represent days, hours, minutes, and seconds. For example, `7D 23H 59M 59S`. Use this value to change the start of a segment with respect to its `event_timestamp`. For example, set this variable to `1H` to create a segment that starts 1 hour from an event of interest (`shift_direction` determines if it's before or after).                                                                        |
     | shift_direction | An integer representing whether the `shift` is before (`-1`) or after (`1`) an `event_timestamp` |
-    |device_id| The device id (smartphone or fitbit) to whom this segment belongs to. You have to create a line in this event segment file for each event of a participant that you want to analyse. If you have participants with multiple device ids you can choose any of them|
+    |device_id| The device id (smartphone or Fitbit) to whom this segment belongs to. You have to create a line in this event segment file for each event of a participant that you want to analyze. If you have participants with multiple device ids, you can choose any of them|
 
     !!! example
         ```csv
@@ -267,9 +267,9 @@ Time segments (or epochs) are the time windows on which you want to extract beha
         mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
         ```
         
-        This example will create eight segments for a single participant (`a748ee1a...`), five independent `stressX` segments with various lengths (1,4,3,7, and 9 hours). Segments `stress1`, `stress3`, and `stress5` are shifted forwards by 5 minutes and `stress2` and `stress4` are shifted backwards by 4 hours (that is, if the `stress4` event happened on March 15th at 1pm EST (`1584291600000`), the time segment will start on that day at 9am and end at 4pm). 
+        This example will create eight segments for a single participant (`a748ee1a...`), five independent `stressX` segments with various lengths (1,4,3,7, and 9 hours). Segments `stress1`, `stress3`, and `stress5` are shifted forwards by 5 minutes, and `stress2` and `stress4` are shifted backward by 4 hours (that is, if the `stress4` event happened on March 15th at 1pm EST (`1584291600000`), the time segment will start on that day at 9am and end at 4pm). 
         
-        The three `mood` segments are 1 hour, 1 day and 7 days long and have no shift. In addition, these `mood` segments are grouped together, meaning that although RAPIDS will compute features on each one of them, some necessary information to compute a few of such features will be extracted from all three segments, for example the phone contact that called a participant the most or the location clusters visited by a participant.
+        The three `mood` segments are 1 hour, 1 day, and 7 days long and have no shift. In addition, these `mood` segments are grouped together, meaning that although RAPIDS will compute features on each one of them, some information for such computation will be extracted from all three segments, for example, the phone contact that called a participant the most, or the location clusters visited by a participant.
 
     ??? info "Date time labels of event segments"
         In the final feature file, you will find a row per event segment. The `local_segment` column of each row has a `label`, a start date-time string, and an end date-time string.
@@ -280,7 +280,7 @@ Time segments (or epochs) are the time windows on which you want to extract beha
 
         All sensor data is always segmented based on timestamps, and the date-time strings are attached for informative purposes. For example, you can plot your features based on these strings. 
 
-        When you configure RAPIDS to work with a single time zone, such tz code will be used to convert start/end timestamps (the ones you typed in the event segments file) into start/end date-time strings. However, when you configure RAPIDS to work with multiple time zones, RAPIDS will use the most common time zone across all devices of every participant to do the conversion. The most common time zone is the one in which a participant spent the most time.
+        When you configure RAPIDS to work with a single time zone, such time zone code will be used to convert start/end timestamps (the ones you typed in the event segments file) into start/end date-time strings. However, when you configure RAPIDS to work with multiple time zones, RAPIDS will use the most common time zone across all devices of every participant to do the conversion. The most common time zone is the one in which a participant spent the most time.
 
         In practical terms, this means that the date-time strings of event segments that happened in uncommon time zones will have shifted start/end date-time labels. However, the data within each segment was correctly filtered based on timestamps.
 
@@ -344,7 +344,7 @@ Time segments (or epochs) are the time windows on which you want to extract beha
 
 ### Single timezone
 
-If your study only happened in a single time zone or you want to ignore short trips of your participants to different time zones, select the appropriate code form this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) and change the following config key. Double-check your timezone code pick, for example, US Eastern Time is `America/New_York` not `EST`
+If your study only happened in a single time zone or you want to ignore short trips of your participants to different time zones, select the appropriate code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) and change the following config key. Double-check your timezone code pick; for example, US Eastern Time is `America/New_York`, not `EST`.
 
 ``` yaml
 TIMEZONE: 
@@ -376,7 +376,7 @@ Parameters for `[TIMEZONE]`
 |--|--|
 |`[TYPE]`| Either `SINGLE` or `MULTIPLE` as explained above |
 |`[SINGLE][TZCODE]`| The time zone code from this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to be used across all devices |
-|`[MULTIPLE][TZCODES_FILE]`| A CSV file containing the time zones in which participants' devices sensed data (see the required format below). Multiple devices can be linked to the same person, read more in [Participants Files](#participant-files) |
+|`[MULTIPLE][TZCODES_FILE]`| A CSV file containing the time zones in which participants' devices sensed data (see the required format below). Multiple devices can be linked to the same person. Read more in [Participants Files](#participant-files) |
 |`[MULTIPLE][IF_MISSING_TZCODE]`| When a device is missing from `[TZCODES_FILE]` Set this flag to `STOP` to stop RAPIDS execution and show an error, or to `USE_DEFAULT` to assign the time zone specified in `[DEFAULT_TZCODE]` to any such devices  |
 |`[MULTIPLE][FITBIT][ALLOW_MULTIPLE_TZ_PER_DEVICE]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more time zones, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
 |`[MULTIPLE][FITBIT][INFER_FROM_SMARTPHONE_TZ]`| You only need to care about this flag if one or more Fitbit devices sensed data in one or more time zones, and you want RAPIDS to take into account this in its feature computation. Read more in  "How does RAPIDS handle Fitbit devices?" below. |
@@ -416,7 +416,7 @@ Parameters for `[TIMEZONE]`
     ```bash
     python tools/create_multi_timezones_file.py
     ```
-    The `TZCODES_FILE` will be saved as `data/external/multiple_timezones.csv` file.
+    The `TZCODES_FILE` will be saved as `data/external/multiple_timezones.csv`.
 
 ??? note "What happens if participant X lives in Los Angeles but participant Y lives in Amsterdam and they both stayed there during my study?"
     Add a row per participant and set timestamp to `0`:
@@ -431,21 +431,21 @@ Parameters for `[TIMEZONE]`
     
     If `[IF_MISSING_TZCODE]` is set to `STOP`, RAPIDS will stop its execution and show you an error message.
 
-    If `[IF_MISSING_TZCODE]` is set to `USE_DEFAULT`, it will assign the time zone specified in `[DEFAULT_TZCODE]` to any devices with missing time zone information in `[TZCODES_FILE]`. This is helpful if only a few of your participants had multiple timezones and you don't want to specify the same time zone for the rest.
+    If `[IF_MISSING_TZCODE]` is set to `USE_DEFAULT`, it will assign the time zone specified in `[DEFAULT_TZCODE]` to any devices with missing time zone information in `[TZCODES_FILE]`. This is helpful if only a few of your participants had multiple timezones, and you don't want to specify the same time zone for the rest.
 
 ??? note "How does RAPIDS handle Fitbit devices?"
-    Fitbit devices are not time zone aware and they always log data with a local date-time string. 
+    Fitbit devices are not time zone aware, and they always log data with a local date-time string. 
 
-    - When none of the Fitbit devices in your study changed time zones (e.g., `p01` was always in New York and `p02` was always in Amsterdam), you can set a single time zone per Fitbit device id along with a timestamp 0 (you can still assign multiple time zones to smartphone device ids)
+    - When none of the Fitbit devices in your study changed time zones (e.g., `p01` was always in New York and `p02` was always in Amsterdam), you can set a single time zone per Fitbit device id along with a timestamp of 0 (you can still assign multiple time zones to smartphone device ids)
     ```csv
     device_id, tzcode,              timestamp
     fitbit123, America/New_York,     0
     fitbit999, Europe/Amsterdam,     0
     ```
 
-    - On the other hand, when at least one of your Fitbit devices changed time zones **AND** you want RAPIDS to take into account these changes, you need to set `[ALLOW_MULTIPLE_TZ_PER_DEVICE]` to `True`. **You have to manually allow this option because you need to be aware it can produce inaccurate features around the times when time zones changed**. This is because we cannot know exactly when the Fitbit device detected and processed the time zone change.
+    - On the other hand, when at least one of your Fitbit devices changed time zones **AND** you want RAPIDS to take into account these changes, you need to set `[ALLOW_MULTIPLE_TZ_PER_DEVICE]` to `True`. **You have to manually allow this option because you need to be aware it can produce inaccurate features around the times when time zones changed**. This is because we cannot know precisely when the Fitbit device detected and processed the time zone change.
 
-        If you want to `ALLOW_MULTIPLE_TZ_PER_DEVICE` you will need to add any time zone changes per device in the `TZCODES_FILE` as explained above. You could obtain this data by hand but if your participants also used a smartphone during your study, you can use their time zone logs. Recall that in RAPIDS every participant is represented with a participant file `pXX.yaml`, this file links together multiple devices and we will use it to know what smartphone time zone data should be applied to Fitbit devices. Thus set `INFER_FROM_SMARTPHONE_TZ` to `TRUE`, if you have included smartphone time zone data in your `TZCODE_FILE` and you want to make a participant's Fitbit data time zone aware with their respective smartphone data.
+        If you want to `ALLOW_MULTIPLE_TZ_PER_DEVICE`, you will need to add any time zone changes per device in the `TZCODES_FILE` as explained above. You could obtain this data by hand, but if your participants also used a smartphone during your study, you can use their time zone logs. Recall that in RAPIDS, every participant is represented with a participant file `pXX.yaml`, this file links together multiple devices, and we will use it to know what smartphone time zone data should be applied to Fitbit devices. Thus set `INFER_FROM_SMARTPHONE_TZ` to `TRUE`, if you have included smartphone time zone data in your `TZCODE_FILE` and want to make a participant's Fitbit data time zone aware with their respective smartphone data.
 
 ---
 ## Data Stream Configuration
@@ -518,24 +518,24 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
 
     === "fitbitjson_mysql"
 
-        This data stream process Fitbit data inside a JSON column as obtained from the Fitbit API and stored in a MySQL database. Read more about its column mappings and mutations in [`fitbitjson_mysql`](../../datastreams/fitbitjson-mysql#format).
+        This data stream processes Fitbit data inside a JSON column obtained from the Fitbit API and stored in a MySQL database. Read more about its column mappings and mutations in [`fitbitjson_mysql`](../../datastreams/fitbitjson-mysql#format).
 
 
         | Key                  | Description                                                                                                                |
         |---------------------|----------------------------------------------------------------------------------------------------------------------------|
         | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
-        | `[SLEEP_SUMMARY_LAST_NIGHT_END]`   | Segments are assigned based on this parameter. Any sleep episodes starts between today's SLEEP_SUMMARY_LAST_NIGHT_END (LNE) and tomorrow's LNE is regarded as today's sleep episode. While today's bedtime is based on today's sleep episodes, today's wake time is based on yesterday's sleep episodes.  |
+        | `[SLEEP_SUMMARY_LAST_NIGHT_END]`   | Segments are assigned based on this parameter. Any sleep episodes that start between today's SLEEP_SUMMARY_LAST_NIGHT_END (LNE) and tomorrow's LNE are regarded as today's sleep episodes. While today's bedtime is based on today's sleep episodes, today's wake time is based on yesterday's sleep episodes.  |
 
         --8<---- "docs/snippets/database.md"
 
     === "fitbitjson_csv"
 
-        This data stream process Fitbit data inside a JSON column as obtained from the Fitbit API and stored in a CSV file. Read more about its column mappings and mutations in [`fitbitjson_csv`](../../datastreams/fitbitjson-csv#format).
+        This data stream processes Fitbit data inside a JSON column obtained from the Fitbit API and stored in a CSV file. Read more about its column mappings and mutations in [`fitbitjson_csv`](../../datastreams/fitbitjson-csv#format).
 
         | Key                  | Description                                                                                                                |
         |---------------------|----------------------------------------------------------------------------------------------------------------------------|
         | `[FOLDER]`   | Folder where you have to place a CSV file **per** Fitbit sensor. Each file has to contain all the data from every participant you want to process.     |
-        | `[SLEEP_SUMMARY_LAST_NIGHT_END]`   | Segments are assigned based on this parameter. Any sleep episodes starts between today's SLEEP_SUMMARY_LAST_NIGHT_END (LNE) and tomorrow's LNE is regarded as today's sleep episode. While today's bedtime is based on today's sleep episodes, today's wake time is based on yesterday's sleep episodes.  |
+        | `[SLEEP_SUMMARY_LAST_NIGHT_END]`   | Segments are assigned based on this parameter. Any sleep episodes that start between today's SLEEP_SUMMARY_LAST_NIGHT_END (LNE) and tomorrow's LNE are regarded as today's sleep episodes. While today's bedtime is based on today's sleep episodes, today's wake time is based on yesterday's sleep episodes.  |
 
 
     === "fitbitparsed_mysql"
@@ -546,7 +546,7 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
         | Key                  | Description                                                                                                                |
         |---------------------|----------------------------------------------------------------------------------------------------------------------------|
         | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
-        | `[SLEEP_SUMMARY_LAST_NIGHT_END]`   | Segments are assigned based on this parameter. Any sleep episodes starts between today's SLEEP_SUMMARY_LAST_NIGHT_END (LNE) and tomorrow's LNE is regarded as today's sleep episode. While today's bedtime is based on today's sleep episodes, today's wake time is based on yesterday's sleep episodes.  |
+        | `[SLEEP_SUMMARY_LAST_NIGHT_END]`   | Segments are assigned based on this parameter. Any sleep episodes that start between today's SLEEP_SUMMARY_LAST_NIGHT_END (LNE) and tomorrow's LNE are regarded as today's sleep episodes. While today's bedtime is based on today's sleep episodes, today's wake time is based on yesterday's sleep episodes.  |
 
         --8<---- "docs/snippets/database.md"
         
@@ -557,7 +557,7 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
         | Key                  | Description                                                                                                                |
         |---------------------|----------------------------------------------------------------------------------------------------------------------------|
         | `[FOLDER]`   | Folder where you have to place a CSV file **per** Fitbit sensor. Each file has to contain all the data from every participant you want to process.     |
-        | `[SLEEP_SUMMARY_LAST_NIGHT_END]`   | Segments are assigned based on this parameter. Any sleep episodes starts between today's SLEEP_SUMMARY_LAST_NIGHT_END (LNE) and tomorrow's LNE is regarded as today's sleep episode. While today's bedtime is based on today's sleep episodes, today's wake time is based on yesterday's sleep episodes.  |
+        | `[SLEEP_SUMMARY_LAST_NIGHT_END]`   | Segments are assigned based on this parameter. Any sleep episodes that start between today's SLEEP_SUMMARY_LAST_NIGHT_END (LNE) and tomorrow's LNE are regarded as today's sleep episodes. While today's bedtime is based on today's sleep episodes, today's wake time is based on yesterday's sleep episodes.  |
 
 === "Empatica"
 
@@ -580,7 +580,7 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
         | `[FOLDER]` | The relative path to a folder containing one subfolder per participant. The name of a participant folder should match their device_id assigned in their participant file. Each participant folder can have one or more zip files with any name; in other words, the sensor data in those zip files belong to a single participant. The zip files are [automatically](https://support.empatica.com/hc/en-us/articles/201608896-Data-export-and-formatting-from-E4-connect-) generated by Empatica and have a CSV file per sensor (`ACC`, `HR`, `TEMP`, `EDA`, `BVP`, `TAGS`). All CSV files of the same type contained in one or more zip files are uncompressed, parsed, sorted by timestamp, and joined together.|
 
         ??? example "Example of an EMPATICA FOLDER"
-            In the file tree below, we want to process three participants' data: `p01`, `p02`, and `p03`. `p01` has two zip files, `p02` has only one zip file, and `p03` has three zip files. Each zip has a CSV file per sensor that are joined together and processed by RAPIDS.
+            In the file tree below, we want to process three participants' data: `p01`, `p02`, and `p03`. `p01` has two zip files, `p02` has only one zip file, and `p03` has three zip files. Each zip has a CSV file per sensor that is joined together and processed by RAPIDS.
 
             ```bash
             data/ # this folder exists in the root RAPIDS folder

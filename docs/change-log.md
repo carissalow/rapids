@@ -4,6 +4,8 @@
 - Sleep summary and intraday features are more consistent.
 - Add wake and bedtime features for sleep summary data.
 - Fix bugs with sleep PRICE features.
+- Update home page
+- Add contributing guide
 ## v1.1.1
 - Fix length of periodic segments on days with DLS
 - Fix crash when scraping data for an app that does not exist

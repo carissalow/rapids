@@ -2,20 +2,24 @@
 
 Reproducible Analysis Pipeline for Data Streams (RAPIDS) allows you to process smartphone and wearable data to [extract](features/feature-introduction.md) and [create](features/add-new-features.md) **behavioral features** (a.k.a. digital biomarkers), [visualize](visualizations/data-quality-visualizations.md) mobile sensor data, and [structure](workflow-examples/analysis.md) your analysis into reproducible workflows.
 
-RAPIDS is open source, documented, modular, tested, and reproducible. At the moment, we support [data streams](datastreams/data-streams-introduction) logged by smartphones, Fitbit wearables, and, in collaboration with the [DBDP](https://dbdp.org/), Empatica wearables (but you can [add your own](datastreams/add-new-data-streams) too). 
+RAPIDS is open source, documented, multi-platform, modular, tested, and reproducible. At the moment, we support [data streams](datastreams/data-streams-introduction) logged by smartphones, Fitbit wearables, and Empatica wearables in collaboration with the [DBDP](https://dbdp.org/). 
 
-**If you want to know more head over to [Overview](setup/overview/)**
+!!! tip "Where do I start?"
 
-!!! tip
-    :material-slack: Questions or feedback can be posted on the \#rapids channel in AWARE Framework\'s [slack](http://awareframework.com:3000/). 
+    :material-power-standby: New to RAPIDS? Check our [Overview + FAQ](setup/overview/) and [minimal example](workflow-examples/minimal)
 
-    :material-github: Bugs and feature requests should be posted on [Github](https://github.com/carissalow/rapids/issues). 
+    :material-play-speed: [Install](setup/installation), [configure](setup/configuration), and [execute](setup/execution) RAPIDS to [extract](features/feature-introduction.md) and [plot](visualizations/data-quality-visualizations.md) behavioral features
 
-    :fontawesome-solid-tasks: Join our discussions on our algorithms and assumptions for feature [processing](https://github.com/carissalow/rapids/discussions).
+    :material-github: Bugs should be reported on [Github issues](https://github.com/carissalow/rapids/issues)
+
+    :fontawesome-solid-tasks: Questions, discussions, feature requests, and feedback can be posted on our [Github discussions](https://github.com/carissalow/rapids/discussions)
+
+    :material-twitter: Keep up to date with our [Twitter feed](https://twitter.com/RAPIDS_Science) or [Slack channel](http://awareframework.com:3000/)
+
+    :material-plus-network: Do you want to modify or add new functionality to RAPIDS? Check our [contributing guide](./contributing)
 
     :fontawesome-solid-sync-alt: Are you upgrading from RAPIDS `0.4.x` or older? Follow this [guide](migrating-from-old-versions)
 
-    :fontawesome-solid-play: Ready? Go to [Overview](setup/overview/).
 
 ## What are the benefits of using RAPIDS?
 
@@ -24,9 +28,48 @@ RAPIDS is open source, documented, modular, tested, and reproducible. At the mom
 5. **Parallel execution**. Thanks to Snakemake, your analysis can be executed over multiple cores without changing your code.
 6. **Code-free features**. Extract any of the behavioral features offered by RAPIDS without writing any code.
 7. **Extensible code**. You can easily add your own data streams or behavioral features in R or Python, share them with the community, and keep authorship and citations.
-8. **Timezone aware**. Your data is adjusted to one or more time zones per participant.
+8. **Time zone aware**. Your data is adjusted to one or more time zones per participant.
 9. **Flexible time segments**. You can extract behavioral features on time windows of any length (e.g., 5 minutes, 3 hours, 2 days), on every day or particular days (e.g., weekends, Mondays, the 1st of each month, etc.), or around events of interest (e.g., surveys or clinical relapses).
 10. **Tested code**. We are continually adding tests to make sure our behavioral features are correct.
 11. **Reproducible code**. If you structure your analysis within RAPIDS, you can be sure your code will run in other computers as intended, thanks to R and Python virtual environments. You can share your analysis code along with your publications without any overhead.
 12. **Private**. All your data is processed locally.
 
+## Users and Contributors
+
+??? quote "Community Contributors"
+    Many thanks to our community contributions and the [whole team](../team):
+
+    - Agam Kumar (CMU)
+    - Yasaman S. Sefidgar (University of Washington)
+    - Joe Kim (Duke University)
+    - Brinnae Bent (Duke University)
+    - Stephen Price (CMU)
+    - Neil Singh (University of Virginia)
+
+    Many thanks to the researchers that made [their work](../citation) open source:
+
+    - Panda et al. [paper](https://pubmed.ncbi.nlm.nih.gov/31657854/)
+    - Stachl et al. [paper](https://www.pnas.org/content/117/30/17680)
+    - Doryab et al. [paper](https://arxiv.org/abs/1812.10394)
+    - Barnett et al. [paper](https://doi.org/10.1093/biostatistics/kxy059)
+    - Canzian et al. [paper](https://doi.org/10.1145/2750858.2805845)
+
+
+??? quote "Publications using RAPIDS"
+    - Predicting Symptoms of Depression and Anxiety Using Smartphone and Wearable Data [link](https://www.frontiersin.org/articles/10.3389/fpsyt.2021.625247/full)
+    - Predicting Depression from Smartphone Behavioral Markers Using Machine Learning Methods, Hyper-parameter Optimization, and Feature Importance Analysis: An Exploratory Study [link](https://preprints.jmir.org/preprint/26540)
+    -  Digital Biomarkers of Symptom Burden Self-Reported by Perioperative Patients Undergoing Pancreatic Surgery: Prospective Longitudinal Study [link](https://cancer.jmir.org/2021/2/e27975/)
+    - An Automated Machine Learning Pipeline for Monitoring and Forecasting Mobile Health Data [link](https://edas.info/showManuscript.php?m=1570708269&random=750318666&type=final&ext=pdf&title=PDF+file)
+
+<div class="users">
+<div><img alt="carnegie mellon university" loading="lazy" src="./img/logos/cmu.png" /></div>
+<div><img alt="digital biomarker development pipeline" loading="lazy" src="./img/logos/dbdp.png" /></div>
+<div><img alt="university of helsinki" loading="lazy" src="./img/logos/helsinki.jpg" /></div>
+<div><img alt="university of manchester" loading="lazy" src="./img/logos/manchester.png" /></div>
+<div><img alt="monash university" loading="lazy" src="./img/logos/monash.jpg" /></div>
+<div><img alt="oulu university" loading="lazy" src="./img/logos/oulu.png" /></div>
+<div><img alt="university of pennsylvania" loading="lazy" src="./img/logos/penn.png" /></div>
+<div><img alt="university of pittsburgh" loading="lazy" src="./img/logos/pitt.png" /></div>
+<div><img alt="university of virginia" loading="lazy" src="./img/logos/virginia.jpg" /></div>
+<div><img alt="university of washington" loading="lazy" src="./img/logos/uw.jpg" /></div>
+</div>
