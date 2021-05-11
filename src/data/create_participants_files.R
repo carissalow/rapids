@@ -25,8 +25,10 @@ participants <- read_csv(config$CSV_FILE_PATH, col_types=cols_only(device_id="c"
                           start_date=col_datetime(),end_date=col_datetime(),fitbit_id="c",empatica_id="c")) %>% 
                           mutate(start_date = as.character(start_date), end_date = as.character(end_date)) # we read as date to validate format
 participants <- participants %>% 
-mutate(!!phone_device_id_column := str_replace(!!rlang::sym(phone_device_id_column), ";",","),
-        platform = str_replace(platform, ";",","),
+mutate(!!phone_device_id_column := str_replace_all(!!rlang::sym(phone_device_id_column), ";",","),
+        !!fitbit_device_id_column := str_replace_all(!!rlang::sym(fitbit_device_id_column), ";",","),
+        !!empatica_device_id_column := str_replace_all(!!rlang::sym(empatica_device_id_column), ";",","),
+        platform = str_replace_all(platform, ";",","),
         !!phone_device_id_column := if_else(!!rlang::sym(phone_device_id_column) %in% phone_ignored, NA_character_, !!rlang::sym(phone_device_id_column)),
         !!empatica_device_id_column := if_else(!!rlang::sym(empatica_device_id_column) %in% empatica_ignored, NA_character_, !!rlang::sym(empatica_device_id_column)),
         !!fitbit_device_id_column := if_else(!!rlang::sym(fitbit_device_id_column) %in% fitbit_ignored, NA_character_, !!rlang::sym(fitbit_device_id_column)))
@@ -60,7 +62,8 @@ participants %>%
                                paste("  LABEL:",row$label), paste("  START_DATE:", start_date), paste("  END_DATE:", end_date)))
     } else
       lines <- append(lines, empty_empatica)
-    
+    lines <- append(lines, "\n")
+
     file_connection <- file(paste0("./data/external/participant_files/", row$pid, ".yaml"))
     writeLines(lines, file_connection)
     close(file_connection)
