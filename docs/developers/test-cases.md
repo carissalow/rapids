@@ -70,6 +70,18 @@ Due to the difference in the format of the raw call data for iOS and Android the
 -   There is also an additional empty data file for both android and
     iOS for testing empty data files
 
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|Android, iOS|
+|morning|OK|OK|Android, iOS|
+|daily|OK|OK|Android, iOS|
+|threeday|OK|OK|Android, iOS|
+|weekend|OK|OK|Android, iOS|
+|beforeMarchEvent|OK|OK|Android, iOS|
+|beforeNovemberEvent|OK|OK|Android, iOS|
+
 ## Screen
 
 Due to the difference in the format of the raw screen data for iOS and Android the following is the expected results the `screen_deltas.csv`. This would give a better idea of the use cases being tested since the `screen_eltas.csv` would make both the iOS and Android data comparable These files are used to calculate the features for the screen sensor
@@ -88,6 +100,19 @@ Due to the difference in the format of the raw screen data for iOS and Android t
     Android data formats.
 -   There is also an additional empty data file for both android and
     iOS for testing empty data files
+
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|Android, iOS|
+|morning|OK|OK|Android, iOS|
+|daily|OK|OK|Android, iOS|
+|threeday|OK|OK|Android, iOS|
+|weekend|OK|OK|Android, iOS|
+|beforeMarchEvent|OK|OK|Android, iOS|
+|beforeNovemberEvent|OK|OK|Android, iOS|
 
 ## Battery
 
