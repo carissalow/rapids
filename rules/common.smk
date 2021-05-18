@@ -24,10 +24,16 @@ def find_features_files(wildcards):
     return(feature_files)
 
 def optional_steps_sleep_input(wildcards):
-    if config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"] == True and config["STEP"]["EXCLUDE_SLEEP"]["TYPE"] == "FITBIT_BASED":
-        return  "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv"
+    if config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]["FITBIT_BASED"]["EXCLUDE"]:
+        return "data/raw/{pid}/fitbit_sleep_summary_raw.csv"
     else:
         return []
+
+def optional_steps_intraday_input(wildcards):
+    if config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]["TIME_BASED"]["EXCLUDE"] or config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]["FITBIT_BASED"]["EXCLUDE"]:
+        return "data/interim/{pid}/fitbit_steps_intraday_with_datetime_exclude_sleep.csv"
+    else:
+        return "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv"
 
 def input_merge_sensor_features_for_individual_participants(wildcards):
     feature_files = []

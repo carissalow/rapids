@@ -648,7 +648,7 @@ rule fitbit_steps_summary_r_features:
 
 rule fitbit_steps_intraday_python_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv",
+        sensor_data = optional_steps_intraday_input,
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -661,7 +661,7 @@ rule fitbit_steps_intraday_python_features:
 
 rule fitbit_steps_intraday_r_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv",
+        sensor_data = optional_steps_intraday_input,
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
