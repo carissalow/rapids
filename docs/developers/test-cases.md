@@ -14,14 +14,14 @@ The following is a list of the sensors that testing is currently available.
 | Phone Battery                 | RAPIDS   | Y        | Y         | N     |
 | Phone Bluetooth               | Doryab   | N        | N         | N     |
 | Phone Bluetooth               | RAPIDS   | Y        | Y         | Y     |
-| Phone Calls                   | RAPIDS   | Y        | Y         | N     |
+| Phone Calls                   | RAPIDS   | Y        | Y         | Y     |
 | Phone Conversation            | RAPIDS   | Y        | Y         | N     |
 | Phone Data Yield              | RAPIDS   | N        | N         | N     |
 | Phone Light                   | RAPIDS   | Y        | Y         | N     |
 | Phone Locations               | Doryab   | N        | N         | N     |
 | Phone Locations               | Barnett  | N        | N         | N     |
 | Phone Messages                | RAPIDS   | Y        | Y         | N     |
-| Phone Screen                  | RAPIDS   | Y        | N         | N     |
+| Phone Screen                  | RAPIDS   | Y        | Y         | Y     |
 | Phone WiFi Connected          | RAPIDS   | Y        | Y         | N     |
 | Phone WiFi Visible            | RAPIDS   | Y        | Y         | N     |
 | Fitbit Calories Intraday      | RAPIDS   | Y        | Y         | Y     |
@@ -54,23 +54,31 @@ The following is a list of the sensors that testing is currently available.
 
 ## Calls
 
-Due to the difference in the format of the raw call data for iOS and Android the following is the expected results the `calls_with_datetime_unified.csv`. This would give a better idea of the use cases being tested since the `calls_with_datetime_unified.csv` would make both the iOS and Android data comparable.
+Due to the difference in the format of the raw data for iOS and Android the following is the expected results 
+the `phone_calls.csv`. 
 
--   The call data would contain data for 2 days.
--   The data for the first day contains 6 records for every `epoch`.
--   The second day\'s data contains 6 records for each of only 2
-    `epoch` (currently `morning` and `evening`)
--   The call data contains records for all `call_types` (i.e.
-    `incoming`, `outgoing` and `missed`) in both days in all epochs.
-    The number records with each of the `call_types` per epoch is
-    randomly distributed. There is at least one records with each
-    `call_types` per epoch.
--   There is one call data file each, as described above, for testing
-    both iOS and Android data.
--   There is also an additional empty data file for both android and
-    iOS for testing empty data files
+Description:
 
-Checklist
+- One missed episode, one outgoing episode and one incoming episode on Friday night, morning, afternoon and evening
+- There is at least one episode of each type of phone calls on each day
+- One incoming episode crossing two 30-mins segments
+- One outgoing episode crossing two 30-mins segments 
+- One missed episode before, during and after the `event`
+- There is one incoming episode before, during or after the `event`
+- There is one outcoming episode before, during or after the `event`
+- There is one missed episode before, during or after the `event`
+
+Data format:
+
+| Device | Missed | Outgoing | Incoming |
+|-|-|-|-|
+|iOS| 3 | 2 | 1 |
+|Android| 1,4 or 3,4 | 3,2,4 | 1,2,4 |
+
+Note:
+When generating test data, all traces for iOS device need to be unique otherwise the episode with duplicate trace will be dropped 
+
+Checklist:
 
 |time segment| single tz | multi tz|platform|
 |-|-|-|-|
@@ -84,22 +92,28 @@ Checklist
 
 ## Screen
 
-Due to the difference in the format of the raw screen data for iOS and Android the following is the expected results the `screen_deltas.csv`. This would give a better idea of the use cases being tested since the `screen_eltas.csv` would make both the iOS and Android data comparable These files are used to calculate the features for the screen sensor
+Due to the difference in the format of the raw screen data for iOS and Android the following is the expected results the `phone_screen.csv`. 
 
--   The screen delta data file contains data for 1 day.
--   The screen delta data contains 1 record to represent an `unlock`
+Description:
+
+- The screen data file contains data for 4 days.
+- The screen data contains 1 record to represent an `unlock`
     episode that falls within an `epoch` for every `epoch`.
--   The screen delta data contains 1 record to represent an `unlock`
+- The screen data contains 1 record to represent an `unlock`
     episode that falls across the boundary of 2 epochs. Namely the
     `unlock` episode starts in one epoch and ends in the next, thus
     there is a record for `unlock` episodes that fall across `night`
     to `morning`, `morning` to `afternoon` and finally `afternoon` to
     `night`
--   The testing is done for `unlock` episode\_type.
--   There is one screen data file each for testing both iOS and
-    Android data formats.
--   There is also an additional empty data file for both android and
-    iOS for testing empty data files
+- One episode that crossing two 30-mins segments
+- There's one episode before, during or after the `event`
+
+Data format:
+
+| Device | unlock |
+|-|-|
+| Android | 3, 0|
+| iOS | 3, 2|
 
 
 Checklist
