@@ -284,6 +284,12 @@ for provider in config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"].keys():
 
 for provider in config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"].keys():
     if config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][provider]["COMPUTE"]:
+        
+        if config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]["TIME_BASED"]["EXCLUDE"] or config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]["FITBIT_BASED"]["EXCLUDE"]:
+            if config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]["FITBIT_BASED"]["EXCLUDE"]:
+                files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_summary_raw.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/fitbit_steps_intraday_with_datetime_exclude_sleep.csv", pid=config["PIDS"]))
+
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_intraday_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_steps_intraday_features/fitbit_steps_intraday_{language}_{provider_key}.csv", pid=config["PIDS"], language=get_script_language(config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][provider]["SRC_SCRIPT"]), provider_key=provider.lower()))

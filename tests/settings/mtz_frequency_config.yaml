@@ -438,6 +438,13 @@ FITBIT_STEPS_SUMMARY:
 # See https://www.rapids.science/latest/features/fitbit-steps-intraday/
 FITBIT_STEPS_INTRADAY:
   CONTAINER: steps_intraday
+  EXCLUDE_SLEEP: # you can exclude step data that was logged during sleep periods
+    TIME_BASED:
+      EXCLUDE: False
+      START_TIME: "23:00"
+      END_TIME: "07:00"
+    FITBIT_BASED:
+      EXCLUDE: False
   PROVIDERS:
     RAPIDS:
       COMPUTE: False

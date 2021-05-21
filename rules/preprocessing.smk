@@ -205,6 +205,17 @@ rule fitbit_readable_datetime:
     script:
         "../src/data/datetime/readable_datetime.R"
 
+rule fitbit_steps_intraday_exclude_sleep:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv",
+        sleep_data = optional_steps_sleep_input
+    params:
+        exclude_sleep = config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]
+    output:
+        "data/interim/{pid}/fitbit_steps_intraday_with_datetime_exclude_sleep.csv"
+    script:
+        "../src/data/fitbit_steps_intraday_exclude_sleep.py"
+
 rule empatica_readable_datetime:
     input:
         sensor_input = "data/raw/{pid}/empatica_{sensor}_raw.csv",

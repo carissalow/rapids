@@ -2,6 +2,8 @@
 ## v1.2.1 (in progress)
 - Fix PID matching when joining data from multiple participants. We can handle PIDS with an arbitrary format.
 - Fix bug that did not correctly parse participants with more than 2 phones or more than 1 wearable
+- New keyboard features
+- Add the `EXCLUDE_SLEEP` module for steps intraday features
 ## v1.2.0
 - Sleep summary and intraday features are more consistent.
 - Add wake and bedtime features for sleep summary data.

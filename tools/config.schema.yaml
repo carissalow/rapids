@@ -1090,10 +1090,29 @@ properties:
   
   FITBIT_STEPS_INTRADAY:
     type: object
-    required: [CONTAINER, PROVIDERS]
+    required: [CONTAINER, EXCLUDE_SLEEP, PROVIDERS]
     properties:
       CONTAINER: 
         type: string
+      EXCLUDE_SLEEP:
+        required: [TIME_BASED, FITBIT_BASED]
+        properties:
+          TIME_BASED:
+            required: [EXCLUDE, START_TIME, END_TIME]
+            properties:
+              EXCLUDE:
+                type: boolean
+              START_TIME:
+                type: string
+                pattern: "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+              END_TIME:
+                type: string
+                pattern: "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+          FITBIT_BASED:
+            required: [EXCLUDE]
+            properties:
+              EXCLUDE:
+                type: boolean
       PROVIDERS:
         type: ["null", object]
         properties:
