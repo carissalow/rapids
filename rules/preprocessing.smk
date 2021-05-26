@@ -94,7 +94,7 @@ rule unify_ios_android:
 rule process_phone_locations_types:
     input:
         locations = "data/raw/{pid}/phone_locations_raw.csv",
-        phone_sensed_timestamps = "data/interim/{pid}/phone_yielded_timestamps.csv",
+        phone_sensed_timestamps = optional_phone_yield_input_for_locations,
     params:
         consecutive_threshold = config["PHONE_LOCATIONS"]["FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD"],
         time_since_valid_location = config["PHONE_LOCATIONS"]["FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION"],

@@ -11,6 +11,11 @@ def get_script_language(script_path):
 
 
 # Features.smk #########################################################################################################
+def optional_phone_yield_input_for_locations(wildcards):
+    if config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"] in ["ALL_RESAMPLED","FUSED_RESAMPLED"]:
+        return "data/interim/{pid}/phone_yielded_timestamps.csv"
+    return []
+
 def get_barnett_daily(wildcards):
     if wildcards.provider_key.upper() == "BARNETT":
         return "data/interim/{pid}/phone_locations_barnett_daily.csv"

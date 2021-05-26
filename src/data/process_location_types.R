@@ -7,10 +7,13 @@ consecutive_threshold <- snakemake@params[["consecutive_threshold"]]
 time_since_valid_location <- snakemake@params[["time_since_valid_location"]]
 locations_to_use <- snakemake@params[["locations_to_use"]]
 
-phone_sensed_timestamps  <- read_csv(snakemake@input[["phone_sensed_timestamps"]], col_types = cols_only(timestamp = col_double()))
 locations <- read.csv(snakemake@input[["locations"]]) %>% 
             filter(double_latitude != 0 & double_longitude != 0) %>% 
-            drop_na(double_longitude, double_latitude)
+            drop_na(double_longitude, double_latitude) %>% 
+            group_by(timestamp) %>% # keep only the row with the best accuracy if two or more have the same timestamp
+            filter(accuracy == min(accuracy, na.rm=TRUE)) %>%  
+            filter(row_number()==1) %>% 
+            ungroup()
 
 if(!locations_to_use %in% c("ALL", "FUSED_RESAMPLED", "GPS", "ALL_RESAMPLED")){
     print("Unkown location filter, provide one of the following three: ALL, GPS, ALL_RESAMPLED, or FUSED_RESAMPLED")
@@ -39,6 +42,8 @@ if(locations_to_use == "ALL"){
     }
 
     if(nrow(locations) > 0){
+        phone_sensed_timestamps  <- read_csv(snakemake@input[["phone_sensed_timestamps"]], col_types = cols_only(timestamp = col_double()))
+
         processed_locations <- locations %>%
             distinct(timestamp, .keep_all = TRUE) %>% 
             bind_rows(phone_sensed_timestamps) %>%

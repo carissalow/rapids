@@ -4,6 +4,8 @@
 - Fix bug that did not correctly parse participants with more than 2 phones or more than 1 wearable
 - New keyboard features
 - Add the `EXCLUDE_SLEEP` module for steps intraday features
+- Fix bug when no phone data yield is needed to process location data
+- Remove location rows with the same timestamp based on their accuracy
 ## v1.2.0
 - Sleep summary and intraday features are more consistent.
 - Add wake and bedtime features for sleep summary data.
