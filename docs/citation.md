@@ -55,10 +55,13 @@ If you computed locations features using the provider `[PHONE_LOCATIONS][BARNETT
 
 ## Doryab (locations)
 
-If you computed locations features using the provider `[PHONE_LOCATIONS][DORYAB]` cite [this paper](https://arxiv.org/abs/1812.10394) and [this paper](https://doi.org/10.1145/2750858.2805845) in addition to RAPIDS.
+If you computed locations features using the provider `[PHONE_LOCATIONS][DORYAB]` cite [this paper](https://arxiv.org/abs/1812.10394) and [this paper](https://doi.org/10.1145/2750858.2805845) in addition to RAPIDS. In addition, if you used the `SUN_LI_VEGA_STRATEGY` strategy, cite [this paper](https://www.jmir.org/2020/9/e19992/) as well.
 
 !!! cite "Doryab et al. citation"
     Doryab, A., Chikarsel, P., Liu, X., & Dey, A. K. (2019). Extraction of Behavioral Features from Smartphone and Wearable Data. ArXiv:1812.10394 [Cs, Stat]. http://arxiv.org/abs/1812.10394
 
 !!! cite "Canzian et al. citation"
     Luca Canzian and Mirco Musolesi. 2015. Trajectories of depression: unobtrusive monitoring of depressive states by means of smartphone mobility traces analysis. In Proceedings of the 2015 ACM International Joint Conference on Pervasive and Ubiquitous Computing (UbiComp '15). Association for Computing Machinery, New York, NY, USA, 1293–1304. DOI:https://doi.org/10.1145/2750858.2805845
+
+!!! cite "Sun et al. citation"
+    Sun S, Folarin AA, Ranjan Y, Rashid Z, Conde P, Stewart C, Cummins N, Matcham F, Dalla Costa G, Simblett S, Leocani L, Lamers F, Sørensen PS, Buron M, Zabalza A, Guerrero Pérez AI, Penninx BW, Siddi S, Haro JM, Myin-Germeys I, Rintala A, Wykes T, Narayan VA, Comi G, Hotopf M, Dobson RJ, RADAR-CNS Consortium. Using Smartphones and Wearable Devices to Monitor Behavioral Changes During COVID-19. J Med Internet Res 2020;22(9):e19992

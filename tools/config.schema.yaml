@@ -612,22 +612,6 @@ properties:
       FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION:
         type: integer
         exclusiveMinimum: 0
-      HOME_INFERENCE:
-        type: object
-        required: [DBSCAN_EPS, DBSCAN_MINSAMPLES, THRESHOLD_STATIC, CLUSTERING_ALGORITHM]
-        properties:
-          DBSCAN_EPS:
-            type: integer
-            exclusiveMinimum: 0
-          DBSCAN_MINSAMPLES:
-            type: integer
-            exclusiveMinimum: 0
-          THRESHOLD_STATIC:
-            type: integer
-            exclusiveMinimum: 0
-          CLUSTERING_ALGORITHM:
-            type: string
-            enum: ["DBSCAN", "OPTICS"]
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -640,7 +624,7 @@ properties:
                       uniqueItems: True
                       items:
                         type: string
-                        enum: [locationvariance,loglocationvariance,totaldistance,averagespeed,varspeed,circadianmovement,numberofsignificantplaces,numberlocationtransitions,radiusgyration,timeattop1location,timeattop2location,timeattop3location,movingtostaticratio,outlierstimepercent,maxlengthstayatclusters,minlengthstayatclusters,meanlengthstayatclusters,stdlengthstayatclusters,locationentropy,normalizedlocationentropy,timeathome]
+                        enum: [locationvariance,loglocationvariance,totaldistance,avgspeed,varspeed,numberofsignificantplaces,numberlocationtransitions,radiusgyration,timeattop1location,timeattop2location,timeattop3location,movingtostaticratio,outlierstimepercent,maxlengthstayatclusters,minlengthstayatclusters,avglengthstayatclusters,stdlengthstayatclusters,locationentropy,normalizedlocationentropy,timeathome,homelabel]
                     ACCURACY_LIMIT:
                       type: integer
                       exclusiveMinimum: 0
@@ -656,17 +640,23 @@ properties:
                     MAXIMUM_ROW_GAP:
                       type: integer
                       exclusiveMinimum: 0
-                    MAXIMUM_ROW_DURATION:
-                      type: integer
-                      exclusiveMinimum: 0
                     MINUTES_DATA_USED:
                       type: boolean
                     CLUSTER_ON:
                       type: string
-                      enum: ["PARTICIPANT_DATASET", "TIME_SEGMENT"]
+                      enum: ["PARTICIPANT_DATASET", "TIME_SEGMENT", "TIME_SEGMENT_INSTANCE"]
+                    INFER_HOME_LOCATION_STRATEGY:
+                      type: string
+                      enum: ["DORYAB_STRATEGY", "SUN_LI_VEGA_STRATEGY"]
+                    MINIMUM_DAYS_TO_DETECT_HOME_CHANGES:
+                      type: integer
+                      minimum: 0
                     CLUSTERING_ALGORITHM:
                       type: string
                       enum: ["DBSCAN", "OPTICS"]
+                    RADIUS_FOR_HOME:
+                      type: integer
+                      exclusiveMinimum: 0
                     
           BARNETT:
             allOf:
