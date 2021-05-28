@@ -104,15 +104,17 @@ def infer_home_location(location_data, clustering_algorithm, hyperparameters, st
 
 
 location_data = pd.read_csv(snakemake.input["sensor_input"])
-accuracy_limit = snakemake.params["accuracy_limit"]
-maximum_row_gap = snakemake.params["maximum_row_gap"]
-dbscan_eps = snakemake.params["dbscan_eps"]
-dbscan_minsamples = snakemake.params["dbscan_minsamples"]
-threshold_static = snakemake.params["threshold_static"]
-clustering_algorithm = snakemake.params["clustering_algorithm"]
-cluster_on = snakemake.params["cluster_on"]
-strategy = snakemake.params["infer_home_location_strategy"]
-days_threshold = snakemake.params["minimum_days_to_detect_home_changes"]
+provider = snakemake.params["provider"]
+
+accuracy_limit = provider["ACCURACY_LIMIT"]
+maximum_row_gap = provider["MAXIMUM_ROW_GAP"]
+dbscan_eps = provider["DBSCAN_EPS"]
+dbscan_minsamples = provider["DBSCAN_MINSAMPLES"]
+threshold_static = provider["THRESHOLD_STATIC"]
+clustering_algorithm = provider["CLUSTERING_ALGORITHM"]
+cluster_on = provider["CLUSTER_ON"]
+strategy = provider["INFER_HOME_LOCATION_STRATEGY"]
+days_threshold = provider["MINIMUM_DAYS_TO_DETECT_HOME_CHANGES"]
 
 rows_before_accuracy_filter = len(location_data)
 location_data = location_data[location_data["accuracy"] < accuracy_limit]

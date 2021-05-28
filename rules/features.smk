@@ -370,15 +370,7 @@ rule phone_locations_add_doryab_extra_columns:
     input:
         sensor_input = "data/interim/{pid}/phone_locations_processed_with_datetime.csv",
     params:
-        accuracy_limit = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["ACCURACY_LIMIT"],
-        maximum_row_gap = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["MAXIMUM_ROW_GAP"],
-        dbscan_eps = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["DBSCAN_EPS"],
-        dbscan_minsamples = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["DBSCAN_MINSAMPLES"],
-        threshold_static = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["THRESHOLD_STATIC"],
-        clustering_algorithm = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["CLUSTERING_ALGORITHM"],
-        cluster_on = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["CLUSTER_ON"],
-        infer_home_location_strategy = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["INFER_HOME_LOCATION_STRATEGY"],
-        minimum_days_to_detect_home_changes = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["MINIMUM_DAYS_TO_DETECT_HOME_CHANGES"]
+        provider = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]
     output: 
         "data/interim/{pid}/phone_locations_processed_with_datetime_with_doryab_columns.csv"
     script:
