@@ -1,13 +1,15 @@
 # Change Log
-## v1.2.1 (in progress)
-- Fix PID matching when joining data from multiple participants. We can handle PIDS with an arbitrary format.
+## v1.3.0
+- Refactor PHONE_LOCATIONS DORYAB provider. Fix bugs and faster execution up to 30x
+- New PHONE_KEYBOARD features
+- Add a new strategy to infer home location that can handle multiple homes for the same participant
+- Add module to exclude sleep episodes from steps intraday features
+- Fix PID matching when joining data from multiple participants. Now, we can handle PIDS with an arbitrary format.
 - Fix bug that did not correctly parse participants with more than 2 phones or more than 1 wearable
-- New keyboard features
-- Add the `EXCLUDE_SLEEP` module for steps intraday features
-- Fix bug when no phone data yield is needed to process location data
+- Fix crash when no phone data yield is needed to process location data (ALL & GPS location providers)
 - Remove location rows with the same timestamp based on their accuracy
-- Refactor location features from Doryab provider
-- Add a new strategy to infer home location
+- Fix PHONE_CONVERSATION bug that produced inaccurate ratio features when time segments were not daily.
+- Other minor bug fixes
 ## v1.2.0
 - Sleep summary and intraday features are more consistent.
 - Add wake and bedtime features for sleep summary data.
