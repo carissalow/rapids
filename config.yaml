@@ -46,13 +46,16 @@ PHONE_DATA_STREAMS:
   USE: aware_mysql
   
   # AVAILABLE:
-  aware_mysql: 
+  aware_mysql: # one table per sensor with all participants' data
     DATABASE_GROUP: MY_GROUP
 
-  aware_csv:
+  aware_mysql_split: # one table per sensor per participant
+    DATABASE_GROUP: MY_GROUP
+
+  aware_csv: # one CSV file per sensor with all participants's data
     FOLDER: data/external/aware_csv
   
-  aware_influxdb: 
+  aware_influxdb: # one table per sensor with all participants' data
     DATABASE_GROUP: MY_GROUP
 
 # Sensors ------

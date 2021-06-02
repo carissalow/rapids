@@ -206,11 +206,32 @@ properties:
 
   PHONE_DATA_STREAMS:
       type: object
+      required: ["USE","aware_mysql", "aware_mysql_split", "aware_csv", "aware_influxdb"]
       properties:
         USE:
           type: string
+          enum: ["aware_mysql", "aware_mysql_split", "aware_csv", "aware_influxdb"]
         aware_mysql:
           type: object
+          required: ["DATABASE_GROUP"]
+          properties:
+            DATABASE_GROUP:
+              type: string
+        aware_mysql_split:
+          type: object
+          required: ["DATABASE_GROUP"]
+          properties:
+            DATABASE_GROUP:
+              type: string
+        aware_csv:
+          type: object
+          required: ["FOLDER"]
+          properties:
+            FOLDER:
+              type: string
+        aware_influxdb:
+          type: object
+          required: ["DATABASE_GROUP"]
           properties:
             DATABASE_GROUP:
               type: string
@@ -812,9 +833,11 @@ properties:
 
   FITBIT_DATA_STREAMS:
       type: object
+      required: ["USE","fitbitjson_mysql", "fitbitparsed_mysql", "fitbitjson_csv", "fitbitparsed_csv"]
       properties:
         USE:
           type: string
+          enum: ["fitbitjson_mysql", "fitbitparsed_mysql", "fitbitjson_csv", "fitbitparsed_csv"]
         fitbitjson_mysql:
           type: object
           required: [DATABASE_GROUP, SLEEP_SUMMARY_LAST_NIGHT_END]

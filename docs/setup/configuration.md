@@ -475,12 +475,28 @@ Modify the following keys in your `config.yaml` depending on the [data stream](.
         | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
 
         --8<---- "docs/snippets/database.md"
-
-    === "aware_csv"
+    
+    === "aware_mysql_split"
 
         | Key                  | Description                                                                                                                |
         |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
+
+        --8<---- "docs/snippets/database.md"
+
+    === "aware_csv"
+
+        | Key &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  | Description|
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
         | `[FOLDER]`   | Folder where you have to place a CSV file **per** phone sensor. Each file has to contain all the data from every participant you want to process.     |
+
+    === "aware_influxdb"
+
+        | Key                  | Description                                                                                                                |
+        |---------------------|----------------------------------------------------------------------------------------------------------------------------|
+        | `[DATABASE_GROUP]`   | A database credentials group. Read the instructions below to set it up    |
+
+        --8<---- "docs/snippets/database.md"
 
 
 

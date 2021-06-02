@@ -31,6 +31,8 @@ PHONE_DATA_STREAMS:
     DATABASE_GROUP: MY_GROUP # users define this group (user, password, host, etc.) in credentials.yaml
 ```
 
+Secondly, update `tools/config.schema.yaml` including `[*_DATA_STREAMS][properties][USE][enum]` and `[*_DATA_STREAMS][required]`. This is needed to make sure users do not use invalid values in your data stream's `config.yaml` entry by mistake. Take the other streams' entries as examples or check this [guide](../developers/validation-schema-config.md).
+
 Then implement one or both of the following functions:
 
 === "pull_data"
