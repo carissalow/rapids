@@ -1,8 +1,9 @@
 library("dplyr", warn.conflicts = F)
 
 compute_wifi_feature <- function(data, feature, time_segment){
-  data <- data %>% filter_data_by_segment(time_segment)
+  
   if(feature %in% c("countscans", "uniquedevices")){
+    data <- data %>% filter_data_by_segment(time_segment)
     data <- data %>% group_by(local_segment)
     data <- switch(feature,
               "countscans" = data %>% summarise(!!feature := n()),
@@ -17,6 +18,7 @@ compute_wifi_feature <- function(data, feature, time_segment){
       filter(N == max(N)) %>% 
       head(1) %>% # if there are multiple device with the same amount of scans pick the first one only
       pull(bssid)
+    data <- data %>% filter_data_by_segment(time_segment)
     return(data %>% 
              filter(bssid == mostuniquedevice) %>%
              group_by(local_segment) %>% 
