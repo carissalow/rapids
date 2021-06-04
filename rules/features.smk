@@ -366,9 +366,27 @@ rule phone_light_r_features:
     script:
         "../src/features/entry.R"
 
+rule phone_locations_add_doryab_extra_columns:
+    input:
+        sensor_input = "data/interim/{pid}/phone_locations_processed_with_datetime.csv",
+    params:
+        accuracy_limit = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["ACCURACY_LIMIT"],
+        maximum_row_gap = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["MAXIMUM_ROW_GAP"],
+        dbscan_eps = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["DBSCAN_EPS"],
+        dbscan_minsamples = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["DBSCAN_MINSAMPLES"],
+        threshold_static = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["THRESHOLD_STATIC"],
+        clustering_algorithm = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["CLUSTERING_ALGORITHM"],
+        cluster_on = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["CLUSTER_ON"],
+        infer_home_location_strategy = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["INFER_HOME_LOCATION_STRATEGY"],
+        minimum_days_to_detect_home_changes = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]["MINIMUM_DAYS_TO_DETECT_HOME_CHANGES"]
+    output: 
+        "data/interim/{pid}/phone_locations_processed_with_datetime_with_doryab_columns.csv"
+    script:
+        "../src/features/phone_locations/doryab/add_doryab_extra_columns.py"
+
 rule phone_locations_python_features:
     input:
-        sensor_data = "data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv",
+        sensor_data = get_locations_python_input,
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_LOCATIONS"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -388,7 +406,7 @@ rule phone_locations_barnett_daily_features:
     output:
         "data/interim/{pid}/phone_locations_barnett_daily.csv"
     script:
-        "../src/features/phone_locations/barnett/daily_features.R"
+        "../src/features/phone_locations/barnett/daily_features.py"
 
 rule phone_locations_r_features:
     input:
@@ -516,6 +534,32 @@ rule phone_wifi_visible_r_features:
     script:
         "../src/features/entry.R"
 
+rule fitbit_calories_intraday_python_features:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_calories_intraday_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_CALORIES_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_calories_intraday"
+    output:
+        "data/interim/{pid}/fitbit_calories_intraday_features/fitbit_calories_intraday_python_{provider_key}.csv"
+    script:
+        "../src/features/entry.py"
+
+rule fitbit_calories_intraday_r_features:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_calories_intraday_with_datetime.csv",
+        time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
+    params:
+        provider = lambda wildcards: config["FITBIT_CALORIES_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "fitbit_calories_intraday"
+    output:
+        "data/interim/{pid}/fitbit_calories_intraday_features/fitbit_calories_intraday_r_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
 rule fitbit_data_yield_python_features:
     input:
         sensor_data = "data/raw/{pid}/fitbit_heartrate_intraday_with_datetime.csv",
@@ -622,7 +666,7 @@ rule fitbit_steps_summary_r_features:
 
 rule fitbit_steps_intraday_python_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv",
+        sensor_data = optional_steps_intraday_input,
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -635,7 +679,7 @@ rule fitbit_steps_intraday_python_features:
 
 rule fitbit_steps_intraday_r_features:
     input:
-        sensor_data = "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv",
+        sensor_data = optional_steps_intraday_input,
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][wildcards.provider_key.upper()],
