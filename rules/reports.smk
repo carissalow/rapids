@@ -49,11 +49,13 @@ rule merge_heatmap_sensor_row_count_per_time_segment:
 
 rule heatmap_phone_data_yield_per_participant_per_time_segment:
     input:
-        phone_data_yield = expand("data/processed/features/{pid}/phone_data_yield.csv", pid=config["PIDS"]),
-        participant_file = expand("data/external/participant_files/{pid}.yaml", pid=config["PIDS"]),
-        time_segments_labels = expand("data/interim/time_segments/{pid}_time_segments_labels.csv", pid=config["PIDS"])
+        participant_files = expand("data/external/participant_files/{pid}.yaml", pid=config["PIDS"]),
+        time_segments_file = config["TIME_SEGMENTS"]["FILE"],
+        phone_data_yield = "data/processed/features/all_participants/all_sensor_features.csv",
     params:
-        time = config["HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT"]["TIME"]
+        pids = config["PIDS"],
+        time = config["HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT"]["TIME"],
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"]
     output:
         "reports/data_exploration/heatmap_phone_data_yield_per_participant_per_time_segment.html"
     script:

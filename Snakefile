@@ -381,6 +381,8 @@ if config["HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT"]["PLOT"]:
     files_to_compute.append("reports/data_exploration/heatmap_sensor_row_count_per_time_segment.html")
 
 if config["HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT"]["PLOT"]:
+    if not config["PHONE_DATA_YIELD"]["PROVIDERS"]["RAPIDS"]["COMPUTE"]:
+        raise ValueError("Error: [PHONE_DATA_YIELD][PROVIDERS][RAPIDS][COMPUTE] must be True in config.yaml to get heatmaps of overall data yield.")
     files_to_compute.append("reports/data_exploration/heatmap_phone_data_yield_per_participant_per_time_segment.html")
 
 if config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["PLOT"]:
