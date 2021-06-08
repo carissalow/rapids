@@ -216,7 +216,7 @@ PHONE_KEYBOARD:
   CONTAINER: phone_keyboard_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["sessioncount","averageinterkeydelay","averagesessionlength","changeintextlengthlessthanminusone","changeintextlengthequaltominusone","changeintextlengthequaltoone","changeintextlengthmorethanone","maxtextlength","lastmessagelength","totalkeyboardtouches"]
       SRC_SCRIPT: src/features/phone_keyboard/rapids/main.py
 
@@ -238,7 +238,7 @@ PHONE_LOCATIONS:
   
   PROVIDERS:
     DORYAB:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["locationvariance","loglocationvariance","totaldistance","avgspeed","varspeed", "numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","avglengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy","timeathome"]
       ACCURACY_LIMIT: 100 # meters, drops location coordinates with an accuracy higher than this. This number means there's a 68% probability the true location is within this radius
       DBSCAN_EPS: 10 # meters
@@ -298,7 +298,7 @@ PHONE_WIFI_CONNECTED:
   CONTAINER: phone_wifi_connected_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: FALSE
+      COMPUTE: True
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_SCRIPT: src/features/phone_wifi_connected/rapids/main.R
 
@@ -307,7 +307,7 @@ PHONE_WIFI_VISIBLE:
   CONTAINER: phone_wifi_visible_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: FALSE
+      COMPUTE: True
       FEATURES: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
       SRC_SCRIPT: src/features/phone_wifi_visible/rapids/main.R
 
@@ -343,7 +343,7 @@ FITBIT_CALORIES_INTRADAY:
   CONTAINER: fitbit_calories_intraday_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       EPISODE_TYPE: [sedentary, lightlyactive, fairlyactive, veryactive, mvpa, lowmet, highmet]
       EPISODE_TIME_THRESHOLD: 5 # minutes
       EPISODE_MET_THRESHOLD: 3
@@ -386,7 +386,7 @@ FITBIT_SLEEP_SUMMARY:
   CONTAINER: fitbit_sleep_summary_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: ["firstwaketime", "lastwaketime", "firstbedtime", "lastbedtime", "countepisode", "avgefficiency", "sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgdurationafterwakeup", "avgdurationasleep", "avgdurationawake", "avgdurationtofallasleep", "avgdurationinbed"]
       SLEEP_TYPES: ["main", "nap", "all"]
       SRC_SCRIPT: src/features/fitbit_sleep_summary/rapids/main.py
@@ -396,7 +396,7 @@ FITBIT_SLEEP_INTRADAY:
   CONTAINER: fitbit_sleep_intraday_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES:
         LEVELS_AND_TYPES: [countepisode, sumduration, maxduration, minduration, avgduration, medianduration, stdduration]
         RATIOS_TYPE: [count, duration]
@@ -410,7 +410,7 @@ FITBIT_SLEEP_INTRADAY:
       SRC_SCRIPT: src/features/fitbit_sleep_intraday/rapids/main.py
   
     PRICE:
-      COMPUTE: True
+      COMPUTE: False
       FEATURES: [avgduration, avgratioduration, avgstarttimeofepisodemain, avgendtimeofepisodemain, avgmidpointofepisodemain, stdstarttimeofepisodemain, stdendtimeofepisodemain, stdmidpointofepisodemain, socialjetlag, rmssdmeanstarttimeofepisodemain, rmssdmeanendtimeofepisodemain, rmssdmeanmidpointofepisodemain, rmssdmedianstarttimeofepisodemain, rmssdmedianendtimeofepisodemain, rmssdmedianmidpointofepisodemain]
       SLEEP_LEVELS:
         INCLUDE_ALL_GROUPS: True
