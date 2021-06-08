@@ -15,7 +15,7 @@ The following is a list of the sensors that testing is currently available.
 | Phone Bluetooth               | Doryab   | N        | N         | N     |
 | Phone Bluetooth               | RAPIDS   | Y        | Y         | Y     |
 | Phone Calls                   | RAPIDS   | Y        | Y         | Y     |
-| Phone Conversation            | RAPIDS   | Y        | Y         | N     |
+| Phone Conversation            | RAPIDS   | Y        | Y         | Y     |
 | Phone Data Yield              | RAPIDS   | N        | N         | N     |
 | Phone Light                   | RAPIDS   | Y        | Y         | N     |
 | Phone Locations               | Doryab   | N        | N         | N     |
@@ -260,24 +260,36 @@ Description
 
 ## Conversation
 
--   The raw conversation data file contains data for 2 day.
--   The raw conversation data contains records with a sample of both
-    `datatypes` (i.e. `voice/noise` = `0`, and `conversation` = `2` )
-    as well as rows with for samples of each of the `inference` values
-    (i.e. `silence` = `0`, `noise` = `1`, `voice` = `2`, and `unknown`
-    = `3`) for each `epoch`. The different `datatype` and `inference`
-    records are randomly distributed throughout the `epoch`.
--   Additionally there are 2 - 5 records for conversations (`datatype`
-    = 2, and `inference` = -1) in each `epoch` and for each `epoch`
-    except night, there is a conversation record that has a
-    `double_convo_start` `timestamp` that is from the previous
-    `epoch`. This is to test the calculations of features across
-    `epochs`.
--   There is a raw conversation data file for both android and iOS
-    platforms (`plugin_studentlife_audio_android_raw.csv` and
-    `plugin_studentlife_audio_raw.csv` respectively).
--   Finally, there are also additional empty data files for both
-    android and iOS for testing empty data files
+The 4-day raw conversation data is contained in `phone_conversation_raw.csv`. The different `inference` records are 
+randomly distributed throughout the `epoch`. 
+
+Description:
+- One episode for each daily segment (`night`, `morning`, `afternoon` and `evening`) on each day
+- Two episodes near the transition of the daily segment, one starts at the end of the afternoon, `Fri 17:10:00` and another one starts at the beginning of the evening, `Fri 18:01:00`
+- One episode across two segments, `daily` and `30-mins`, (from `Fri 05:55:00` to `Fri 06:00:41`)
+- Two episodes locate in the same daily segment (`Sat 12:45:36` and `Sat 16:48:22`)
+- One episode before the time switch, `Sun 00:15:06`, and one episode after the time switch, `Sun 06:01:00`
+
+Data format:
+
+| inference | type |
+| - | - |
+| 0 | silence |
+| 1 | noise | 
+| 2 | voice |
+| 3 | unknown | 
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|android|
+|morning|OK|OK|android|
+|daily|OK|OK|android|
+|threeday|OK|OK|android|
+|weekend|OK|OK|android|
+|beforeMarchEvent|OK|OK|android|
+|beforeNovemberEvent|OK|OK|android|
 
 ## Keyboard
 
