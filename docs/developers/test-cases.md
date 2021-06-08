@@ -22,8 +22,8 @@ The following is a list of the sensors that testing is currently available.
 | Phone Locations               | Barnett  | N        | N         | N     |
 | Phone Messages                | RAPIDS   | Y        | Y         | N     |
 | Phone Screen                  | RAPIDS   | Y        | Y         | Y     |
-| Phone WiFi Connected          | RAPIDS   | Y        | Y         | N     |
-| Phone WiFi Visible            | RAPIDS   | Y        | Y         | N     |
+| Phone WiFi Connected          | RAPIDS   | Y        | Y         | Y     |
+| Phone WiFi Visible            | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Calories Intraday      | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Data Yield             | RAPIDS   | N        | N         | N     |
 | Fitbit Heart Rate Summary     | RAPIDS   | N        | N         | N     |
@@ -105,8 +105,7 @@ Description:
     there is a record for `unlock` episodes that fall across `night`
     to `morning`, `morning` to `afternoon` and finally `afternoon` to
     `night`
-- One episode that crossing two 30-mins segments
-- There's one episode before, during or after the `event`
+- One episode that crossing two `30-min` segments
 
 Data format:
 
@@ -168,25 +167,42 @@ Due to the difference in the format of the raw battery data for iOS and Android 
 
 ## WIFI
 
--   There are 2 data files (`wifi_raw.csv` and `sensor_wifi_raw.csv`)
-    for each fake participant for each phone platform. 
--   The raw WIFI data files contain data for 1 day.
--   The `sensor_wifi_raw.csv` data contains at least 2 records for
-    each `epoch`. Each `epoch` has a record with a `timestamp` for the
-    beginning boundary for that `epoch` and a record with a
-    `timestamp` for the ending boundary for that `epoch`. (e.g. For
-    the `morning` epoch there is a record with a `timestamp` for
-    `6:00AM` and another record with a `timestamp` for `11:59:59AM`.
-    These are to test edge cases)
--   The `wifi_raw.csv` data contains 3 records with random timestamps
-    for each `epoch` to represent visible broadcasting WIFI network.
-    This file is empty for the iOS phone testing data.
--   An option of 10 access point devices is randomly distributed
-    throughout the data records. 5 each for `sensor_wifi_raw.csv` and
-    `wifi_raw.csv`.
--   There data files for testing both iOS and Android data formats.
--   There are also additional empty data files for both android and
-    iOS for testing empty data files.
+There are two wifi features (`phone wifi connected` and `phone wifi visible`). The raw test data are seperatly stored in the `phone_wifi_connected_raw.csv` and `phone_wifi_visible_raw.csv`.
+
+Description: 
+
+- One episode for each `epoch` (`night`, `morining`, `afternoon` and `evening`)
+- Two two episodes in the same time segment (`daily` and `30-min`)
+- Two episodes around the transition of `epochs` (e.g. one at the end of `night` and one at the beginning of `morning`) 
+- One episode before and after the time switch on Sunday
+
+phone wifi connected:
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|android, iOS|
+|morning|OK|OK|android, iOS|
+|daily|OK|OK|android, iOS|
+|threeday|OK|OK|android, iOS|
+|weekend|OK|OK|android, iOS|
+|beforeMarchEvent|OK|OK|android, iOS|
+|beforeNovemberEvent|OK|OK|android, iOS|
+
+phone wifi visible
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|android|
+|morning|OK|OK|android|
+|daily|OK|OK|android|
+|threeday|OK|OK|android|
+|weekend|OK|OK|android|
+|beforeMarchEvent|OK|OK|android|
+|beforeNovemberEvent|OK|OK|android|
 
 ## Light
 
