@@ -1,6 +1,5 @@
 import json
 import pandas as pd
-from datetime import datetime
 
 
 HR_SUMMARY_COLUMNS = ("device_id",
@@ -55,7 +54,7 @@ def parseHeartrateData(heartrate_data):
     for record in heartrate_data.json_fitbit_column:
         record = json.loads(record)  # Parse text into JSON
         if "activities-heart" in record:
-            curr_date = datetime.strptime(record["activities-heart"][0]["dateTime"], "%Y-%m-%d")
+            curr_date = record["activities-heart"][0]["dateTime"] + " 00:00:00"
 
             record_summary = record["activities-heart"][0]
             row_summary = parseHeartrateSummaryData(record_summary, device_id, curr_date)

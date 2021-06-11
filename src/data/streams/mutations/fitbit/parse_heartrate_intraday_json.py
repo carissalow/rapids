@@ -32,13 +32,13 @@ def parseHeartrateZones(heartrate_data):
 def parseHeartrateIntradayData(records_intraday, dataset, device_id, curr_date, heartrate_zones_range):
     for data in dataset:
         d_time = datetime.strptime(data["time"], '%H:%M:%S').time()
-        d_datetime = datetime.combine(curr_date, d_time)
+        d_datetime = datetime.combine(curr_date, d_time).strftime("%Y-%m-%d %H:%M:%S")
         d_hr =  data["value"]
 
         # Get heartrate zone by range: min <= heartrate < max
         d_hrzone = None
         for hrzone, hrrange in heartrate_zones_range.items():
-            if d_hr >= hrrange[0] and d_hr < hrrange[1]:
+            if d_hr >= hrrange[0] and d_hr <= hrrange[1]:
                 d_hrzone = hrzone
                 break
 

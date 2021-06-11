@@ -1,8 +1,5 @@
-import json, yaml
+import json
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-import dateutil.parser
 
 SLEEP_SUMMARY_COLUMNS = ("device_id", "efficiency",
                                 "minutes_after_wakeup", "minutes_asleep", "minutes_awake", "minutes_to_fall_asleep", "minutes_in_bed",
@@ -16,8 +13,8 @@ def parseOneSleepRecord(record, device_id, d_is_main_sleep, records_summary, epi
     
     sleep_record_type = episode_type
 
-    d_start_datetime = datetime.strptime(record["startTime"][:18], "%Y-%m-%dT%H:%M:%S")
-    d_end_datetime = datetime.strptime(record["endTime"][:18], "%Y-%m-%dT%H:%M:%S")
+    d_start_datetime = record["startTime"][:19].replace("T", " ")
+    d_end_datetime = record["endTime"][:19].replace("T", " ")
     # Summary data
     row_summary = (device_id, record["efficiency"],
                     record["minutesAfterWakeup"], record["minutesAsleep"], record["minutesAwake"], record["minutesToFallAsleep"], record["timeInBed"],
