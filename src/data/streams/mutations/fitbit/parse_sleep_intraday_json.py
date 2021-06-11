@@ -64,7 +64,7 @@ def parseOneRecordForV1(record, device_id, d_is_main_sleep, records_intraday, ty
         d_time = datetime.strptime(data["dateTime"], '%H:%M:%S').time()
         if is_before_midnight and d_time.hour == 0:
             curr_date = end_date
-        d_datetime = datetime.combine(curr_date, d_time)
+        d_datetime = datetime.combine(curr_date, d_time).strftime("%Y-%m-%d %H:%M:%S")
 
         # API 1.2 stores original_level as strings, so we convert original_levels of API 1 to strings too
         # (1: "asleep", 2: "restless", 3: "awake")
@@ -86,7 +86,7 @@ def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_intraday, t
 
     if sleep_record_type == "classic":
         for data in record["levels"]["data"]:
-            d_datetime = dateutil.parser.parse(data["dateTime"])
+            d_datetime = data["dateTime"][:19].replace("T", " ")
 
             row_intraday = (device_id, type_episode_id, data["seconds"],
                 data["level"], d_is_main_sleep, sleep_record_type,
@@ -95,9 +95,10 @@ def parseOneRecordForV12(record, device_id, d_is_main_sleep, records_intraday, t
     else:
         # For sleep type "stages"
         for data in mergeLongAndShortData(record["levels"]):
+            d_datetime = data[0].strftime("%Y-%m-%d %H:%M:%S")
             row_intraday = (device_id, type_episode_id, 30,
                 data[1], d_is_main_sleep, sleep_record_type,
-                data[0], 0)
+                d_datetime, 0)
 
             records_intraday.append(row_intraday)
     

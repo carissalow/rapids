@@ -23,7 +23,7 @@ def parseStepsData(steps_data):
                 dataset = record["activities-steps-intraday"]["dataset"]
                 for data in dataset:
                     d_time = datetime.strptime(data["time"], '%H:%M:%S').time()
-                    d_datetime = datetime.combine(curr_date, d_time)
+                    d_datetime = datetime.combine(curr_date, d_time).strftime("%Y-%m-%d %H:%M:%S")
 
                     row_intraday = (device_id,
                         data["value"],
