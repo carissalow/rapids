@@ -65,6 +65,7 @@ rule heatmap_feature_correlation_matrix:
     input:
         all_sensor_features = "data/processed/features/all_participants/all_sensor_features.csv" # before data cleaning
     params:
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         min_rows_ratio = config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["MIN_ROWS_RATIO"],
         corr_threshold = config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["CORR_THRESHOLD"],
         corr_method = config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["CORR_METHOD"]

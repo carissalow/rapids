@@ -17,12 +17,19 @@ def getCorrMatrixHeatmap(corr_matrix, time_segment, html_file):
     html_file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
 
 
-
+time_segments_type = snakemake.params["time_segments_type"]
 min_rows_ratio = snakemake.params["min_rows_ratio"]
 corr_threshold = snakemake.params["corr_threshold"]
 corr_method = snakemake.params["corr_method"]
 
 features = pd.read_csv(snakemake.input["all_sensor_features"])
+
+
+if time_segments_type == "FREQUENCY":
+    features["local_segment_label"] = features["local_segment_label"].str.split("\d+", expand=True, n=1)[0]
+if time_segments_type == "EVENT":
+    features["local_segment_label"] = "event"
+
 time_segments = set(features["local_segment_label"])
 
 html_file = open(snakemake.output[0], "a", encoding="utf-8")
