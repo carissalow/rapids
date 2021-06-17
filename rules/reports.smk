@@ -1,6 +1,8 @@
 rule histogram_phone_data_yield:
     input:
         "data/processed/features/all_participants/all_sensor_features.csv"
+    params:
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"]
     output:
         "reports/data_exploration/histogram_phone_data_yield.html"
     script:
