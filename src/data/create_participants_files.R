@@ -73,7 +73,7 @@ participants %>%
 file_lines <-readLines("./config.yaml")
 for (i in 1:length(file_lines)){
   if(startsWith(file_lines[i], "PIDS:")){
-    file_lines[i] <- paste0("PIDS: [", paste(participants$pid, collapse = ", "), "]")
+    file_lines[i] <- paste0("PIDS: ['", paste(participants$pid, collapse = "', '"), "']")
   }
 }
 writeLines(file_lines, con = "./config.yaml") 
