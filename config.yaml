@@ -113,6 +113,9 @@ PHONE_APPLICATIONS_FOREGROUND:
       COMPUTE: False
       INCLUDE_EPISODE_FEATURES: False
       SINGLE_CATEGORIES: ["all", "email"]
+      OWN_CATEGORIES:
+        social_media: ['com.google.android.youtube','com.snapchat.android','com.instagram.android','com.zhiliaoapp.musically','com.facebook.katana']
+        dating: ['com.tinder','com.relance.happycouple','com.kiwi.joyride']
       MULTIPLE_CATEGORIES:
         social: ["socialnetworks", "socialmediatools"]
         entertainment: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]

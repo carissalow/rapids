@@ -55,20 +55,26 @@ def compute_features(filtered_data, apps_type, requested_features, apps_features
             apps_features["sumduration" + apps_type] = np.nan
         else:
             apps_features["sumduration" + apps_type] = grouped_data
-
+    apps_features.index.names = ['local_segment']
     return apps_features
 
 def process_app_features(data, requested_features, time_segment, provider, filter_data_by_segment):
     
     excluded_categories = provider["EXCLUDED_CATEGORIES"]
     excluded_apps = provider["EXCLUDED_APPS"]
-    multiple_categories_with_genres = provider["MULTIPLE_CATEGORIES"]
     single_categories = provider["SINGLE_CATEGORIES"]
-    multiple_categories = provider["MULTIPLE_CATEGORIES"]
+    multiple_categories = {}
+    if isinstance(provider["MULTIPLE_CATEGORIES"], dict):
+        for mcategory_name, mcategory_content in provider["MULTIPLE_CATEGORIES"].items():
+            if len(mcategory_content) > 0 and mcategory_name not in excluded_categories:
+                multiple_categories[mcategory_name] = mcategory_content
+    own_categories = {}
+    if isinstance(provider["OWN_CATEGORIES"], dict):
+        for owncategory_name, owncategory_content in provider["OWN_CATEGORIES"].items():
+            if len(owncategory_content) > 0 and owncategory_name not in excluded_categories:
+                own_categories[owncategory_name] = owncategory_content
     single_apps = provider["SINGLE_APPS"]
-
     single_categories = list(set(single_categories) - set(excluded_categories))
-    multiple_categories = list(multiple_categories_with_genres.keys() - set(excluded_categories))
     single_apps = list(set(single_apps) - set(excluded_apps))
 
     # exclude categories in the excluded_categories list
@@ -78,7 +84,7 @@ def process_app_features(data, requested_features, time_segment, provider, filte
     # exclude apps in the excluded_apps list
     data = data[~data["package_name"].isin(excluded_apps)]
             
-    features = pd.DataFrame(columns=["local_segment"] + ["".join(feature) for feature in itertools.product(requested_features, single_categories + multiple_categories + single_apps)])
+    features = pd.DataFrame(columns=["local_segment"] + ["".join(feature) for feature in itertools.product(requested_features, single_categories + list(own_categories.keys()) + list(multiple_categories.keys()) + single_apps)])
     if not data.empty:
         # deep copy the data for the top1global computation
         data_global = data.copy()
@@ -95,10 +101,14 @@ def process_app_features(data, requested_features, time_segment, provider, filte
                 else:
                     filtered_data = data[data["genre"].isin([sc])]
                     features = compute_features(filtered_data, sc, requested_features, features, time_segment)
-            # multiple category
-            for mc in multiple_categories:
-                filtered_data = data[data["genre"].isin(multiple_categories_with_genres[mc])]
-                features = compute_features(filtered_data, mc, requested_features, features, time_segment)
+            # own categories
+            for owncategory_name, owncategory_content in own_categories.items():
+                filtered_data = data[data["package_name"].isin(owncategory_content)]
+                features = compute_features(filtered_data, owncategory_name, requested_features, features, time_segment)
+            # multiple categories
+            for mcategory_name, mcategory_content in multiple_categories.items():
+                filtered_data = data[data["genre"].isin(mcategory_content)]
+                features = compute_features(filtered_data, mcategory_name, requested_features, features, time_segment)
             # single apps
             for app in single_apps:
                 col_name = app

@@ -346,8 +346,15 @@ properties:
                     uniqueItems: True
                     items:
                       type: string
+                  OWN_CATEGORIES:
+                    type: ["null", object]
+                    additionalProperties: 
+                       type: array
+                       uniqueItems: True
+                       items:
+                        type: string
                   MULTIPLE_CATEGORIES:
-                    type: object
+                    type: ["null", object]
                     additionalProperties: 
                        type: array
                        uniqueItems: True
