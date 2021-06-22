@@ -68,11 +68,11 @@ def process_app_features(data, requested_features, time_segment, provider, filte
         for mcategory_name, mcategory_content in provider["MULTIPLE_CATEGORIES"].items():
             if len(mcategory_content) > 0 and mcategory_name not in excluded_categories:
                 multiple_categories[mcategory_name] = mcategory_content
-    own_categories = {}
-    if isinstance(provider["OWN_CATEGORIES"], dict):
-        for owncategory_name, owncategory_content in provider["OWN_CATEGORIES"].items():
+    custom_categories = {}
+    if isinstance(provider["CUSTOM_CATEGORIES"], dict):
+        for owncategory_name, owncategory_content in provider["CUSTOM_CATEGORIES"].items():
             if len(owncategory_content) > 0 and owncategory_name not in excluded_categories:
-                own_categories[owncategory_name] = owncategory_content
+                custom_categories[owncategory_name] = owncategory_content
     single_apps = provider["SINGLE_APPS"]
     single_categories = list(set(single_categories) - set(excluded_categories))
     single_apps = list(set(single_apps) - set(excluded_apps))
@@ -84,7 +84,7 @@ def process_app_features(data, requested_features, time_segment, provider, filte
     # exclude apps in the excluded_apps list
     data = data[~data["package_name"].isin(excluded_apps)]
             
-    features = pd.DataFrame(columns=["local_segment"] + ["".join(feature) for feature in itertools.product(requested_features, single_categories + list(own_categories.keys()) + list(multiple_categories.keys()) + single_apps)])
+    features = pd.DataFrame(columns=["local_segment"] + ["".join(feature) for feature in itertools.product(requested_features, single_categories + list(custom_categories.keys()) + list(multiple_categories.keys()) + single_apps)])
     if not data.empty:
         # deep copy the data for the top1global computation
         data_global = data.copy()
@@ -102,7 +102,7 @@ def process_app_features(data, requested_features, time_segment, provider, filte
                     filtered_data = data[data["genre"].isin([sc])]
                     features = compute_features(filtered_data, sc, requested_features, features, time_segment)
             # own categories
-            for owncategory_name, owncategory_content in own_categories.items():
+            for owncategory_name, owncategory_content in custom_categories.items():
                 filtered_data = data[data["package_name"].isin(owncategory_content)]
                 features = compute_features(filtered_data, owncategory_name, requested_features, features, time_segment)
             # multiple categories
@@ -142,5 +142,5 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
         episodes_features = process_app_features(episode_data, requested_episodes_features, time_segment, provider, filter_data_by_segment)
         
         features = pd.merge(episodes_features, features, how='outer', on='local_segment')
-        
+
     return features

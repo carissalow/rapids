@@ -346,7 +346,7 @@ properties:
                     uniqueItems: True
                     items:
                       type: string
-                  OWN_CATEGORIES:
+                  CUSTOM_CATEGORIES:
                     type: ["null", object]
                     additionalProperties: 
                        type: array
