@@ -12,7 +12,7 @@ The following is a list of the sensors that testing is currently available.
 | Phone Activity Recognition    | RAPIDS   | N        | N         | N     |
 | Phone Applications Foreground | RAPIDS   | N        | N         | N     |
 | Phone Battery                 | RAPIDS   | Y        | Y         | N     |
-| Phone Bluetooth               | Doryab   | N        | N         | N     |
+| Phone Bluetooth               | Doryab   | Y        | Y         | Y     |
 | Phone Bluetooth               | RAPIDS   | Y        | Y         | Y     |
 | Phone Calls                   | RAPIDS   | Y        | Y         | Y     |
 | Phone Conversation            | RAPIDS   | Y        | Y         | Y     |
@@ -57,7 +57,7 @@ The following is a list of the sensors that testing is currently available.
 Due to the difference in the format of the raw data for iOS and Android the following is the expected results 
 the `phone_calls.csv`. 
 
-Description:
+Description
 
 - One missed episode, one outgoing episode and one incoming episode on Friday night, morning, afternoon and evening
 - There is at least one episode of each type of phone calls on each day
@@ -68,17 +68,17 @@ Description:
 - There is one outcoming episode before, during or after the `event`
 - There is one missed episode before, during or after the `event`
 
-Data format:
+Data format
 
 | Device | Missed | Outgoing | Incoming |
 |-|-|-|-|
 |iOS| 3 | 2 | 1 |
 |Android| 1,4 or 3,4 | 3,2,4 | 1,2,4 |
 
-Note:
+Note
 When generating test data, all traces for iOS device need to be unique otherwise the episode with duplicate trace will be dropped 
 
-Checklist:
+Checklist
 
 |time segment| single tz | multi tz|platform|
 |-|-|-|-|
@@ -94,7 +94,7 @@ Checklist:
 
 Due to the difference in the format of the raw screen data for iOS and Android the following is the expected results the `phone_screen.csv`. 
 
-Description:
+Description
 
 - The screen data file contains data for 4 days.
 - The screen data contains 1 record to represent an `unlock`
@@ -107,7 +107,7 @@ Description:
     `night`
 - One episode that crossing two `30-min` segments
 
-Data format:
+Data format
 
 | Device | unlock |
 |-|-|
@@ -150,33 +150,38 @@ Due to the difference in the format of the raw battery data for iOS and Android 
 
 ## Bluetooth
 
--   The raw Bluetooth data file contains data for 1 day.
--   The raw Bluetooth data contains at least 2 records for each
-    `epoch`. Each `epoch` has a record with a `timestamp` for the
-    beginning boundary for that `epoch` and a record with a
-    `timestamp` for the ending boundary for that `epoch`. (e.g. For
-    the `morning` epoch there is a record with a `timestamp` for
-    `6:00AM` and another record with a `timestamp` for `11:59:59AM`.
-    These are to test edge cases)
--   An option of 5 Bluetooth devices are randomly distributed
-    throughout the data records.
--   There is one raw Bluetooth data file each, for testing both iOS
-    and Android data formats.
--   There is also an additional empty data file for both android and
-    iOS for testing empty data files.
+Description 
+
+- The 4-day raw data is contained in `phone_bluetooth_raw.csv`
+- One episode for each daily segment (`night`, `morning`, `afternoon` and `evening`)
+- Two episodes locate in the same 30-min segment (`Fri 23:38:45.789` and `Fri 23:59:59.465`)
+- Two episodes locate in the same daily segment (`Fri 00:00:00.798` and `Fri 00:49:04.132`)
+- One episode before the time switch (`Sun 00:24:00.000`) and one episode after the time switch (`Sun 17:32:00.000`)
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|Android|
+|morning|OK|OK|Android|
+|daily|OK|OK|Android|
+|threeday|OK|OK|Android|
+|weekend|OK|OK|Android|
+|beforeMarchEvent|OK|OK|Android|
+|beforeNovemberEvent|OK|OK|Android|
 
 ## WIFI
 
 There are two wifi features (`phone wifi connected` and `phone wifi visible`). The raw test data are seperatly stored in the `phone_wifi_connected_raw.csv` and `phone_wifi_visible_raw.csv`.
 
-Description: 
+Description
 
 - One episode for each `epoch` (`night`, `morining`, `afternoon` and `evening`)
 - Two two episodes in the same time segment (`daily` and `30-min`)
 - Two episodes around the transition of `epochs` (e.g. one at the end of `night` and one at the beginning of `morning`) 
 - One episode before and after the time switch on Sunday
 
-phone wifi connected:
+phone wifi connected
 
 Checklist
 
@@ -263,14 +268,14 @@ Description
 The 4-day raw conversation data is contained in `phone_conversation_raw.csv`. The different `inference` records are 
 randomly distributed throughout the `epoch`. 
 
-Description:
+Description
 - One episode for each daily segment (`night`, `morning`, `afternoon` and `evening`) on each day
 - Two episodes near the transition of the daily segment, one starts at the end of the afternoon, `Fri 17:10:00` and another one starts at the beginning of the evening, `Fri 18:01:00`
 - One episode across two segments, `daily` and `30-mins`, (from `Fri 05:55:00` to `Fri 06:00:41`)
 - Two episodes locate in the same daily segment (`Sat 12:45:36` and `Sat 16:48:22`)
 - One episode before the time switch, `Sun 00:15:06`, and one episode after the time switch, `Sun 06:01:00`
 
-Data format:
+Data format
 
 | inference | type |
 | - | - |

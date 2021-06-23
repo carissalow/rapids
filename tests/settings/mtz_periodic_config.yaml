@@ -159,7 +159,7 @@ PHONE_BLUETOOTH:
       SRC_SCRIPT: src/features/phone_bluetooth/rapids/main.R
 
     DORYAB:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: 
         ALL: 
             DEVICES: ["countscans", "uniquedevices", "meanscans", "stdscans"]
