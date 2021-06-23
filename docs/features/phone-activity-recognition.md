@@ -44,7 +44,7 @@ Features description for `[PHONE_ACTIVITY_RECOGNITION][PROVIDERS][RAPIDS]`:
 |count                   |rows             | Number of episodes.
 |mostcommonactivity      |activity type   | The most common activity type (e.g. `still`, `on_foot`, etc.). If there is a tie, the first one is chosen.
 |countuniqueactivities   |activity type   | Number of unique activities.
-|durationstationary      |minutes          | The total duration of `[ACTIVITY_CLASSES][STATIONARY]` episodes
+|durationstationary      |minutes          | The total duration of `[ACTIVITY_CLASSES][STATIONARY]` episodes of still and tilting activities
 |durationmobile          |minutes          | The total duration of `[ACTIVITY_CLASSES][MOBILE]` episodes of on foot, running, and on bicycle activities
 |durationvehicle         |minutes          | The total duration of `[ACTIVITY_CLASSES][VEHICLE]` episodes of on vehicle activity
 
