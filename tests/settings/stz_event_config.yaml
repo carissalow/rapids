@@ -80,8 +80,8 @@ PHONE_ACCELEROMETER:
 # See https://www.rapids.science/latest/features/phone-activity-recognition/
 PHONE_ACTIVITY_RECOGNITION:
   CONTAINER: 
-    ANDROID: plugin_google_activity_recognition
-    IOS: plugin_ios_activity_recognition
+    ANDROID: plugin_google_activity_recognition_raw.csv
+    IOS: plugin_ios_activity_recognition_raw.csv
   EPISODE_THRESHOLD_BETWEEN_ROWS: 5 # minutes. Max time difference for two consecutive rows to be considered within the same AR episode.
   PROVIDERS:
     RAPIDS:

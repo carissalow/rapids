@@ -9,7 +9,7 @@ The following is a list of the sensors that testing is currently available.
 |-------------------------------|----------|----------|-----------|-------|
 | Phone Accelerometer           | Panda    | N        | N         | N     |
 | Phone Accelerometer           | RAPIDS   | N        | N         | N     |
-| Phone Activity Recognition    | RAPIDS   | N        | N         | N     |
+| Phone Activity Recognition    | RAPIDS   | Y        | Y         | Y     |
 | Phone Applications Foreground | RAPIDS   | N        | N         | N     |
 | Phone Battery                 | RAPIDS   | Y        | Y         | N     |
 | Phone Bluetooth               | Doryab   | Y        | Y         | Y     |
@@ -174,7 +174,7 @@ Checklist
 
 There are two wifi features (`phone wifi connected` and `phone wifi visible`). The raw test data are seperatly stored in the `phone_wifi_connected_raw.csv` and `phone_wifi_visible_raw.csv`.
 
-Description
+Description 
 
 - One episode for each `epoch` (`night`, `morining`, `afternoon` and `evening`)
 - Two two episodes in the same time segment (`daily` and `30-min`)
@@ -248,20 +248,26 @@ Description
 
 ## Activity Recognition
 
--   The raw Activity Recognition data file contains data for 1 day.
--   The raw Activity Recognition data each `epoch` period contains
-    rows that records 2 - 5 different `activity_types`. The is such
-    that durations of activities can be tested. Additionally, there
-    are records that mimic the duration of an activity over the time
-    boundary of neighboring epochs. (For example, there a set of
-    records that mimic the participant `in_vehicle` from `afternoon`
-    into `evening`)
--   There is one file each with raw Activity Recognition data for
-    testing both iOS and Android data formats.
-    (plugin\_google\_activity\_recognition\_raw.csv for android and
-    plugin\_ios\_activity\_recognition\_raw.csv for iOS)
--   There is also an additional empty data file for both android and
-    iOS for testing empty data files.
+Description
+
+- The 4-day raw conversation data is contained in `plugin_google_activity_recognition_raw.csv` and `plugin_ios_activity_recognition_raw.csv`.
+- Two episodes locate in the same 30-min segment (`Fri 04:01:54` and `Fri 04:13:52`)
+- One episode for each daily segment (`night`, `morning`, `afternoon` and `evening`)
+- Two episodes locate in the same daily segment (`Fri  05:03:09` and `Fri 05:50:36`)
+- Two episodes with the time difference less than `5 mins` threshold (`Fri 07:14:21` and `Fri 07:18:50`)
+- One episode before the time switch (`Sun 00:46:00`) and one episode after the time switch (`Sun 03:42:00`)
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|android, iOS|
+|morning|OK|OK|android, iOS|
+|daily|OK|OK|android, iOS|
+|threeday|OK|OK|android, iOS|
+|weekend|OK|OK|android, iOS|
+|beforeMarchEvent|OK|OK|android, iOS|
+|beforeNovemberEvent|OK|OK|android, iOS|
 
 ## Conversation
 
@@ -269,6 +275,7 @@ The 4-day raw conversation data is contained in `phone_conversation_raw.csv`. Th
 randomly distributed throughout the `epoch`. 
 
 Description
+
 - One episode for each daily segment (`night`, `morning`, `afternoon` and `evening`) on each day
 - Two episodes near the transition of the daily segment, one starts at the end of the afternoon, `Fri 17:10:00` and another one starts at the beginning of the evening, `Fri 18:01:00`
 - One episode across two segments, `daily` and `30-mins`, (from `Fri 05:55:00` to `Fri 06:00:41`)
