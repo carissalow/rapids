@@ -35,7 +35,9 @@ rule heatmap_sensor_row_count_per_time_segment:
         participant_file = "data/external/participant_files/{pid}.yaml",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
-        pid = "{pid}"
+        pid = "{pid}",
+        sensor_names = config["HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT"]["SENSORS"],
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"]
     output:
         "reports/interim/{pid}/heatmap_sensor_row_count_per_time_segment.html"
     script:
