@@ -14,7 +14,8 @@ rule heatmap_sensors_per_minute_per_time_segment:
         participant_file = "data/external/participant_files/{pid}.yaml",
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
-        pid = "{pid}"
+        pid = "{pid}",
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"]
     output:
         "reports/interim/{pid}/heatmap_sensors_per_minute_per_time_segment.html"
     script:
