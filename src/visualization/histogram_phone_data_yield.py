@@ -6,7 +6,7 @@ time_segments_type = snakemake.params["time_segments_type"]
 phone_data_yield = pd.read_csv(snakemake.input[0])
 
 if time_segments_type == "FREQUENCY":
-    phone_data_yield["local_segment_label"] = phone_data_yield["local_segment_label"].str.replace(r"[0-9]{4}", "")
+    phone_data_yield["local_segment_label"] = phone_data_yield["local_segment_label"].str[:-4]
 if time_segments_type == "EVENT":
     phone_data_yield["local_segment_label"] = "event"
 

@@ -79,10 +79,10 @@ label = participant_file["PHONE"]["LABEL"]
 phone_data_yield = pd.read_csv(snakemake.input["phone_data_yield"], parse_dates=["local_date_time"])
 if time_segments_type == "FREQUENCY":
     phone_data_yield["assigned_segments"] = phone_data_yield["assigned_segments"].str.replace(r"[0-9]{4}#", "#")
-    time_segments_labels["label"] = time_segments_labels["label"].str.replace(r"[0-9]{4}", "")
+    time_segments_labels["label"] = time_segments_labels["label"].str[:-4]
 if time_segments_type == "PERIODIC":
     phone_data_yield["assigned_segments"] = phone_data_yield["assigned_segments"].str.replace(r"_RR\d+SS#", "#")
-    time_segments_labels["label"] = time_segments_labels["label"].str.replace(r"_RR\d+SS", "")
+    time_segments_labels["label"] = time_segments_labels["label"].str.replace(r"_RR\d+SS$", "")
 
 html_file = open(snakemake.output[0], "a", encoding="utf-8")
 if phone_data_yield.empty:

@@ -11,6 +11,25 @@ mod = util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 filter_data_by_segment = getattr(mod,  "filter_data_by_segment")
 
+def getRowCount(sensor_paths, sensor_names, time_segments_labels):
+    sensors_row_count = pd.DataFrame()
+    for sensor_path, sensor_name in zip(sensor_paths, sensor_names):
+        sensor_data = pd.read_csv(sensor_path, usecols=["assigned_segments"])
+
+        sensor_row_count = pd.DataFrame()
+        if not sensor_data.empty:
+            for time_segment in time_segments_labels:
+                sensor_data_per_segment = filter_data_by_segment(sensor_data, time_segment)
+
+                if not sensor_data_per_segment.empty:
+                    sensor_row_count = pd.concat([sensor_row_count, sensor_data_per_segment.groupby(["local_segment"])[["local_segment"]].count().rename(columns={"local_segment": sensor_name})], axis=0, sort=False)
+        sensors_row_count = pd.concat([sensors_row_count, sensor_row_count], axis=1, sort=False)
+    
+    sensors_row_count.index.name = "local_segment"
+    sensors_row_count.index = sensors_row_count.index.str.replace(r"_RR\d+SS#", "#")
+    
+    return sensors_row_count
+
 def getRowCountHeatmap(data_for_plot, pid, time_segment, html_file):
 
     fig = px.timeline(data_for_plot,
@@ -18,7 +37,7 @@ def getRowCountHeatmap(data_for_plot, pid, time_segment, html_file):
                         x_end="local_segment_end_datetime",
                         y="sensor",
                         color="scaled_value",
-                        color_continuous_scale="Peach", #"Viridis",
+                        color_continuous_scale="Peach",
                         opacity=0.7,
                         hover_data={"local_segment_start_datetime":False, "local_segment_end_datetime":False, "local_segment":True, "value":True, "scaled_value":True})
 
@@ -48,22 +67,7 @@ phone_data_yield = pd.read_csv(snakemake.input["phone_data_yield"], index_col=["
 if ("phone_data_yield_rapids_ratiovalidyieldedminutes" not in phone_data_yield.columns) or ("phone_data_yield_rapids_ratiovalidyieldedhours" not in phone_data_yield.columns):
     raise ValueError("Please make sure [PHONE_DATA_YIELD][RAPIDS][COMPUTE] is True AND [PHONE_DATA_YIELD][RAPIDS][FEATURES] contains [ratiovalidyieldedminutes, ratiovalidyieldedhours].")
 
-# extract row count
-sensors_row_count = pd.DataFrame()
-for sensor_path, sensor_name in zip(snakemake.input["all_sensors"], sensor_names):
-    sensor_data = pd.read_csv(sensor_path, usecols=["assigned_segments"])
-
-    sensor_row_count = pd.DataFrame()
-    if not sensor_data.empty:
-        for time_segment in time_segments_labels:
-            sensor_data_per_segment = filter_data_by_segment(sensor_data, time_segment)
-
-            if not sensor_data_per_segment.empty:
-                sensor_row_count = pd.concat([sensor_row_count, sensor_data_per_segment.groupby(["local_segment"])[["local_segment"]].count().rename(columns={"local_segment": sensor_name})], axis=0, sort=False)
-    sensors_row_count = pd.concat([sensors_row_count, sensor_row_count], axis=1, sort=False)
-
-sensors_row_count.index.name = "local_segment"
-sensors_row_count.index = sensors_row_count.index.str.replace(r"_RR\d+SS", "")
+sensors_row_count = getRowCount(snakemake.input["all_sensors"], sensor_names, time_segments_labels)
 data_for_plot = phone_data_yield.rename(columns={"phone_data_yield_rapids_ratiovalidyieldedminutes": "ratiovalidyieldedminutes","phone_data_yield_rapids_ratiovalidyieldedhours": "ratiovalidyieldedhours"}).merge(sensors_row_count, how="left", left_index=True, right_index=True).reset_index()
 
 

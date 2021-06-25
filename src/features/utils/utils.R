@@ -60,6 +60,9 @@ fetch_provider_features <- function(provider, provider_key, sensor_key, sensor_d
         source(provider[["SRC_SCRIPT"]])
         features_function <- match.fun(paste0(tolower(provider_key), "_features"))
         time_segments <- time_segments_labels %>% pull(label)
+        if(length(time_segments) == 0){
+          time_segments <- c("")
+        }
         for (time_segment in time_segments){
             print(paste(rapids_log_tag,"Processing", sensor_key, provider_key, time_segment))
 

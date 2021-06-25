@@ -26,7 +26,7 @@ features = pd.read_csv(snakemake.input["all_sensor_features"])
 
 
 if time_segments_type == "FREQUENCY":
-    features["local_segment_label"] = features["local_segment_label"].str.replace(r"[0-9]{4}", "")
+    features["local_segment_label"] = features["local_segment_label"].str[:-4]
 if time_segments_type == "EVENT":
     features["local_segment_label"] = "event"
 

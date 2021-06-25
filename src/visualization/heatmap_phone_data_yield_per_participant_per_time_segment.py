@@ -58,7 +58,7 @@ time_segments = pd.read_csv(snakemake.input["time_segments_file"])["label"].uniq
 
 phone_data_yield = pd.read_csv(snakemake.input["phone_data_yield"], parse_dates=["local_segment_start_datetime", "local_segment_end_datetime"]).sort_values(by=["pid", "local_segment_start_datetime"])
 if time_segments_type == "FREQUENCY":
-    phone_data_yield["local_segment_label"] = phone_data_yield["local_segment_label"].str.replace(r"[0-9]{4}", "")
+    phone_data_yield["local_segment_label"] = phone_data_yield["local_segment_label"].str[:-4]
 
 html_file = open(snakemake.output[0], "w", encoding="utf-8")
 if phone_data_yield.empty:
