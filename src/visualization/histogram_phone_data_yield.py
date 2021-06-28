@@ -18,6 +18,8 @@ html_file = open(snakemake.output[0], "a", encoding="utf-8")
 if phone_data_yield.empty:
     html_file.write("There is no sensor data for the sensors in [PHONE_DATA_YIELD][SENSORS].")
 else:
+    phone_data_yield.loc[:, ["phone_data_yield_rapids_ratiovalidyieldedminutes", "phone_data_yield_rapids_ratiovalidyieldedhours"]] = phone_data_yield.loc[:, ["phone_data_yield_rapids_ratiovalidyieldedminutes", "phone_data_yield_rapids_ratiovalidyieldedhours"]].round(3).clip(upper=1)
+
     # plot ratio valid yielded minutes histogram
     fig_ratiovalidyieldedminutes = px.histogram(phone_data_yield, x="phone_data_yield_rapids_ratiovalidyieldedminutes", color="local_segment_label")
     fig_ratiovalidyieldedminutes.update_layout(title="Histogram of valid yielded minutes ratio per time segment.")

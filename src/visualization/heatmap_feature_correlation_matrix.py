@@ -10,7 +10,8 @@ def getCorrMatrixHeatmap(corr_matrix, time_segment, html_file):
     fig = go.Figure(data=go.Heatmap(z=corr_matrix.values.tolist(),
                                      x=feature_names,
                                      y=feature_names,
-                                     colorscale="Viridis"))
+                                     colorscale="Viridis",
+                                     zmin=-1, zmax=1))
     
     fig.update_layout(title="Correlation matrix of features of " + time_segment + " segments.")
     

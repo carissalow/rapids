@@ -33,6 +33,7 @@ def getPhoneDataYieldHeatmap(phone_data_yield, time, time_segment, html_file):
                           y="y_axis_label",
                           color=column_name,
                           color_continuous_scale="Viridis",
+                          range_color=[0, 1],
                           opacity=0.7,
                           hover_data={'local_segment_start_datetime':False, 'local_segment_end_datetime':False, 'local_segment':True})
 
@@ -68,7 +69,7 @@ else:
     if ("phone_data_yield_rapids_ratiovalidyieldedminutes" not in phone_data_yield.columns) or ("phone_data_yield_rapids_ratiovalidyieldedhours" not in phone_data_yield.columns):
         raise ValueError("Please make sure [PHONE_DATA_YIELD][RAPIDS][COMPUTE] is True AND [PHONE_DATA_YIELD][RAPIDS][FEATURES] contains [ratiovalidyieldedminutes, ratiovalidyieldedhours].")
 
-    phone_data_yield[["phone_data_yield_rapids_ratiovalidyieldedminutes", "phone_data_yield_rapids_ratiovalidyieldedhours"]] = phone_data_yield[["phone_data_yield_rapids_ratiovalidyieldedminutes", "phone_data_yield_rapids_ratiovalidyieldedhours"]].round(3).clip(upper=1)
+    phone_data_yield.loc[:, ["phone_data_yield_rapids_ratiovalidyieldedminutes", "phone_data_yield_rapids_ratiovalidyieldedhours"]] = phone_data_yield.loc[:, ["phone_data_yield_rapids_ratiovalidyieldedminutes", "phone_data_yield_rapids_ratiovalidyieldedhours"]].round(3).clip(upper=1)
     phone_data_yield["y_axis_label"] = phone_data_yield["pid"].apply(lambda pid: pid + "." + str(pid2label[pid]))
 
     if time_segments_type == "EVENT":
@@ -76,7 +77,7 @@ else:
     else: # FREQUENCY or PERIODIC
         for time_segment in time_segments:
                         
-            phone_data_yield_per_segment = phone_data_yield[phone_data_yield["local_segment_label"] == time_segment]
+            phone_data_yield_per_segment = phone_data_yield[phone_data_yield["local_segment_label"] == time_segment].copy()
 
             if not phone_data_yield_per_segment.empty:
 

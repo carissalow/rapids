@@ -38,6 +38,7 @@ def getRowCountHeatmap(data_for_plot, pid, time_segment, html_file):
                         y="sensor",
                         color="scaled_value",
                         color_continuous_scale="Peach",
+                        range_color=[0, 1],
                         opacity=0.7,
                         hover_data={"local_segment_start_datetime":False, "local_segment_end_datetime":False, "local_segment":True, "value":True, "scaled_value":True})
 
@@ -66,6 +67,7 @@ phone_data_yield = pd.read_csv(snakemake.input["phone_data_yield"], index_col=["
 # make sure the phone_data_yield file contains "phone_data_yield_rapids_ratiovalidyieldedminutes" and "phone_data_yield_rapids_ratiovalidyieldedhours" columns
 if ("phone_data_yield_rapids_ratiovalidyieldedminutes" not in phone_data_yield.columns) or ("phone_data_yield_rapids_ratiovalidyieldedhours" not in phone_data_yield.columns):
     raise ValueError("Please make sure [PHONE_DATA_YIELD][RAPIDS][COMPUTE] is True AND [PHONE_DATA_YIELD][RAPIDS][FEATURES] contains [ratiovalidyieldedminutes, ratiovalidyieldedhours].")
+phone_data_yield.loc[:, ["phone_data_yield_rapids_ratiovalidyieldedminutes", "phone_data_yield_rapids_ratiovalidyieldedhours"]] = phone_data_yield.loc[:, ["phone_data_yield_rapids_ratiovalidyieldedminutes", "phone_data_yield_rapids_ratiovalidyieldedhours"]].round(3).clip(upper=1)
 
 sensors_row_count = getRowCount(snakemake.input["all_sensors"], sensor_names, time_segments_labels)
 data_for_plot = phone_data_yield.rename(columns={"phone_data_yield_rapids_ratiovalidyieldedminutes": "ratiovalidyieldedminutes","phone_data_yield_rapids_ratiovalidyieldedhours": "ratiovalidyieldedhours"}).merge(sensors_row_count, how="left", left_index=True, right_index=True).reset_index()
@@ -88,8 +90,7 @@ for time_segment in set(data_for_plot["local_segment_label"]):
         # except for phone data yield sensor, scale each sensor (row) to the range of [0, 1]
         scaled_data_for_plot_per_segment = data_for_plot_per_segment.copy()
         scaled_data_for_plot_per_segment[sensor_names[:-2]] = scaled_data_for_plot_per_segment.fillna(np.nan)[sensor_names[:-2]].apply(lambda x: (x - np.nanmin(x)) / (np.nanmax(x) - np.nanmin(x)) if np.nanmax(x) != np.nanmin(x) else (x / np.nanmin(x)), axis=0)
-        data_for_plot_processed = pd.concat([data_for_plot_per_segment.stack(dropna=False).to_frame("value"), scaled_data_for_plot_per_segment.stack(dropna=False).to_frame("scaled_value")], axis=1).reset_index().rename(columns={"level_3": "sensor"})
-        data_for_plot_processed[["value", "scaled_value"]] = data_for_plot_processed[["value", "scaled_value"]].round(3).clip(upper=1)
+        data_for_plot_processed = pd.concat([data_for_plot_per_segment.stack(dropna=False).to_frame("value"), scaled_data_for_plot_per_segment.stack(dropna=False).round(3).to_frame("scaled_value")], axis=1).reset_index().rename(columns={"level_3": "sensor"})
         getRowCountHeatmap(data_for_plot_processed, pid, time_segment, html_file)
 
 html_file.close()
