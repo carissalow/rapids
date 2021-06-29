@@ -99,19 +99,21 @@ def fetch_provider_features(provider, provider_key, sensor_key, sensor_data_file
 
     if provider["COMPUTE"] == True:
 
-            feature_module = import_path(provider["SRC_SCRIPT"])
-            feature_function = getattr(feature_module,  provider_key.lower() + "_features")
-            
-            for time_segment in time_segments_labels["label"]:
-                    print("{} Processing {} {} {}".format(rapids_log_tag, sensor_key, provider_key, time_segment))
-                    features = feature_function(sensor_data_files, time_segment, provider, filter_data_by_segment=filter_data_by_segment, chunk_episodes=chunk_episodes)
-                    if not "local_segment" in features.columns:
-                        raise ValueError("The dataframe returned by the " + sensor_key + " provider '" + provider_key + "' is missing the 'local_segment' column added by the 'filter_data_by_segment()' function. Check the provider script is using such function and is not removing 'local_segment' by accident (" + provider["SRC_SCRIPT"] + ")\n  The 'local_segment' column is used to index a provider's features (each row corresponds to a different time segment instance (e.g. 2020-01-01, 2020-01-02, 2020-01-03, etc.)")
-                    features.columns = ["{}{}".format("" if col.startswith("local_segment") else (sensor_key + "_"+ provider_key + "_"), col) for col in features.columns]
-                    sensor_features = pd.concat([sensor_features, features], axis=0, sort=False)
+        feature_module = import_path(provider["SRC_SCRIPT"])
+        feature_function = getattr(feature_module,  provider_key.lower() + "_features")
+        
+        if time_segments_labels["label"].empty:
+            time_segments_labels["label"] = [""]
+        for time_segment in time_segments_labels["label"]:
+            print("{} Processing {} {} {}".format(rapids_log_tag, sensor_key, provider_key, time_segment))
+            features = feature_function(sensor_data_files, time_segment, provider, filter_data_by_segment=filter_data_by_segment, chunk_episodes=chunk_episodes)
+            if not "local_segment" in features.columns:
+                raise ValueError("The dataframe returned by the " + sensor_key + " provider '" + provider_key + "' is missing the 'local_segment' column added by the 'filter_data_by_segment()' function. Check the provider script is using such function and is not removing 'local_segment' by accident (" + provider["SRC_SCRIPT"] + ")\n  The 'local_segment' column is used to index a provider's features (each row corresponds to a different time segment instance (e.g. 2020-01-01, 2020-01-02, 2020-01-03, etc.)")
+            features.columns = ["{}{}".format("" if col.startswith("local_segment") else (sensor_key + "_"+ provider_key + "_"), col) for col in features.columns]
+            sensor_features = pd.concat([sensor_features, features], axis=0, sort=False)
     else:
-            for feature in provider["FEATURES"]:
-                    sensor_features[feature] = None
+        for feature in provider["FEATURES"]:
+            sensor_features[feature] = None
     segment_colums = pd.DataFrame()
     sensor_features['local_segment'] = sensor_features['local_segment'].str.replace(r'_RR\d+SS', '')
     split_segemnt_columns = sensor_features["local_segment"].str.split(pat="(.*)#(.*),(.*)", expand=True)

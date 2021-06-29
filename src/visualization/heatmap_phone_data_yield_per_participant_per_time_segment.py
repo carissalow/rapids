@@ -1,93 +1,87 @@
 import pandas as pd
-import numpy as np
-import plotly.graph_objects as go
+import plotly.express as px
 import yaml
 
 
 
+def getPidAndLabel(participant_file_paths, pids):
+    pid2label, y_axis_labels = {}, []
+    for participant_file_path, pid in zip(participant_file_paths, pids):
 
+        with open(participant_file_path, "r", encoding="utf-8") as f:
+            participant_file = yaml.safe_load(f)
+        label = str(participant_file["PHONE"]["LABEL"])
 
-def getPhoneDataYieldHeatmap(data_for_plot, y_axis_labels, time_segment, type, time, html_file):
+        pid2label[pid] = label
+        y_axis_labels.append(pid + "." + label)
+    return pid2label, y_axis_labels
 
-    fig = go.Figure(data=go.Heatmap(z=data_for_plot.values.tolist(),
-                                       x=data_for_plot.columns.tolist(),
-                                       y=y_axis_labels,
-                                       hovertext=data_for_plot.values.tolist(),
-                                       hovertemplate="Time since first segment: %{x}<br>Participant: %{y}<br>Ratiovalidyielded" + type + ": %{z}<extra></extra>" if time == "RELATIVE_TIME" else "Time: %{x}<br>Participant: %{y}<br>Ratiovalidyielded" + type + ": %{z}<extra></extra>",
-                                       zmin=0, zmax=1,
-                                       colorscale="Viridis"))
+def getPhoneDataYieldHeatmap(phone_data_yield, time, time_segment, html_file):
 
     if time == "RELATIVE_TIME":
-        fig.update_layout(title="Heatmap of valid yielded " + type + " ratio for " + time_segment + " segments.<br>y-axis shows participant information (format: pid.label).<br>x-axis shows the time since their first segment.<br>z-axis (color) shows valid yielded " + type + " ratio during a segment instance.")
-    else:
-        fig.update_layout(title="Heatmap of valid yielded " + type + " ratio for " + time_segment + " segments.<br>y-axis shows participant information (format: pid.label).<br>x-axis shows the time.<br>z-axis (color) shows valid yielded " + type + " ratio during a segment instance.")
+        # Number of minutes after the first start date time of local segments
+        phone_data_yield["local_segment_end_datetime"] = (phone_data_yield["local_segment_end_datetime"] - phone_data_yield["local_segment_start_datetime"].min()) + pd.Timestamp(2000,1,1)
+        phone_data_yield["local_segment_start_datetime"] = (phone_data_yield["local_segment_start_datetime"] - phone_data_yield["local_segment_start_datetime"].min()) + pd.Timestamp(2000,1,1)
 
-    fig["layout"]["xaxis"].update(side="bottom")
-    fig["layout"].update(xaxis_title="Time Since First Segment" if time == "RELATIVE_TIME" else "Time")
-    fig["layout"].update(margin=dict(t=160))
-    
-    html_file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+    for type in ["minutes", "hours"]:
+
+        column_name = "phone_data_yield_rapids_ratiovalidyielded" + type
+
+        fig = px.timeline(phone_data_yield,
+                          x_start="local_segment_start_datetime",
+                          x_end="local_segment_end_datetime",
+                          y="y_axis_label",
+                          color=column_name,
+                          color_continuous_scale="Viridis",
+                          range_color=[0, 1],
+                          opacity=0.7,
+                          hover_data={'local_segment_start_datetime':False, 'local_segment_end_datetime':False, 'local_segment':True})
+
+        fig.update_layout(title="Heatmap of valid yielded " + type + " ratio for " + time_segment + " segments and " + time.lower().replace("_", " ") + ".<br>y-axis shows participant information (format: pid.label).<br>x-axis shows the time" + (" since their first segment" if time == "RELATIVE_TIME" else "") + ".<br>z-axis (color) shows valid yielded " + type + " ratio during a segment instance.",
+                    xaxis=dict(side="bottom", title="Time Since First Segment" if time == "RELATIVE_TIME" else "Time"),
+                    yaxis=dict(side="left", title="Participant information"),
+                    margin=dict(t=160))
+
+        if time == "RELATIVE_TIME":
+            fig.update_layout(xaxis_tickformat="%y years %j days<br>%X")
+
+        html_file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+
+    return html_file
 
 
 
 
+pid2label, y_axis_labels = getPidAndLabel(snakemake.input["participant_files"], snakemake.params["pids"])
+time_segments_type = snakemake.params["time_segments_type"] # FREQUENCY or PERIODIC or EVENT
+time = snakemake.params["time"] # ABSOLUTE_TIME or RELATIVE_TIME
+time_segments = pd.read_csv(snakemake.input["time_segments_file"])["label"].unique()
 
+phone_data_yield = pd.read_csv(snakemake.input["phone_data_yield"], parse_dates=["local_segment_start_datetime", "local_segment_end_datetime"]).sort_values(by=["pid", "local_segment_start_datetime"])
+if time_segments_type == "FREQUENCY":
+    phone_data_yield["local_segment_label"] = phone_data_yield["local_segment_label"].str[:-4]
 
-time = snakemake.params["time"]
-y_axis_labels, phone_data_yield_minutes, phone_data_yield_hours = [], {}, {}
-for phone_data_yield_path, participant_file_path, time_segments_path in zip(snakemake.input["phone_data_yield"], snakemake.input["participant_file"], snakemake.input["time_segments_labels"]):
-    
-    # set pid.label as y_axis_label
-    pid = phone_data_yield_path.split("/")[3]
-    time_segments = pd.read_csv(time_segments_path, header=0)["label"]
-
-    with open(participant_file_path, "r", encoding="utf-8") as f:
-        participant_file = yaml.safe_load(f)
-    label = participant_file["PHONE"]["LABEL"]
-
-    y_axis_label = pid + "." + label
-    y_axis_labels.append(y_axis_label)
-
-    
-    phone_data_yield = pd.read_csv(phone_data_yield_path, index_col=["local_segment_start_datetime"], parse_dates=["local_segment_start_datetime"])
-    # make sure the phone_data_yield file contains "phone_data_yield_rapids_ratiovalidyieldedminutes" and "phone_data_yield_rapids_ratiovalidyieldedhours" columns
+html_file = open(snakemake.output[0], "w", encoding="utf-8")
+if phone_data_yield.empty:
+    html_file.write("There is no sensor data for the sensors in [PHONE_DATA_YIELD][SENSORS].")
+else:
+    # Make sure the phone_data_yield file contains both "phone_data_yield_rapids_ratiovalidyieldedminutes" and "phone_data_yield_rapids_ratiovalidyieldedhours" columns
     if ("phone_data_yield_rapids_ratiovalidyieldedminutes" not in phone_data_yield.columns) or ("phone_data_yield_rapids_ratiovalidyieldedhours" not in phone_data_yield.columns):
         raise ValueError("Please make sure [PHONE_DATA_YIELD][RAPIDS][COMPUTE] is True AND [PHONE_DATA_YIELD][RAPIDS][FEATURES] contains [ratiovalidyieldedminutes, ratiovalidyieldedhours].")
 
-    if not phone_data_yield.empty:
+    phone_data_yield.loc[:, ["phone_data_yield_rapids_ratiovalidyieldedminutes", "phone_data_yield_rapids_ratiovalidyieldedhours"]] = phone_data_yield.loc[:, ["phone_data_yield_rapids_ratiovalidyieldedminutes", "phone_data_yield_rapids_ratiovalidyieldedhours"]].round(3).clip(upper=1)
+    phone_data_yield["y_axis_label"] = phone_data_yield["pid"].apply(lambda pid: pid + "." + str(pid2label[pid]))
 
+    if time_segments_type == "EVENT":
+        html_file = getPhoneDataYieldHeatmap(phone_data_yield, time, "event", html_file)
+    else: # FREQUENCY or PERIODIC
         for time_segment in time_segments:
-            phone_data_yield_per_segment = phone_data_yield[phone_data_yield["local_segment_label"] == time_segment]
+                        
+            phone_data_yield_per_segment = phone_data_yield[phone_data_yield["local_segment_label"] == time_segment].copy()
 
             if not phone_data_yield_per_segment.empty:
 
-                if time == "RELATIVE_TIME":
-                    # set number of minutes after the first start date time of local segments as x_axis_label
-                    phone_data_yield_per_segment.index = phone_data_yield_per_segment.index - phone_data_yield_per_segment.index.min()
-                elif time == "ABSOLUTE_TIME":
-                    pass
-                else:
-                    raise ValueError("[HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT][TIME] can only be RELATIVE_TIME or ABSOLUTE_TIME")
+                html_file = getPhoneDataYieldHeatmap(phone_data_yield_per_segment, time, time_segment, html_file)
 
-                phone_data_yield_minutes_per_segment = phone_data_yield_per_segment[["phone_data_yield_rapids_ratiovalidyieldedminutes"]].rename(columns={"phone_data_yield_rapids_ratiovalidyieldedminutes": y_axis_label})
-                phone_data_yield_hours_per_segment = phone_data_yield_per_segment[["phone_data_yield_rapids_ratiovalidyieldedhours"]].rename(columns={"phone_data_yield_rapids_ratiovalidyieldedhours": y_axis_label})
-
-                if time_segment not in phone_data_yield_minutes.keys():
-                    phone_data_yield_minutes[time_segment] = phone_data_yield_minutes_per_segment
-                    phone_data_yield_hours[time_segment] = phone_data_yield_hours_per_segment
-                else:
-                    phone_data_yield_minutes[time_segment] = pd.concat([phone_data_yield_minutes[time_segment], phone_data_yield_minutes_per_segment], axis=1, sort=True)
-                    phone_data_yield_hours[time_segment] = pd.concat([phone_data_yield_hours[time_segment], phone_data_yield_hours_per_segment], axis=1, sort=True)
-
-
-html_file = open(snakemake.output[0], "a", encoding="utf-8")
-if len(phone_data_yield_minutes.keys()) == 0:
-    html_file.write("There is no sensor data for the sensors in [PHONE_DATA_YIELD][SENSORS].")
-for time_segment in phone_data_yield_minutes.keys():
-    minutes_data_for_plot = phone_data_yield_minutes[time_segment].transpose().reindex(pd.Index(y_axis_labels)).round(3)
-    hours_data_for_plot = phone_data_yield_hours[time_segment].transpose().reindex(pd.Index(y_axis_labels)).round(3)
-
-    getPhoneDataYieldHeatmap(minutes_data_for_plot, y_axis_labels, time_segment, "minutes", time, html_file)
-    getPhoneDataYieldHeatmap(hours_data_for_plot, y_axis_labels, time_segment, "hours", time, html_file)
 
 html_file.close()

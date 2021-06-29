@@ -1187,10 +1187,13 @@ properties:
   
   HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT:
     type: object
-    required: [PLOT]
+    required: [PLOT, TIME]
     properties:
       PLOT:
         type: boolean
+      TIME:
+        type: string
+        enum: [ABSOLUTE_TIME, RELATIVE_TIME]
   
   HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT:
     type: object
