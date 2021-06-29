@@ -12,7 +12,7 @@ app <- read_csv(snakemake@input[["app"]], col_types = cols_only(timestamp = col_
 if (nrow(screen_ep) > 0 & nrow(app) > 0){
         
     joined_dt <- full_join(app, screen_ep, by = "timestamp") %>% 
-                 arrange("timestamp") %>%  
+                 arrange(timestamp) %>%  
                  mutate(start_timestamp = timestamp, end_timestamp = lead(timestamp)) %>% 
                  filter(!is.na(application_name)) %>% 
                  select(-c('timestamp')) %>% head(-1) %>% 

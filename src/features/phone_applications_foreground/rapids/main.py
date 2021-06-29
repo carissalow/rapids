@@ -136,9 +136,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
     if app_episodes_requirement:
         episode_data = pd.read_csv(sensor_data_files["episode_data"])
         requested_episodes_features = provider["FEATURES"]["APP_EPISODES"]
-
-        episode_data = episode_data.drop(episode_data[ (episode_data['duration'] < provider["IGNORE_EPISODES_SHORTER_THAN"]) & (episode_data['duration'] > provider["IGNORE_EPISODES_LONGER_THAN"])].index)
-        
+        episode_data = episode_data.drop(episode_data[ (episode_data['duration'] < provider["IGNORE_EPISODES_SHORTER_THAN"]) | (episode_data['duration'] > provider["IGNORE_EPISODES_LONGER_THAN"])].index)
         episodes_features = process_app_features(episode_data, requested_episodes_features, time_segment, provider, filter_data_by_segment)
         
         features = pd.merge(episodes_features, features, how='outer', on='local_segment')
