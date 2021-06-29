@@ -1,4 +1,15 @@
 # Change Log
+## v1.4.0
+- Update Docker Vs Code setup
+- Add tests for phone calls features
+- Add tests and fix bugs of phone WiFi features
+- Add tests for phone conversation features
+- Add tests and fix bugs of phone bluetooth features
+- Add tests and fix bugs of phone activity recognition features
+- Add new application episode features
+- Fix bugs of Fitbit mutation scripts
+- Fix bugs of visualization module
+- Fix bugs of analysis workflow example
 ## v1.3.0
 - Refactor PHONE_LOCATIONS DORYAB provider. Fix bugs and faster execution up to 30x
 - New PHONE_KEYBOARD features
