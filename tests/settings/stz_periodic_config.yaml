@@ -230,7 +230,7 @@ PHONE_LIGHT:
   CONTAINER: phone_light_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: FALSE
+      COMPUTE: True
       FEATURES: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
       SRC_SCRIPT: src/features/phone_light/rapids/main.py
 

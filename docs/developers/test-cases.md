@@ -17,7 +17,7 @@ The following is a list of the sensors that testing is currently available.
 | Phone Calls                   | RAPIDS   | Y        | Y         | Y     |
 | Phone Conversation            | RAPIDS   | Y        | Y         | Y     |
 | Phone Data Yield              | RAPIDS   | N        | N         | N     |
-| Phone Light                   | RAPIDS   | Y        | Y         | N     |
+| Phone Light                   | RAPIDS   | Y        | Y         | Y     |
 | Phone Locations               | Doryab   | N        | N         | N     |
 | Phone Locations               | Barnett  | N        | N         | N     |
 | Phone Messages                | RAPIDS   | Y        | Y         | N     |
@@ -211,14 +211,25 @@ Checklist
 
 ## Light
 
--   The raw light data file contains data for 1 day.
--   The raw light data contains 3 or 4 rows of data for each `epoch`
-    except `night`. The single row of data for `night` is for testing
-    features for single values inputs. (Example testing the standard
-    deviation of one input value)
--   Since light is only available for Android there is only one file
-    that contains data for Android. All other files (i.e. for iPhone)
-    are empty data files.
+Description
+
+- The 4-day raw data is contained in `phone_light_raw.csv`
+- One episode for each daily segment (`night`, `morning`, `afternoon` and `evening`)
+- Two episodes locate in the same 30-min segment (`Fri 00:07:27.000` and `Fri 00:12:00.000`)
+- Two episodes locate in the same daily segment (`Fri 01:00:01.000` and `Fri 03:59:59.654`)
+- One episode before the time switch (`Sun 00:08:00.000`) and one episode after the time switch (`Sun 05:36:00.000`)
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|android|
+|morning|OK|OK|android|
+|daily|OK|OK|android|
+|threeday|OK|OK|android|
+|weekend|OK|OK|android|
+|beforeMarchEvent|OK|OK|android|
+|beforeNovemberEvent|OK|OK|android|
 
 ## Locations
 
