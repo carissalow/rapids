@@ -24,9 +24,13 @@ def compute_features(filtered_data, apps_type, requested_features, apps_features
             apps_features["frequencyentropy" + apps_type] = np.nan
         else:    
             apps_features["frequencyentropy" + apps_type] = apps_with_count.groupby("local_segment")["timestamp"].agg(entropy)
-    if "count" in requested_features:
-        apps_features["count" + apps_type] = filtered_data.groupby(["local_segment"]).count()["timestamp"]
-        apps_features.fillna(value={"count" + apps_type: 0}, inplace=True)
+    if "countevent" in requested_features:
+        apps_features["countevent" + apps_type] = filtered_data.groupby(["local_segment"]).count()["timestamp"]
+        apps_features.fillna(value={"countevent" + apps_type: 0}, inplace=True)
+
+    if "countepisode" in requested_features:
+        apps_features["countepisode" + apps_type] = filtered_data.groupby(["local_segment"]).count()["start_timestamp"]
+        apps_features.fillna(value={"countepisode" + apps_type: 0}, inplace=True)
 
     if "minduration" in requested_features:
         grouped_data = filtered_data.groupby(by = ['local_segment'])['duration'].min()
@@ -104,6 +108,9 @@ def process_app_features(data, requested_features, time_segment, provider, filte
             # own categories
             for owncategory_name, owncategory_content in custom_categories.items():
                 filtered_data = data[data["package_name"].isin(owncategory_content)]
+                print(filtered_data)
+                # print(requested_features)
+                # 1/0
                 features = compute_features(filtered_data, owncategory_name, requested_features, features, time_segment)
             # multiple categories
             for mcategory_name, mcategory_content in multiple_categories.items():
