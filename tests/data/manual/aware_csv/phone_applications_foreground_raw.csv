@@ -7,6 +7,7 @@ Fri 05:55:50.385,android,com.google.android.packageinstaller,Package installer,1
 Fri 06:00:51.385,android,com.aware.phone,AWARE,0
 Fri 06:02:40.385,android,com.google.android.packageinstaller,Package installer,1
 Fri 06:02:50.385,android,com.aware.phone,AWARE,0
+Fri 06:05:10.385,android,com.tinder,Tinder,0
 Fri 10:03:56.385,android,com.google.android.packageinstaller,Package installer,1
 Fri 10:05:36.385,android,com.android.chrome,Chrome,1
 Fri 10:08:30.459,android,com.android.systemui,System UI,1
@@ -14,6 +15,7 @@ Fri 10:09:56.385,android,com.motorola.vzw.phone.extensions,Phone,1
 Fri 10:12:56.385,android,com.android.chrome,Chrome,1
 Fri 10:18:48.895,android,com.android.systemui,System UI,1
 Fri 10:19:56.385,android,com.android.settings,Settings,1
+Fri 11:53:00.385,android,com.tinder,Tinder,0
 Fri 11:57:56.385,android,com.google.android.inputmethod.latin,Gboard,1
 Fri 11:58:59.785,android,com.android.settings,Settings,1
 Fri 12:00:56.385,android,com.android.launcher3,Launcher3,1
@@ -30,12 +32,14 @@ Fri 14:57:56.385,android,com.aware.phone,AWARE,0
 Fri 14:57:59.385,android,com.android.systemui,System UI,1
 Fri 14:58:56.385,android,com.aware.phone,AWARE,0
 Fri 14:59:56.385,android,com.android.systemui,System UI,1
+Fri 17:50:00.385,android,com.google.android.youtube,Youtube,0
 Fri 17:52:36.385,android,com.android.settings,Settings,1
 Fri 17:53:56.385,android,com.android.launcher3,Launcher3,1
 Fri 17:55:36.385,android,com.android.systemui,System UI,1
 Fri 17:56:19.385,android,com.android.chrome,Chrome,1
 Fri 18:00:12.385,android,com.facebook.orca,Messenger,0
 Fri 18:00:14.385,android,com.google.android.inputmethod.latin,Gboard,1
+Fri 20:41:03.385,android,com.google.android.youtube,Youtube,0
 Fri 20:43:06.385,android,com.android.systemui,System UI,1
 Fri 20:43:56.385,android,com.facebook.orca,Messenger,0
 Fri 20:45:36.385,android,com.android.chrome,Chrome,1
@@ -43,25 +47,25 @@ Fri 20:50:56.385,android,com.android.systemui,System UI,1
 Fri 20:51:51.385,android,com.android.chrome,Chrome,1
 Fri 20:58:26.385,android,com.microsoft.office.outlook,Outlook,0
 Fri 21:00:56.385,android,com.android.chrome,Chrome,1
-Sat 00:17:15.000,android,com.android.systemui,System UI,1
-Sat 00:18:11.000,android,com.android.settings,Settings,1
-Sat 00:18:51.000,android,com.google.android.inputmethod.latin,Gboard,1
-Sat 00:19:46.000,android,com.android.settings,Settings,1
-Sat 01:17:11.000,android,com.android.launcher3,Launcher3,1
-Sat 01:17:51.000,android,com.android.launcher3,Launcher3,1
-Sat 01:18:59.000,android,com.aware.phone,AWARE,0
-Sat 01:19:11.000,android,com.android.launcher3,Launcher3,1
-Sat 01:19:30.000,android,com.android.chrome,Chrome,1
-Sat 15:58:11.000,android,com.aware.plugin.fitbit,AWARE: Fitbit,0
-Sat 15:58:39.000,android,com.android.chrome,Chrome,1
-Sat 17:48:59.000,android,com.android.launcher3,Launcher3,1
-Sat 17:49:11.000,android,com.aware.phone,AWARE,0
-Sat 17:50:02.000,android,com.android.systemui,System UI,1
-Sat 17:50:11.000,android,com.aware.phone,AWARE,0
-Sat 21:53:26.000,android,com.android.systemui,System UI,1
-Sat 21:53:49.000,android,com.android.chrome,Chrome,1
-Sat 21:56:11.000,android,com.facebook.orca,Messenger,0
-Sat 21:56:35.000,android,com.google.android.inputmethod.latin,Gboard,1
+Sat 00:17:15.001,android,com.android.systemui,System UI,1
+Sat 00:18:11.001,android,com.android.settings,Settings,1
+Sat 00:18:51.001,android,com.google.android.inputmethod.latin,Gboard,1
+Sat 00:19:46.001,android,com.android.settings,Settings,1
+Sat 01:17:11.001,android,com.android.launcher3,Launcher3,1
+Sat 01:17:51.001,android,com.android.launcher3,Launcher3,1
+Sat 01:18:59.001,android,com.aware.phone,AWARE,0
+Sat 01:19:11.001,android,com.android.launcher3,Launcher3,1
+Sat 01:19:30.001,android,com.android.chrome,Chrome,1
+Sat 15:58:11.001,android,com.aware.plugin.fitbit,AWARE: Fitbit,0
+Sat 15:58:39.001,android,com.android.chrome,Chrome,1
+Sat 17:48:59.001,android,com.android.launcher3,Launcher3,1
+Sat 17:49:11.001,android,com.aware.phone,AWARE,0
+Sat 17:50:02.001,android,com.android.systemui,System UI,1
+Sat 17:50:11.001,android,com.aware.phone,AWARE,0
+Sat 21:53:26.001,android,com.android.systemui,System UI,1
+Sat 21:53:49.001,android,com.android.chrome,Chrome,1
+Sat 21:56:11.001,android,com.facebook.orca,Messenger,0
+Sat 21:56:35.001,android,com.google.android.inputmethod.latin,Gboard,1
 Sun 00:05:11.001,android,com.android.systemui,System UI,1
 Sun 00:05:37.001,android,com.facebook.orca,Messenger,0
 Sun 00:06:49.001,android,com.android.chrome,Chrome,1
@@ -80,9 +84,9 @@ Sun 22:02:30.001,android,com.android.launcher3,Launcher3,1
 Sun 22:03:00.001,android,com.fanduel.android.self,FanDuel,0
 Sun 22:04:00.001,android,com.android.launcher3,Launcher3,1
 Sun 22:04:10.001,android,com.android.chrome,Chrome,1
-Sun 22:04:20.001,android,Gboard,1
-Mon 03:01:01.001,android,System UI,1
-Mon 03:01:20.001,android,Chrome,1
+Sun 22:04:20.001,android,com.google.android.inputmethod.latin,Gboard,1
+Mon 03:01:01.001,android,com.android.systemui,System UI,1
+Mon 03:01:20.001,android,com.android.chrome,Chrome,1
 Mon 03:03:46.001,android,com.android.systemui,System UI,1
 Mon 03:03:50.001,android,com.android.chrome,Chrome,1
 Mon 21:05:00.001,android,com.android.launcher3,Launcher3,1

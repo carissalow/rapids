@@ -1,199 +1,207 @@
 timestamp,device_id,package_name,application_name,is_system_app
-1583481040385,android,com.aware.plugin.google.activity_recognition,AWARE: Google Activity Recognition,0.0
-1583481042385,android,com.aware.plugin.google.fused_location,AWARE: Google Fused Location,0.0
-1583481055385,android,com.google.android.packageinstaller,Package installer,1.0
-1583492010385,android,com.aware.phone,AWARE,0.0
-1583492150385,android,com.google.android.packageinstaller,Package installer,1.0
-1583492451385,android,com.aware.phone,AWARE,0.0
-1583492560385,android,com.google.android.packageinstaller,Package installer,1.0
-1583492570385,android,com.aware.phone,AWARE,0.0
-1583507036385,android,com.google.android.packageinstaller,Package installer,1.0
-1583507136385,android,com.android.chrome,Chrome,1.0
-1583507310459,android,com.android.systemui,System UI,1.0
-1583507396385,android,com.motorola.vzw.phone.extensions,Phone,1.0
-1583507576385,android,com.android.chrome,Chrome,1.0
-1583507928895,android,com.android.systemui,System UI,1.0
-1583507996385,android,com.android.settings,Settings,1.0
-1583513876385,android,com.google.android.inputmethod.latin,Gboard,1.0
-1583513939785,android,com.android.settings,Settings,1.0
-1583514056385,android,com.android.launcher3,Launcher3,1.0
-1583514136385,android,com.android.systemui,System UI,1.0
-1583514146385,android,com.android.settings,Settings,1.0
-1583514156385,android,com.android.launcher3,Launcher3,1.0
-1583514166385,android,com.aware.phone,AWARE,0.0
-1583514176385,android,com.android.launcher3,Launcher3,1.0
-1583514226385,android,com.android.chrome,Chrome,1.0
-1583514656385,android,com.aware.plugin.fitbit,AWARE: Fitbit,0.0
-1583524316385,android,com.android.chrome,Chrome,1.0
-1583524605159,android,com.android.launcher3,Launcher3,1.0
-1583524676385,android,com.aware.phone,AWARE,0.0
-1583524679385,android,com.android.systemui,System UI,1.0
-1583524736385,android,com.aware.phone,AWARE,0.0
-1583524796385,android,com.android.systemui,System UI,1.0
-1583535156385,android,com.android.settings,Settings,1.0
-1583535236385,android,com.android.launcher3,Launcher3,1.0
-1583535336385,android,com.android.systemui,System UI,1.0
-1583535379385,android,com.android.chrome,Chrome,1.0
-1583535612385,android,com.facebook.orca,Messenger,0.0
-1583535614385,android,com.google.android.inputmethod.latin,Gboard,1.0
-1583545386385,android,com.android.systemui,System UI,1.0
-1583545436385,android,com.facebook.orca,Messenger,0.0
-1583545536385,android,com.android.chrome,Chrome,1.0
-1583545856385,android,com.android.systemui,System UI,1.0
-1583545911385,android,com.android.chrome,Chrome,1.0
-1583546306385,android,com.microsoft.office.outlook,Outlook,0.0
-1583546456385,android,com.android.chrome,Chrome,1.0
-1583558235000,android,com.android.systemui,System UI,1.0
-1583558291000,android,com.android.settings,Settings,1.0
-1583558331000,android,com.google.android.inputmethod.latin,Gboard,1.0
-1583558386000,android,com.android.settings,Settings,1.0
-1583561831000,android,com.android.launcher3,Launcher3,1.0
-1583561871000,android,com.android.launcher3,Launcher3,1.0
-1583561939000,android,com.aware.phone,AWARE,0.0
-1583561951000,android,com.android.launcher3,Launcher3,1.0
-1583561970000,android,com.android.chrome,Chrome,1.0
-1583614691000,android,com.aware.plugin.fitbit,AWARE: Fitbit,0.0
-1583614719000,android,com.android.chrome,Chrome,1.0
-1583621339000,android,com.android.launcher3,Launcher3,1.0
-1583621351000,android,com.aware.phone,AWARE,0.0
-1583621402000,android,com.android.systemui,System UI,1.0
-1583621411000,android,com.aware.phone,AWARE,0.0
-1583636006000,android,com.android.systemui,System UI,1.0
-1583636029000,android,com.android.chrome,Chrome,1.0
-1583636171000,android,com.facebook.orca,Messenger,0.0
-1583636195000,android,com.google.android.inputmethod.latin,Gboard,1.0
-1583643911001,android,com.android.systemui,System UI,1.0
-1583643937001,android,com.facebook.orca,Messenger,0.0
-1583644009001,android,com.android.chrome,Chrome,1.0
-1583644019001,android,com.android.systemui,System UI,1.0
-1583644029001,android,com.android.chrome,Chrome,1.0
-1583644050001,android,com.microsoft.office.outlook,Outlook,0.0
-1583644068001,android,com.android.chrome,Chrome,1.0
-1583657710001,android,com.android.launcher3,Launcher3,1.0
-1583657730001,android,com.google.android.gm,Gmail,1.0
-1583658600001,android,com.android.launcher3,Launcher3,1.0
-1583658630001,android,com.android.systemui,System UI,1.0
-1583658660001,android,com.android.settings,Settings,1.0
-1583658780001,android,com.android.launcher3,Launcher3,1.0
-1583719320001,android,com.android.systemui,System UI,1.0
-1583719350001,android,com.android.launcher3,Launcher3,1.0
-1583719380001,android,com.fanduel.android.self,FanDuel,0.0
-1583719440001,android,com.android.launcher3,Launcher3,1.0
-1583719450001,android,com.android.chrome,Chrome,1.0
-1583719460001,android,Gboard,1,
-1583737261001,android,System UI,1,
-1583737280001,android,Chrome,1,
-1583737426001,android,com.android.systemui,System UI,1.0
-1583737430001,android,com.android.chrome,Chrome,1.0
-1583802300001,android,com.android.launcher3,Launcher3,1.0
-1583802315001,android,com.android.systemui,System UI,1.0
-1583802329001,android,com.facebook.orca,Messenger,0.0
-1583802588001,android,com.android.systemui,System UI,1.0
-1583802600001,android,com.facebook.orca,Messenger,0.0
-1583802789001,android,com.android.launcher3,Launcher3,1.0
-1583802809001,android,com.facebook.katana,Facebook,0.0
-1583803309001,android,com.android.launcher3,Launcher3,1.0
-1583803320001,android,com.facebook.katana,Facebook,0.0
-1583803508001,android,com.google.android.inputmethod.latin,Gboard,1.0
-1583803620001,android,com.facebook.katana,Facebook,0.0
-1583803726001,android,com.google.android.inputmethod.latin,Gboard,1.0
-1583803805001,android,com.facebook.katana,Facebook,0.0
-1604040640385,android,com.aware.plugin.google.activity_recognition,AWARE: Google Activity Recognition,0.0
-1604040642385,android,com.aware.plugin.google.fused_location,AWARE: Google Fused Location,0.0
-1604040655385,android,com.google.android.packageinstaller,Package installer,1.0
-1604051610385,android,com.aware.phone,AWARE,0.0
-1604051750385,android,com.google.android.packageinstaller,Package installer,1.0
-1604052051385,android,com.aware.phone,AWARE,0.0
-1604052160385,android,com.google.android.packageinstaller,Package installer,1.0
-1604052170385,android,com.aware.phone,AWARE,0.0
-1604066636385,android,com.google.android.packageinstaller,Package installer,1.0
-1604066736385,android,com.android.chrome,Chrome,1.0
-1604066910459,android,com.android.systemui,System UI,1.0
-1604066996385,android,com.motorola.vzw.phone.extensions,Phone,1.0
-1604067176385,android,com.android.chrome,Chrome,1.0
-1604067528895,android,com.android.systemui,System UI,1.0
-1604067596385,android,com.android.settings,Settings,1.0
-1604073476385,android,com.google.android.inputmethod.latin,Gboard,1.0
-1604073539785,android,com.android.settings,Settings,1.0
-1604073656385,android,com.android.launcher3,Launcher3,1.0
-1604073736385,android,com.android.systemui,System UI,1.0
-1604073746385,android,com.android.settings,Settings,1.0
-1604073756385,android,com.android.launcher3,Launcher3,1.0
-1604073766385,android,com.aware.phone,AWARE,0.0
-1604073776385,android,com.android.launcher3,Launcher3,1.0
-1604073826385,android,com.android.chrome,Chrome,1.0
-1604074256385,android,com.aware.plugin.fitbit,AWARE: Fitbit,0.0
-1604083916385,android,com.android.chrome,Chrome,1.0
-1604084205159,android,com.android.launcher3,Launcher3,1.0
-1604084276385,android,com.aware.phone,AWARE,0.0
-1604084279385,android,com.android.systemui,System UI,1.0
-1604084336385,android,com.aware.phone,AWARE,0.0
-1604084396385,android,com.android.systemui,System UI,1.0
-1604094756385,android,com.android.settings,Settings,1.0
-1604094836385,android,com.android.launcher3,Launcher3,1.0
-1604094936385,android,com.android.systemui,System UI,1.0
-1604094979385,android,com.android.chrome,Chrome,1.0
-1604095212385,android,com.facebook.orca,Messenger,0.0
-1604095214385,android,com.google.android.inputmethod.latin,Gboard,1.0
-1604104986385,android,com.android.systemui,System UI,1.0
-1604105036385,android,com.facebook.orca,Messenger,0.0
-1604105136385,android,com.android.chrome,Chrome,1.0
-1604105456385,android,com.android.systemui,System UI,1.0
-1604105511385,android,com.android.chrome,Chrome,1.0
-1604105906385,android,com.microsoft.office.outlook,Outlook,0.0
-1604106056385,android,com.android.chrome,Chrome,1.0
-1604117835000,android,com.android.systemui,System UI,1.0
-1604117891000,android,com.android.settings,Settings,1.0
-1604117931000,android,com.google.android.inputmethod.latin,Gboard,1.0
-1604117986000,android,com.android.settings,Settings,1.0
-1604121431000,android,com.android.launcher3,Launcher3,1.0
-1604121471000,android,com.android.launcher3,Launcher3,1.0
-1604121539000,android,com.aware.phone,AWARE,0.0
-1604121551000,android,com.android.launcher3,Launcher3,1.0
-1604121570000,android,com.android.chrome,Chrome,1.0
-1604174291000,android,com.aware.plugin.fitbit,AWARE: Fitbit,0.0
-1604174319000,android,com.android.chrome,Chrome,1.0
-1604180939000,android,com.android.launcher3,Launcher3,1.0
-1604180951000,android,com.aware.phone,AWARE,0.0
-1604181002000,android,com.android.systemui,System UI,1.0
-1604181011000,android,com.aware.phone,AWARE,0.0
-1604195606000,android,com.android.systemui,System UI,1.0
-1604195629000,android,com.android.chrome,Chrome,1.0
-1604195771000,android,com.facebook.orca,Messenger,0.0
-1604195795000,android,com.google.android.inputmethod.latin,Gboard,1.0
-1604203511001,android,com.android.systemui,System UI,1.0
-1604203537001,android,com.facebook.orca,Messenger,0.0
-1604203609001,android,com.android.chrome,Chrome,1.0
-1604203619001,android,com.android.systemui,System UI,1.0
-1604203629001,android,com.android.chrome,Chrome,1.0
-1604203650001,android,com.microsoft.office.outlook,Outlook,0.0
-1604203668001,android,com.android.chrome,Chrome,1.0
-1604224510001,android,com.android.launcher3,Launcher3,1.0
-1604224530001,android,com.google.android.gm,Gmail,1.0
-1604225400001,android,com.android.launcher3,Launcher3,1.0
-1604225430001,android,com.android.systemui,System UI,1.0
-1604225460001,android,com.android.settings,Settings,1.0
-1604225580001,android,com.android.launcher3,Launcher3,1.0
-1604286120001,android,com.android.systemui,System UI,1.0
-1604286150001,android,com.android.launcher3,Launcher3,1.0
-1604286180001,android,com.fanduel.android.self,FanDuel,0.0
-1604286240001,android,com.android.launcher3,Launcher3,1.0
-1604286250001,android,com.android.chrome,Chrome,1.0
-1604286260001,android,Gboard,1,
-1604304061001,android,System UI,1,
-1604304080001,android,Chrome,1,
-1604304226001,android,com.android.systemui,System UI,1.0
-1604304230001,android,com.android.chrome,Chrome,1.0
-1604369100001,android,com.android.launcher3,Launcher3,1.0
-1604369115001,android,com.android.systemui,System UI,1.0
-1604369129001,android,com.facebook.orca,Messenger,0.0
-1604369388001,android,com.android.systemui,System UI,1.0
-1604369400001,android,com.facebook.orca,Messenger,0.0
-1604369589001,android,com.android.launcher3,Launcher3,1.0
-1604369609001,android,com.facebook.katana,Facebook,0.0
-1604370109001,android,com.android.launcher3,Launcher3,1.0
-1604370120001,android,com.facebook.katana,Facebook,0.0
-1604370308001,android,com.google.android.inputmethod.latin,Gboard,1.0
-1604370420001,android,com.facebook.katana,Facebook,0.0
-1604370526001,android,com.google.android.inputmethod.latin,Gboard,1.0
-1604370605001,android,com.facebook.katana,Facebook,0.0
+1583481040385,android,com.aware.plugin.google.activity_recognition,AWARE: Google Activity Recognition,0
+1583481042385,android,com.aware.plugin.google.fused_location,AWARE: Google Fused Location,0
+1583481055385,android,com.google.android.packageinstaller,Package installer,1
+1583492010385,android,com.aware.phone,AWARE,0
+1583492150385,android,com.google.android.packageinstaller,Package installer,1
+1583492451385,android,com.aware.phone,AWARE,0
+1583492560385,android,com.google.android.packageinstaller,Package installer,1
+1583492570385,android,com.aware.phone,AWARE,0
+1583492710385,android,com.tinder,Tinder,0
+1583507036385,android,com.google.android.packageinstaller,Package installer,1
+1583507136385,android,com.android.chrome,Chrome,1
+1583507310459,android,com.android.systemui,System UI,1
+1583507396385,android,com.motorola.vzw.phone.extensions,Phone,1
+1583507576385,android,com.android.chrome,Chrome,1
+1583507928895,android,com.android.systemui,System UI,1
+1583507996385,android,com.android.settings,Settings,1
+1583513580385,android,com.tinder,Tinder,0
+1583513876385,android,com.google.android.inputmethod.latin,Gboard,1
+1583513939785,android,com.android.settings,Settings,1
+1583514056385,android,com.android.launcher3,Launcher3,1
+1583514136385,android,com.android.systemui,System UI,1
+1583514146385,android,com.android.settings,Settings,1
+1583514156385,android,com.android.launcher3,Launcher3,1
+1583514166385,android,com.aware.phone,AWARE,0
+1583514176385,android,com.android.launcher3,Launcher3,1
+1583514226385,android,com.android.chrome,Chrome,1
+1583514656385,android,com.aware.plugin.fitbit,AWARE: Fitbit,0
+1583524316385,android,com.android.chrome,Chrome,1
+1583524605159,android,com.android.launcher3,Launcher3,1
+1583524676385,android,com.aware.phone,AWARE,0
+1583524679385,android,com.android.systemui,System UI,1
+1583524736385,android,com.aware.phone,AWARE,0
+1583524796385,android,com.android.systemui,System UI,1
+1583535000385,android,com.google.android.youtube,Youtube,0
+1583535156385,android,com.android.settings,Settings,1
+1583535236385,android,com.android.launcher3,Launcher3,1
+1583535336385,android,com.android.systemui,System UI,1
+1583535379385,android,com.android.chrome,Chrome,1
+1583535612385,android,com.facebook.orca,Messenger,0
+1583535614385,android,com.google.android.inputmethod.latin,Gboard,1
+1583545263385,android,com.google.android.youtube,Youtube,0
+1583545386385,android,com.android.systemui,System UI,1
+1583545436385,android,com.facebook.orca,Messenger,0
+1583545536385,android,com.android.chrome,Chrome,1
+1583545856385,android,com.android.systemui,System UI,1
+1583545911385,android,com.android.chrome,Chrome,1
+1583546306385,android,com.microsoft.office.outlook,Outlook,0
+1583546456385,android,com.android.chrome,Chrome,1
+1583558235001,android,com.android.systemui,System UI,1
+1583558291001,android,com.android.settings,Settings,1
+1583558331001,android,com.google.android.inputmethod.latin,Gboard,1
+1583558386001,android,com.android.settings,Settings,1
+1583561831001,android,com.android.launcher3,Launcher3,1
+1583561871001,android,com.android.launcher3,Launcher3,1
+1583561939001,android,com.aware.phone,AWARE,0
+1583561951001,android,com.android.launcher3,Launcher3,1
+1583561970001,android,com.android.chrome,Chrome,1
+1583614691001,android,com.aware.plugin.fitbit,AWARE: Fitbit,0
+1583614719001,android,com.android.chrome,Chrome,1
+1583621339001,android,com.android.launcher3,Launcher3,1
+1583621351001,android,com.aware.phone,AWARE,0
+1583621402001,android,com.android.systemui,System UI,1
+1583621411001,android,com.aware.phone,AWARE,0
+1583636006001,android,com.android.systemui,System UI,1
+1583636029001,android,com.android.chrome,Chrome,1
+1583636171001,android,com.facebook.orca,Messenger,0
+1583636195001,android,com.google.android.inputmethod.latin,Gboard,1
+1583643911001,android,com.android.systemui,System UI,1
+1583643937001,android,com.facebook.orca,Messenger,0
+1583644009001,android,com.android.chrome,Chrome,1
+1583644019001,android,com.android.systemui,System UI,1
+1583644029001,android,com.android.chrome,Chrome,1
+1583644050001,android,com.microsoft.office.outlook,Outlook,0
+1583644068001,android,com.android.chrome,Chrome,1
+1583657710001,android,com.android.launcher3,Launcher3,1
+1583657730001,android,com.google.android.gm,Gmail,1
+1583658600001,android,com.android.launcher3,Launcher3,1
+1583658630001,android,com.android.systemui,System UI,1
+1583658660001,android,com.android.settings,Settings,1
+1583658780001,android,com.android.launcher3,Launcher3,1
+1583719320001,android,com.android.systemui,System UI,1
+1583719350001,android,com.android.launcher3,Launcher3,1
+1583719380001,android,com.fanduel.android.self,FanDuel,0
+1583719440001,android,com.android.launcher3,Launcher3,1
+1583719450001,android,com.android.chrome,Chrome,1
+1583719460001,android,com.google.android.inputmethod.latin,Gboard,1
+1583737261001,android,com.android.systemui,System UI,1
+1583737280001,android,com.android.chrome,Chrome,1
+1583737426001,android,com.android.systemui,System UI,1
+1583737430001,android,com.android.chrome,Chrome,1
+1583802300001,android,com.android.launcher3,Launcher3,1
+1583802315001,android,com.android.systemui,System UI,1
+1583802329001,android,com.facebook.orca,Messenger,0
+1583802588001,android,com.android.systemui,System UI,1
+1583802600001,android,com.facebook.orca,Messenger,0
+1583802789001,android,com.android.launcher3,Launcher3,1
+1583802809001,android,com.facebook.katana,Facebook,0
+1583803309001,android,com.android.launcher3,Launcher3,1
+1583803320001,android,com.facebook.katana,Facebook,0
+1583803508001,android,com.google.android.inputmethod.latin,Gboard,1
+1583803620001,android,com.facebook.katana,Facebook,0
+1583803726001,android,com.google.android.inputmethod.latin,Gboard,1
+1583803805001,android,com.facebook.katana,Facebook,0
+1604040640385,android,com.aware.plugin.google.activity_recognition,AWARE: Google Activity Recognition,0
+1604040642385,android,com.aware.plugin.google.fused_location,AWARE: Google Fused Location,0
+1604040655385,android,com.google.android.packageinstaller,Package installer,1
+1604051610385,android,com.aware.phone,AWARE,0
+1604051750385,android,com.google.android.packageinstaller,Package installer,1
+1604052051385,android,com.aware.phone,AWARE,0
+1604052160385,android,com.google.android.packageinstaller,Package installer,1
+1604052170385,android,com.aware.phone,AWARE,0
+1604052310385,android,com.tinder,Tinder,0
+1604066636385,android,com.google.android.packageinstaller,Package installer,1
+1604066736385,android,com.android.chrome,Chrome,1
+1604066910459,android,com.android.systemui,System UI,1
+1604066996385,android,com.motorola.vzw.phone.extensions,Phone,1
+1604067176385,android,com.android.chrome,Chrome,1
+1604067528895,android,com.android.systemui,System UI,1
+1604067596385,android,com.android.settings,Settings,1
+1604073180385,android,com.tinder,Tinder,0
+1604073476385,android,com.google.android.inputmethod.latin,Gboard,1
+1604073539785,android,com.android.settings,Settings,1
+1604073656385,android,com.android.launcher3,Launcher3,1
+1604073736385,android,com.android.systemui,System UI,1
+1604073746385,android,com.android.settings,Settings,1
+1604073756385,android,com.android.launcher3,Launcher3,1
+1604073766385,android,com.aware.phone,AWARE,0
+1604073776385,android,com.android.launcher3,Launcher3,1
+1604073826385,android,com.android.chrome,Chrome,1
+1604074256385,android,com.aware.plugin.fitbit,AWARE: Fitbit,0
+1604083916385,android,com.android.chrome,Chrome,1
+1604084205159,android,com.android.launcher3,Launcher3,1
+1604084276385,android,com.aware.phone,AWARE,0
+1604084279385,android,com.android.systemui,System UI,1
+1604084336385,android,com.aware.phone,AWARE,0
+1604084396385,android,com.android.systemui,System UI,1
+1604094600385,android,com.google.android.youtube,Youtube,0
+1604094756385,android,com.android.settings,Settings,1
+1604094836385,android,com.android.launcher3,Launcher3,1
+1604094936385,android,com.android.systemui,System UI,1
+1604094979385,android,com.android.chrome,Chrome,1
+1604095212385,android,com.facebook.orca,Messenger,0
+1604095214385,android,com.google.android.inputmethod.latin,Gboard,1
+1604104863385,android,com.google.android.youtube,Youtube,0
+1604104986385,android,com.android.systemui,System UI,1
+1604105036385,android,com.facebook.orca,Messenger,0
+1604105136385,android,com.android.chrome,Chrome,1
+1604105456385,android,com.android.systemui,System UI,1
+1604105511385,android,com.android.chrome,Chrome,1
+1604105906385,android,com.microsoft.office.outlook,Outlook,0
+1604106056385,android,com.android.chrome,Chrome,1
+1604117835001,android,com.android.systemui,System UI,1
+1604117891001,android,com.android.settings,Settings,1
+1604117931001,android,com.google.android.inputmethod.latin,Gboard,1
+1604117986001,android,com.android.settings,Settings,1
+1604121431001,android,com.android.launcher3,Launcher3,1
+1604121471001,android,com.android.launcher3,Launcher3,1
+1604121539001,android,com.aware.phone,AWARE,0
+1604121551001,android,com.android.launcher3,Launcher3,1
+1604121570001,android,com.android.chrome,Chrome,1
+1604174291001,android,com.aware.plugin.fitbit,AWARE: Fitbit,0
+1604174319001,android,com.android.chrome,Chrome,1
+1604180939001,android,com.android.launcher3,Launcher3,1
+1604180951001,android,com.aware.phone,AWARE,0
+1604181002001,android,com.android.systemui,System UI,1
+1604181011001,android,com.aware.phone,AWARE,0
+1604195606001,android,com.android.systemui,System UI,1
+1604195629001,android,com.android.chrome,Chrome,1
+1604195771001,android,com.facebook.orca,Messenger,0
+1604195795001,android,com.google.android.inputmethod.latin,Gboard,1
+1604203511001,android,com.android.systemui,System UI,1
+1604203537001,android,com.facebook.orca,Messenger,0
+1604203609001,android,com.android.chrome,Chrome,1
+1604203619001,android,com.android.systemui,System UI,1
+1604203629001,android,com.android.chrome,Chrome,1
+1604203650001,android,com.microsoft.office.outlook,Outlook,0
+1604203668001,android,com.android.chrome,Chrome,1
+1604224510001,android,com.android.launcher3,Launcher3,1
+1604224530001,android,com.google.android.gm,Gmail,1
+1604225400001,android,com.android.launcher3,Launcher3,1
+1604225430001,android,com.android.systemui,System UI,1
+1604225460001,android,com.android.settings,Settings,1
+1604225580001,android,com.android.launcher3,Launcher3,1
+1604286120001,android,com.android.systemui,System UI,1
+1604286150001,android,com.android.launcher3,Launcher3,1
+1604286180001,android,com.fanduel.android.self,FanDuel,0
+1604286240001,android,com.android.launcher3,Launcher3,1
+1604286250001,android,com.android.chrome,Chrome,1
+1604286260001,android,com.google.android.inputmethod.latin,Gboard,1
+1604304061001,android,com.android.systemui,System UI,1
+1604304080001,android,com.android.chrome,Chrome,1
+1604304226001,android,com.android.systemui,System UI,1
+1604304230001,android,com.android.chrome,Chrome,1
+1604369100001,android,com.android.launcher3,Launcher3,1
+1604369115001,android,com.android.systemui,System UI,1
+1604369129001,android,com.facebook.orca,Messenger,0
+1604369388001,android,com.android.systemui,System UI,1
+1604369400001,android,com.facebook.orca,Messenger,0
+1604369589001,android,com.android.launcher3,Launcher3,1
+1604369609001,android,com.facebook.katana,Facebook,0
+1604370109001,android,com.android.launcher3,Launcher3,1
+1604370120001,android,com.facebook.katana,Facebook,0
+1604370308001,android,com.google.android.inputmethod.latin,Gboard,1
+1604370420001,android,com.facebook.katana,Facebook,0
+1604370526001,android,com.google.android.inputmethod.latin,Gboard,1
+1604370605001,android,com.facebook.katana,Facebook,0

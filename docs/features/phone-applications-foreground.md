@@ -61,5 +61,7 @@ Features description for `[PHONE_APPLICATIONS_FOREGROUND][PROVIDERS][RAPIDS]`:
     Apps installed by default like YouTube are considered systems apps on some phones. We do an exact match to exclude apps where "genre" == `EXCLUDED_CATEGORIES` or "package_name" == `EXCLUDED_APPS`.
 
     We provide three ways of classifying and app within a category (genre): a) by automatically scraping its official category from the Google Play Store, b) by using the catalogue created by Stachl et al. which we provide in RAPIDS (`data/external/stachl_application_genre_catalogue.csv`), or c) by manually creating a personalized catalogue. You can choose a, b or c by modifying `[APPLICATION_GENRES]` keys and values (see the Sensor parameters description table above).
-    
+
+    We count `episodes` and `events` seperatly. Events are single logs, but episodes will span from a start to and end date time and they will be chunked across any overlapping time segments. And we also compute `top1global` seperatly. `top1global` of `episodes` might not be the same as the `top1global` of `events`.
+
     The application episodes are calculated using the application foreground and screen unlock episode data. An application episode starts when the application is launched and ends when either, a new application is launched or the screen is locked.

@@ -119,6 +119,9 @@ PHONE_APPLICATIONS_FOREGROUND:
       MULTIPLE_CATEGORIES:
         social: ["socialnetworks", "socialmediatools"]
         entertainment: ["entertainment", "gamingknowledge", "gamingcasual", "gamingadventure", "gamingstrategy", "gamingtoolscommunity", "gamingroleplaying", "gamingaction", "gaminglogic", "gamingsports", "gamingsimulation"]
+      CUSTOM_CATEGORIES:
+        social_media: ['com.google.android.youtube','com.snapchat.android','com.instagram.android','com.zhiliaoapp.musically','com.facebook.katana']
+        dating: ['com.tinder','com.relance.happycouple','com.kiwi.joyride']
       SINGLE_APPS: ["top1global", "com.facebook.moments", "com.google.android.youtube", "com.twitter.android"] # There's no entropy for single apps
       EXCLUDED_CATEGORIES: []
       EXCLUDED_APPS: ["com.fitbit.FitbitMobile", "com.aware.plugin.upmc.cancer"]
