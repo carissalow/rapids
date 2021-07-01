@@ -1,15 +1,15 @@
 # Change Log
 ## v1.4.0
-- Update Docker Vs Code setup
+- Add new Application Foreground episode features and tests
+- Update VSCode setup instructions for our Docker container
 - Add tests for phone calls features
-- Add tests and fix bugs of phone WiFi features
+- Add tests for WiFI features and fix a bug that incorrectly counted the most scanned device within the current time segment instances instead of globally
 - Add tests for phone conversation features
-- Add tests and fix bugs of phone bluetooth features
-- Add tests and fix bugs of phone activity recognition features
-- Add new application episode features
-- Fix bugs of Fitbit mutation scripts
-- Fix bugs of visualization module
-- Fix bugs of analysis workflow example
+- Add tests for Bluetooth features and choose the most scanned device alphabetically when ties exist
+- Add tests for Activity Recognition features and fix iOS unknown activity parsing
+- Fix Fitbit bug that parsed date-times with the current time zone in rare cases
+- Update the visualizations to be more precise and robust with different time segments.
+- Fix regression crash of the example analysis workflow
 ## v1.3.0
 - Refactor PHONE_LOCATIONS DORYAB provider. Fix bugs and faster execution up to 30x
 - New PHONE_KEYBOARD features
