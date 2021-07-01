@@ -36,6 +36,7 @@ Parameters description for `[PHONE_APPLICATIONS_FOREGROUND][PROVIDERS][RAPIDS]`:
 |`[INCLUDE_EPISODE_FEATURES]`| Set to `True` to extract application episode features as well from the `RAPIDS` provider|
 |`[FEATURES]` |         Features to be computed, see table below
 |`[SINGLE_CATEGORIES]`     | An array of app categories to be *included* in the feature extraction computation. The special keyword `all` represents a category with all the apps from each participant. By default we use the category catalogue pointed by `[APPLICATION_CATEGORIES][CATALOGUE_FILE]` (see the Sensor parameters description table above)
+|`[CUSTOM_CATEGORIES]`   | An array of collections representing your own app categories. They key of each element is the name of the in-house category and the value is an array of the package names (apps) included in that category.
 |`[MULTIPLE_CATEGORIES]`   | An array of collections representing meta-categories (a group of categories). They key of each element is the name of the `meta-category` and the value is an array of member app categories. By default we use the category catalogue pointed by `[APPLICATION_CATEGORIES][CATALOGUE_FILE]` (see the Sensor parameters description table above)
 |`[SINGLE_APPS]`           | An array of apps to be *included* in the feature extraction computation. Use their package name (e.g. `com.google.android.youtube`) or the reserved keyword `top1global` (the most used app by a participant over the whole monitoring study)
 |`[EXCLUDED_CATEGORIES]`   | An array of app categories to be *excluded* from the feature extraction computation. By default we use the category catalogue pointed by `[APPLICATION_CATEGORIES][CATALOGUE_FILE]` (see the Sensor parameters description table above)
@@ -60,5 +61,7 @@ Features description for `[PHONE_APPLICATIONS_FOREGROUND][PROVIDERS][RAPIDS]`:
     Apps installed by default like YouTube are considered systems apps on some phones. We do an exact match to exclude apps where "genre" == `EXCLUDED_CATEGORIES` or "package_name" == `EXCLUDED_APPS`.
 
     We provide three ways of classifying and app within a category (genre): a) by automatically scraping its official category from the Google Play Store, b) by using the catalogue created by Stachl et al. which we provide in RAPIDS (`data/external/stachl_application_genre_catalogue.csv`), or c) by manually creating a personalized catalogue. You can choose a, b or c by modifying `[APPLICATION_GENRES]` keys and values (see the Sensor parameters description table above).
-    
+
+    We count `episodes` and `events` seperatly. Events are single logs, but episodes will span from a start to and end date time and they will be chunked across any overlapping time segments. And we also compute `top1global` seperatly. `top1global` of `episodes` might not be the same as the `top1global` of `events`.
+
     The application episodes are calculated using the application foreground and screen unlock episode data. An application episode starts when the application is launched and ends when either, a new application is launched or the screen is locked.

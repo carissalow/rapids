@@ -346,8 +346,15 @@ properties:
                     uniqueItems: True
                     items:
                       type: string
+                  CUSTOM_CATEGORIES:
+                    type: ["null", object]
+                    additionalProperties: 
+                       type: array
+                       uniqueItems: True
+                       items:
+                        type: string
                   MULTIPLE_CATEGORIES:
-                    type: object
+                    type: ["null", object]
                     additionalProperties: 
                        type: array
                        uniqueItems: True
@@ -369,10 +376,27 @@ properties:
                     items:
                       type: string
                   FEATURES:
-                    uniqueItems: True
-                    items:
-                      type: string
-                      enum: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+                    type: ["null", object]
+                    required: [APP_EVENTS, APP_EPISODES]
+                    properties:
+                      APP_EVENTS:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["countevent", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+                      APP_EPISODES:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["countepisode", "minduration", "maxduration", "meanduration", "sumduration"]
+                  IGNORE_EPISODES_SHORTER_THAN:
+                    type: integer
+                    minimum: 0
+                  IGNORE_EPISODES_LONGER_THAN:
+                    type: integer
+                    minimum: 0
 
   PHONE_APPLICATIONS_NOTIFICATIONS:
     type: object

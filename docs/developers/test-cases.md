@@ -10,7 +10,7 @@ The following is a list of the sensors that testing is currently available.
 | Phone Accelerometer           | Panda    | N        | N         | N     |
 | Phone Accelerometer           | RAPIDS   | N        | N         | N     |
 | Phone Activity Recognition    | RAPIDS   | Y        | Y         | Y     |
-| Phone Applications Foreground | RAPIDS   | N        | N         | N     |
+| Phone Applications Foreground | RAPIDS   | Y        | Y         | Y     |
 | Phone Battery                 | RAPIDS   | Y        | Y         | N     |
 | Phone Bluetooth               | Doryab   | Y        | Y         | Y     |
 | Phone Bluetooth               | RAPIDS   | Y        | Y         | Y     |
@@ -213,7 +213,7 @@ Checklist
 
 Description
 
-- The 4-day raw data is contained in `phone_light_raw.csv`
+- The 4-day raw light data is contained in `phone_light_raw.csv`
 - One episode for each daily segment (`night`, `morning`, `afternoon` and `evening`)
 - Two episodes locate in the same 30-min segment (`Fri 00:07:27.000` and `Fri 00:12:00.000`)
 - Two episodes locate in the same daily segment (`Fri 01:00:01.000` and `Fri 03:59:59.654`)
@@ -242,26 +242,30 @@ Description
 
 ## Application Foreground
 
--   The raw application foreground data file contains data for 1 day.
--   The raw application foreground data contains 7 - 9 rows of data
-    for each `epoch`. The records for each `epoch` contains apps that
-    are randomly selected from a list of apps that are from the
-    `MULTIPLE_CATEGORIES` and `SINGLE_CATEGORIES` (See
-    [testing\_config.yaml]()). There are also records in each epoch
-    that have apps randomly selected from a list of apps that are from
-    the `EXCLUDED_CATEGORIES` and `EXCLUDED_APPS`. This is to test
-    that these apps are actually being excluded from the calculations
-    of features. There are also records to test `SINGLE_APPS`
-    calculations.
--   Since application foreground is only available for Android there
-    is only one file that contains data for Android. All other files
-    (i.e. for iPhone) are empty data files.
+- The 4-day raw application data is contained in `phone_applications_foreground_raw.csv`
+- One episode for each daily segment (night, morning, afternoon and evening)
+- Two episodes locate in the same 30-min segment (`Fri 10:12:56.385` and `Fri 10:18:48.895`)
+- Two episodes locate in the same daily segment (`Fri 11:57:56.385` and `Fri 12:02:56.385`)
+- One episode before the time switch (`Sun 00:07:48.001`) and one episode after the time switch (`Sun 05:10:30.001`)
+- Two custom category (`Dating`) episode, one at `Fri 06:05:10.385`, another one at ` Fri 11:53:00.385`
+
+Checklist:
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|Android|
+|morning|OK|OK|Android|
+|daily|OK|OK|Android|
+|threeday|OK|OK|Android|
+|weekend|OK|OK|Android|
+|beforeMarchEvent|OK|OK|Android|
+|beforeNovemberEvent|OK|OK|Android|
 
 ## Activity Recognition
 
 Description
 
-- The 4-day raw conversation data is contained in `plugin_google_activity_recognition_raw.csv` and `plugin_ios_activity_recognition_raw.csv`.
+- The 4-day raw activity data is contained in `plugin_google_activity_recognition_raw.csv` and `plugin_ios_activity_recognition_raw.csv`.
 - Two episodes locate in the same 30-min segment (`Fri 04:01:54` and `Fri 04:13:52`)
 - One episode for each daily segment (`night`, `morning`, `afternoon` and `evening`)
 - Two episodes locate in the same daily segment (`Fri  05:03:09` and `Fri 05:50:36`)
