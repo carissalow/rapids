@@ -20,7 +20,7 @@ The following is a list of the sensors that testing is currently available.
 | Phone Light                   | RAPIDS   | Y        | Y         | Y     |
 | Phone Locations               | Doryab   | N        | N         | N     |
 | Phone Locations               | Barnett  | N        | N         | N     |
-| Phone Messages                | RAPIDS   | Y        | Y         | N     |
+| Phone Messages                | RAPIDS   | Y        | Y         | Y     |
 | Phone Screen                  | RAPIDS   | Y        | Y         | Y     |
 | Phone WiFi Connected          | RAPIDS   | Y        | Y         | Y     |
 | Phone WiFi Visible            | RAPIDS   | Y        | Y         | Y     |
@@ -37,20 +37,24 @@ The following is a list of the sensors that testing is currently available.
 
 ## Messages (SMS)
 
--   The raw message data file contains data for 2 separate days.
--   The data for the first day contains records 5 records for every
-    `epoch`.
--   The second day\'s data contains 6 records for each of only 2
-    `epoch` (currently `morning` and `evening`)
--   The raw message data contains records for both `message_types`
-    (i.e. `recieved` and `sent`) in both days in all epochs. The
-    number records with each `message_types` per epoch is randomly
-    distributed There is at least one records with each
-    `message_types` per epoch.
--   There is one raw message data file each, as described above, for
-    testing both iOS and Android data.
--   There is also an additional empty data file for both android and
-    iOS for testing empty data files
+- The raw message data file, `phone_messages_raw.csv`, contains data for 4 separate days.
+- One episode for each daily segment (night, morning, afternoon and evening)
+- Two `sent` episodes locate in the same 30-min segment (`Fri 16:08:03.000` and `Fri 16:19:35.000`)
+- Two `received` episodes locate in the same 30-min segment (`Sat 06:45:05.000` and `Fri 06:45:05.000`)
+- Two episodes locate in the same daily segment (`Fri 11:57:56.385` and `Sat 10:54:10.000`)
+- One episode before the time switch (`Sun 00:48:01.000`) and one episode after the time switch (`Sun 06:21:01.000`)
+
+Checklist:
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|android|
+|morning|OK|OK|android|
+|daily|OK|OK|android|
+|threeday|OK|OK|android|
+|weekend|OK|OK|android|
+|beforeMarchEvent|OK|OK|android|
+|beforeNovemberEvent|OK|OK|android|
 
 ## Calls
 
@@ -82,13 +86,13 @@ Checklist
 
 |time segment| single tz | multi tz|platform|
 |-|-|-|-|
-|30min|OK|OK|Android, iOS|
-|morning|OK|OK|Android, iOS|
-|daily|OK|OK|Android, iOS|
-|threeday|OK|OK|Android, iOS|
-|weekend|OK|OK|Android, iOS|
-|beforeMarchEvent|OK|OK|Android, iOS|
-|beforeNovemberEvent|OK|OK|Android, iOS|
+|30min|OK|OK|android, iOS|
+|morning|OK|OK|android, iOS|
+|daily|OK|OK|android, iOS|
+|threeday|OK|OK|android, iOS|
+|weekend|OK|OK|android, iOS|
+|beforeMarchEvent|OK|OK|android, iOS|
+|beforeNovemberEvent|OK|OK|android, iOS|
 
 ## Screen
 
@@ -119,13 +123,13 @@ Checklist
 
 |time segment| single tz | multi tz|platform|
 |-|-|-|-|
-|30min|OK|OK|Android, iOS|
-|morning|OK|OK|Android, iOS|
-|daily|OK|OK|Android, iOS|
-|threeday|OK|OK|Android, iOS|
-|weekend|OK|OK|Android, iOS|
-|beforeMarchEvent|OK|OK|Android, iOS|
-|beforeNovemberEvent|OK|OK|Android, iOS|
+|30min|OK|OK|android, iOS|
+|morning|OK|OK|android, iOS|
+|daily|OK|OK|android, iOS|
+|threeday|OK|OK|android, iOS|
+|weekend|OK|OK|android, iOS|
+|beforeMarchEvent|OK|OK|android, iOS|
+|beforeNovemberEvent|OK|OK|android, iOS|
 
 ## Battery
 
@@ -162,13 +166,13 @@ Checklist
 
 |time segment| single tz | multi tz|platform|
 |-|-|-|-|
-|30min|OK|OK|Android|
-|morning|OK|OK|Android|
-|daily|OK|OK|Android|
-|threeday|OK|OK|Android|
-|weekend|OK|OK|Android|
-|beforeMarchEvent|OK|OK|Android|
-|beforeNovemberEvent|OK|OK|Android|
+|30min|OK|OK|android|
+|morning|OK|OK|android|
+|daily|OK|OK|android|
+|threeday|OK|OK|android|
+|weekend|OK|OK|android|
+|beforeMarchEvent|OK|OK|android|
+|beforeNovemberEvent|OK|OK|android|
 
 ## WIFI
 
@@ -253,13 +257,13 @@ Checklist:
 
 |time segment| single tz | multi tz|platform|
 |-|-|-|-|
-|30min|OK|OK|Android|
-|morning|OK|OK|Android|
-|daily|OK|OK|Android|
-|threeday|OK|OK|Android|
-|weekend|OK|OK|Android|
-|beforeMarchEvent|OK|OK|Android|
-|beforeNovemberEvent|OK|OK|Android|
+|30min|OK|OK|android|
+|morning|OK|OK|android|
+|daily|OK|OK|android|
+|threeday|OK|OK|android|
+|weekend|OK|OK|android|
+|beforeMarchEvent|OK|OK|android|
+|beforeNovemberEvent|OK|OK|android|
 
 ## Activity Recognition
 
