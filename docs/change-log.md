@@ -1,4 +1,7 @@
 # Change Log
+## v1.4.1
+- Update home page
+- Add PHONE_MESSAGES tests
 ## v1.4.0
 - Add new Application Foreground episode features and tests
 - Update VSCode setup instructions for our Docker container
