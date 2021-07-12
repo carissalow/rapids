@@ -2,7 +2,7 @@
 
 Reproducible Analysis Pipeline for Data Streams (RAPIDS) allows you to process smartphone and wearable data to [extract](features/feature-introduction.md) and [create](features/add-new-features.md) **behavioral features** (a.k.a. digital biomarkers), [visualize](visualizations/data-quality-visualizations.md) mobile sensor data, and [structure](workflow-examples/analysis.md) your analysis into reproducible workflows.
 
-RAPIDS is open source, documented, multi-platform, modular, tested, and reproducible. At the moment, we support [data streams](datastreams/data-streams-introduction) logged by smartphones, Fitbit wearables, and Empatica wearables in collaboration with the [DBDP](https://dbdp.org/). 
+RAPIDS is open source, documented, multi-platform, modular, tested, and reproducible. At the moment, we support [data streams](datastreams/data-streams-introduction) logged by smartphones, Fitbit wearables, and Empatica wearables (the latter in collaboration with the [DBDP](https://dbdp.org/)). 
 
 !!! tip "Where do I start?"
 
@@ -25,7 +25,7 @@ RAPIDS is open source, documented, multi-platform, modular, tested, and reproduc
 
 1. **Consistent analysis**. Every participant sensor dataset is analyzed in the same way and isolated from each other.
 2. **Efficient analysis**. Every analysis step is executed only once. Whenever your data or configuration changes, only the affected files are updated.
-5. **Parallel execution**. Thanks to Snakemake, your analysis can be executed over multiple cores without changing your code.
+5. **Parallel execution**. Thanks to [Snakemake](https://snakemake.github.io/), your analysis can be executed over multiple cores without changing your code.
 6. **Code-free features**. Extract any of the behavioral features offered by RAPIDS without writing any code.
 7. **Extensible code**. You can easily add your own data streams or behavioral features in R or Python, share them with the community, and keep authorship and citations.
 8. **Time zone aware**. Your data is adjusted to one or more time zones per participant.
@@ -37,7 +37,7 @@ RAPIDS is open source, documented, multi-platform, modular, tested, and reproduc
 ## Users and Contributors
 
 ??? quote "Community Contributors"
-    Many thanks to our community contributions and the [whole team](../team):
+    Many thanks to the [whole team](./team) and our community contributions:
 
     - Agam Kumar (CMU)
     - Yasaman S. Sefidgar (University of Washington)
@@ -46,7 +46,7 @@ RAPIDS is open source, documented, multi-platform, modular, tested, and reproduc
     - Stephen Price (CMU)
     - Neil Singh (University of Virginia)
 
-    Many thanks to the researchers that made [their work](../citation) open source:
+    Many thanks to the researchers that made [their work](./citation) open source:
 
     - Panda et al. [paper](https://pubmed.ncbi.nlm.nih.gov/31657854/)
     - Stachl et al. [paper](https://www.pnas.org/content/117/30/17680)
@@ -60,6 +60,7 @@ RAPIDS is open source, documented, multi-platform, modular, tested, and reproduc
     - Predicting Depression from Smartphone Behavioral Markers Using Machine Learning Methods, Hyper-parameter Optimization, and Feature Importance Analysis: An Exploratory Study [link](https://preprints.jmir.org/preprint/26540)
     -  Digital Biomarkers of Symptom Burden Self-Reported by Perioperative Patients Undergoing Pancreatic Surgery: Prospective Longitudinal Study [link](https://cancer.jmir.org/2021/2/e27975/)
     - An Automated Machine Learning Pipeline for Monitoring and Forecasting Mobile Health Data [link](https://edas.info/showManuscript.php?m=1570708269&random=750318666&type=final&ext=pdf&title=PDF+file)
+    - Mobile Footprinting: Linking Individual Distinctiveness in Mobility Patterns to Mood, Sleep, and Brain Functional Connectivity [link](https://www.biorxiv.org/content/10.1101/2021.05.17.444568v1.abstract)
 
 <div class="users">
 <div><img alt="carnegie mellon university" loading="lazy" src="./img/logos/cmu.png" /></div>
