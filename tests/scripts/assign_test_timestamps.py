@@ -23,6 +23,7 @@ def assign_test_timestamps(file_path):
     
     if "fitbit" in file_path:
         data_with_timestamps.insert(0, "timestamp", 0)
+        data_with_timestamps["local_date_time"] = data_with_timestamps["local_date_time"].dt.strftime('%Y-%m-%d %H:%M:%S')
     else:
         # Convert local_date_time with timezone to timestamp
         data_with_timestamps.insert(0, "timestamp", data_with_timestamps["local_date_time"].dt.tz_localize(tz="America/New_York").astype(np.int64) // 10**6)
