@@ -383,10 +383,10 @@ FITBIT_HEARTRATE_SUMMARY:
 
 # See https://www.rapids.science/latest/features/fitbit-heartrate-intraday/
 FITBIT_HEARTRATE_INTRADAY:
-  CONTAINER: heartrate_intraday
+  CONTAINER: fitbit_heartrate_intraday_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
       SRC_SCRIPT: src/features/fitbit_heartrate_intraday/rapids/main.py
 
