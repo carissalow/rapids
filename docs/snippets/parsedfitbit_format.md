@@ -43,9 +43,9 @@ All columns are mandatory; however, all except `device_id` and `local_date_time`
 
             |device_id                              |local_date_time   |heartrate_daily_restinghr |heartrate_daily_caloriesoutofrange  |heartrate_daily_caloriesfatburn  |heartrate_daily_caloriescardio  |heartrate_daily_caloriespeak   |
             |-------------------------------------- |----------------- |------- |-------------- |------------- |------------ |-------|
-            |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |2020-10-07        |72      |1200.6102      |760.3020      |15.2048      |0      |
-            |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |2020-10-08        |70      |1100.1120      |660.0012      |23.7088      |0      |
-            |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |2020-10-09        |69      |750.3615       |734.1516      |131.8579     |0      |
+            |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |2020-10-07 00:00:00  |72      |1200.6102      |760.3020      |15.2048      |0      |
+            |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |2020-10-08 00:00:00  |70      |1100.1120      |660.0012      |23.7088      |0      |
+            |a748ee1a-1d0b-4ae9-9074-279a2b6ba524   |2020-10-09 00:00:00  |69      |750.3615       |734.1516      |131.8579     |0      |
 
 ??? info "FITBIT_HEARTRATE_INTRADAY"
 
