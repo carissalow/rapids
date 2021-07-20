@@ -27,7 +27,7 @@ The following is a list of the sensors that testing is currently available.
 | Fitbit Calories Intraday      | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Data Yield             | RAPIDS   | N        | N         | N     |
 | Fitbit Heart Rate Summary     | RAPIDS   | Y        | Y         | Y     |
-| Fitbit Heart Rate Intraday    | RAPIDS   | N        | N         | N     |
+| Fitbit Heart Rate Intraday    | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Sleep Summary          | RAPIDS   | N        | N         | N     |
 | Fitbit Sleep Intraday         | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Sleep Intraday         | PRICE    | Y        | Y         | Y     |
@@ -372,6 +372,31 @@ Description
 - A three-minute sedentary episode on Sat 16:00
 - A four-minute sedentary episode on Sun 10:01 that will be ignored for Novembers's multi-timezone event segments since the test segment ends at 10am on that weekend.
 - A three-minute very active episode on Sat 16:03. This episode and the one at 16:00 are counted as one for lowmet episodes
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|fitbit|
+|morning|OK|OK|fitbit|
+|daily|OK|OK|fitbit|
+|threeday|OK|OK|fitbit|
+|weekend|OK|OK|fitbit|
+|beforeMarchEvent|OK|OK|fitbit|
+|beforeNovemberEvent|OK|OK|fitbit|
+
+
+## Fitbit Heartrate intraday 
+
+Description:
+
+- The 4-day raw heartrate data is contained in `fitbit_heartrate_intraday_raw.csv`
+- One episode for each daily segment (`night`, `morning`, `afternoon` and `evening`)
+- Two episodes locate in the same 30-min segment (`Fri 00:49:00` and `Fri 00:52:00`)
+- Two different types of heartrate zone episodes locate in the same 30-min segment (`Fri 05:49:00 outofrange` and `Fri 05:57:00 fatburn`)
+- Two episodes locate in the same daily segment (`Fri 12:02:00` and `Fri 19:38:00`)
+- One episode before the time switch, `Sun 00:08:00`, and one episode after the time switch, `Sun 07:28:00`
+
 
 Checklist
 

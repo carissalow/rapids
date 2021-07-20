@@ -108,9 +108,6 @@ def process_app_features(data, requested_features, time_segment, provider, filte
             # own categories
             for owncategory_name, owncategory_content in custom_categories.items():
                 filtered_data = data[data["package_name"].isin(owncategory_content)]
-                print(filtered_data)
-                # print(requested_features)
-                # 1/0
                 features = compute_features(filtered_data, owncategory_name, requested_features, features, time_segment)
             # multiple categories
             for mcategory_name, mcategory_content in multiple_categories.items():
