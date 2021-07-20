@@ -1,0 +1,5 @@
+test_time,device_id,heartrate_daily_restinghr,heartrate_daily_caloriesoutofrange,heartrate_daily_caloriesfatburn,heartrate_daily_caloriescardio,heartrate_daily_caloriespeak
+Fri 00:00:00,fitbit,67,1565.56716,1079.04426,48.93094,41.35166
+Sat 00:00:00,fitbit,70,1818.2996,385.4376,0.0,0.0
+Sun 00:00:00,fitbit,69,1819.804,817.78704,8.20784,19.71048
+Mon 00:00:00,fitbit,71,1482.87035,528.51045,13.97460001707080,1.164119

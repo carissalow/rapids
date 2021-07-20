@@ -26,7 +26,7 @@ The following is a list of the sensors that testing is currently available.
 | Phone WiFi Visible            | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Calories Intraday      | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Data Yield             | RAPIDS   | N        | N         | N     |
-| Fitbit Heart Rate Summary     | RAPIDS   | N        | N         | N     |
+| Fitbit Heart Rate Summary     | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Heart Rate Intraday    | RAPIDS   | N        | N         | N     |
 | Fitbit Sleep Summary          | RAPIDS   | N        | N         | N     |
 | Fitbit Sleep Intraday         | RAPIDS   | Y        | Y         | Y     |
@@ -420,6 +420,27 @@ Description
 - A nine-hour main sleep episode on Sun 11:00:00. Start time will be assigned as NY time zone and converted to 14:00:00.
 - A seven-hour main sleep episode on Mon 06:00:00. This episode will be split into two parts: a five-hour sleep episode on Mon 06:00:00 and a two-hour sleep episode on Mon 11:00:00. The first part will be discarded as it is before 11am (Last Night End)
 - Any segment shorter than one day will be ignored for sleep PRICE features.
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|fitbit|
+|morning|OK|OK|fitbit|
+|daily|OK|OK|fitbit|
+|threeday|OK|OK|fitbit|
+|weekend|OK|OK|fitbit|
+|beforeMarchEvent|OK|OK|fitbit|
+|beforeNovemberEvent|OK|OK|fitbit|
+
+
+## Fitbit Heartrate Summary
+
+Description
+
+- The 4-day raw heartrate summary data is contained in `fitbit_heartrate_summary_raw.csv`.
+- As heartrate summary is periodic, it only generates results in periodic feature, there will be no result in frequency and event. 
+
 
 Checklist
 
