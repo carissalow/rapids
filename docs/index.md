@@ -59,7 +59,7 @@ RAPIDS is open source, documented, multi-platform, modular, tested, and reproduc
     - Predicting Symptoms of Depression and Anxiety Using Smartphone and Wearable Data [link](https://www.frontiersin.org/articles/10.3389/fpsyt.2021.625247/full)
     - Predicting Depression from Smartphone Behavioral Markers Using Machine Learning Methods, Hyperparameter Optimization, and Feature Importance Analysis: Exploratory Study [link](https://mhealth.jmir.org/2021/7/e26540)
     -  Digital Biomarkers of Symptom Burden Self-Reported by Perioperative Patients Undergoing Pancreatic Surgery: Prospective Longitudinal Study [link](https://cancer.jmir.org/2021/2/e27975/)
-    - An Automated Machine Learning Pipeline for Monitoring and Forecasting Mobile Health Data [link](https://edas.info/showManuscript.php?m=1570708269&random=750318666&type=final&ext=pdf&title=PDF+file)
+    - An Automated Machine Learning Pipeline for Monitoring and Forecasting Mobile Health Data [link](https://ieeexplore.ieee.org/abstract/document/9483755/)
     - Mobile Footprinting: Linking Individual Distinctiveness in Mobility Patterns to Mood, Sleep, and Brain Functional Connectivity [link](https://www.biorxiv.org/content/10.1101/2021.05.17.444568v1.abstract)
 
 <div class="users">
