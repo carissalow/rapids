@@ -45,7 +45,7 @@ function(mobmat,obj,CENTERRAD=125,MINPAUSETIME=600,tz=""){
   }
   #Determine which is home (where is the night spent)
   for(i in 1:length(obj$ID2)){
-    xx=as.POSIXct((mobmat[obj$ID2[i],7]+mobmat[obj$ID2[i],4])/2,tz=tz,origin="1970-01-01")
+    xx=format(as.POSIXct((mobmat[obj$ID2[i],7]+mobmat[obj$ID2[i],4])/2,tz=tz,origin="1970-01-01"), "%Y-%m-%d %H:%M:%S")
     hourofday = as.numeric(strsplit(strsplit(as.character(xx),":")[[1]][1]," ")[[1]][2])
     if(hourofday>=21 || hourofday<6){
       for(j in 1:nrowfc){
