@@ -122,6 +122,10 @@ for provider in config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/raw/{pid}/phone_applications_foreground_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/phone_applications_foreground_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv", pid=config["PIDS"]))
+        if config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][provider]["INCLUDE_EPISODE_FEATURES"]:
+            files_to_compute.extend(expand("data/interim/{pid}/phone_app_episodes.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/phone_app_episodes_resampled.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/phone_app_episodes_resampled_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_applications_foreground_features/phone_applications_foreground_{language}_{provider_key}.csv", pid=config["PIDS"], language=get_script_language(config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][provider]["SRC_SCRIPT"]), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_applications_foreground.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
@@ -207,13 +211,23 @@ for provider in config["PHONE_LOCATIONS"]["PROVIDERS"].keys():
 
         if provider == "BARNETT":
             files_to_compute.extend(expand("data/interim/{pid}/phone_locations_barnett_daily.csv", pid=config["PIDS"]))
+        if provider == "DORYAB":
+            files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed_with_datetime_with_doryab_columns.csv", pid=config["PIDS"]))
 
         files_to_compute.extend(expand("data/raw/{pid}/phone_locations_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed_with_datetime.csv", pid=config["PIDS"]))
-        files_to_compute.extend(expand("data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/phone_locations_features/phone_locations_{language}_{provider_key}.csv", pid=config["PIDS"], language=get_script_language(config["PHONE_LOCATIONS"]["PROVIDERS"][provider]["SRC_SCRIPT"]), provider_key=provider.lower()))
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_locations.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+        files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
+
+for provider in config["FITBIT_CALORIES_INTRADAY"]["PROVIDERS"].keys():
+    if config["FITBIT_CALORIES_INTRADAY"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_intraday_raw.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/raw/{pid}/fitbit_calories_intraday_with_datetime.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/{pid}/fitbit_calories_intraday_features/fitbit_calories_intraday_{language}_{provider_key}.csv", pid=config["PIDS"], language=get_script_language(config["FITBIT_CALORIES_INTRADAY"]["PROVIDERS"][provider]["SRC_SCRIPT"]), provider_key=provider.lower()))
+        files_to_compute.extend(expand("data/processed/features/{pid}/fitbit_calories_intraday.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
         files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
 
@@ -275,6 +289,12 @@ for provider in config["FITBIT_STEPS_SUMMARY"]["PROVIDERS"].keys():
 
 for provider in config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"].keys():
     if config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][provider]["COMPUTE"]:
+        
+        if config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]["TIME_BASED"]["EXCLUDE"] or config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]["FITBIT_BASED"]["EXCLUDE"]:
+            if config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]["FITBIT_BASED"]["EXCLUDE"]:
+                files_to_compute.extend(expand("data/raw/{pid}/fitbit_sleep_summary_raw.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/fitbit_steps_intraday_with_datetime_exclude_sleep.csv", pid=config["PIDS"]))
+
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_intraday_raw.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/interim/{pid}/fitbit_steps_intraday_features/fitbit_steps_intraday_{language}_{provider_key}.csv", pid=config["PIDS"], language=get_script_language(config["FITBIT_STEPS_INTRADAY"]["PROVIDERS"][provider]["SRC_SCRIPT"]), provider_key=provider.lower()))
@@ -361,6 +381,8 @@ if config["HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT"]["PLOT"]:
     files_to_compute.append("reports/data_exploration/heatmap_sensor_row_count_per_time_segment.html")
 
 if config["HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT"]["PLOT"]:
+    if not config["PHONE_DATA_YIELD"]["PROVIDERS"]["RAPIDS"]["COMPUTE"]:
+        raise ValueError("Error: [PHONE_DATA_YIELD][PROVIDERS][RAPIDS][COMPUTE] must be True in config.yaml to get heatmaps of overall data yield.")
     files_to_compute.append("reports/data_exploration/heatmap_phone_data_yield_per_participant_per_time_segment.html")
 
 if config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["PLOT"]:

@@ -33,7 +33,8 @@ If you want RAPIDS to process Fitbit sensor data using this stream, you will nee
     - **SCRIPTS**
     
         ```bash
-        src/data/streams/mutations/fitbit/parse_heartrate_summary_json.py
+        - src/data/streams/mutations/fitbit/parse_heartrate_summary_json.py
+        - src/data/streams/mutations/fitbit/add_zero_timestamp.py
         ```
 
         !!! note
@@ -71,7 +72,8 @@ If you want RAPIDS to process Fitbit sensor data using this stream, you will nee
     - **SCRIPTS**
     
         ```bash
-        src/data/streams/mutations/fitbit/parse_heartrate_intraday_json.py
+        - src/data/streams/mutations/fitbit/parse_heartrate_intraday_json.py
+        - src/data/streams/mutations/fitbit/add_zero_timestamp.py
         ```
 
         !!! note
@@ -117,7 +119,9 @@ If you want RAPIDS to process Fitbit sensor data using this stream, you will nee
     - **SCRIPTS**
     
         ```bash
-        src/data/streams/mutations/fitbit/parse_sleep_summary_json.py
+        - src/data/streams/mutations/fitbit/parse_sleep_summary_json.py
+        - src/data/streams/mutations/fitbit/add_local_date_time.py
+        - src/data/streams/mutations/fitbit/add_zero_timestamp.py
         ```
 
         !!! note
@@ -160,7 +164,8 @@ If you want RAPIDS to process Fitbit sensor data using this stream, you will nee
     - **SCRIPTS**
     
         ```bash
-        src/data/streams/mutations/fitbit/parse_sleep_intraday_json.py
+        - src/data/streams/mutations/fitbit/parse_sleep_intraday_json.py
+        - src/data/streams/mutations/fitbit/add_zero_timestamp.py
         ```
 
         !!! note
@@ -199,7 +204,8 @@ If you want RAPIDS to process Fitbit sensor data using this stream, you will nee
     - **SCRIPTS**
     
         ```bash
-        src/data/streams/mutations/fitbit/parse_steps_summary_json.py
+        - src/data/streams/mutations/fitbit/parse_steps_summary_json.py
+        - src/data/streams/mutations/fitbit/add_zero_timestamp.py
         ```
 
         !!! note
@@ -235,7 +241,8 @@ If you want RAPIDS to process Fitbit sensor data using this stream, you will nee
     - **SCRIPTS**
     
         ```bash
-        src/data/streams/mutations/fitbit/parse_steps_intraday_json.py
+        - src/data/streams/mutations/fitbit/parse_steps_intraday_json.py
+        - src/data/streams/mutations/fitbit/add_zero_timestamp.py
         ```
 
         !!! note

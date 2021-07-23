@@ -11,10 +11,21 @@ def get_script_language(script_path):
 
 
 # Features.smk #########################################################################################################
+def optional_phone_yield_input_for_locations(wildcards):
+    if config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"] in ["ALL_RESAMPLED","FUSED_RESAMPLED"]:
+        return "data/interim/{pid}/phone_yielded_timestamps.csv"
+    return []
+
 def get_barnett_daily(wildcards):
     if wildcards.provider_key.upper() == "BARNETT":
         return "data/interim/{pid}/phone_locations_barnett_daily.csv"
     return []
+
+def get_locations_python_input(wildcards):
+    if wildcards.provider_key.upper() == "DORYAB":
+        return "data/interim/{pid}/phone_locations_processed_with_datetime_with_doryab_columns.csv"
+    else:
+        return "data/interim/{pid}/phone_locations_processed_with_datetime.csv"
 
 def find_features_files(wildcards):
     feature_files = []
@@ -24,10 +35,16 @@ def find_features_files(wildcards):
     return(feature_files)
 
 def optional_steps_sleep_input(wildcards):
-    if config["STEP"]["EXCLUDE_SLEEP"]["EXCLUDE"] == True and config["STEP"]["EXCLUDE_SLEEP"]["TYPE"] == "FITBIT_BASED":
-        return  "data/raw/{pid}/fitbit_sleep_summary_with_datetime.csv"
+    if config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]["FITBIT_BASED"]["EXCLUDE"]:
+        return "data/raw/{pid}/fitbit_sleep_summary_raw.csv"
     else:
         return []
+
+def optional_steps_intraday_input(wildcards):
+    if config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]["TIME_BASED"]["EXCLUDE"] or config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]["FITBIT_BASED"]["EXCLUDE"]:
+        return "data/interim/{pid}/fitbit_steps_intraday_with_datetime_exclude_sleep.csv"
+    else:
+        return "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv"
 
 def input_merge_sensor_features_for_individual_participants(wildcards):
     feature_files = []

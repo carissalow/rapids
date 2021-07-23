@@ -1,5 +1,41 @@
 # Change Log
-
+## v1.4.1
+- Update home page
+- Add PHONE_MESSAGES tests
+## v1.4.0
+- Add new Application Foreground episode features and tests
+- Update VSCode setup instructions for our Docker container
+- Add tests for phone calls features
+- Add tests for WiFI features and fix a bug that incorrectly counted the most scanned device within the current time segment instances instead of globally
+- Add tests for phone conversation features
+- Add tests for Bluetooth features and choose the most scanned device alphabetically when ties exist
+- Add tests for Activity Recognition features and fix iOS unknown activity parsing
+- Fix Fitbit bug that parsed date-times with the current time zone in rare cases
+- Update the visualizations to be more precise and robust with different time segments.
+- Fix regression crash of the example analysis workflow
+## v1.3.0
+- Refactor PHONE_LOCATIONS DORYAB provider. Fix bugs and faster execution up to 30x
+- New PHONE_KEYBOARD features
+- Add a new strategy to infer home location that can handle multiple homes for the same participant
+- Add module to exclude sleep episodes from steps intraday features
+- Fix PID matching when joining data from multiple participants. Now, we can handle PIDS with an arbitrary format.
+- Fix bug that did not correctly parse participants with more than 2 phones or more than 1 wearable
+- Fix crash when no phone data yield is needed to process location data (ALL & GPS location providers)
+- Remove location rows with the same timestamp based on their accuracy
+- Fix PHONE_CONVERSATION bug that produced inaccurate ratio features when time segments were not daily.
+- Other minor bug fixes
+## v1.2.0
+- Sleep summary and intraday features are more consistent.
+- Add wake and bedtime features for sleep summary data.
+- Fix bugs with sleep PRICE features.
+- Update home page
+- Add contributing guide
+## v1.1.1
+- Fix length of periodic segments on days with DLS
+- Fix crash when scraping data for an app that does not exist
+- Add tests for phone screen data
+## v1.1.0
+- Add Fitbit calories intraday features
 ## v1.0.1
 - Fix crash in `chunk_episodes` of `utils.py` for multi time zone data
 - Fix crash in BT Doryab provider when the number of clusters is 2

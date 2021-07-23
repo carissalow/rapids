@@ -1,6 +1,5 @@
 import json
 import pandas as pd
-from datetime import datetime
 
 STEPS_COLUMNS = ("device_id", "steps", "local_date_time", "timestamp")
 
@@ -16,7 +15,7 @@ def parseStepsData(steps_data):
     for record in steps_data.json_fitbit_column:
         record = json.loads(record)  # Parse text into JSON
         if "activities-steps" in record.keys():
-            curr_date = datetime.strptime(record["activities-steps"][0]["dateTime"], "%Y-%m-%d")
+            curr_date = record["activities-steps"][0]["dateTime"] + " 00:00:00"
 
             row_summary = (device_id,
                 record["activities-steps"][0]["value"],
@@ -32,7 +31,4 @@ def parseStepsData(steps_data):
 
 def main(json_raw, stream_parameters):
     parsed_data = parseStepsData(json_raw)
-    parsed_data["timestamp"] = 0 # this column is added at readable_datetime.R because we neeed to take into account multiple timezones
-    if pd.api.types.is_datetime64_any_dtype( parsed_data['local_date_time']):
-        parsed_data['local_date_time'] = parsed_data['local_date_time'].dt.strftime('%Y-%m-%d %H:%M:%S')
-    return(parsed_data)
+    return parsed_data

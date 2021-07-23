@@ -1,8 +1,9 @@
 label,start_time,length,repeats_on,repeats_value
-daily,00:00:00,23H 59M 59S,every_day,0
+threeday,00:00:00,2D 23H 59M 59S,every_day,0
+daily, 00:00:00,23H 59M 59S, every_day, 0
 morning,06:00:00,5H 59M 59S,every_day,0
 afternoon,12:00:00,5H 59M 59S,every_day,0
 evening,18:00:00,5H 59M 59S,every_day,0
 night,00:00:00,5H 59M 59S,every_day,0
 two_weeks_overlapping,00:00:00,13D 23H 59M 59S,every_day,0
-weekends,00:00:00,1D 23H 59M 59S,wday,6
+weekends,00:00:00,2D 23H 59M 59S,wday,5

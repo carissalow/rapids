@@ -1,0 +1,89 @@
+test_time,device_id,mac_address,ssid,bssid
+Fri 02:30:00.00,ios,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Fri 05:45:00.00,ios,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Fri 06:15:00.00,ios,af:13:50:8b:5f:ab,Stewart Family,0D:FB:75:AA:43:0A
+Fri 06:18:00.00,ios,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Fri 11:57:00.00,ios,af:13:50:8b:5f:ab,Fios-H4S9a,48:6B:8C:51:08:F2
+Fri 12:03:00.00,ios,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Fri 12:21:00.00,ios,af:13:50:8b:5f:ab,Stewart Family,0D:FB:75:AA:43:0A
+Fri 17:50:01.00,ios,af:13:50:8b:5f:ab,Fios-H4S9a,48:6B:8C:51:08:F2
+Fri 18:11:01.00,ios,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Fri 18:17:01.00,ios,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Fri 23:03:01.00,ios,af:13:50:8b:5f:ab,Galactica,E6:4C:9A:3F:D0:1B
+Sat 01:12:00.00,ios,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Sat 01:15:00.00,ios,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Sat 05:57:00.00,ios,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Sat 06:07:00.00,ios,af:13:50:8b:5f:ab,Stewart Family,0D:FB:75:AA:43:0A
+Sat 06:22:00.00,ios,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Sat 12:03:01.00,ios,af:13:50:8b:5f:ab,Fios-H4S9a,48:6B:8C:51:08:F2
+Sat 17:35:00.00,ios,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Sat 17:41:00.00,ios,af:13:50:8b:5f:ab,Stewart Family,0D:FB:75:AA:43:0A
+Sat 18:21:00.00,ios,af:13:50:8b:5f:ab,Fios-H4S9a,48:6B:8C:51:08:F2
+Sat 18:29:00.00,ios,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Sat 21:31:00.00,ios,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Sat 22:01:00.00,ios,af:13:50:8b:5f:ab,Galactica,E6:4C:9A:3F:D0:1B
+Sun 00:02:05.00,ios,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Sun 00:05:01.00,ios,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Sun 06:00:07.00,ios,af:13:50:8b:5f:ab,Stewart Family,0D:FB:75:AA:43:0A
+Sun 06:00:10.00,ios,af:13:50:8b:5f:ab,Galactica,E6:4C:9A:3F:D0:1B
+Sun 11:49:00.00,ios,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Sun 12:03:00.00,ios,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Sun 12:05:00.00,ios,af:13:50:8b:5f:ab,WIRELESS-PITTNET,86:90:7b:8a:3e:43
+Sun 17:58:00.00,ios,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Sun 18:04:00.00,ios,af:13:50:8b:5f:ab,CMU-SECURE,d0:b8:2f:eb:0e:f8
+Sun 18:15:00.00,ios,af:13:50:8b:5f:ab,,3d:12:ec:de:96:e1
+Sun 22:07:00.00,ios,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Mon 00:03:00.00,ios,af:13:50:8b:5f:ab,WIRELESS-PITTNET,86:90:7b:8a:3e:43
+Mon 00:09:10.00,ios,af:13:50:8b:5f:ab,,3d:12:ec:de:96:e1
+Mon 05:37:00.00,ios,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Mon 06:02:00.00,ios,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Mon 11:39:00.00,ios,af:13:50:8b:5f:ab,WIRELESS-PITTNET,86:90:7b:8a:3e:43
+Mon 12:08:00.00,ios,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Mon 12:23:00.00,ios,af:13:50:8b:5f:ab,eduroam,24:2b:a2:55:8a:e0
+Mon 17:52:00.00,ios,af:13:50:8b:5f:ab,CMU-SECURE,d0:b8:2f:eb:0e:f8
+Mon 18:10:00.00,ios,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Mon 18:19:00.00,ios,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Fri 02:30:00.00,android,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Fri 05:45:00.00,android,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Fri 06:15:00.00,android,af:13:50:8b:5f:ab,Stewart Family,0D:FB:75:AA:43:0A
+Fri 06:18:00.00,android,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Fri 11:57:00.00,android,af:13:50:8b:5f:ab,Fios-H4S9a,48:6B:8C:51:08:F2
+Fri 12:03:00.00,android,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Fri 12:21:00.00,android,af:13:50:8b:5f:ab,Stewart Family,0D:FB:75:AA:43:0A
+Fri 17:50:01.00,android,af:13:50:8b:5f:ab,Fios-H4S9a,48:6B:8C:51:08:F2
+Fri 18:11:01.00,android,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Fri 18:17:01.00,android,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Fri 23:03:01.00,android,af:13:50:8b:5f:ab,Galactica,E6:4C:9A:3F:D0:1B
+Sat 01:12:00.00,android,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Sat 01:15:00.00,android,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Sat 05:57:00.00,android,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Sat 06:07:00.00,android,af:13:50:8b:5f:ab,Stewart Family,0D:FB:75:AA:43:0A
+Sat 06:22:00.00,android,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Sat 12:03:01.00,android,af:13:50:8b:5f:ab,Fios-H4S9a,48:6B:8C:51:08:F2
+Sat 17:35:00.00,android,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Sat 17:41:00.00,android,af:13:50:8b:5f:ab,Stewart Family,0D:FB:75:AA:43:0A
+Sat 18:21:00.00,android,af:13:50:8b:5f:ab,Fios-H4S9a,48:6B:8C:51:08:F2
+Sat 18:29:00.00,android,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Sat 21:31:00.00,android,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Sat 22:01:00.00,android,af:13:50:8b:5f:ab,Galactica,E6:4C:9A:3F:D0:1B
+Sun 00:02:05.00,android,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Sun 00:05:01.00,android,af:13:50:8b:5f:ab,NETGEAR07,EF:E7:56:4A:F4:1D
+Sun 06:00:07.00,android,af:13:50:8b:5f:ab,Stewart Family,0D:FB:75:AA:43:0A
+Sun 06:00:10.00,android,af:13:50:8b:5f:ab,Galactica,E6:4C:9A:3F:D0:1B
+Sun 11:49:00.00,android,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B
+Sun 12:03:00.00,android,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Sun 12:05:00.00,android,af:13:50:8b:5f:ab,WIRELESS-PITTNET,86:90:7b:8a:3e:43
+Sun 17:58:00.00,android,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Sun 18:04:00.00,android,af:13:50:8b:5f:ab,CMU-SECURE,d0:b8:2f:eb:0e:f8
+Sun 18:15:00.00,android,af:13:50:8b:5f:ab,,3d:12:ec:de:96:e1
+Sun 22:07:00.00,android,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Mon 00:03:00.00,android,af:13:50:8b:5f:ab,WIRELESS-PITTNET,86:90:7b:8a:3e:43
+Mon 00:09:10.00,android,af:13:50:8b:5f:ab,,3d:12:ec:de:96:e1
+Mon 05:37:00.00,android,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Mon 06:02:00.00,android,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Mon 11:39:00.00,android,af:13:50:8b:5f:ab,WIRELESS-PITTNET,86:90:7b:8a:3e:43
+Mon 12:08:00.00,android,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Mon 12:23:00.00,android,af:13:50:8b:5f:ab,eduroam,24:2b:a2:55:8a:e0
+Mon 17:52:00.00,android,af:13:50:8b:5f:ab,CMU-SECURE,d0:b8:2f:eb:0e:f8
+Mon 18:10:00.00,android,af:13:50:8b:5f:ab,xfinity,e6:06:da:af:f9:91
+Mon 18:19:00.00,android,af:13:50:8b:5f:ab,HOME-1234,E0:A9:8A:1E:48:1B

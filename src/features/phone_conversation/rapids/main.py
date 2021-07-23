@@ -7,9 +7,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
     requested_features = provider["FEATURES"]
     recordingMinutes = provider["RECORDING_MINUTES"]
-    pausedMinutes = provider["PAUSED_MINUTES"]
-    expectedMinutes =  1440 / (recordingMinutes + pausedMinutes)  
-
+    pausedMinutes = provider["PAUSED_MINUTES"] 
     # name of the features this function can compute
     base_features_names = ["minutessilence", "minutesnoise", "minutesvoice", "minutesunknown","sumconversationduration","avgconversationduration",
     "sdconversationduration","minconversationduration","maxconversationduration","timefirstconversation","timelastconversation","noisesumenergy",
@@ -29,6 +27,9 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
             conversation_features = pd.DataFrame()
 
             conversation_data = conversation_data.drop_duplicates(subset=["local_date", "local_time"], keep="first")
+            conversation_data[['start_ts','end_ts']] = conversation_data['timestamps_segment'].str.split(',',expand=True)
+            expectedMinutesDf = conversation_data[['local_segment','start_ts','end_ts']].drop_duplicates(subset=['local_segment']).set_index(['local_segment'])
+            expectedMinutes = (expectedMinutesDf['end_ts'].astype(int) - expectedMinutesDf['start_ts'].astype(int)) / ((60000) *(recordingMinutes + pausedMinutes))
 
             if "minutessilence" in features_to_compute:
                 conversation_features["minutessilence"] = conversation_data[conversation_data['inference']==0].groupby(["local_segment"])['inference'].count()/60

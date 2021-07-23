@@ -4,9 +4,9 @@ get_existent_dates <- function(data, time_segments, include_past_periodic_segmen
   
   existent_dates <- data %>% 
     distinct(local_date, .keep_all = FALSE) %>% 
-    mutate(local_date_obj = date(lubridate::ymd(local_date))) %>% 
-    complete(local_date_obj = seq(date(min(local_date_obj) - max_delay), date(max(local_date_obj)), by="days")) %>%
-    mutate(local_date = replace_na(as.character(date(local_date_obj))),
+    mutate(local_date_obj = lubridate::ymd(local_date)) %>% 
+    complete(local_date_obj = seq(date(min(local_date_obj) - max_delay), max(local_date_obj), by="days")) %>%
+    mutate(local_date = replace_na(as.character(local_date_obj)),
            every_day = 0,
            wday = wday(local_date_obj, week_start = 1),
            mday = mday(local_date_obj),
@@ -22,7 +22,7 @@ infer_existent_periodic_segments <- function(existent_dates, segments){
     pivot_longer(cols = c(every_day,wday, mday, qday, yday), names_to = "day_type", values_to = "day_value") %>%
     filter(repeats_on == day_type & repeats_value == day_value) %>%
     mutate(segment_id_start = lubridate::parse_date_time(paste(local_date, start_time), orders = c("Ymd HMS", "Ymd HM")) + period(overlap_duration),
-            segment_id_end = segment_id_start + lubridate::duration(length)) %>% 
+            segment_id_end = segment_id_start + lubridate::period(length)) %>% 
     select(original_label, label, segment_id_start, segment_id_end, overlap_id, length)
 }
 
@@ -59,8 +59,10 @@ dedup_nonoverlapping_periodic_segments <- function(nested_inferred_time_segments
 add_periodic_segment_timestamps_and_id <- function(data, segments, local_timezone){
   # segment timestamps are computed on the data's timezone(s)
   time_format_fn <- stamp("23:51:15", orders="HMS", quiet = TRUE)
-  segments %>% mutate(segment_start_ts = as.numeric(lubridate::force_tz(segment_id_start, tzone = local_timezone)) * 1000,
-                      segment_end_ts = segment_start_ts + as.numeric(lubridate::duration(length)) * 1000 + 999,
+  segments %>% mutate(segment_id_start_tz = lubridate::force_tz(segment_id_start, tzone = local_timezone),
+                      segment_start_ts = as.numeric(segment_id_start_tz) * 1000,
+                      segment_end_ts = as.numeric(segment_id_start_tz + lubridate::period(length)) * 1000 + 999,
+                      segment_id_start_tz = NULL,
                       segment_id = glue("[{label}#{start_date} {start_time},{end_date} {end_time};{segment_start_ts},{segment_end_ts}]",
                                         start_date=lubridate::date(segment_id_start),
                                         start_time=time_format_fn(segment_id_start),

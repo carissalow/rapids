@@ -35,14 +35,21 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         ```
     7.  *Optional*. You can edit RAPIDS files with `vim` but we recommend using `Visual Studio Code` and its `Remote Containers` extension
 
-        ??? info "How to configure Remote Containers extension"
+        ??? info "How to configure the Remote Containers extension"
+            
+            - Make sure RAPIDS Docker container is running
 
-            - Make sure RAPIDS container is running
-            - Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-            - Go to the `Remote Explorer` panel on the left hand sidebar
-            - On the top right dropdown menu choose `Containers`
-            - Double click on the `moshiresearch/rapids` container in the`CONTAINERS` tree
-            - A new VS Code session should open on RAPIDS main folder inside the container.
+            - Install VS Code and its [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+            - Click the `Remote Explorer` icon on the left-hand sidebar (the icon is a computer monitor)
+
+            - On the top right dropdown menu, choose `Containers`
+
+            - Right-click on the `moshiresearch/rapids` container in the `CONTAINERS` tree and select `Attach to Container`. A new VS Code window should open
+
+            - In the new window, open the `/rapids/` folder via the `File/Open...` menu
+
+            - Run RAPIDS inside a terminal in VS Code. Open one with the `Terminal/New Terminal` menu
 
     !!! warning
         If you installed RAPIDS using Docker for Windows on Windows 10, the container will have [limits](https://stackoverflow.com/questions/43460770/docker-windows-container-memory-limit) on the amount of RAM it can use. If you find that RAPIDS crashes due to running out of memory, [increase](https://stackoverflow.com/a/56583203/6030343) this limit.

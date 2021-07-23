@@ -12,9 +12,7 @@ get_genre <- function(apps){
 
   for(i in seq_along(urls)){
     try_download <- try(download.file(urls[i], destfiles[i], quiet=TRUE), silent = T)
-    page_title <- read_html(destfiles[i]) %>% html_nodes("title") %>% html_text()
-
-    if(is(try_download,"try-error") || page_title == "Not Found"){
+    if(is(try_download,"try-error") || (read_html(destfiles[i]) %>% html_nodes("title") %>% html_text()) == "Not Found"){
       genres[i] <- "unknown"
     }
     else{

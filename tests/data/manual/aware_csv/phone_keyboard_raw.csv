@@ -1,0 +1,47 @@
+test_time,device_id,package_name,before_text,current_text,is_password
+Fri 12:12:33.953,android,com.google.android.apps.messaging,,[O],0
+Fri 12:12:34.953,android,com.google.android.apps.messaging,Omw,[Omw ],0
+Fri 12:12:37.953,android,com.metricwire.android3,many assignments to c,[many assignments to co],0
+Fri 12:12:38.953,android,com.metricwire.android3,many assignments to co,[many assignments to com],0
+Fri 12:12:39.953,android,com.metricwire.android3,many assignments to com,[many assignments to comp],0
+Fri 12:12:47.953,android,com.metricwire.android3,many assignments to comp,[many assignments to compl],0
+Fri 12:12:48.953,android,com.metricwire.android3,many assignments to compl,[many assignments to comple],0
+Fri 12:12:49.953,android,com.metricwire.android3,many assignments to comple,[many assignments to complet],0
+Fri 12:12:52.953,android,com.metricwire.android3,many assignments to complet,[many assignments to complete],0
+Fri 12:12:54.953,android,com.metricwire.android3,many assignments to complete,[many assignments to complete ],0
+Sat 14:51:12.953,android,com.facebook.orca,,[N],0
+Sat 14:51:13.953,android,com.facebook.orca,N,[No],0
+Sat 14:51:13.953,android,com.facebook.orca,No,[Nop],0
+Sat 14:51:13.953,android,com.facebook.orca,Nop,[Nope],0
+Sat 14:52:14.953,android,com.facebook.orca,Nope,[Nope ],0
+Sat 14:52:15.953,android,com.facebook.orca,H,[Ha],0
+Sat 14:52:15.153,android,com.facebook.orca,Ha,[Ha ],0
+Sat 14:52:15.553,android,com.facebook.orca,Ha ,[Ha t],0
+Sat 14:52:16.953,android,com.facebook.orca,Ha t,[Ha th],0
+Sat 14:52:22.433,android,com.facebook.orca,Ha tha,[Ha that],0
+Sat 14:52:24.953,android,com.facebook.orca,Ha that,[Ha that ],0
+Sun 08:59:54.650,android,com.android.systemui,,[F],0
+Sun 09:00:00.000,android,com.android.systemui,F,[Fo],0
+Sun 12:01:02.650,android,com.android.systemui,Fo,[For],0
+Sun 23:27:54.650,android,com.android.systemui,,[F],0
+Sun 23:27:55.650,android,com.android.systemui,F,[Fo],0
+Sun 23:27:56.650,android,com.android.systemui,Fo,[For],0
+Sun 23:27:57.650,android,com.android.systemui,For,[For ],0
+Sun 23:27:57.650,android,com.android.systemui,For ,[For d],0
+Sun 23:27:58.650,android,com.android.systemui,For d,[For da],0
+Sun 23:27:59.650,android,com.android.systemui,For da ,[For da s],0
+Sun 23:28:04.750,android,com.android.systemui,For da s,[For da se],0
+Sun 23:28:05.650,android,com.android.systemui,For da se,[For da sex],0
+Sun 23:28:06.650,android,com.android.systemui,For da sex,[For da se],0
+Sun 23:28:07.650,android,com.android.systemui,For da se,[For da s],0
+Sun 23:28:08.650,android,com.android.systemui,For da s,[For da ],0
+Sun 23:28:09.650,android,com.android.systemui,For da ,[For da],0
+Sun 23:28:09.650,android,com.android.systemui,For da,[For d],0
+Sun 23:28:10.150,android,com.android.systemui,For d,[For ],0
+Sun 23:28:11.789,android,com.android.systemui,F,[Reply],0
+Sun 23:28:12.789,android,com.google.android.apps.messaging,,[Idk],0
+Sun 23:28:13.789,android,com.google.android.apps.messaging,Id,[Idk],0
+Mon 04:28:13.789,android,com.google.android.apps.messaging,Idk,[Idk.],0
+Mon 04:28:14.789,android,com.google.android.apps.messaging,Idk.,[Idk..],0
+Mon 04:28:21.789,android,com.google.android.apps.messaging,Idk..,[Idk...],0
+Mon 04:28:28.789,android,com.google.android.apps.messaging,Idk...,[Idk....],0

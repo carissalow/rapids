@@ -32,13 +32,13 @@ def parseHeartrateZones(heartrate_data):
 def parseHeartrateIntradayData(records_intraday, dataset, device_id, curr_date, heartrate_zones_range):
     for data in dataset:
         d_time = datetime.strptime(data["time"], '%H:%M:%S').time()
-        d_datetime = datetime.combine(curr_date, d_time)
+        d_datetime = datetime.combine(curr_date, d_time).strftime("%Y-%m-%d %H:%M:%S")
         d_hr =  data["value"]
 
         # Get heartrate zone by range: min <= heartrate < max
         d_hrzone = None
         for hrzone, hrrange in heartrate_zones_range.items():
-            if d_hr >= hrrange[0] and d_hr < hrrange[1]:
+            if d_hr >= hrrange[0] and d_hr <= hrrange[1]:
                 d_hrzone = hrzone
                 break
 
@@ -78,7 +78,4 @@ def parseHeartrateData(heartrate_data):
 
 def main(json_raw, stream_parameters):
     parsed_data = parseHeartrateData(json_raw)
-    parsed_data["timestamp"] = 0 # this column is added at readable_datetime.R because we neeed to take into account multiple timezones
-    if pd.api.types.is_datetime64_any_dtype( parsed_data['local_date_time']):
-        parsed_data['local_date_time'] = parsed_data['local_date_time'].dt.strftime('%Y-%m-%d %H:%M:%S')
-    return(parsed_data)
+    return parsed_data

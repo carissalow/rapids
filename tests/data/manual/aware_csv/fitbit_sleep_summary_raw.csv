@@ -1,0 +1,6 @@
+device_id,efficiency,minutes_after_wakeup,minutes_asleep,minutes_awake,minutes_to_fall_asleep,minutes_in_bed,is_main_sleep,type,start_test_time,end_test_time
+fitbit,90,0,309,51,0,360,1,stages,Fri 20:00:00,Sat 02:00:00
+fitbit,86,2,90,20,10,120,0,classic,Sat 04:00:00,Sat 06:00:00
+fitbit,88,0,88,30,2,120,0,classic,Sat 13:00:00,Sat 15:00:00
+fitbit,96,1,608,52,0,660,1,stages,Sun 01:00:00,Sun 12:00:00
+fitbit,94,1,430,50,0,480,1,stages,Sun 23:00:00,Mon 07:00:00

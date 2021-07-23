@@ -26,9 +26,8 @@ barnett_daily_features <- function(snakemake){
   location <- location %>% 
     filter(accuracy < accuracy_limit) %>% 
     mutate(is_daily = str_detect(assigned_segments, paste0(".*#", datetime_start_regex, ",", datetime_end_regex, ".*")))
-    
   
-  if(nrow(location) == 0 || all(location$is_daily == FALSE) || (max(location$timestamp) - min(location$timestamp) < 86400000)){
+  if(nrow(segment_labels) == 0 || nrow(location) == 0 || all(location$is_daily == FALSE) || (max(location$timestamp) - min(location$timestamp) < 86400000)){
     warning("Barnett's location features cannot be computed for data or time segments that do not span one or more entire days (00:00:00 to 23:59:59). Values below point to the problem:",
             "\nLocation data rows within accuracy: ", nrow(location %>% filter(accuracy < accuracy_limit)),
             "\nLocation data rows within a daily time segment: ", nrow(filter(location, is_daily)),

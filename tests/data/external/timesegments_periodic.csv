@@ -1,0 +1,5 @@
+label,start_time,length,repeats_on,repeats_value
+morning,06:00:00,5H 59M 59S,every_day,0
+daily,00:00:00,23H 59M 59S,every_day,0
+threeday,00:00:00,71H 59M 59S,every_day,0
+weekend,00:00:00,71H 59M 59S,wday,5

@@ -95,7 +95,7 @@ def ownership_based_on_clustering(bt_frequency):
     return bt_frequency[["bt_address", "own_device"]]
 
 def mostLeastScannedDevices(devices):
-    device_counts = devices["bt_address"].value_counts()
+    device_counts = devices["bt_address"].value_counts().sort_index(ascending=False).sort_values(ascending=False)
     return ("","") if (len(device_counts) == 0) else (device_counts.idxmax(), device_counts.idxmin())
 
 def validate_requested_features(provider):
@@ -120,8 +120,8 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     feature_prefix = {"DEVICES":"", "SCANS_MOST_FREQUENT_DEVICE":"countscansmostfrequentdevice", "SCANS_LEAST_FREQUENT_DEVICE":"countscansleastfrequentdevice"}
     validate_requested_features(provider)
 
-    device_ownership = ownership_based_on_clustering(deviceFrequency(bt_data)).set_index("bt_address")
-    bt_data = bt_data.set_index("bt_address").join(device_ownership, how="left").reset_index()
+    device_ownership = ownership_based_on_clustering(deviceFrequency(bt_data))
+    bt_data = bt_data.merge(device_ownership, how="left", on="bt_address")
     bt_data["own_device"].fillna(0, inplace=True)
     dataset_most_common_device, dataset_least_common_device = mostLeastScannedDevices(bt_data)
     segment_bt_data = filter_data_by_segment(bt_data, time_segment)  

@@ -11,6 +11,10 @@ filter_data_by_segment <- function(data, time_segment){
     mutate(local_segment = str_extract(assigned_segments, paste0("\\[", time_segment, "#", datetime_regex, ",", datetime_regex, ";", timestamp_regex, ",", timestamp_regex, "\\]"))) %>% 
     extract(local_segment, into = c("local_segment", "timestamps_segment"), paste0("\\[(", time_segment, "#", datetime_regex, ",", datetime_regex, ");(", timestamp_regex, ",", timestamp_regex, ")\\]")) %>% 
     select(-assigned_segments)
+  
+  # chunk episodes
+  if (nrow(data) > 0 && all(c("start_timestamp","end_timestamp") %in% colnames(data)) )
+      data <- chunk_episodes(data)
   return(data)
 }
 
@@ -56,6 +60,9 @@ fetch_provider_features <- function(provider, provider_key, sensor_key, sensor_d
         source(provider[["SRC_SCRIPT"]])
         features_function <- match.fun(paste0(tolower(provider_key), "_features"))
         time_segments <- time_segments_labels %>% pull(label)
+        if(length(time_segments) == 0){
+          time_segments <- c("")
+        }
         for (time_segment in time_segments){
             print(paste(rapids_log_tag,"Processing", sensor_key, provider_key, time_segment))
 

@@ -94,7 +94,7 @@ rule unify_ios_android:
 rule process_phone_locations_types:
     input:
         locations = "data/raw/{pid}/phone_locations_raw.csv",
-        phone_sensed_timestamps = "data/interim/{pid}/phone_yielded_timestamps.csv",
+        phone_sensed_timestamps = optional_phone_yield_input_for_locations,
     params:
         consecutive_threshold = config["PHONE_LOCATIONS"]["FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD"],
         time_since_valid_location = config["PHONE_LOCATIONS"]["FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION"],
@@ -120,19 +120,6 @@ rule phone_locations_processed_with_datetime:
         "data/interim/{pid}/phone_locations_processed_with_datetime.csv"
     script:
         "../src/data/datetime/readable_datetime.R"
-
-rule phone_locations_processed_with_datetime_with_home:
-    input:
-        sensor_input = "data/interim/{pid}/phone_locations_processed_with_datetime.csv"
-    params:
-        dbscan_eps = config["PHONE_LOCATIONS"]["HOME_INFERENCE"]["DBSCAN_EPS"],
-        dbscan_minsamples = config["PHONE_LOCATIONS"]["HOME_INFERENCE"]["DBSCAN_MINSAMPLES"],
-        threshold_static = config["PHONE_LOCATIONS"]["HOME_INFERENCE"]["THRESHOLD_STATIC"],
-        clustering_algorithm = config["PHONE_LOCATIONS"]["HOME_INFERENCE"]["CLUSTERING_ALGORITHM"]
-    output: 
-        "data/interim/{pid}/phone_locations_processed_with_datetime_with_home.csv"
-    script:
-        "../src/data/infer_home_location.py"
 
 rule resample_episodes:
     input:
@@ -204,6 +191,17 @@ rule fitbit_readable_datetime:
         "data/raw/{pid}/fitbit_{sensor}_with_datetime.csv"
     script:
         "../src/data/datetime/readable_datetime.R"
+
+rule fitbit_steps_intraday_exclude_sleep:
+    input:
+        sensor_data = "data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv",
+        sleep_data = optional_steps_sleep_input
+    params:
+        exclude_sleep = config["FITBIT_STEPS_INTRADAY"]["EXCLUDE_SLEEP"]
+    output:
+        "data/interim/{pid}/fitbit_steps_intraday_with_datetime_exclude_sleep.csv"
+    script:
+        "../src/data/fitbit_steps_intraday_exclude_sleep.py"
 
 rule empatica_readable_datetime:
     input:

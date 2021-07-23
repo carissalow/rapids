@@ -1,0 +1,3 @@
+"local_segment","local_segment_label","local_segment_start_datetime","local_segment_end_datetime","phone_screen_rapids_countepisodeunlock","phone_screen_rapids_sumdurationunlock","phone_screen_rapids_maxdurationunlock","phone_screen_rapids_mindurationunlock","phone_screen_rapids_avgdurationunlock","phone_screen_rapids_stddurationunlock","phone_screen_rapids_firstuseafter00unlock"
+"beforeMarchEvent#2020-03-07 16:00:00,2020-03-08 15:00:00","beforeMarchEvent","2020-03-07 16:00:00","2020-03-08 15:00:00",5,46.0158833333333,29.9995,2.99995,9.20317666666666,11.6894775193785,960
+"beforeNovemberEvent#2020-10-31 16:00:00,2020-11-01 13:00:00","beforeNovemberEvent","2020-10-31 16:00:00","2020-11-01 13:00:00",5,46.0158833333333,29.9995,2.99995,9.20317666666666,11.6894775193785,960

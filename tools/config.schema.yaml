@@ -346,8 +346,15 @@ properties:
                     uniqueItems: True
                     items:
                       type: string
+                  CUSTOM_CATEGORIES:
+                    type: ["null", object]
+                    additionalProperties: 
+                       type: array
+                       uniqueItems: True
+                       items:
+                        type: string
                   MULTIPLE_CATEGORIES:
-                    type: object
+                    type: ["null", object]
                     additionalProperties: 
                        type: array
                        uniqueItems: True
@@ -369,10 +376,27 @@ properties:
                     items:
                       type: string
                   FEATURES:
-                    uniqueItems: True
-                    items:
-                      type: string
-                      enum: ["count", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+                    type: ["null", object]
+                    required: [APP_EVENTS, APP_EPISODES]
+                    properties:
+                      APP_EVENTS:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["countevent", "timeoffirstuse", "timeoflastuse", "frequencyentropy"]
+                      APP_EPISODES:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["countepisode", "minduration", "maxduration", "meanduration", "sumduration"]
+                  IGNORE_EPISODES_SHORTER_THAN:
+                    type: integer
+                    minimum: 0
+                  IGNORE_EPISODES_LONGER_THAN:
+                    type: integer
+                    minimum: 0
 
   PHONE_APPLICATIONS_NOTIFICATIONS:
     type: object
@@ -612,22 +636,6 @@ properties:
       FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION:
         type: integer
         exclusiveMinimum: 0
-      HOME_INFERENCE:
-        type: object
-        required: [DBSCAN_EPS, DBSCAN_MINSAMPLES, THRESHOLD_STATIC, CLUSTERING_ALGORITHM]
-        properties:
-          DBSCAN_EPS:
-            type: integer
-            exclusiveMinimum: 0
-          DBSCAN_MINSAMPLES:
-            type: integer
-            exclusiveMinimum: 0
-          THRESHOLD_STATIC:
-            type: integer
-            exclusiveMinimum: 0
-          CLUSTERING_ALGORITHM:
-            type: string
-            enum: ["DBSCAN", "OPTICS"]
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -640,7 +648,7 @@ properties:
                       uniqueItems: True
                       items:
                         type: string
-                        enum: [locationvariance,loglocationvariance,totaldistance,averagespeed,varspeed,circadianmovement,numberofsignificantplaces,numberlocationtransitions,radiusgyration,timeattop1location,timeattop2location,timeattop3location,movingtostaticratio,outlierstimepercent,maxlengthstayatclusters,minlengthstayatclusters,meanlengthstayatclusters,stdlengthstayatclusters,locationentropy,normalizedlocationentropy,timeathome]
+                        enum: [locationvariance,loglocationvariance,totaldistance,avgspeed,varspeed,numberofsignificantplaces,numberlocationtransitions,radiusgyration,timeattop1location,timeattop2location,timeattop3location,movingtostaticratio,outlierstimepercent,maxlengthstayatclusters,minlengthstayatclusters,avglengthstayatclusters,stdlengthstayatclusters,locationentropy,normalizedlocationentropy,timeathome,homelabel]
                     ACCURACY_LIMIT:
                       type: integer
                       exclusiveMinimum: 0
@@ -656,17 +664,23 @@ properties:
                     MAXIMUM_ROW_GAP:
                       type: integer
                       exclusiveMinimum: 0
-                    MAXIMUM_ROW_DURATION:
-                      type: integer
-                      exclusiveMinimum: 0
                     MINUTES_DATA_USED:
                       type: boolean
                     CLUSTER_ON:
                       type: string
-                      enum: ["PARTICIPANT_DATASET", "TIME_SEGMENT"]
+                      enum: ["PARTICIPANT_DATASET", "TIME_SEGMENT", "TIME_SEGMENT_INSTANCE"]
+                    INFER_HOME_LOCATION_STRATEGY:
+                      type: string
+                      enum: ["DORYAB_STRATEGY", "SUN_LI_VEGA_STRATEGY"]
+                    MINIMUM_DAYS_TO_DETECT_HOME_CHANGES:
+                      type: integer
+                      minimum: 0
                     CLUSTERING_ALGORITHM:
                       type: string
                       enum: ["DBSCAN", "OPTICS"]
+                    RADIUS_FOR_HOME:
+                      type: integer
+                      exclusiveMinimum: 0
                     
           BARNETT:
             allOf:
@@ -827,22 +841,44 @@ properties:
           type: string
         fitbitjson_mysql:
           type: object
-          required: [DATABASE_GROUP, SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]
+          required: [DATABASE_GROUP, SLEEP_SUMMARY_LAST_NIGHT_END]
           properties:
             DATABASE_GROUP:
               type: string
-            SLEEP_SUMMARY_EPISODE_DAY_ANCHOR:
-              type: string
-              enum: ["start", "end"]
+            SLEEP_SUMMARY_LAST_NIGHT_END:
+              type: number
+              minimum: 0
+              maximum: 1439
         fitbitparsed_mysql:
           type: object
-          required: [DATABASE_GROUP, SLEEP_SUMMARY_EPISODE_DAY_ANCHOR]
+          required: [DATABASE_GROUP, SLEEP_SUMMARY_LAST_NIGHT_END]
           properties:
             DATABASE_GROUP:
               type: string
-            SLEEP_SUMMARY_EPISODE_DAY_ANCHOR:
+            SLEEP_SUMMARY_LAST_NIGHT_END:
+              type: number
+              minimum: 0
+              maximum: 1439
+        fitbitjson_csv:
+          type: object
+          required: [FOLDER, SLEEP_SUMMARY_LAST_NIGHT_END]
+          properties:
+            FOLDER:
               type: string
-              enum: ["start", "end"]
+            SLEEP_SUMMARY_LAST_NIGHT_END:
+              type: number
+              minimum: 0
+              maximum: 1439
+        fitbitparsed_csv:
+          type: object
+          required: [FOLDER, SLEEP_SUMMARY_LAST_NIGHT_END]
+          properties:
+            FOLDER:
+              type: string
+            SLEEP_SUMMARY_LAST_NIGHT_END:
+              type: number
+              minimum: 0
+              maximum: 1439
   
   FITBIT_DATA_YIELD:
     type: object
@@ -886,7 +922,7 @@ properties:
                       uniqueItems: True
                       items:
                         type: string
-                        enum: ["maxrestinghr", "minrestinghr", "avgrestinghr", "medianrestinghr", "moderestinghr", "stdrestinghr", "diffmaxmoderestinghr", "diffminmoderestinghr", "entropyrestinghr"]
+                        enum: ["maxrestinghr", "minrestinghr", "avgrestinghr", "medianrestinghr", "moderestinghr", "stdrestinghr", "diffmaxmoderestinghr", "diffminmoderestinghr", "entropyrestinghr", "sumcaloriesoutofrange", "maxcaloriesoutofrange", "mincaloriesoutofrange", "avgcaloriesoutofrange", "mediancaloriesoutofrange", "stdcaloriesoutofrange", "entropycaloriesoutofrange", "sumcaloriesfatburn", "maxcaloriesfatburn", "mincaloriesfatburn", "avgcaloriesfatburn", "mediancaloriesfatburn", "stdcaloriesfatburn", "entropycaloriesfatburn", "sumcaloriescardio", "maxcaloriescardio", "mincaloriescardio", "avgcaloriescardio", "mediancaloriescardio", "stdcaloriescardio", "entropycaloriescardio", "sumcaloriespeak", "maxcaloriespeak", "mincaloriespeak", "avgcaloriespeak", "mediancaloriespeak", "stdcaloriespeak", "entropycaloriespeak"]
 
   FITBIT_HEARTRATE_INTRADAY:
     type: object
@@ -926,7 +962,7 @@ properties:
                     uniqueItems: True
                     items:
                       type: string
-                      enum: ["countepisode", "avgefficiency", "sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgdurationafterwakeup", "avgdurationasleep", "avgdurationawake", "avgdurationtofallasleep", "avgdurationinbed"]
+                      enum: ["firstwaketime", "lastwaketime", "firstbedtime", "lastbedtime", "countepisode", "avgefficiency", "sumdurationafterwakeup", "sumdurationasleep", "sumdurationawake", "sumdurationtofallasleep", "sumdurationinbed", "avgdurationafterwakeup", "avgdurationasleep", "avgdurationawake", "avgdurationtofallasleep", "avgdurationinbed"]
                   SLEEP_TYPES:
                     type: array
                     uniqueItems: True
@@ -951,10 +987,8 @@ properties:
               - properties:
                   FEATURES:
                     type: object
-                    required: [LEVELS_AND_TYPES_COMBINING_ALL, LEVELS_AND_TYPES, RATIOS_TYPE, RATIOS_SCOPE, ROUTINE]
+                    required: [LEVELS_AND_TYPES, RATIOS_TYPE, RATIOS_SCOPE]
                     properties:
-                      LEVELS_AND_TYPES_COMBINING_ALL:
-                        type: boolean
                       LEVELS_AND_TYPES:
                         type: array
                         uniqueItems: True
@@ -973,16 +1007,12 @@ properties:
                         items:
                           type: string
                           enum: [ACROSS_LEVELS, ACROSS_TYPES, WITHIN_LEVELS, WITHIN_TYPES]
-                      ROUTINE:
-                        type: array
-                        uniqueItems: True
-                        items:
-                          type: string
-                          enum: [starttimefirstmainsleep, endtimelastmainsleep, starttimefirstnap, endtimelastnap]
                   SLEEP_LEVELS:
                     type: object
-                    required: [CLASSIC, STAGES, UNIFIED]
+                    required: [INCLUDE_ALL_GROUPS, CLASSIC, STAGES, UNIFIED]
                     properties:
+                      INCLUDE_ALL_GROUPS:
+                        type: boolean
                       CLASSIC:
                         type: array
                         uniqueItems: True
@@ -1006,14 +1036,7 @@ properties:
                     uniqueItems: True
                     items:
                       type: string
-                      enum: [main, nap]
-                  INCLUDE_SLEEP_LATER_THAN:
-                      type: number
-                      minimum: 0
-                      maximum: 1439
-                  REFERENCE_TIME:
-                    type: string
-                    enum: [MIDNIGHT, START_OF_THE_SEGMENT]
+                      enum: [main, nap, all]
           PRICE:
             allOf:
               - $ref: "#/definitions/PROVIDER"
@@ -1022,11 +1045,13 @@ properties:
                     uniqueItems: True
                     items:
                       type: string
-                      enum: [avgduration, avgratioduration, avgstarttimeofepisodemain, avgendtimeofepisodemain, avgmidpointofepisodemain, "stdstarttimeofepisodemain", "stdendtimeofepisodemain", "stdmidpointofepisodemain", socialjetlag, meanssdstarttimeofepisodemain, meanssdendtimeofepisodemain, meanssdmidpointofepisodemain, medianssdstarttimeofepisodemain, medianssdendtimeofepisodemain, medianssdmidpointofepisodemain]
+                      enum: [avgduration, avgratioduration, avgstarttimeofepisodemain, avgendtimeofepisodemain, avgmidpointofepisodemain, stdstarttimeofepisodemain, stdendtimeofepisodemain, stdmidpointofepisodemain, socialjetlag, rmssdmeanstarttimeofepisodemain, rmssdmeanendtimeofepisodemain, rmssdmeanmidpointofepisodemain, rmssdmedianstarttimeofepisodemain, rmssdmedianendtimeofepisodemain, rmssdmedianmidpointofepisodemain]
                   SLEEP_LEVELS:
                     type: object
-                    required: [CLASSIC, STAGES, UNIFIED]
+                    required: [INCLUDE_ALL_GROUPS, CLASSIC, STAGES, UNIFIED]
                     properties:
+                      INCLUDE_ALL_GROUPS:
+                        type: boolean
                       CLASSIC:
                         type: array
                         uniqueItems: True
@@ -1051,18 +1076,10 @@ properties:
                     items:
                       type: string
                       enum: [WEEKEND, WEEK, ALL]
-                  GROUP_EPISODES_WITHIN:
-                    type: object
-                    required: [START_TIME, LENGTH]
-                    properties:
-                      START_TIME:
-                        type: number
-                        minimum: 0
-                        maximum: 1439
-                      LENGTH:
-                        type: number
-                        minimum: 0
-                        maximum: 1440
+                  LAST_NIGHT_END:
+                    type: number
+                    minimum: 0
+                    maximum: 1439
         additionalProperties:
           $ref: "#/definitions/PROVIDER"
   
@@ -1087,10 +1104,29 @@ properties:
   
   FITBIT_STEPS_INTRADAY:
     type: object
-    required: [CONTAINER, PROVIDERS]
+    required: [CONTAINER, EXCLUDE_SLEEP, PROVIDERS]
     properties:
       CONTAINER: 
         type: string
+      EXCLUDE_SLEEP:
+        required: [TIME_BASED, FITBIT_BASED]
+        properties:
+          TIME_BASED:
+            required: [EXCLUDE, START_TIME, END_TIME]
+            properties:
+              EXCLUDE:
+                type: boolean
+              START_TIME:
+                type: string
+                pattern: "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+              END_TIME:
+                type: string
+                pattern: "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+          FITBIT_BASED:
+            required: [EXCLUDE]
+            properties:
+              EXCLUDE:
+                type: boolean
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -1125,6 +1161,47 @@ properties:
                   INCLUDE_ZERO_STEP_ROWS:
                     type: boolean    
 
+                    
+  FITBIT_CALORIES_INTRADAY:
+    type: object
+    required: [CONTAINER, PROVIDERS]
+    properties:
+      CONTAINER:
+        type: string
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+              - $ref: "#/definitions/PROVIDER"
+              - properties:
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: [count, sumduration, avgduration, minduration, maxduration, stdduration, starttimefirst, endtimefirst, starttimelast, endtimelast, starttimelongest, endtimelongest, summet, avgmet, maxmet, minmet, stdmet, sumcalories, avgcalories, maxcalories, mincalories, stdcalories]
+                  EPISODE_TYPE:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: [sedentary, lightlyactive, fairlyactive, veryactive, mvpa, lowmet, highmet]
+                  EPISODE_TIME_THRESHOLD: 
+                    type: integer
+                    minimum: 1
+                  EPISODE_MET_THRESHOLD: 
+                    type: integer
+                    minimum: 1
+                  EPISODE_MVPA_CATEGORIES: 
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: [sedentary, lightlyactive, fairlyactive, veryactive]
+                  EPISODE_REFERENCE_TIME:
+                    type: string
+                    enum: [MIDNIGHT, START_OF_THE_SEGMENT]
+        additionalProperties: 
+          $ref: "#/definitions/PROVIDER"
+
   HISTOGRAM_PHONE_DATA_YIELD:
     type: object
     required: [PLOT]
@@ -1134,10 +1211,13 @@ properties:
   
   HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT:
     type: object
-    required: [PLOT]
+    required: [PLOT, TIME]
     properties:
       PLOT:
         type: boolean
+      TIME:
+        type: string
+        enum: [ABSOLUTE_TIME, RELATIVE_TIME]
   
   HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT:
     type: object

@@ -5,7 +5,7 @@ import numpy as np
 def mergeSleepEpisodes(sleep_data, cols_for_groupby):
     sleep_episodes = pd.DataFrame(columns=["device_id", "type_episode_id", "level_episode_id", "level", "unified_level", "is_main_sleep", "type", "timestamp", "duration"])
     if not sleep_data.empty:
-        sleep_data = sleep_data.groupby(by=cols_for_groupby)
+        sleep_data = sleep_data.groupby(by=cols_for_groupby, sort=False)
         sleep_episodes = sleep_data[["timestamp"]].first()
         sleep_episodes["duration"] = sleep_data["duration"].sum()
     

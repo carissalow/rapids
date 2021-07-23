@@ -3,6 +3,15 @@ source("renv/activate.R")
 library(yaml)
 library(dplyr)
 library(readr)
+
+fix_pandas_nan_in_string_columns <- function(column){
+  return(vapply(column, function(value) {
+    if(!is.character(value) && !is.nan(value))
+      stop("The reticulate conversion from the python mutation script to r failed. One or more returned columns are a list with unsupported mixed types. We only handle string columns with np.nan values. Open a GitHub issue or fix the mutation script")
+    return(ifelse(is.nan(value), NA_character_, value))
+    }, FUN.VALUE = character(1)))
+}
+
 # we use reticulate but only load it if we are going to use it to minimize the case when old RAPIDS deployments need to update ther renv
 mutate_data <- function(scripts, data, data_configuration){
   for(script in scripts){
@@ -25,6 +34,7 @@ mutate_data <- function(scripts, data, data_configuration){
       if(py_has_attr(script_functions, "main")){
         message(paste("Applying mutation script", script))
         data <- script_functions$main(data, data_configuration)
+        data <- data %>% mutate(across(where(is.list), fix_pandas_nan_in_string_columns))
       } else{
         stop(paste0("The following mutation script does not have a main function: ", script))
       }
@@ -115,7 +125,7 @@ pull_wearable_data_main <- function(){
   
   pull_data_container <- load_container_script(stream_container)
 
-  for(idx in seq_along(devices)){ #TODO remove length    
+  for(idx in seq_along(devices)){ 
     device <- devices[idx]
     message(paste0("\nProcessing ", sensor, " for ", device))
 

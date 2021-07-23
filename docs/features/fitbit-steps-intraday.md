@@ -5,7 +5,7 @@ Sensor parameters description for `[FITBIT_STEPS_INTRADAY]`:
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
 |`[CONTAINER]`| Container where your steps intraday data is stored, depending on the data stream you are using this can be a database table, a CSV file, etc. |
-
+|`[EXCLUDE_SLEEP]` | Step data will be excluded if it was logged during sleep periods when at least one `[EXCLUDE]` flag is set to `True`. Sleep can be delimited by (1) a fixed period that repeats on every day if `[TIME_BASED][EXCLUDE]` is True or (2) by Fitbit summary sleep episodes if `[FITBIT_BASED][EXCLUDE]` is True. If both are True (3), we use all Fitbit sleep episodes as well as the time-based episodes that do not overlap with any Fitbit episodes. If `[TIME_BASED][EXCLUDE]` is True, make sure Fitbit sleep summary container points to a valid table or file.
 
 ## RAPIDS provider
 
@@ -16,6 +16,8 @@ Sensor parameters description for `[FITBIT_STEPS_INTRADAY]`:
     ```bash
     - data/raw/{pid}/fitbit_steps_intraday_raw.csv
     - data/raw/{pid}/fitbit_steps_intraday_with_datetime.csv
+    - data/raw/{pid}/fitbit_sleep_summary_raw.csv (Only when [EXCLUDE_SLEEP][EXCLUDE]=True and [EXCLUDE_SLEEP][TYPE]=FITBIT_BASED)
+    - data/interim/{pid}/fitbit_steps_intraday_with_datetime_exclude_sleep.csv (Only when [EXCLUDE_SLEEP][EXCLUDE]=True)
     - data/interim/{pid}/fitbit_steps_intraday_features/fitbit_steps_intraday_{language}_{provider_key}.csv
     - data/processed/features/{pid}/fitbit_steps_intraday.csv
     ```
