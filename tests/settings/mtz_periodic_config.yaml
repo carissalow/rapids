@@ -440,7 +440,7 @@ FITBIT_STEPS_SUMMARY:
 
 # See https://www.rapids.science/latest/features/fitbit-steps-intraday/
 FITBIT_STEPS_INTRADAY:
-  CONTAINER: steps_intraday
+  CONTAINER: fitbit_steps_intraday_raw.csv
   EXCLUDE_SLEEP: # you can exclude step data that was logged during sleep periods
     TIME_BASED:
       EXCLUDE: False
@@ -450,7 +450,7 @@ FITBIT_STEPS_INTRADAY:
       EXCLUDE: False
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES:
         STEPS: ["sum", "max", "min", "avg", "std"]
         SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
