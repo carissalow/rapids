@@ -431,10 +431,10 @@ FITBIT_SLEEP_INTRADAY:
 
 # See https://www.rapids.science/latest/features/fitbit-steps-summary/
 FITBIT_STEPS_SUMMARY:
-  CONTAINER: steps_summary
+  CONTAINER: fitbit_steps_summary_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: ["maxsumsteps", "minsumsteps", "avgsumsteps", "mediansumsteps", "stdsumsteps"]
       SRC_SCRIPT: src/features/fitbit_steps_summary/rapids/main.py
 
