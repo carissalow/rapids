@@ -31,7 +31,7 @@ The following is a list of the sensors that testing is currently available.
 | Fitbit Sleep Summary          | RAPIDS   | N        | N         | N     |
 | Fitbit Sleep Intraday         | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Sleep Intraday         | PRICE    | Y        | Y         | Y     |
-| Fitbit Steps Summary          | RAPIDS   | N        | N         | N     |
+| Fitbit Steps Summary          | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Steps Intraday         | RAPIDS   | Y        | Y         | Y     |
 
 
@@ -489,6 +489,27 @@ Description
 - A one-min episode at `2020-03-07 09:00:00` that will be converted to New York time `2020-03-07 12:00:00`
 - One episode before the time switch, `Sun 00:19:00`, and one episode after the time switch, `Sun 09:01:00`
 - Episodes cross two 30-min segments (`Fri 11:59:00` and `Fri 12:00:00`)
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|fitbit|
+|morning|OK|OK|fitbit|
+|daily|OK|OK|fitbit|
+|threeday|OK|OK|fitbit|
+|weekend|OK|OK|fitbit|
+|beforeMarchEvent|OK|OK|fitbit|
+|beforeNovemberEvent|OK|OK|fitbit|
+
+
+## Fitbit Step Summary
+
+Description
+
+- The 4-day raw heartrate summary data is contained in `fitbit_steps_summary_raw.csv`.
+- As heartrate summary is periodic, it only generates results in periodic feature, there will be no result in frequency and event. 
+
 
 Checklist
 
