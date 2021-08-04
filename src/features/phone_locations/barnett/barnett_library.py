@@ -813,7 +813,7 @@ def initialize_params(matrix):
         the_dict = {'ID1': one, "ID2": two, "ID3": three, "ID4":four, "ID1p1": ID1p1, "allts": all_timestamp, "ind11": ind11, "ind12": ind12, "phatall": phatall, "fd": flight_distances, "ft": flight_times, "fa": fa, "fts": flight_timestamps, "pt": pause_times, "pts": pts, "fxs": fxs, "fys": fys, "pxs": pxs, "pys": pys, "allxs": all_x, "allys": all_y}
         return the_dict
     else:
-        print("No flight")
+        print("No mobility flights were found in this participant's location data")
         return None
 
 #simulate_mobility_gaps
