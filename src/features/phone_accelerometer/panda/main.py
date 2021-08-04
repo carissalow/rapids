@@ -60,12 +60,13 @@ def panda_features(sensor_data_files, time_segment, provider, filter_data_by_seg
     if not acc_data.empty:
         acc_data = filter_data_by_segment(acc_data, time_segment)
         
+        
         if not acc_data.empty:
-            acc_features = pd.DataFrame()
             # drop rows where we only have one row per minute (no variance) 
             acc_data = dropRowsWithCertainThreshold(acc_data, 1)
 
             if not acc_data.empty:
+                acc_features = pd.DataFrame()
                 # check if the participant performs exertional activity for each minute
                 acc_minute = pd.DataFrame()
                 acc_minute["isexertionalactivity"] = (acc_data.groupby(["local_timezone", "local_segment", "local_date", "local_hour", "local_minute"])["double_values_0"].var() + acc_data.groupby(["local_timezone", "local_segment", "local_date", "local_hour", "local_minute"])["double_values_1"].var() + acc_data.groupby(["local_timezone", "local_segment", "local_date", "local_hour", "local_minute"])["double_values_2"].var()).apply(lambda x: 1 if x > 0.15 * (9.807 ** 2) else 0)
@@ -83,7 +84,7 @@ def panda_features(sensor_data_files, time_segment, provider, filter_data_by_seg
                 acc_features = statsFeatures(nonexertionalactivity_episodes, features_to_compute_nonexertionalactivityepisode, "durationnonexertionalactivityepisode", acc_features)
 
                 acc_features[[colname for colname in acc_features.columns if "std" not in colname]] = acc_features[[colname for colname in acc_features.columns if "std" not in colname]].fillna(0)
-            
+
             acc_features = acc_features.reset_index()
 
     return acc_features
