@@ -22,40 +22,42 @@ def run_barnett_features_for_rapids(input_dataframe, accuracy_limit=51.0, timezo
     lonlat, r, w = preprocessing(data_frame, interval=interval, acc_threshold=accuracy_limit, r=r, w=w, tint_m=tint_m, tint_k=tint_k)
     mobmatmiss = convert_to_flights_pauses(lonlat, r, w)
     mobmat = guess_pause(mobmatmiss, min_pause_dur, min_pause_dist)
-    obj = initialize_params(mobmat) 
-    lsmf = []
-    lssigloc = []
-    for i in range(n_reps):
-        print("Sim #: ", i+1)
-        out3 = simulate_mobility_gaps(mobmat, obj, wtype, spread_pars)
-        out3 = np.array(out3)
-        IDundef=np.where(out3[:,0]==3)[0]
-
-        if len(IDundef) > 0:            
-            out3 = np.delete(out3, IDundef,axis=0)
-        obj3 = initialize_params(out3)
-
-        output_features, slout, row_names = get_mobility_features(out3, obj3, mobmatmiss, timezone, center_rad, interval)
-        lsmf.append(output_features)
-        lssigloc.append(slout)
-
-    #get average
-    np_lsmf = np.array((lsmf))
-    avg_output_features = [] #convert to pandas dataframe and then return this
-    for j in range(len(row_names)):
-        temp_avg = []
-        for i in range(n_reps):
-            temp_avg.append(np_lsmf[i][j])
-        avg_output_features.append(np.mean(temp_avg, axis=0))
-    
+    obj = initialize_params(mobmat)
     data_for_pandas = []
-    for idx, row in enumerate(avg_output_features):
-        date = row_names[idx]
-        date_str = str(date[0]) + "-" + str(date[1]) + "-" + str(date[2])
-        features = [date_str]
-        for feature in row:
-            features.append(feature)
-        data_for_pandas.append(features)
+    if obj:
+        lsmf = []
+        lssigloc = []
+        for i in range(n_reps):
+            print("Sim #: ", i+1)
+            out3 = simulate_mobility_gaps(mobmat, obj, wtype, spread_pars)
+            out3 = np.array(out3)
+            IDundef=np.where(out3[:,0]==3)[0]
+
+            if len(IDundef) > 0:            
+                out3 = np.delete(out3, IDundef,axis=0)
+            obj3 = initialize_params(out3)
+
+            output_features, slout, row_names = get_mobility_features(out3, obj3, mobmatmiss, timezone, center_rad, interval)
+            lsmf.append(output_features)
+            lssigloc.append(slout)
+
+        #get average
+        np_lsmf = np.array((lsmf))
+        avg_output_features = [] #convert to pandas dataframe and then return this
+        for j in range(len(row_names)):
+            temp_avg = []
+            for i in range(n_reps):
+                temp_avg.append(np_lsmf[i][j])
+            avg_output_features.append(np.mean(temp_avg, axis=0))
+
+        
+        for idx, row in enumerate(avg_output_features):
+            date = row_names[idx]
+            date_str = str(date[0]) + "-" + str(date[1]) + "-" + str(date[2])
+            features = [date_str]
+            for feature in row:
+                features.append(feature)
+            data_for_pandas.append(features)
 
     column_names = ["local_date", "hometime", "disttravelled", "rog", "maxdiam", "maxhomedist", "siglocsvisited", "avgflightlen", "stdflightlen", "avgflightdur", "stdflightdur", "probpause", "siglocentropy", "minsmissing", "circdnrtn", "wkenddayrtn"]
     df = pd.DataFrame(data_for_pandas, columns = column_names)
@@ -533,7 +535,7 @@ def collapse_pause_in_matrix(matrix, flatmat):
     else:
         output_mat = []
         if flatmat[0][0] > 1:            
-            output_mat = matrix[0:flatmat[0][0]-1,]        
+            output_mat = list(matrix[0:flatmat[0][0]-1,])
 
         for i in range(len(flatmat)):
             start_idx = flatmat[i][0]
@@ -733,82 +735,86 @@ def initialize_params(matrix):
     two = np.where(np_matrix[:,0] == 2)
     three = np.where(np_matrix[:,0] == 3)
     four = np.where(np_matrix[:,0] == 4)
-
-    ID1p1 = one[0]+1
-    condition1 = one[0][len(one[0])-1]
-    if len(one[0]) > 0 and condition1 == len(np_matrix)-1:
-        ID1p1 = ID1p1[:len(ID1p1)-1]    
-    all_timestamp = np.apply_along_axis(np.mean, 1, np_matrix[:,[3,6]])    
-    all_x = np_matrix[:, 1]
-    all_y = np_matrix[:, 2]
-
-    #which code 1 is followed by 1
-    ind11 = ID1p1[np.where(np_matrix[ID1p1,0] == 1)]    
-
-    #which flight(1) followed by pause (2)
-    ind12 = ID1p1[np.where(np_matrix[ID1p1,0] == 2)]
-
-    l1 = len(ind11)
-    l2 = len(ind12)
-
-    if (l1 + l2) > 0:
-        phatall = l2/(l1+l2)
     
-    if (l1+l2) == 0:
-        phatall = len(two)/(len(one) + len(two))
+    if len(one) > 1:
+        ID1p1 = one[0]+1
+        condition1 = one[0][len(one[0])-1]
+        if len(one[0]) > 0 and condition1 == len(np_matrix)-1:
+            ID1p1 = ID1p1[:len(ID1p1)-1]    
+        all_timestamp = np.apply_along_axis(np.mean, 1, np_matrix[:,[3,6]])    
+        all_x = np_matrix[:, 1]
+        all_y = np_matrix[:, 2]
+
+        #which code 1 is followed by 1
+        ind11 = ID1p1[np.where(np_matrix[ID1p1,0] == 1)]    
+
+        #which flight(1) followed by pause (2)
+        ind12 = ID1p1[np.where(np_matrix[ID1p1,0] == 2)]
+
+        l1 = len(ind11)
+        l2 = len(ind12)
+
+        if (l1 + l2) > 0:
+            phatall = l2/(l1+l2)
+
+        if (l1+l2) == 0:
+            phatall = len(two)/(len(one) + len(two))
 
 
-    # ------ flight distances & times & pauses -------
-    flight_distances = []
-    flight_times = []
-    pause_times = []
-    
-    for row in np_matrix:
-        if row[0] == 1:
-            distance = np.sqrt((row[1]-row[4])**2 + (row[2] - row[5])**2)
-            flight_distances.append(distance)
-            times = row[6] - row[3]
-            flight_times.append(times)
-        if row[0] == 2:
-            pause = row[6] - row[3]
-            pause_times.append(pause)
-    
-    fxs = np_matrix[one][:,1]
-    fys = np_matrix[one][:,2]
+        # ------ flight distances & times & pauses -------
+        flight_distances = []
+        flight_times = []
+        pause_times = []
 
-    fa = np.zeros(len(one[0]))
-    
-    yvals = np_matrix[one][:,5] - np_matrix[one][:,2]
-    xvals = np_matrix[one][:,4] - np_matrix[one][:,1]
+        for row in np_matrix:
+            if row[0] == 1:
+                distance = np.sqrt((row[1]-row[4])**2 + (row[2] - row[5])**2)
+                flight_distances.append(distance)
+                times = row[6] - row[3]
+                flight_times.append(times)
+            if row[0] == 2:
+                pause = row[6] - row[3]
+                pause_times.append(pause)
 
-    IDyg0 = np.where(yvals[:] >=0)[0]
-    IDxg0 = np.where(xvals[:] >=0)[0]
-    IDyl0 = np.where(yvals[:] < 0)[0]
-    IDxl0 = np.where(xvals[:] < 0)[0]
+        fxs = np_matrix[one][:,1]
+        fys = np_matrix[one][:,2]
 
-    IDgg = list(set(IDyg0) & set(IDxg0))
-    IDlg = list(set(IDyg0) & set(IDxl0))
-    IDgl = list(set(IDyl0) & set(IDxg0))
-    IDll = list(set(IDyl0) & set(IDxl0))
-    IDgg.sort()
-    IDlg.sort()
-    IDgl.sort()
-    IDll.sort()
-    
-    fa[IDgg] = np.arctan(list(yvals[IDgg]/xvals[IDgg]))
-    fa[IDgl] = np.arctan(list(yvals[IDgl]/xvals[IDgl]))+2*math.pi
-    fa[IDlg] = np.arctan(list(yvals[IDlg]/xvals[IDlg])) +math.pi
-    fa[IDll] = np.arctan(list(yvals[IDll]/xvals[IDll])) +math.pi
+        fa = np.zeros(len(one[0]))
 
-    #flight timestamps
-    flight_timestamps = np_matrix[one][:,3]
+        yvals = np_matrix[one][:,5] - np_matrix[one][:,2]
+        xvals = np_matrix[one][:,4] - np_matrix[one][:,1]
 
-    pxs = np_matrix[two][:,1] #x
-    pys = np_matrix[two][:,2] #y
-    pts = np_matrix[two][:,3] #pause timestamps
+        IDyg0 = np.where(yvals[:] >=0)[0]
+        IDxg0 = np.where(xvals[:] >=0)[0]
+        IDyl0 = np.where(yvals[:] < 0)[0]
+        IDxl0 = np.where(xvals[:] < 0)[0]
 
-    the_dict = {'ID1': one, "ID2": two, "ID3": three, "ID4":four, "ID1p1": ID1p1, "allts": all_timestamp, "ind11": ind11, "ind12": ind12, "phatall": phatall, "fd": flight_distances, "ft": flight_times, "fa": fa, "fts": flight_timestamps, "pt": pause_times, "pts": pts, "fxs": fxs, "fys": fys, "pxs": pxs, "pys": pys, "allxs": all_x, "allys": all_y}
-    return the_dict
+        IDgg = list(set(IDyg0) & set(IDxg0))
+        IDlg = list(set(IDyg0) & set(IDxl0))
+        IDgl = list(set(IDyl0) & set(IDxg0))
+        IDll = list(set(IDyl0) & set(IDxl0))
+        IDgg.sort()
+        IDlg.sort()
+        IDgl.sort()
+        IDll.sort()
+
+        fa[IDgg] = np.arctan(list(yvals[IDgg]/xvals[IDgg]))
+        fa[IDgl] = np.arctan(list(yvals[IDgl]/xvals[IDgl]))+2*math.pi
+        fa[IDlg] = np.arctan(list(yvals[IDlg]/xvals[IDlg])) +math.pi
+        fa[IDll] = np.arctan(list(yvals[IDll]/xvals[IDll])) +math.pi
+
+        #flight timestamps
+        flight_timestamps = np_matrix[one][:,3]
+
+        pxs = np_matrix[two][:,1] #x
+        pys = np_matrix[two][:,2] #y
+        pts = np_matrix[two][:,3] #pause timestamps
+
+        the_dict = {'ID1': one, "ID2": two, "ID3": three, "ID4":four, "ID1p1": ID1p1, "allts": all_timestamp, "ind11": ind11, "ind12": ind12, "phatall": phatall, "fd": flight_distances, "ft": flight_times, "fa": fa, "fts": flight_timestamps, "pt": pause_times, "pts": pts, "fxs": fxs, "fys": fys, "pxs": pxs, "pys": pys, "allxs": all_x, "allys": all_y}
+        return the_dict
+    else:
+        print("No flight")
+        return None
 
 #simulate_mobility_gaps
 #impute the missing gaps hot-tech computation
