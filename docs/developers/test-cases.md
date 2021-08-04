@@ -7,8 +7,8 @@ The following is a list of the sensors that testing is currently available.
 
 | Sensor                        | Provider | Periodic | Frequency | Event |
 |-------------------------------|----------|----------|-----------|-------|
-| Phone Accelerometer           | Panda    | N        | N         | N     |
-| Phone Accelerometer           | RAPIDS   | N        | N         | N     |
+| Phone Accelerometer           | Panda    | Y        | Y         | Y     |
+| Phone Accelerometer           | RAPIDS   | Y        | Y         | Y     |
 | Phone Activity Recognition    | RAPIDS   | Y        | Y         | Y     |
 | Phone Applications Foreground | RAPIDS   | Y        | Y         | Y     |
 | Phone Battery                 | RAPIDS   | Y        | Y         | N     |
@@ -35,9 +35,34 @@ The following is a list of the sensors that testing is currently available.
 | Fitbit Steps Intraday         | RAPIDS   | Y        | Y         | Y     |
 
 
+## Accelerometer
+
+Description
+
+- The raw accelerometer data file, `phone_accelerometer_raw.csv`, contains data for 4 separate days
+- One episode for each daily segment (night, morning, afternoon and evening)
+- Two episodes locate in the same 30-min segment (`Fri 00:15:00` and `Fri 00:21:21`)
+- Two episodes locate in the same daily segment (`Fri 00:15:00` and `Fri 18:12:00`)
+- One episode before the time switch (`Sun 00:02:00`) and one episode after the time switch (`Sun 04:18:00`)
+- Multiple episodes within one min which cause variance in magnitude (`Fri 00:10:25`, `Fri 00:10:27` and `Fri 00:10:46`)
+
+Checklist:
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|android, ios|
+|morning|OK|OK|android, ios|
+|daily|OK|OK|android, ios|
+|threeday|OK|OK|android, ios|
+|weekend|OK|OK|android, ios|
+|beforeMarchEvent|OK|OK|android, ios|
+|beforeNovemberEvent|OK|OK|android, ios|
+
 ## Messages (SMS)
 
-- The raw message data file, `phone_messages_raw.csv`, contains data for 4 separate days.
+Description
+
+- The raw message data file, `phone_messages_raw.csv`, contains data for 4 separate days
 - One episode for each daily segment (night, morning, afternoon and evening)
 - Two `sent` episodes locate in the same 30-min segment (`Fri 16:08:03.000` and `Fri 16:19:35.000`)
 - Two `received` episodes locate in the same 30-min segment (`Sat 06:45:05.000` and `Fri 06:45:05.000`)

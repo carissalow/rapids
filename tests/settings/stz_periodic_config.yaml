@@ -62,15 +62,15 @@ PHONE_DATA_STREAMS:
 
 # https://www.rapids.science/latest/features/phone-accelerometer/
 PHONE_ACCELEROMETER:
-  CONTAINER: accelerometer
+  CONTAINER: phone_accelerometer_raw.csv
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
       SRC_SCRIPT: src/features/phone_accelerometer/rapids/main.py
     
     PANDA:
-      COMPUTE: False
+      COMPUTE: True
       VALID_SENSED_MINUTES: False
       FEATURES:
         exertional_activity_episode: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
