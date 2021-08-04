@@ -211,7 +211,7 @@ PHONE_CONVERSATION:
 
 # See https://www.rapids.science/latest/features/phone-data-yield/
 PHONE_DATA_YIELD:
-  SENSORS: [PHONE_LOCATIONS]
+  SENSORS: [PHONE_SCREEN, PHONE_LIGHT]
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -365,7 +365,7 @@ FITBIT_DATA_YIELD:
   SENSOR: FITBIT_HEARTRATE_INTRADAY
   PROVIDERS:
     RAPIDS:
-      COMPUTE: False
+      COMPUTE: True
       FEATURES: [ratiovalidyieldedminutes, ratiovalidyieldedhours]
       MINUTE_RATIO_THRESHOLD_FOR_VALID_YIELDED_HOURS: 0.5 #  0 to 1, minimum percentage of valid minutes in an hour to be considered valid.
       SRC_SCRIPT: src/features/fitbit_data_yield/rapids/main.R

@@ -16,7 +16,7 @@ The following is a list of the sensors that testing is currently available.
 | Phone Bluetooth               | RAPIDS   | Y        | Y         | Y     |
 | Phone Calls                   | RAPIDS   | Y        | Y         | Y     |
 | Phone Conversation            | RAPIDS   | Y        | Y         | Y     |
-| Phone Data Yield              | RAPIDS   | N        | N         | N     |
+| Phone Data Yield              | RAPIDS   | Y        | Y         | Y     |
 | Phone Light                   | RAPIDS   | Y        | Y         | Y     |
 | Phone Locations               | Doryab   | N        | N         | N     |
 | Phone Locations               | Barnett  | N        | N         | N     |
@@ -25,7 +25,7 @@ The following is a list of the sensors that testing is currently available.
 | Phone WiFi Connected          | RAPIDS   | Y        | Y         | Y     |
 | Phone WiFi Visible            | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Calories Intraday      | RAPIDS   | Y        | Y         | Y     |
-| Fitbit Data Yield             | RAPIDS   | N        | N         | N     |
+| Fitbit Data Yield             | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Heart Rate Summary     | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Heart Rate Intraday    | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Sleep Summary          | RAPIDS   | N        | N         | N     |
@@ -379,6 +379,27 @@ screen unlock session. In the screen unlock episode starting from Fri 05:56:51, 
 -   The screen unlock episode starting from Mon 21:05:00 and Sat 17:48:01 checks if the screen lock marks the end of episode for that particular app which was launched a few milliseconds to 8 mins before the screen lock.
 -   Finally, since application foreground is only for Android devices, this feature is also for Android devices only. All other files are empty data files
 
+
+## Data Yield
+
+Description
+
+- Two sensors were picked for testing, `phone_screen` and `phone_light`. `phone_screen` is event based and `phone_light` is sampling at regular frequency
+
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|android, ios|
+|morning|OK|OK|android, ios|
+|daily|OK|OK|android, ios|
+|threeday|OK|OK|android, ios|
+|weekend|OK|OK|android, ios|
+|beforeMarchEvent|OK|OK|android, ios|
+|beforeNovemberEvent|OK|OK|android, ios|
+
+
 ## Fitbit Calories Intraday
 
 Description
@@ -535,6 +556,20 @@ Description
 - The 4-day raw heartrate summary data is contained in `fitbit_steps_summary_raw.csv`.
 - As heartrate summary is periodic, it only generates results in periodic feature, there will be no result in frequency and event. 
 
+
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|fitbit|
+|morning|OK|OK|fitbit|
+|daily|OK|OK|fitbit|
+|threeday|OK|OK|fitbit|
+|weekend|OK|OK|fitbit|
+|beforeMarchEvent|OK|OK|fitbit|
+|beforeNovemberEvent|OK|OK|fitbit|
+
+## Fitbit Data Yield
 
 Checklist
 
