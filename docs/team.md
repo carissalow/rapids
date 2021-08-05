@@ -88,6 +88,17 @@ If you are interested in contributing feel free to submit a pull request or cont
 ??? abstract "About"
     University of Virginia
 
+###  Ian Barnett
+??? abstract "About"
+    University of Pennsylvania
+    - [Profile](https://www.dbei.med.upenn.edu/bio/ian-j-barnett-phd)
+
+
+###  Shirley Anugrah Hayati
+??? abstract "About"
+    University of Pennsylvania
+    - [Personal Website](https://www.shirley.id/)
+
 ## Advisors
 
 ### Afsaneh Doryab
