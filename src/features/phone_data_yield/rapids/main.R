@@ -21,8 +21,8 @@ compute_data_yield_features <- function(data, feature_name, time_segment, provid
               valid_yielded_hours = sum(valid_hour == TRUE) / 1.0,
               duration_minutes = first(duration_minutes),
               duration_hours = duration_minutes / 60.0,
-              ratiovalidyieldedminutes = valid_yielded_minutes / duration_minutes,
-              ratiovalidyieldedhours = if_else(duration_hours > 1, valid_yielded_hours / duration_hours, valid_yielded_hours))
+              ratiovalidyieldedminutes = min( valid_yielded_minutes / duration_minutes, 1),
+              ratiovalidyieldedhours = if_else(duration_hours > 1, min( valid_yielded_hours / duration_hours, 1), valid_yielded_hours))  
   return(features)
 }
 
