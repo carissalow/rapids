@@ -245,7 +245,7 @@ Description
 - The 4-day raw light data is contained in `phone_light_raw.csv`
 - One episode for each daily segment (`night`, `morning`, `afternoon` and `evening`)
 - Two episodes locate in the same 30-min segment (`Fri 00:07:27.000` and `Fri 00:12:00.000`)
-- Two episodes locate in the same daily segment (`Fri 01:00:01.000` and `Fri 03:59:59.654`)
+- Two episodes locate in the same daily segment (`Fri 01:00:00` and `Fri 03:59:59.654`)
 - One episode before the time switch (`Sun 00:08:00.000`) and one episode after the time switch (`Sun 05:36:00.000`)
 
 Checklist
@@ -385,6 +385,7 @@ screen unlock session. In the screen unlock episode starting from Fri 05:56:51, 
 Description
 
 - Two sensors were picked for testing, `phone_screen` and `phone_light`. `phone_screen` is event based and `phone_light` is sampling at regular frequency
+- A 31-min episode (from `Fri 01:00:00` to `Fri 01:30:00`) in phone_light data, which is considered as a `validyieldedhours`
 
 
 Checklist
