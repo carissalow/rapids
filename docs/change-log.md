@@ -1,4 +1,9 @@
 # Change Log
+## v1.5.0
+- Update Barnett location features with faster Python implementation
+- Fix rounding bug in data yield features
+- Add tests for data yield, Fitbit and accelerometer features
+- Small fixes of documentation
 ## v1.4.1
 - Update home page
 - Add PHONE_MESSAGES tests

@@ -49,9 +49,21 @@ If you are interested in contributing feel free to submit a pull request or cont
 ### Nikunj Goel
 
 ??? abstract "About"
-    Nik is a graduate student at the University of Pittsburgh pursuing Master of Science in Information Science. He earned his Bachelor of Technology degree in Information Technology from India. He is a Data Enthusiasts and passionate about finding the meaning out of raw data. In a long term, his goal is to create a breakthrough in Data Science and Deep Learning.
+    Nik is a graduate student at the University of Pittsburgh pursuing Master of Science in Information Science. He earned his Bachelor of Technology degree in Information Technology from India. He is a Data Enthusiast and passionate about finding the meaning out of raw data. In a long term, his goal is to create a breakthrough in Data Science and Deep Learning.
 
     - [Linkedin Profile](https://www.linkedin.com/in/nikunjgoel95/)
+
+### Kirtiraj Khandekar
+
+??? abstract "About"
+    Raj is a graduate student at the University of Pittsburgh pursuing Master of Science in Information Science.
+
+### Weiyu Huang
+
+??? abstract "About"
+    Weiyu is a graduate student at the University of Pittsburgh pursuing Master of Science in Information Science.
+
+    - [Github Profile](https://github.com/ChinW97)
 
 ## Community Contributors
 
@@ -89,12 +101,14 @@ If you are interested in contributing feel free to submit a pull request or cont
     University of Virginia
 
 ###  Ian Barnett
+
 ??? abstract "About"
     University of Pennsylvania
     - [Profile](https://www.dbei.med.upenn.edu/bio/ian-j-barnett-phd)
 
 
 ###  Shirley Anugrah Hayati
+
 ??? abstract "About"
     University of Pennsylvania
     - [Personal Website](https://www.shirley.id/)
