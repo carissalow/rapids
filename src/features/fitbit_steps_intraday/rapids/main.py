@@ -87,6 +87,12 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
     intraday_features_to_compute = intraday_features_to_compute_steps + intraday_features_to_compute_sedentarybout + intraday_features_to_compute_activebout
 
+    # exclude rows when the total step count is ZERO during the whole day
+    if (not steps_intraday_data.empty) and (not include_zero_step_rows):
+        dailycountstep = steps_intraday_data.groupby(["local_date"])[["steps"]].sum()
+        zerocountdates = dailycountstep[dailycountstep["steps"] == 0].index.tolist()
+        steps_intraday_data = steps_intraday_data[~steps_intraday_data["local_date"].isin(zerocountdates)]
+
     # extract features from intraday features
     steps_intraday_features = pd.DataFrame(columns=["local_segment"] + intraday_features_to_compute)
     if not steps_intraday_data.empty:
@@ -94,15 +100,5 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
         if not steps_intraday_data.empty:
             steps_intraday_features = extractStepsFeaturesFromIntradayData(steps_intraday_data, threshold_active_bout, intraday_features_to_compute_steps, intraday_features_to_compute_sedentarybout, intraday_features_to_compute_activebout, steps_intraday_features)
-
-    # exclude rows when the total step count is ZERO during the whole day
-    if not include_zero_step_rows:
-        steps_intraday_features.index = steps_intraday_features["local_segment"].apply(lambda segment: segment.split("#")[1][:10])
-
-        steps_intraday_features["dailycountstep"] = steps_intraday_data.groupby(["local_date"])["steps"].sum()
-        steps_intraday_features = steps_intraday_features.query("dailycountstep != 0")
-
-        del steps_intraday_features["dailycountstep"]
-        steps_intraday_features.reset_index(drop=True, inplace=True)
     
     return steps_intraday_features
