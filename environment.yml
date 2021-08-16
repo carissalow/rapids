@@ -1,4 +1,4 @@
-name: rapids202012
+name: rapids202108
 channels:
   - conda-forge
   - defaults
@@ -7,14 +7,14 @@ dependencies:
   - appdirs=1.4.4
   - arrow=0.16.0
   - asn1crypto=1.4.0
-  - astropy=4.2
+  - astropy=4.2.1
   - attrs=20.3.0
   - binaryornot=0.4.4
   - blas=1.0
   - brotlipy=0.7.0
   - bzip2=1.0.8
-  - ca-certificates=2020.12.8
-  - certifi=2020.12.5
+  - ca-certificates=2021.7.5
+  - certifi=2021.5.30
   - cffi=1.14.4
   - chardet=3.0.4
   - click=7.1.2
@@ -42,6 +42,7 @@ dependencies:
   - libffi=3.3
   - libgfortran
   - liblapack=3.8.0
+  - libopenblas=0.3.10
   - libxgboost=0.90
   - lightgbm=3.1.1
   - llvm-openmp=10.0.0
@@ -54,7 +55,8 @@ dependencies:
   - ncurses=6.2
   - numpy=1.19.2
   - numpy-base=1.19.2
-  - openssl=1.1.1i
+  - openblas=0.3.4
+  - openssl=1.1.1k
   - pandas=1.1.5
   - pbr=5.5.1
   - pip=20.3.3
@@ -83,6 +85,7 @@ dependencies:
   - sqlite=3.33.0
   - threadpoolctl=2.1.0
   - tk=8.6.10
+  - tqdm=4.62.0
   - urllib3=1.25.11
   - wheel=0.36.2
   - whichcraft=0.6.1
@@ -106,4 +109,4 @@ dependencies:
     - snakemake==5.30.2
     - toposort==1.5
     - traitlets==4.3.3
-prefix: /usr/local/Caskroom/miniconda/base/envs/rapids202012
+prefix: /usr/local/Caskroom/miniconda/base/envs/rapids202108

@@ -24,9 +24,6 @@ def barnett_daily_features(snakemake):
         warnings.warn("Barnett's location features cannot be computed because there are no rows with an accuracy value lower than ACCURACY_LIMIT: {}".format(accuracy_limit))
         location_features = pd.DataFrame(columns=features_to_compute)
     else:
-        print(location_data)
-        print(nrows)
-        print(loc_daily_data_len)
         location_minutes_used = location_data.groupby(["local_date", "local_hour"])[["local_minute"]].nunique().reset_index().groupby("local_date").sum()[["local_minute"]].rename(columns={"local_minute": "minutes_data_used"})
         timezone = mode(location_data["local_timezone"].values)
         location_df = location_data[["timestamp", "double_latitude", "double_longitude", "double_altitude", "accuracy"]]
