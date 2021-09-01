@@ -181,6 +181,7 @@ PHONE_CALLS:
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
+      FEATURES_TYPE: EPISODES # EVENTS or EPISODES
       CALL_TYPES: [missed, incoming, outgoing]
       FEATURES:
         missed:  [count, distinctcontacts, timefirstcall, timelastcall, countmostfrequentcontact]

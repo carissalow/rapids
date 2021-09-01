@@ -26,6 +26,7 @@ Parameters description for `[PHONE_CALLS][PROVIDERS][RAPIDS]`:
 | Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        | Description |
 |-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |`[COMPUTE]`| Set to `True` to extract `PHONE_CALLS` features from the `RAPIDS` provider|
+|`[FEATURES_TYPE]`| Set to `EPISODES` to extract features based on call episodes or `EVENTS` to extract features based on events.|
 | `[CALL_TYPES]`   | The particular call_type that will be analyzed. The options for this parameter are incoming, outgoing or missed.                                                                                                                                                 |
 | `[FEATURES]`    | Features to be computed for `outgoing`, `incoming`, and `missed` calls. Note that the same features are available for both incoming and outgoing calls, while missed calls has its own set of features. See the tables below. |
 
@@ -60,4 +61,4 @@ Features description for `[PHONE_CALLS][PROVIDERS][RAPIDS]` missed calls:
 !!! note "Assumptions/Observations"
     1. Traces for iOS calls are unique even for the same contact calling a participant more than once which renders `countmostfrequentcontact` meaningless and `distinctcontacts` equal to the total number of traces. 
     2. `[CALL_TYPES]` and `[FEATURES]` keys in `config.yaml` need to match. For example, `[CALL_TYPES]` `outgoing` matches the `[FEATURES]` key `outgoing`
-    3. iOS calls data is transformed to match Android calls data format. See our [algorithm](algorithms/phone-algorithms.md#phone-calls)
+    3. iOS calls data is transformed to match Android calls data format.

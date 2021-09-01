@@ -264,9 +264,17 @@ rule phone_bluetooth_r_features:
     script:
         "../src/features/entry.R"
 
-rule calls_python_features:
+rule calls_episodes:
     input:
-        sensor_data = "data/raw/{pid}/phone_calls_with_datetime.csv",
+        calls = "data/raw/{pid}/phone_calls_raw.csv"
+    output:
+        "data/interim/{pid}/phone_calls_episodes.csv"
+    script:
+        "../src/features/phone_calls/episodes/calls_episodes.py"
+
+rule phone_calls_python_features:
+    input:
+        sensor_data = get_calls_input,
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CALLS"]["PROVIDERS"][wildcards.provider_key.upper()],
@@ -277,9 +285,9 @@ rule calls_python_features:
     script:
         "../src/features/entry.py"
 
-rule calls_r_features:
+rule phone_calls_r_features:
     input:
-        sensor_data = "data/raw/{pid}/phone_calls_with_datetime.csv",
+        sensor_data = get_calls_input,
         time_segments_labels = "data/interim/time_segments/{pid}_time_segments_labels.csv"
     params:
         provider = lambda wildcards: config["PHONE_CALLS"]["PROVIDERS"][wildcards.provider_key.upper()],

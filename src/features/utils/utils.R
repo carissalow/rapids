@@ -1,4 +1,5 @@
 library("stringr")
+library('purrr')
 
 rapids_log_tag <- "RAPIDS:"
 
