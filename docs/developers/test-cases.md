@@ -91,7 +91,7 @@ Description
 - One missed episode, one outgoing episode and one incoming episode on Friday night, morning, afternoon and evening
 - There is at least one episode of each type of phone calls on each day
 - One incoming episode crossing two 30-mins segments
-- One outgoing episode crossing two 30-mins segments 
+- One outgoing episode crossing two 30-mins segments
 - One missed episode before, during and after the `event`
 - There is one incoming episode before, during or after the `event`
 - There is one outcoming episode before, during or after the `event`
@@ -101,8 +101,8 @@ Data format
 
 | Device | Missed | Outgoing | Incoming |
 |-|-|-|-|
-|iOS| 3 | 2 | 1 |
-|Android| 1,4 or 3,4 | 3,2,4 | 1,2,4 |
+|android| 3 | 2 | 1 |
+|ios| 1,4 or 3,4 | 3,2,4 | 1,2,4 |
 
 Note
 When generating test data, all traces for iOS device need to be unique otherwise the episode with duplicate trace will be dropped 
