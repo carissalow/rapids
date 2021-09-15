@@ -7,7 +7,7 @@ Mode <- function(v) {
   uniqv[which.max(tabulate(match(v, uniqv)))]
 }
 
-call_features_of_type <- function(calls, call_type, time_segment, requested_features){
+call_features_of_type <- function(calls, features_type, call_type, time_segment, requested_features){
     # Output dataframe
     features = data.frame(local_segment = character(), stringsAsFactors = FALSE)
 
@@ -21,6 +21,15 @@ call_features_of_type <- function(calls, call_type, time_segment, requested_feat
         return(features)
     if(nrow(calls) < 1)
         return(cbind(features, read.csv(text = paste(paste(call_type, features_to_compute, sep = "_"), collapse = ","), stringsAsFactors = FALSE)))
+
+    if(features_type == "EPISODES"){
+        calls <- calls %>% 
+            mutate(call_duration = (end_timestamp - start_timestamp) / 1000) %>% 
+            separate(local_start_date_time, c("local_date","local_time"), "\\s", remove = FALSE) %>%
+            separate(local_time, c("local_hour", "local_minute"), ":", remove = FALSE, extra = "drop") %>%
+            mutate(local_hour = as.numeric(local_hour),
+                local_minute = as.numeric(local_minute))
+    }
 
     for(feature_name in features_to_compute){
         if(feature_name == "countmostfrequentcontact"){
@@ -62,6 +71,8 @@ call_features_of_type <- function(calls, call_type, time_segment, requested_feat
 rapids_features <- function(sensor_data_files, time_segment, provider){
     calls_data <-  read.csv(sensor_data_files[["sensor_data"]], stringsAsFactors = FALSE)
     calls_data <- calls_data %>% filter_data_by_segment(time_segment)
+
+    features_type <- provider[["FEATURES_TYPE"]]
     call_types = provider[["CALL_TYPES"]]
     call_features <- setNames(data.frame(matrix(ncol=1, nrow=0)), c("local_segment"))
 
@@ -74,7 +85,7 @@ rapids_features <- function(sensor_data_files, time_segment, provider){
         requested_features <- provider[["FEATURES"]][[call_type]]
         calls_of_type <- calls_data %>% filter(call_type == call_type_label)
 
-        features <- call_features_of_type(calls_of_type, call_type, time_segment, requested_features)
+        features <- call_features_of_type(calls_of_type, features_type, call_type, time_segment, requested_features)
         call_features <- merge(call_features, features, all=TRUE)
     }
     call_features <- call_features %>% mutate_at(vars(contains("countmostfrequentcontact") | contains("distinctcontacts") | contains("count")), list( ~ replace_na(., 0)))

@@ -489,6 +489,9 @@ properties:
             allOf:
                 - $ref: "#/definitions/PROVIDER"
                 - properties:
+                    FEATURES_TYPE:
+                      type: string
+                      enum: [EVENTS, EPISODES]
                     CALL_TYPES:
                       type: array
                       items:

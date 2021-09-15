@@ -27,6 +27,12 @@ def get_locations_python_input(wildcards):
     else:
         return "data/interim/{pid}/phone_locations_processed_with_datetime.csv"
 
+def get_calls_input(wildcards):
+    if (wildcards.provider_key.upper() == "RAPIDS") and (config["PHONE_CALLS"]["PROVIDERS"]["RAPIDS"]["FEATURES_TYPE"] == "EPISODES"):
+        return "data/interim/{pid}/phone_calls_episodes_resampled_with_datetime.csv"
+    else:
+        return "data/raw/{pid}/phone_calls_with_datetime.csv"
+
 def find_features_files(wildcards):
     feature_files = []
     for provider_key, provider in config[(wildcards.sensor_key).upper()]["PROVIDERS"].items():
