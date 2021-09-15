@@ -18,7 +18,7 @@ The following is a list of the sensors that testing is currently available.
 | Phone Conversation            | RAPIDS   | Y        | Y         | Y     |
 | Phone Data Yield              | RAPIDS   | Y        | Y         | Y     |
 | Phone Light                   | RAPIDS   | Y        | Y         | Y     |
-| Phone Locations               | Doryab   | N        | N         | N     |
+| Phone Locations               | Doryab   | Y        | Y         | Y     |
 | Phone Locations               | Barnett  | N        | N         | N     |
 | Phone Messages                | RAPIDS   | Y        | Y         | Y     |
 | Phone Screen                  | RAPIDS   | Y        | Y         | Y     |

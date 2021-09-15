@@ -382,7 +382,7 @@ rule phone_locations_add_doryab_extra_columns:
     params:
         provider = config["PHONE_LOCATIONS"]["PROVIDERS"]["DORYAB"]
     output: 
-        "data/interim/{pid}/phone_locations_processed_with_datetime_with_doryab_columns.csv"
+        "data/interim/{pid}/phone_locations_processed_with_datetime_with_doryab_columns_episodes.csv"
     script:
         "../src/features/phone_locations/doryab/add_doryab_extra_columns.py"
 

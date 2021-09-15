@@ -626,7 +626,7 @@ properties:
 
   PHONE_LOCATIONS:
     type: object
-    required: [CONTAINER, LOCATIONS_TO_USE, FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD, PROVIDERS]
+    required: [CONTAINER, LOCATIONS_TO_USE, FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD, FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION, ACCURACY_LIMIT, PROVIDERS]
     properties:
       CONTAINER: 
         type: string
@@ -637,6 +637,9 @@ properties:
         type: integer
         exclusiveMinimum: 0
       FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION:
+        type: integer
+        exclusiveMinimum: 0
+      ACCURACY_LIMIT:
         type: integer
         exclusiveMinimum: 0
       PROVIDERS:
@@ -652,9 +655,6 @@ properties:
                       items:
                         type: string
                         enum: [locationvariance,loglocationvariance,totaldistance,avgspeed,varspeed,numberofsignificantplaces,numberlocationtransitions,radiusgyration,timeattop1location,timeattop2location,timeattop3location,movingtostaticratio,outlierstimepercent,maxlengthstayatclusters,minlengthstayatclusters,avglengthstayatclusters,stdlengthstayatclusters,locationentropy,normalizedlocationentropy,timeathome,homelabel]
-                    ACCURACY_LIMIT:
-                      type: integer
-                      exclusiveMinimum: 0
                     DBSCAN_EPS:
                       type: integer
                       exclusiveMinimum: 0
@@ -695,9 +695,6 @@ properties:
                     items:
                       type: string
                       enum: ["hometime","disttravelled","rog","maxdiam","maxhomedist","siglocsvisited","avgflightlen","stdflightlen","avgflightdur","stdflightdur","probpause","siglocentropy","circdnrtn","wkenddayrtn"]
-                  ACCURACY_LIMIT:
-                    type: integer
-                    exclusiveMinimum: 0
                   IF_MULTIPLE_TIMEZONES:
                     type: string
                     enum: [USE_MOST_COMMON]

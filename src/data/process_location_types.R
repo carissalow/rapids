@@ -6,9 +6,10 @@ library(tidyr)
 consecutive_threshold <- snakemake@params[["consecutive_threshold"]]
 time_since_valid_location <- snakemake@params[["time_since_valid_location"]]
 locations_to_use <- snakemake@params[["locations_to_use"]]
+accuracy_limit <- snakemake@params[["accuracy_limit"]]
 
 locations <- read.csv(snakemake@input[["locations"]]) %>% 
-            filter(double_latitude != 0 & double_longitude != 0) %>% 
+            filter(double_latitude != 0 & double_longitude != 0 & accuracy < accuracy_limit) %>% 
             drop_na(double_longitude, double_latitude) %>% 
             group_by(timestamp) %>% # keep only the row with the best accuracy if two or more have the same timestamp
             filter(accuracy == min(accuracy, na.rm=TRUE)) %>%  
@@ -63,7 +64,7 @@ if(locations_to_use == "ALL"){
             # you can think of consecutive_threshold as the period a location row is valid for
             mutate(limit = pmin(lead(timestamp, default = 9999999999999) - 1, limit + (1000 * 60 * consecutive_threshold)),
                     n_resample = (limit - timestamp)%/%60001,
-                    n_resample = if_else(n_resample == 0, 1, n_resample)) %>% 
+                    n_resample = n_resample + 1) %>% 
             drop_na(double_longitude, double_latitude) %>%
             uncount(weights = n_resample, .id = "id") %>% 
             mutate(provider = if_else(id > 1, "resampled", provider),
