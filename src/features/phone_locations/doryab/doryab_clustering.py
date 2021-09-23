@@ -26,14 +26,14 @@ def meters_to_degrees(distance):
 # Relabel clusters: -1 denotes the outliers (insignificant or rarely visited locations), 1 denotes the most visited significant location, 2 denotes the 2nd most significant location,...
 def label(location_data):
 
-    # Exclude outliers (cluster_label = -1) while counting number of locations in a cluster
-    label2count = pd.DataFrame({"count": location_data["cluster_label"].replace(-1, np.nan).value_counts(ascending=False, sort=True)})
-    # Add the row number as the new cluster label since value_counts() will order it by default
-    label2count["new_cluster_label"] = np.arange(len(label2count)) + 1
+    # Exclude outliers (cluster_label = -1) while calculating the total duration of locations in a cluster
+    label2duration = location_data[["cluster_label", "duration"]].replace(-1, np.nan).groupby("cluster_label")[["duration"]].sum().sort_values(by=["duration"], ascending=False)
+    # Add the row number as the new cluster label
+    label2duration["new_cluster_label"] = np.arange(len(label2duration)) + 1
     # Still use -1 to denote the outliers
-    label2count.loc[-1, "new_cluster_label"] = -1
+    label2duration.loc[-1, "new_cluster_label"] = -1
     # Merge the new cluster label with the original location data
-    location_data = location_data.merge(label2count[["new_cluster_label"]], left_on="cluster_label", right_index=True, how="left")
+    location_data = location_data.merge(label2duration[["new_cluster_label"]], left_on="cluster_label", right_index=True, how="left")
 
     del location_data["cluster_label"]
     location_data.rename(columns={"new_cluster_label": "cluster_label"}, inplace=True)
@@ -54,24 +54,28 @@ def cluster(location_data, clustering_algorithm, **kwargs):
     if location_data.empty:
         return pd.DataFrame(columns=location_data.columns.tolist() + ["is_stationary", "cluster_label"])
     
+    if "duration" not in location_data.columns:
+        # Convert second to minute
+        location_data = location_data.assign(duration=location_data["duration_in_seconds"] / 60)
+
     # Only keep stationary samples for clustering
-    stationary_data = location_data[location_data["is_stationary"] == 1][["double_latitude", "double_longitude", "is_stationary"]]
+    stationary_data = location_data[location_data["is_stationary"] == 1][["double_latitude", "double_longitude", "duration"]]
 
     # Remove duplicates and apply sample_weight (only available for DBSCAN currently) to reduce memory usage
-    stationary_data_dedup = stationary_data.groupby(["double_latitude", "double_longitude", "is_stationary"]).size().reset_index()
-    lat_lon = stationary_data_dedup[["double_latitude", "double_longitude"]].values
+    stationary_data_dedup = stationary_data.groupby(["double_latitude", "double_longitude"])[["duration"]].sum().reset_index()
+    lat_lon_dedup = stationary_data_dedup[["double_latitude", "double_longitude"]].values
 
     if stationary_data_dedup.shape[0] < kwargs["min_samples"]:
         cluster_results = np.array([-1] * stationary_data_dedup.shape[0])
-    elif clustering_algorithm == "DBSCAN":
+    elif clustering_algorithm == "DBSCAN":        
         clusterer = DBSCAN(**kwargs)
-        cluster_results = clusterer.fit_predict(lat_lon, sample_weight=stationary_data_dedup[0])
+        cluster_results = clusterer.fit_predict(lat_lon_dedup, sample_weight=stationary_data_dedup["duration"])
     else: # OPTICS
         clusterer = OPTICS(**kwargs)
-        cluster_results = clusterer.fit_predict(lat_lon)
+        cluster_results = clusterer.fit_predict(lat_lon_dedup)
 
     # Add cluster labels
     stationary_data_dedup["cluster_label"] = cluster_results
-    location_data_with_labels = label(location_data.merge(stationary_data_dedup[["double_latitude", "double_longitude", "is_stationary", "cluster_label"]], how="left", on=["double_latitude", "double_longitude", "is_stationary"]))
+    location_data_with_labels = label(location_data.merge(stationary_data_dedup[["double_latitude", "double_longitude", "cluster_label"]], how="left", on=["double_latitude", "double_longitude"]))
 
     return location_data_with_labels

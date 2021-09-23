@@ -98,7 +98,8 @@ rule process_phone_locations_types:
     params:
         consecutive_threshold = config["PHONE_LOCATIONS"]["FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD"],
         time_since_valid_location = config["PHONE_LOCATIONS"]["FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION"],
-        locations_to_use = config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"]
+        locations_to_use = config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"],
+        accuracy_limit = config["PHONE_LOCATIONS"]["ACCURACY_LIMIT"]
     output:
         "data/interim/{pid}/phone_locations_processed.csv"
     script:

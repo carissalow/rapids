@@ -106,7 +106,6 @@ def infer_home_location(location_data, clustering_algorithm, hyperparameters, st
 location_data = pd.read_csv(snakemake.input["sensor_input"])
 provider = snakemake.params["provider"]
 
-accuracy_limit = provider["ACCURACY_LIMIT"]
 maximum_row_gap = provider["MAXIMUM_ROW_GAP"]
 dbscan_eps = provider["DBSCAN_EPS"]
 dbscan_minsamples = provider["DBSCAN_MINSAMPLES"]
@@ -115,12 +114,6 @@ clustering_algorithm = provider["CLUSTERING_ALGORITHM"]
 cluster_on = provider["CLUSTER_ON"]
 strategy = provider["INFER_HOME_LOCATION_STRATEGY"]
 days_threshold = provider["MINIMUM_DAYS_TO_DETECT_HOME_CHANGES"]
-
-rows_before_accuracy_filter = len(location_data)
-location_data = location_data[location_data["accuracy"] < accuracy_limit]
-
-if rows_before_accuracy_filter > 0 and len(location_data) == 0:
-    warnings.warn("Cannot compute Doryab location features because there are no rows with an accuracy value lower than ACCURACY_LIMIT: {}".format(accuracy_limit))
 
 if not location_data.timestamp.is_monotonic:
     location_data.sort_values(by=["timestamp"], inplace=True)
@@ -133,8 +126,12 @@ location_data = mark_as_stationary(location_data, threshold_static)
 hyperparameters = create_clustering_hyperparameters(clustering_algorithm, dbscan_eps, dbscan_minsamples)
 location_data_with_doryab_columns = infer_home_location(location_data, clustering_algorithm, hyperparameters, strategy, days_threshold)
 
+selected_columns = ["local_timezone", "device_id", "start_timestamp", "end_timestamp", "provider", "double_latitude", "double_longitude", "distance", "speed", "is_stationary", "distance_from_home", "home_label"]
 if cluster_on == "PARTICIPANT_DATASET":
     location_data_with_doryab_columns = cluster(location_data_with_doryab_columns, clustering_algorithm, **hyperparameters)
+    selected_columns.append("cluster_label")
 
-location_data_with_doryab_columns.to_csv(snakemake.output[0], index=False)
-
+# Prepare for episodes
+location_data_with_doryab_columns = location_data_with_doryab_columns.rename(columns={"timestamp": "start_timestamp"})
+location_data_with_doryab_columns["end_timestamp"] = (location_data_with_doryab_columns["start_timestamp"] + location_data_with_doryab_columns["duration_in_seconds"] * 1000 - 1).astype(int)
+location_data_with_doryab_columns[selected_columns].to_csv(snakemake.output[0], index=False)

@@ -1,6 +1,8 @@
 # Change Log
 ## v1.6.0
 - Refactor PHONE_CALLS RAPIDS provider to compute features based on call episodes or events
+- Refactor PHONE_LOCATIONS DORYAB provider to compute features based on location episodes
+- Temporary revert PHONE_LOCATIONS BARNETT provider to use R script
 ## v1.5.0
 - Update Barnett location features with faster Python implementation
 - Fix rounding bug in data yield features
