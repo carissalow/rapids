@@ -20,16 +20,14 @@ barnett_daily_features <- function(snakemake){
   location_features <- NULL
   location <- read.csv(snakemake@input[["sensor_data"]], stringsAsFactors = FALSE)
   segment_labels <- read.csv(snakemake@input[["time_segments_labels"]], stringsAsFactors = FALSE)
-  accuracy_limit <- snakemake@params[["provider"]][["ACCURACY_LIMIT"]]
+  accuracy_limit = 999999999 # We filter rows based on accuracy in src/data/process_location_types.R script
   datetime_start_regex = "[0-9]{4}[\\-|\\/][0-9]{2}[\\-|\\/][0-9]{2} 00:00:00"
   datetime_end_regex = "[0-9]{4}[\\-|\\/][0-9]{2}[\\-|\\/][0-9]{2} 23:59:59"
   location <- location %>% 
-    filter(accuracy < accuracy_limit) %>% 
     mutate(is_daily = str_detect(assigned_segments, paste0(".*#", datetime_start_regex, ",", datetime_end_regex, ".*")))
   
   if(nrow(segment_labels) == 0 || nrow(location) == 0 || all(location$is_daily == FALSE) || (max(location$timestamp) - min(location$timestamp) < 86400000)){
     warning("Barnett's location features cannot be computed for data or time segments that do not span one or more entire days (00:00:00 to 23:59:59). Values below point to the problem:",
-            "\nLocation data rows within accuracy: ", nrow(location %>% filter(accuracy < accuracy_limit)),
             "\nLocation data rows within a daily time segment: ", nrow(filter(location, is_daily)),
             "\nLocation data time span in days: ", round((max(location$timestamp) - min(location$timestamp)) / 86400000, 2)
             )

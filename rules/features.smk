@@ -408,7 +408,7 @@ rule phone_locations_barnett_daily_features:
     output:
         "data/interim/{pid}/phone_locations_barnett_daily.csv"
     script:
-        "../src/features/phone_locations/barnett/daily_features.py"
+        "../src/features/phone_locations/barnett/daily_features.R"
 
 rule phone_locations_r_features:
     input:
