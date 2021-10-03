@@ -61,6 +61,8 @@ rule clean_sensor_features_for_individual_participants:
         cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
         rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
         data_yielded_hours_ratio_threshold = config["PARAMS_FOR_ANALYSIS"]["DATA_YIELDED_HOURS_RATIO_THRESHOLD"],
+        corr_valid_pairs_threshold = config["PARAMS_FOR_ANALYSIS"]["CORR_VALID_PAIRS_THRESHOLD"],
+        corr_threshold = config["PARAMS_FOR_ANALYSIS"]["CORR_THRESHOLD"]
     output:
         "data/processed/features/{pid}/all_sensor_features_cleaned.csv"
     script:
@@ -74,6 +76,8 @@ rule clean_sensor_features_for_all_participants:
         cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
         rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
         data_yielded_hours_ratio_threshold = config["PARAMS_FOR_ANALYSIS"]["DATA_YIELDED_HOURS_RATIO_THRESHOLD"],
+        corr_valid_pairs_threshold = config["PARAMS_FOR_ANALYSIS"]["CORR_VALID_PAIRS_THRESHOLD"],
+        corr_threshold = config["PARAMS_FOR_ANALYSIS"]["CORR_THRESHOLD"]
     output:
         "data/processed/features/all_participants/all_sensor_features_cleaned.csv"
     script:
