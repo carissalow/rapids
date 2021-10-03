@@ -11,8 +11,8 @@ cols_nan_threshold <- as.numeric(snakemake@params[["cols_nan_threshold"]])
 drop_zero_variance_columns <- as.logical(snakemake@params[["cols_var_threshold"]])
 rows_nan_threshold <- as.numeric(snakemake@params[["rows_nan_threshold"]])
 data_yielded_hours_ratio_threshold <- as.numeric(snakemake@params[["data_yielded_hours_ratio_threshold"]])
-corr_valid_pairs_threshold <- as.numeric(snakemake@params[["corr_valid_pairs_threshold"]]
-corr_threshold <- as.numeric(snakemake@params[["corr_threshold"]]
+corr_valid_pairs_threshold <- as.numeric(snakemake@params[["corr_valid_pairs_threshold"]])
+corr_threshold <- as.numeric(snakemake@params[["corr_threshold"]])
 
 # drop rows with the value of "phone_data_yield_rapids_ratiovalidyieldedhours" column less than data_yielded_hours_ratio_threshold
 clean_features <- clean_features %>% 
