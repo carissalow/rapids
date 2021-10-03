@@ -88,6 +88,6 @@ rapids_features <- function(sensor_data_files, time_segment, provider){
         features <- call_features_of_type(calls_of_type, features_type, call_type, time_segment, requested_features)
         call_features <- merge(call_features, features, all=TRUE)
     }
-    call_features <- call_features %>% mutate_at(vars(contains("countmostfrequentcontact") | contains("distinctcontacts") | contains("count")), list( ~ replace_na(., 0)))
+    call_features <- call_features %>% mutate_at(vars(contains("countmostfrequentcontact") | contains("distinctcontacts") | contains("count") | contains("sumduration") | contains("minduration") | contains("maxduration") | contains("meanduration") | contains("modeduration")), list( ~ replace_na(., 0)))
     return(call_features)
 }
