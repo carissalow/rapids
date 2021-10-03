@@ -564,3 +564,17 @@ HEATMAP_FEATURE_CORRELATION_MATRIX:
   CORR_THRESHOLD: 0.1
   CORR_METHOD: "pearson" # choose from {"pearson", "kendall", "spearman"}
 
+
+########################################################################################################################
+#                                                    Data Cleaning                                                     #
+########################################################################################################################
+
+DATA_CLEANING:
+  COMPUTE: False
+  COLS_NAN_THRESHOLD: 0.3
+  COLS_VAR_THRESHOLD: True
+  ROWS_NAN_THRESHOLD: 0.3
+  DATA_YIELDED_HOURS_RATIO_THRESHOLD: 0.75
+  CORR_VALID_PAIRS_THRESHOLD: 0.5
+  CORR_THRESHOLD: 0.95
+

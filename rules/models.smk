@@ -53,36 +53,6 @@ rule parse_targets:
     script:
         "../src/models/workflow_example/parse_targets.py"
 
-rule clean_sensor_features_for_individual_participants:
-    input:
-        rules.merge_sensor_features_for_individual_participants.output
-    params:
-        cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"],
-        cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
-        rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
-        data_yielded_hours_ratio_threshold = config["PARAMS_FOR_ANALYSIS"]["DATA_YIELDED_HOURS_RATIO_THRESHOLD"],
-        corr_valid_pairs_threshold = config["PARAMS_FOR_ANALYSIS"]["CORR_VALID_PAIRS_THRESHOLD"],
-        corr_threshold = config["PARAMS_FOR_ANALYSIS"]["CORR_THRESHOLD"]
-    output:
-        "data/processed/features/{pid}/all_sensor_features_cleaned.csv"
-    script:
-        "../src/models/workflow_example/clean_sensor_features.R"
-
-rule clean_sensor_features_for_all_participants:
-    input:
-        rules.merge_sensor_features_for_all_participants.output
-    params:
-        cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"],
-        cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
-        rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
-        data_yielded_hours_ratio_threshold = config["PARAMS_FOR_ANALYSIS"]["DATA_YIELDED_HOURS_RATIO_THRESHOLD"],
-        corr_valid_pairs_threshold = config["PARAMS_FOR_ANALYSIS"]["CORR_VALID_PAIRS_THRESHOLD"],
-        corr_threshold = config["PARAMS_FOR_ANALYSIS"]["CORR_THRESHOLD"]
-    output:
-        "data/processed/features/all_participants/all_sensor_features_cleaned.csv"
-    script:
-        "../src/models/workflow_example/clean_sensor_features.R"
-
 rule merge_features_and_targets_for_individual_model:
     input:
         cleaned_sensor_features = "data/processed/features/{pid}/all_sensor_features_cleaned.csv",

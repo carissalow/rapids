@@ -25,12 +25,6 @@ if(nrow(clean_features))
 if(drop_zero_variance_columns)
   clean_features <- clean_features %>% select_if(grepl("pid|local_segment|local_segment_label|local_segment_start_datetime|local_segment_end_datetime",names(.)) | sapply(., n_distinct, na.rm = T) > 1)
 
-# drop rows with a percentage of NA values above rows_nan_threshold
-clean_features <- clean_features %>% 
-  mutate(percentage_na =  rowSums(is.na(.)) / ncol(.)) %>% 
-  filter(percentage_na < rows_nan_threshold) %>% 
-  select(-percentage_na)
-
 # drop highly correlated features
 features_for_corr <- clean_features %>% 
   select_if(is.numeric) %>% 
@@ -46,5 +40,11 @@ highly_correlated_features <- features_for_corr %>%
   findCorrelation(., cutoff = corr_threshold, verbose = F, names = T)
 
 clean_features <- clean_features[, !names(clean_features) %in% highly_correlated_features]
+
+# drop rows with a percentage of NA values above rows_nan_threshold
+clean_features <- clean_features %>% 
+  mutate(percentage_na =  rowSums(is.na(.)) / ncol(.)) %>% 
+  filter(percentage_na < rows_nan_threshold) %>% 
+  select(-percentage_na)
 
 write.csv(clean_features, snakemake@output[[1]], row.names = FALSE)

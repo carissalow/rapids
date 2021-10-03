@@ -384,6 +384,11 @@ if config["HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT"]["PLOT"]:
 if config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["PLOT"]:
     files_to_compute.append("reports/data_exploration/heatmap_feature_correlation_matrix.html")
 
+# Data Cleaning
+if config["DATA_CLEANING"]["COMPUTE"]:
+    files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features_cleaned.csv", pid=config["PIDS"]))
+    files_to_compute.append("data/processed/features/all_participants/all_sensor_features_cleaned.csv")
+
 # Analysis Workflow Example
 models, scalers = [], []
 for model_name in config["PARAMS_FOR_ANALYSIS"]["MODEL_NAMES"]:
@@ -401,7 +406,6 @@ files_to_compute.extend(expand("data/raw/{pid}/participant_target_with_datetime.
 files_to_compute.extend(expand("data/processed/targets/{pid}/parsed_targets.csv", pid=config["PIDS"]))
 
 # Individual model
-files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features_cleaned.csv", pid=config["PIDS"]))
 files_to_compute.extend(expand("data/processed/models/individual_model/{pid}/input.csv", pid=config["PIDS"]))
 files_to_compute.extend(expand("data/processed/models/individual_model/{pid}/output_{cv_method}/baselines.csv", pid=config["PIDS"], cv_method=config["PARAMS_FOR_ANALYSIS"]["CV_METHODS"]))
 files_to_compute.extend(expand(
@@ -414,7 +418,6 @@ files_to_compute.extend(expand(
                             scaler=scalers))
 
 # Population model
-files_to_compute.append("data/processed/features/all_participants/all_sensor_features_cleaned.csv")
 files_to_compute.append("data/processed/models/population_model/input.csv")
 files_to_compute.extend(expand("data/processed/models/population_model/output_{cv_method}/baselines.csv", cv_method=config["PARAMS_FOR_ANALYSIS"]["CV_METHODS"]))
 files_to_compute.extend(expand(

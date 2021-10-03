@@ -534,6 +534,19 @@ HEATMAP_FEATURE_CORRELATION_MATRIX:
   CORR_METHOD: "pearson" # choose from {"pearson", "kendall", "spearman"}
 
 
+########################################################################################################################
+#                                                    Data Cleaning                                                     #
+########################################################################################################################
+
+DATA_CLEANING:
+  COMPUTE: True
+  COLS_NAN_THRESHOLD: 0.3
+  COLS_VAR_THRESHOLD: True
+  ROWS_NAN_THRESHOLD: 0.3
+  DATA_YIELDED_HOURS_RATIO_THRESHOLD: 0.75
+  CORR_VALID_PAIRS_THRESHOLD: 0.5
+  CORR_THRESHOLD: 0.95
+
 
 ########################################################################################################################
 #                                              Analysis Workflow Example                                               #
@@ -551,14 +564,6 @@ PARAMS_FOR_ANALYSIS:
   TARGET:
     FOLDER: data/external/example_workflow
     CONTAINER: participant_target.csv
-
-  # Cleaning Parameters
-  COLS_NAN_THRESHOLD: 0.3
-  COLS_VAR_THRESHOLD: True
-  ROWS_NAN_THRESHOLD: 0.3
-  DATA_YIELDED_HOURS_RATIO_THRESHOLD: 0.75
-  CORR_VALID_PAIRS_THRESHOLD: 0.5
-  CORR_THRESHOLD: 0.95
   
   MODEL_NAMES: [LogReg, kNN , SVM, DT, RF, GB, XGBoost, LightGBM]
   CV_METHODS: [LeaveOneOut]

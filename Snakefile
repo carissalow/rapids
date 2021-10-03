@@ -394,6 +394,10 @@ if config["HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT"]["PLOT"]:
 if config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["PLOT"]:
     files_to_compute.append("reports/data_exploration/heatmap_feature_correlation_matrix.html")
 
+# Data Cleaning
+if config["DATA_CLEANING"]["COMPUTE"]:
+    files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features_cleaned.csv", pid=config["PIDS"]))
+    files_to_compute.append("data/processed/features/all_participants/all_sensor_features_cleaned.csv")
 
 rule all:
     input:

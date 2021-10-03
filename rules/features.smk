@@ -761,22 +761,6 @@ rule fitbit_sleep_intraday_r_features:
     script:
         "../src/features/entry.R"
 
-rule merge_sensor_features_for_individual_participants:
-    input:
-        feature_files = input_merge_sensor_features_for_individual_participants
-    output:
-        "data/processed/features/{pid}/all_sensor_features.csv"
-    script:
-        "../src/features/utils/merge_sensor_features_for_individual_participants.R"
-
-rule merge_sensor_features_for_all_participants:
-    input:
-        feature_files = expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"])
-    output:
-        "data/processed/features/all_participants/all_sensor_features.csv"
-    script:
-        "../src/features/utils/merge_sensor_features_for_all_participants.R"
-
 rule empatica_accelerometer_python_features:
     input:
         sensor_data = "data/raw/{pid}/empatica_accelerometer_with_datetime.csv",
@@ -958,3 +942,49 @@ rule empatica_tags_r_features:
         "data/interim/{pid}/empatica_tags_features/empatica_tags_r_{provider_key}.csv"
     script:
         "../src/features/entry.R"
+
+rule merge_sensor_features_for_individual_participants:
+    input:
+        feature_files = input_merge_sensor_features_for_individual_participants
+    output:
+        "data/processed/features/{pid}/all_sensor_features.csv"
+    script:
+        "../src/features/utils/merge_sensor_features_for_individual_participants.R"
+
+rule merge_sensor_features_for_all_participants:
+    input:
+        feature_files = expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"])
+    output:
+        "data/processed/features/all_participants/all_sensor_features.csv"
+    script:
+        "../src/features/utils/merge_sensor_features_for_all_participants.R"
+
+rule clean_sensor_features_for_individual_participants:
+    input:
+        rules.merge_sensor_features_for_individual_participants.output
+    params:
+        cols_nan_threshold = config["DATA_CLEANING"]["COLS_NAN_THRESHOLD"],
+        cols_var_threshold = config["DATA_CLEANING"]["COLS_VAR_THRESHOLD"],
+        rows_nan_threshold = config["DATA_CLEANING"]["ROWS_NAN_THRESHOLD"],
+        data_yielded_hours_ratio_threshold = config["DATA_CLEANING"]["DATA_YIELDED_HOURS_RATIO_THRESHOLD"],
+        corr_valid_pairs_threshold = config["DATA_CLEANING"]["CORR_VALID_PAIRS_THRESHOLD"],
+        corr_threshold = config["DATA_CLEANING"]["CORR_THRESHOLD"]
+    output:
+        "data/processed/features/{pid}/all_sensor_features_cleaned.csv"
+    script:
+        "../src/features/utils/clean_sensor_features.R"
+
+rule clean_sensor_features_for_all_participants:
+    input:
+        rules.merge_sensor_features_for_all_participants.output
+    params:
+        cols_nan_threshold = config["DATA_CLEANING"]["COLS_NAN_THRESHOLD"],
+        cols_var_threshold = config["DATA_CLEANING"]["COLS_VAR_THRESHOLD"],
+        rows_nan_threshold = config["DATA_CLEANING"]["ROWS_NAN_THRESHOLD"],
+        data_yielded_hours_ratio_threshold = config["DATA_CLEANING"]["DATA_YIELDED_HOURS_RATIO_THRESHOLD"],
+        corr_valid_pairs_threshold = config["DATA_CLEANING"]["CORR_VALID_PAIRS_THRESHOLD"],
+        corr_threshold = config["DATA_CLEANING"]["CORR_THRESHOLD"]
+    output:
+        "data/processed/features/all_participants/all_sensor_features_cleaned.csv"
+    script:
+        "../src/features/utils/clean_sensor_features.R"

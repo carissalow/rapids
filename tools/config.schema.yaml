@@ -36,6 +36,7 @@ required:
   - HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT
   - HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT
   - HEATMAP_FEATURE_CORRELATION_MATRIX
+  - DATA_CLEANING
 
 definitions:
   PROVIDER:
@@ -1256,3 +1257,32 @@ properties:
       CORR_METHOD:
         type: string
         enum: ["pearson", "kendall", "spearman"]
+
+  DATA_CLEANING:
+    type: object
+    required: [COMPUTE, COLS_NAN_THRESHOLD, COLS_VAR_THRESHOLD, ROWS_NAN_THRESHOLD, DATA_YIELDED_HOURS_RATIO_THRESHOLD, CORR_VALID_PAIRS_THRESHOLD, CORR_THRESHOLD]
+    properties:
+      COMPUTE: 
+        type: boolean
+      COLS_NAN_THRESHOLD:
+        type: number
+        minimum: 0
+        maximum: 1
+      COLS_VAR_THRESHOLD:
+        type: boolean
+      ROWS_NAN_THRESHOLD: 
+        type: number
+        minimum: 0
+        maximum: 1
+      DATA_YIELDED_HOURS_RATIO_THRESHOLD:
+        type: number
+        minimum: 0
+        maximum: 1
+      CORR_VALID_PAIRS_THRESHOLD:
+        type: number
+        minimum: 0
+        maximum: 1
+      CORR_THRESHOLD:
+        type: number
+        minimum: 0
+        maximum: 1
