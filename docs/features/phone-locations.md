@@ -6,8 +6,9 @@ Sensor parameters description for `[PHONE_LOCATIONS]`:
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
 |`[CONTAINER]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the location data is stored
 |`[LOCATIONS_TO_USE]`| Type of location data to use, one of `ALL`, `GPS`, `ALL_RESAMPLED` or `FUSED_RESAMPLED`. This filter is based on the `provider` column of the locations table, `ALL` includes every row, `GPS` only includes rows where the provider is gps, `ALL_RESAMPLED` includes all rows after being resampled, and `FUSED_RESAMPLED` only includes rows where the provider is fused after being resampled.
-|`[FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD]`| if `ALL_RESAMPLED` or `FUSED_RESAMPLED` is used, the original fused data has to be resampled, a location row is resampled to the next valid timestamp (see the Assumptions/Observations below) only if the time difference between them is less or equal than this threshold (in minutes).
-|`[FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION]`| if `ALL_RESAMPLED` or `FUSED_RESAMPLED` is used, the original fused data has to be resampled, a location row is resampled at most for this long (in minutes)
+|`[FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD]`| If `ALL_RESAMPLED` or `FUSED_RESAMPLED` is used, the original fused data has to be resampled. A location row is resampled to the next valid timestamp (see the Assumptions/Observations below) only if the time difference between them is less or equal than this threshold (in minutes).
+|`[FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION]`| If `ALL_RESAMPLED` or `FUSED_RESAMPLED` is used, the original fused data has to be resampled. A location row is resampled at most for this long (in minutes).
+|`[ACCURACY_LIMIT]` | An integer in meters, any location rows with an accuracy higher or equal than this is dropped. This number means there's a 68% probability the actual location is within this radius.
 
 !!! note "Assumptions/Observations"
     **Types of location data to use**
@@ -16,9 +17,9 @@ Sensor parameters description for `[PHONE_LOCATIONS]`:
     - If you want to use only the GPS provider, set `[LOCATIONS_TO_USE]` to `GPS`
     - If you want to use all providers, set `[LOCATIONS_TO_USE]` to `ALL`
     - If you collected location data from different providers, including the fused API, use `ALL_RESAMPLED`
-    - If your mobile client was configured to use fused location only or want to focus only on this provider, set `[LOCATIONS_TO_USE]` to `RESAMPLE_FUSED`.
+    - If your mobile client was configured to use fused location only or want to focus only on this provider, set `[LOCATIONS_TO_USE]` to `FUSED_RESAMPLED`.
     
-    `ALL_RESAMPLED` and `RESAMPLE_FUSED` take the original location coordinates and replicate each pair forward in time as long as the phone was sensing data as indicated by the joined timestamps of [`[PHONE_DATA_YIELD][SENSORS]`](../phone-data-yield/). This is done because Google's API only logs a new location coordinate pair when it is sufficiently different in time or space from the previous one and because GPS and network providers can log data at variable rates.
+    `ALL_RESAMPLED` and `FUSED_RESAMPLED` take the original location coordinates and replicate each pair forward in time as long as the phone was sensing data as indicated by the joined timestamps of [`[PHONE_DATA_YIELD][SENSORS]`](../phone-data-yield/). This is done because Google's API only logs a new location coordinate pair when it is sufficiently different in time or space from the previous one and because GPS and network providers can log data at variable rates.
 
     There are two parameters associated with resampling fused location.
     
@@ -41,6 +42,7 @@ These features are based on the original open-source implementation by [Barnett 
     - data/raw/{pid}/phone_locations_raw.csv
     - data/interim/{pid}/phone_locations_processed.csv
     - data/interim/{pid}/phone_locations_processed_with_datetime.csv
+    - data/interim/{pid}/phone_locations_barnett_daily.csv
     - data/interim/{pid}/phone_locations_features/phone_locations_{language}_{provider_key}.csv
     - data/processed/features/{pid}/phone_locations.csv
     ```
@@ -52,7 +54,6 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][BARNETT]`:
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
 |`[COMPUTE]`| Set to `True` to extract `PHONE_LOCATIONS` features from the `BARNETT` provider|
 |`[FEATURES]` |         Features to be computed, see table below
-|`[ACCURACY_LIMIT]` |   An integer in meters, any location rows with an accuracy higher than this is dropped. This number means there's a 68% probability the actual location is within this radius
 |`[IF_MULTIPLE_TIMEZONES]` |    Currently, `USE_MOST_COMMON` is the only value supported. If the location data for a participant belongs to multiple time zones, we select the most common because Barnett's algorithm can only handle one time zone 
 |`[MINUTES_DATA_USED]` |    Set to `True` to include an extra column in the final location feature file containing the number of minutes used to compute the features on each time segment. Use this for quality control purposes; the more data minutes exist for a period, the more reliable its features should be. For fused location, a single minute can contain more than one coordinate pair if the participant is moving fast enough.
 
@@ -111,7 +112,9 @@ These features are based on the original implementation by [Doryab et al.](../..
     - data/raw/{pid}/phone_locations_raw.csv
     - data/interim/{pid}/phone_locations_processed.csv
     - data/interim/{pid}/phone_locations_processed_with_datetime.csv
-    - data/interim/{pid}/phone_locations_processed_with_datetime_with_doryab_columns.csv
+    - data/interim/{pid}/phone_locations_processed_with_datetime_with_doryab_columns_episodes.csv
+    - data/interim/{pid}/phone_locations_processed_with_datetime_with_doryab_columns_episodes_resampled.csv
+    - data/interim/{pid}/phone_locations_processed_with_datetime_with_doryab_columns_episodes_resampled_with_datetime.csv
     - data/interim/{pid}/phone_locations_features/phone_locations_{language}_{provider_key}.csv
     - data/processed/features/{pid}/phone_locations.csv
     ```
@@ -121,9 +124,8 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[COMPUTE]`| Set to `True` to extract `PHONE_LOCATIONS` features from the `BARNETT` provider|
+|`[COMPUTE]`| Set to `True` to extract `PHONE_LOCATIONS` features from the `DORYAB` provider|
 |`[FEATURES]` |         Features to be computed, see table below
-|`[ACCURACY_LIMIT]` |   An integer in meters, any location rows with an accuracy higher than this will be dropped. This number means there's a 68% probability the true location is within this radius
 | `[DBSCAN_EPS]`             | The maximum distance in meters between two samples for one to be considered as in the neighborhood of the other. This is not a maximum bound on the distances of points within a cluster. This is the most important DBSCAN parameter to choose appropriately for your data set and distance function.
 | `[DBSCAN_MINSAMPLES]`      | The number of samples (or total weight) in a neighborhood for a point to be considered as a core point of a cluster. This includes the point itself.
 | `[THRESHOLD_STATIC]`       | It is the threshold value in km/hr which labels a row as Static or Moving.
@@ -143,8 +145,8 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 |locationvariance                                            |$meters^2$    |The sum of the variances of the latitude and longitude columns. 
 |loglocationvariance                                           | -          | Log of the sum of the variances of the latitude and longitude columns.
 |totaldistance                                                |meters        |Total distance traveled in a time segment using the haversine formula.
-|avgspeed                                                 |km/hr         |Average speed in a time segment considering only the instances labeled as Moving.
-|varspeed                                                      |km/hr         |Speed variance in a time segment considering only the instances labeled as Moving. 
+|avgspeed                                                 |km/hr         |Average speed in a time segment considering only the instances labeled as Moving. This feature is 0 when the participant is stationary during a time segment.
+|varspeed                                                      |km/hr         |Speed variance in a time segment considering only the instances labeled as Moving. This feature is 0 when the participant is stationary during a time segment.
 |{--circadianmovement--}                                      |-             | Deprecated, see Observations below. \ "It encodes the extent to which a person's location patterns follow a 24-hour circadian cycle.\" [Doryab et al.](../../citation#doryab-locations).
 |numberofsignificantplaces                                    |places        |Number of significant locations visited. It is calculated using the DBSCAN/OPTICS clustering algorithm which takes in EPS and MIN_SAMPLES as parameters to identify clusters. Each cluster is a significant place.
 |numberlocationtransitions                                    |transitions   |Number of movements between any two clusters in a time segment.
@@ -165,7 +167,7 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 
 !!! note "Assumptions/Observations"
     **Significant Locations Identified**
-    Significant locations are determined using DBSCAN clustering on locations that a patient visit over the course of the period of data collection.
+    Significant locations are determined using `DBSCAN` or `OPTICS` clustering on locations that a participant visited over the course of the period of data collection. The most significant location is the place where the participant stayed for the longest time.
 
     **Circadian Movement Calculation**
     Note Feb 3 2021. It seems the implementation of this feature is not correct; we suggest not to use this feature until a fix is in place. For a detailed description of how this should be calculated, see [Saeb et al](https://pubmed.ncbi.nlm.nih.gov/28344895/).
@@ -195,4 +197,5 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
             the candidate will be regarded as the home cluster; otherwise, the home cluster will be the last valid day's cluster.
             If there are no valid clusters before that day, the first home location in the days after is used.
 
-
+    **Clustering algorithms**
+    [`DBSCAN`](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html) and [`OPTICS`](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.OPTICS.html#r2c55e37003fe-1) algorithms are available currently. Duplicated locations are discarded while clustering. The `DBSCAN` algorithm takes the time spent at each location into consideration. However, the `OPTICS` algorithm ignores it as it is not supported in the current [scikit-learn](https://github.com/scikit-learn/scikit-learn/issues/12394) implementation.
