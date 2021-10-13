@@ -293,7 +293,7 @@ PHONE_SCREEN:
       COMPUTE: False
       REFERENCE_HOUR_FIRST_USE: 0
       IGNORE_EPISODES_SHORTER_THAN: 0 # in minutes, set to 0 to disable
-      IGNORE_EPISODES_LONGER_THAN: 0 # in minutes, set to 0 to disable
+      IGNORE_EPISODES_LONGER_THAN: 360 # in minutes, set to 0 to disable
       FEATURES: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"] # "episodepersensedminutes" needs to be added later
       EPISODE_TYPES: ["unlock"]
       SRC_SCRIPT: src/features/phone_screen/rapids/main.py
