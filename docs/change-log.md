@@ -3,6 +3,7 @@
 - Refactor PHONE_CALLS RAPIDS provider to compute features based on call episodes or events
 - Refactor PHONE_LOCATIONS DORYAB provider to compute features based on location episodes
 - Temporary revert PHONE_LOCATIONS BARNETT provider to use R script
+- Update the default IGNORE_EPISODES_LONGER_THAN to be 6 hours for screen RAPIDS provider
 ## v1.5.0
 - Update Barnett location features with faster Python implementation
 - Fix rounding bug in data yield features

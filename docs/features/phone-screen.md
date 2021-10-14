@@ -32,7 +32,7 @@ Parameters description for `[PHONE_SCREEN][PROVIDERS][RAPIDS]`:
 |`[FEATURES]` |         Features to be computed, see table below
 |`[REFERENCE_HOUR_FIRST_USE]` |  The reference point from which `firstuseafter` is to be computed, default is midnight
 |`[IGNORE_EPISODES_SHORTER_THAN]` |  Ignore episodes that are shorter than this threshold (minutes). Set to 0 to disable this filter.
-|`[IGNORE_EPISODES_LONGER_THAN]` |  Ignore episodes that are longer than this threshold (minutes). Set to 0 to disable this filter.
+|`[IGNORE_EPISODES_LONGER_THAN]` |  Ignore episodes that are longer than this threshold (minutes), default is 6 hours. Set to 0 to disable this filter.
 |`[EPISODE_TYPES]` |  Currently we only support `unlock` episodes (from when the phone is unlocked until the screen is off)
 
 
