@@ -14,7 +14,7 @@ data_yielded_hours_ratio_threshold <- as.numeric(snakemake@params[["data_yielded
 corr_valid_pairs_threshold <- as.numeric(snakemake@params[["corr_valid_pairs_threshold"]])
 corr_threshold <- as.numeric(snakemake@params[["corr_threshold"]])
 
-# drop rows with the value of "phone_data_yield_rapids_ratiovalidyieldedhours" column less than data_yielded_hours_ratio_threshold
+# drop rows with the value of "phone_data_yield_rapids_ratiovalidyieldedhours" column less or equal than data_yielded_hours_ratio_threshold
 clean_features <- clean_features %>% 
   filter(phone_data_yield_rapids_ratiovalidyieldedhours > data_yielded_hours_ratio_threshold)
 
@@ -32,19 +32,23 @@ features_for_corr <- clean_features %>%
 
 valid_pairs <- crossprod(!is.na(features_for_corr)) >= corr_valid_pairs_threshold * nrow(features_for_corr)
 
-highly_correlated_features <- features_for_corr %>% 
-  correlate(use = "pairwise.complete.obs", method = "spearman") %>% 
-  column_to_rownames(., var = "term") %>% 
-  as.matrix() %>% 
-  replace(!valid_pairs | is.na(.), 0) %>% 
-  findCorrelation(., cutoff = corr_threshold, verbose = F, names = T)
+if((dim(features_for_corr)[1] != 0) & (dim(features_for_corr)[2] != 0)){
 
-clean_features <- clean_features[, !names(clean_features) %in% highly_correlated_features]
+  highly_correlated_features <- features_for_corr %>% 
+    correlate(use = "pairwise.complete.obs", method = "spearman") %>% 
+    column_to_rownames(., var = "term") %>% 
+    as.matrix() %>% 
+    replace(!valid_pairs | is.na(.), 0) %>% 
+    findCorrelation(., cutoff = corr_threshold, verbose = F, names = T)
+
+  clean_features <- clean_features[, !names(clean_features) %in% highly_correlated_features]
+  
+}
 
 # drop rows with a percentage of NA values above rows_nan_threshold
 clean_features <- clean_features %>% 
   mutate(percentage_na =  rowSums(is.na(.)) / ncol(.)) %>% 
-  filter(percentage_na < rows_nan_threshold) %>% 
+  filter(percentage_na <= rows_nan_threshold) %>% 
   select(-percentage_na)
 
 write.csv(clean_features, snakemake@output[[1]], row.names = FALSE)
