@@ -11,7 +11,7 @@ The following is a list of the sensors that testing is currently available.
 | Phone Accelerometer           | RAPIDS   | Y        | Y         | Y     |
 | Phone Activity Recognition    | RAPIDS   | Y        | Y         | Y     |
 | Phone Applications Foreground | RAPIDS   | Y        | Y         | Y     |
-| Phone Battery                 | RAPIDS   | Y        | Y         | N     |
+| Phone Battery                 | RAPIDS   | Y        | Y         | Y     |
 | Phone Bluetooth               | Doryab   | Y        | Y         | Y     |
 | Phone Bluetooth               | RAPIDS   | Y        | Y         | Y     |
 | Phone Calls                   | RAPIDS   | Y        | Y         | Y     |
@@ -28,7 +28,7 @@ The following is a list of the sensors that testing is currently available.
 | Fitbit Data Yield             | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Heart Rate Summary     | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Heart Rate Intraday    | RAPIDS   | Y        | Y         | Y     |
-| Fitbit Sleep Summary          | RAPIDS   | N        | N         | N     |
+| Fitbit Sleep Summary          | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Sleep Intraday         | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Sleep Intraday         | PRICE    | Y        | Y         | Y     |
 | Fitbit Steps Summary          | RAPIDS   | Y        | Y         | Y     |
@@ -46,7 +46,7 @@ Description
 - One episode before the time switch (`Sun 00:02:00`) and one episode after the time switch (`Sun 04:18:00`)
 - Multiple episodes within one min which cause variance in magnitude (`Fri 00:10:25`, `Fri 00:10:27` and `Fri 00:10:46`)
 
-Checklist:
+Checklist
 
 |time segment| single tz | multi tz|platform|
 |-|-|-|-|
@@ -69,7 +69,7 @@ Description
 - Two episodes locate in the same daily segment (`Fri 11:57:56.385` and `Sat 10:54:10.000`)
 - One episode before the time switch (`Sun 00:48:01.000`) and one episode after the time switch (`Sun 06:21:01.000`)
 
-Checklist:
+Checklist
 
 |time segment| single tz | multi tz|platform|
 |-|-|-|-|
@@ -158,24 +158,26 @@ Checklist
 
 ## Battery
 
-Due to the difference in the format of the raw battery data for iOS and Android as well as versions of iOS the following is the expected results the `battery_deltas.csv`. This would give a better idea of the use cases being tested since the `battery_deltas.csv` would make both the iOS and Android data comparable. These files are used to calculate the features for the battery sensor.
+Description
 
--   The battery delta data file contains data for 1 day.
--   The battery delta data contains 1 record each for a `charging` and
-    `discharging` episode that falls within an `epoch` for every
-    `epoch`. Thus, for the `daily` epoch there would be multiple
-    `charging` and `discharging` episodes
--   Since either a `charging` episode or a `discharging` episode and
-    not both can occur across epochs, in order to test episodes that
-    occur across epochs alternating episodes of `charging` and
-    `discharging` episodes that fall across `night` to `morning`,
-    `morning` to `afternoon` and finally `afternoon` to `night` are
-    present in the battery delta data. This starts with a
-    `discharging` episode that begins in `night` and end in `morning`.
--   There is one battery data file each, for testing both iOS and
-    Android data formats.
--   There is also an additional empty data file for both android and
-    iOS for testing empty data files
+- The 4-day raw data is contained in `phone_battery_raw.csv`
+- One discharge episode acrossing two 30-min time segements (`Fri 05:57:30.123` to `Fri 06:04:32.456`)
+- One charging episode acrossing two 30-min time segments (`Fri 11:55:58.416` to `Fri 12:08:07.876`)
+- One discharge episode and one charging episode locate within the same 30-min time segement (`Fri 21:30:00` to `Fri 22:00:00`)
+- One episode before the time switch (`Sun 00:24:00.000`) and one episode after the time switch (`Sun 21:58:00`)
+- Two episodes locate in the same daily segment
+  
+Checklist
+
+|time segment| single tz | multi tz|platform|
+|-|-|-|-|
+|30min|OK|OK|android|
+|morning|OK|OK|android|
+|daily|OK|OK|android|
+|threeday|OK|OK|android|
+|weekend|OK|OK|android|
+|beforeMarchEvent|OK|OK|android|
+|beforeNovemberEvent|OK|OK|android|
 
 ## Bluetooth
 
