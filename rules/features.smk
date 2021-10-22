@@ -963,7 +963,7 @@ rule clean_sensor_features_for_individual_participants:
     input:
         sensor_data = rules.merge_sensor_features_for_individual_participants.output
     wildcard_constraints:
-        pid = config["PIDS"]
+        pid = "("+"|".join(config["PIDS"])+")"
     params:
         provider = lambda wildcards: config["ALL_CLEANING_INDIVIDUAL"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",

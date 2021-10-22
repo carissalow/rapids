@@ -40,7 +40,19 @@ required:
   - ALL_CLEANING_OVERALL
 
 definitions:
-  PROVIDER:
+  FEATURES_PROVIDER:
+    type: object
+    required: [COMPUTE, SRC_SCRIPT, FEATURES]
+    properties:
+      COMPUTE:
+        type: boolean
+      FEATURES:
+        type: [array, object]
+      SRC_SCRIPT:
+        type: string
+        pattern: "^.*\\.(py|R)$"
+  
+  CLEANING_PROVIDER:
     type: object
     required: [COMPUTE, SRC_SCRIPT]
     properties:
@@ -226,7 +238,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES: 
                     type: array
@@ -236,7 +248,7 @@ properties:
                       enum: ["maxmagnitude", "minmagnitude", "avgmagnitude", "medianmagnitude", "stdmagnitude"]
           PANDA:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   VALID_SENSED_MINUTES: 
                     type: boolean
@@ -257,7 +269,7 @@ properties:
                           type: string
                           enum: ["sumduration", "maxduration", "minduration", "avgduration", "medianduration", "stdduration"]
         additionalProperties: 
-            $ref: "#/definitions/PROVIDER"
+            $ref: "#/definitions/FEATURES_PROVIDER"
 
   PHONE_ACTIVITY_RECOGNITION:
     type: object
@@ -280,7 +292,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     uniqueItems: True
@@ -310,7 +322,7 @@ properties:
                           type: string
                           enum: ["in_vehicle"]
         additionalProperties: 
-            $ref: "#/definitions/PROVIDER"
+            $ref: "#/definitions/FEATURES_PROVIDER"
         
   PHONE_APPLICATIONS_CRASHES:
     type: object
@@ -323,7 +335,7 @@ properties:
           - $ref: "#/definitions/APPLICATION_CATEGORIES_FEATURE"
       PROVIDERS:
         additionalProperties: 
-            $ref: "#/definitions/PROVIDER"
+            $ref: "#/definitions/FEATURES_PROVIDER"
 
   PHONE_APPLICATIONS_FOREGROUND:
     type: object
@@ -339,7 +351,7 @@ properties:
         properties:
           RAPIDS: 
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   SINGLE_CATEGORIES: 
                     type: array
@@ -410,7 +422,7 @@ properties:
       PROVIDERS:
         type: ["null", object]
         additionalProperties: 
-            $ref: "#/definitions/PROVIDER"
+            $ref: "#/definitions/FEATURES_PROVIDER"
         
   PHONE_BATTERY:
     type: object
@@ -427,7 +439,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     uniqueItems: True
@@ -435,7 +447,7 @@ properties:
                       type: string
                       enum: ["countdischarge", "sumdurationdischarge", "countcharge", "sumdurationcharge", "avgconsumptionrate", "maxconsumptionrate"]
         additionalProperties:
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
 
   PHONE_BLUETOOTH:
     type: object
@@ -448,7 +460,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     uniqueItems: True
@@ -457,7 +469,7 @@ properties:
                       enum: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
           DORYAB:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     type: object
@@ -473,7 +485,7 @@ properties:
                         allOf:
                           - $ref: "#/definitions/DORYAB_BLUETOOTH_FEATURE"
         additionalProperties:
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
 
                       
   PHONE_CALLS:
@@ -487,7 +499,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-                - $ref: "#/definitions/PROVIDER"
+                - $ref: "#/definitions/FEATURES_PROVIDER"
                 - properties:
                     FEATURES_TYPE:
                       type: string
@@ -523,7 +535,7 @@ properties:
                               string
                             enum: [count, distinctcontacts, meanduration, sumduration, minduration, maxduration, stdduration, modeduration, entropyduration, timefirstcall, timelastcall, countmostfrequentcontact]
         additionalProperties:
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
 
   PHONE_CONVERSATION:
     type: object
@@ -542,7 +554,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     items:
@@ -562,7 +574,7 @@ properties:
                     minimum: 1
                     maximum: 1440
         additionalProperties: 
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
   
   PHONE_DATA_YIELD:
     type: object
@@ -578,7 +590,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     uniqueItems: True
@@ -590,7 +602,7 @@ properties:
                     minimum: 0
                     maximum: 1
         additionalProperties: 
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
                   
   PHONE_KEYBOARD:
     type: object
@@ -601,7 +613,7 @@ properties:
       PROVIDERS:
         type: ["null", object]
         additionalProperties: 
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
 
   PHONE_LIGHT:
     type: object
@@ -614,7 +626,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     uniqueItems: True
@@ -622,7 +634,7 @@ properties:
                       type: string
                       enum: ["count", "maxlux", "minlux", "avglux", "medianlux", "stdlux"]
         additionalProperties: 
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
 
   PHONE_LOCATIONS:
     type: object
@@ -647,7 +659,7 @@ properties:
         properties:
           DORYAB:
             allOf:
-                - $ref: "#/definitions/PROVIDER"
+                - $ref: "#/definitions/FEATURES_PROVIDER"
                 - properties:
                     FEATURES: 
                       type: array
@@ -687,7 +699,7 @@ properties:
                     
           BARNETT:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     type: array
@@ -701,7 +713,7 @@ properties:
                   MINUTES_DATA_USED:
                     type: boolean
         additionalProperties:
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
 
   PHONE_LOG:
     type: object
@@ -718,7 +730,7 @@ properties:
       PROVIDERS:
         type: ["null", object]
         additionalProperties: 
-            $ref: "#/definitions/PROVIDER"
+            $ref: "#/definitions/FEATURES_PROVIDER"
 
   PHONE_MESSAGES:
     type: object
@@ -731,7 +743,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   MESSAGES_TYPES:
                     type: array
@@ -768,7 +780,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   REFERENCE_HOUR_FIRST_USE: 
                     type: integer
@@ -803,7 +815,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     uniqueItems: True
@@ -811,7 +823,7 @@ properties:
                       type: string
                       enum: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
         additionalProperties: 
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
   
   PHONE_WIFI_VISIBLE:
     type: object
@@ -824,7 +836,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     uniqueItems: True
@@ -832,7 +844,7 @@ properties:
                       type: string
                       enum: ["countscans", "uniquedevices", "countscansmostuniquedevice"]
         additionalProperties: 
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
 
   FITBIT_DATA_STREAMS:
       type: object
@@ -892,7 +904,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-                - $ref: "#/definitions/PROVIDER"
+                - $ref: "#/definitions/FEATURES_PROVIDER"
                 - properties:
                     FEATURES:
                       uniqueItems: True
@@ -916,7 +928,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-                - $ref: "#/definitions/PROVIDER"
+                - $ref: "#/definitions/FEATURES_PROVIDER"
                 - properties:
                     FEATURES:
                       uniqueItems: True
@@ -935,7 +947,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     uniqueItems: True
@@ -943,7 +955,7 @@ properties:
                       type: string
                       enum: ["maxhr", "minhr", "avghr", "medianhr", "modehr", "stdhr", "diffmaxmodehr", "diffminmodehr", "entropyhr", "minutesonoutofrangezone", "minutesonfatburnzone", "minutesoncardiozone", "minutesonpeakzone"]
         additionalProperties: 
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
 
   FITBIT_SLEEP_SUMMARY:
     type: object
@@ -956,7 +968,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     uniqueItems: True
@@ -970,7 +982,7 @@ properties:
                       type: string
                       enum: ["main", "nap", "all"]
         additionalProperties: 
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
   
   FITBIT_SLEEP_INTRADAY:
     type: object
@@ -983,7 +995,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     type: object
@@ -1039,7 +1051,7 @@ properties:
                       enum: [main, nap, all]
           PRICE:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     uniqueItems: True
@@ -1081,7 +1093,7 @@ properties:
                     minimum: 0
                     maximum: 1439
         additionalProperties:
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
   
   FITBIT_STEPS_SUMMARY:
     type: object
@@ -1094,7 +1106,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES: 
                     uniqueItems: True
@@ -1132,7 +1144,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     required: [STEPS, SEDENTARY_BOUT, ACTIVE_BOUT]
@@ -1173,7 +1185,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-              - $ref: "#/definitions/PROVIDER"
+              - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
                     uniqueItems: True
@@ -1200,7 +1212,7 @@ properties:
                     type: string
                     enum: [MIDNIGHT, START_OF_THE_SEGMENT]
         additionalProperties: 
-          $ref: "#/definitions/PROVIDER"
+          $ref: "#/definitions/FEATURES_PROVIDER"
 
   HISTOGRAM_PHONE_DATA_YIELD:
     type: object
@@ -1266,7 +1278,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-                - $ref: "#/definitions/PROVIDER"
+                - $ref: "#/definitions/CLEANING_PROVIDER"
                 - properties:
                     IMPUTE_SELECTED_EVENT_FEATURES:
                       type: object
@@ -1306,7 +1318,9 @@ properties:
                           type: number
                           minimum: 0
                           maximum: 1
-
+        additionalProperties: 
+          $ref: "#/definitions/CLEANING_PROVIDER"
+  
   ALL_CLEANING_OVERALL:
     type: object
     required: [PROVIDERS]
@@ -1316,7 +1330,7 @@ properties:
         properties:
           RAPIDS:
             allOf:
-                - $ref: "#/definitions/PROVIDER"
+                - $ref: "#/definitions/CLEANING_PROVIDER"
                 - properties:
                     IMPUTE_SELECTED_EVENT_FEATURES:
                       type: object
@@ -1356,3 +1370,5 @@ properties:
                           type: number
                           minimum: 0
                           maximum: 1
+        additionalProperties: 
+          $ref: "#/definitions/CLEANING_PROVIDER"
