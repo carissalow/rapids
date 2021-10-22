@@ -1,4 +1,6 @@
 # Change Log
+## v.1.7.0
+- Add tests for phone battery features
 ## v1.6.0
 - Refactor PHONE_CALLS RAPIDS provider to compute features based on call episodes or events
 - Refactor PHONE_LOCATIONS DORYAB provider to compute features based on location episodes
