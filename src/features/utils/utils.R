@@ -84,3 +84,13 @@ fetch_provider_features <- function(provider, provider_key, sensor_key, sensor_d
                                                 remove = FALSE)
     return(sensor_features)
 }
+
+run_provider_cleaning_script <- function(provider, provider_key, sensor_key, sensor_data_files){
+  source(provider[["SRC_SCRIPT"]])
+  print(paste(rapids_log_tag, "Processing", sensor_key, provider_key))
+  
+  cleaning_function <- match.fun(paste0(tolower(provider_key), "_cleaning"))
+  sensor_features <- cleaning_function(sensor_data_files, provider)
+
+  return(sensor_features)
+}

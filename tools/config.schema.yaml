@@ -36,17 +36,16 @@ required:
   - HEATMAP_SENSORS_PER_MINUTE_PER_TIME_SEGMENT
   - HEATMAP_SENSOR_ROW_COUNT_PER_TIME_SEGMENT
   - HEATMAP_FEATURE_CORRELATION_MATRIX
-  - DATA_CLEANING
+  - ALL_CLEANING_INDIVIDUAL
+  - ALL_CLEANING_OVERALL
 
 definitions:
   PROVIDER:
     type: object
-    required: [COMPUTE, SRC_SCRIPT, FEATURES]
+    required: [COMPUTE, SRC_SCRIPT]
     properties:
       COMPUTE:
         type: boolean
-      FEATURES:
-        type: [array, object]
       SRC_SCRIPT:
         type: string
         pattern: "^.*\\.(py|R)$"
@@ -1258,31 +1257,102 @@ properties:
         type: string
         enum: ["pearson", "kendall", "spearman"]
 
-  DATA_CLEANING:
+  ALL_CLEANING_INDIVIDUAL:
     type: object
-    required: [COMPUTE, COLS_NAN_THRESHOLD, COLS_VAR_THRESHOLD, ROWS_NAN_THRESHOLD, DATA_YIELDED_HOURS_RATIO_THRESHOLD, CORR_VALID_PAIRS_THRESHOLD, CORR_THRESHOLD]
+    required: [PROVIDERS]
     properties:
-      COMPUTE: 
-        type: boolean
-      COLS_NAN_THRESHOLD:
-        type: number
-        minimum: 0
-        maximum: 1
-      COLS_VAR_THRESHOLD:
-        type: boolean
-      ROWS_NAN_THRESHOLD: 
-        type: number
-        minimum: 0
-        maximum: 1
-      DATA_YIELDED_HOURS_RATIO_THRESHOLD:
-        type: number
-        minimum: 0
-        maximum: 1
-      CORR_VALID_PAIRS_THRESHOLD:
-        type: number
-        minimum: 0
-        maximum: 1
-      CORR_THRESHOLD:
-        type: number
-        minimum: 0
-        maximum: 1
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+                - $ref: "#/definitions/PROVIDER"
+                - properties:
+                    IMPUTE_SELECTED_EVENT_FEATURES:
+                      type: object
+                      required: [COMPUTE, MIN_DATA_YIELDED_MINUTES_TO_IMPUTE]
+                      properties:
+                        COMPUTE: 
+                          type: boolean
+                        MIN_DATA_YIELDED_MINUTES_TO_IMPUTE:
+                          type: number
+                          minimum: 0
+                          maximum: 1
+                    COLS_NAN_THRESHOLD:
+                      type: number
+                      minimum: 0
+                      maximum: 1
+                    COLS_VAR_THRESHOLD:
+                      type: boolean
+                    ROWS_NAN_THRESHOLD:
+                      type: number
+                      minimum: 0
+                      maximum: 1
+                    DATA_YIELDED_HOURS_RATIO_THRESHOLD:
+                      type: number
+                      minimum: 0
+                      maximum: 1
+                    DROP_HIGHLY_CORRELATED_FEATURES:
+                      type: object
+                      required: [COMPUTE, MIN_OVERLAP_FOR_CORR_THRESHOLD, CORR_THRESHOLD]
+                      properties:
+                        COMPUTE: 
+                          type: boolean
+                        MIN_OVERLAP_FOR_CORR_THRESHOLD:
+                          type: number
+                          minimum: 0
+                          maximum: 1
+                        CORR_THRESHOLD:
+                          type: number
+                          minimum: 0
+                          maximum: 1
+
+  ALL_CLEANING_OVERALL:
+    type: object
+    required: [PROVIDERS]
+    properties:
+      PROVIDERS:
+        type: ["null", object]
+        properties:
+          RAPIDS:
+            allOf:
+                - $ref: "#/definitions/PROVIDER"
+                - properties:
+                    IMPUTE_SELECTED_EVENT_FEATURES:
+                      type: object
+                      required: [COMPUTE, MIN_DATA_YIELDED_MINUTES_TO_IMPUTE]
+                      properties:
+                        COMPUTE: 
+                          type: boolean
+                        MIN_DATA_YIELDED_MINUTES_TO_IMPUTE:
+                          type: number
+                          minimum: 0
+                          maximum: 1
+                    COLS_NAN_THRESHOLD:
+                      type: number
+                      minimum: 0
+                      maximum: 1
+                    COLS_VAR_THRESHOLD:
+                      type: boolean
+                    ROWS_NAN_THRESHOLD:
+                      type: number
+                      minimum: 0
+                      maximum: 1
+                    DATA_YIELDED_HOURS_RATIO_THRESHOLD:
+                      type: number
+                      minimum: 0
+                      maximum: 1
+                    DROP_HIGHLY_CORRELATED_FEATURES:
+                      type: object
+                      required: [COMPUTE, MIN_OVERLAP_FOR_CORR_THRESHOLD, CORR_THRESHOLD]
+                      properties:
+                        COMPUTE: 
+                          type: boolean
+                        MIN_OVERLAP_FOR_CORR_THRESHOLD:
+                          type: number
+                          minimum: 0
+                          maximum: 1
+                        CORR_THRESHOLD:
+                          type: number
+                          minimum: 0
+                          maximum: 1

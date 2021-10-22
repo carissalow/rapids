@@ -961,30 +961,27 @@ rule merge_sensor_features_for_all_participants:
 
 rule clean_sensor_features_for_individual_participants:
     input:
-        rules.merge_sensor_features_for_individual_participants.output
+        sensor_data = rules.merge_sensor_features_for_individual_participants.output
+    wildcard_constraints:
+        pid = config["PIDS"]
     params:
-        cols_nan_threshold = config["DATA_CLEANING"]["COLS_NAN_THRESHOLD"],
-        cols_var_threshold = config["DATA_CLEANING"]["COLS_VAR_THRESHOLD"],
-        rows_nan_threshold = config["DATA_CLEANING"]["ROWS_NAN_THRESHOLD"],
-        data_yielded_hours_ratio_threshold = config["DATA_CLEANING"]["DATA_YIELDED_HOURS_RATIO_THRESHOLD"],
-        corr_valid_pairs_threshold = config["DATA_CLEANING"]["CORR_VALID_PAIRS_THRESHOLD"],
-        corr_threshold = config["DATA_CLEANING"]["CORR_THRESHOLD"]
+        provider = lambda wildcards: config["ALL_CLEANING_INDIVIDUAL"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "all_cleaning_individual"
     output:
-        "data/processed/features/{pid}/all_sensor_features_cleaned.csv"
+        "data/processed/features/{pid}/all_sensor_features_cleaned_{provider_key}.csv"
     script:
-        "../src/features/utils/clean_sensor_features.R"
+        "../src/features/entry.R"
 
 rule clean_sensor_features_for_all_participants:
     input:
-        rules.merge_sensor_features_for_all_participants.output
+        sensor_data = rules.merge_sensor_features_for_all_participants.output
     params:
-        cols_nan_threshold = config["DATA_CLEANING"]["COLS_NAN_THRESHOLD"],
-        cols_var_threshold = config["DATA_CLEANING"]["COLS_VAR_THRESHOLD"],
-        rows_nan_threshold = config["DATA_CLEANING"]["ROWS_NAN_THRESHOLD"],
-        data_yielded_hours_ratio_threshold = config["DATA_CLEANING"]["DATA_YIELDED_HOURS_RATIO_THRESHOLD"],
-        corr_valid_pairs_threshold = config["DATA_CLEANING"]["CORR_VALID_PAIRS_THRESHOLD"],
-        corr_threshold = config["DATA_CLEANING"]["CORR_THRESHOLD"]
+        provider = lambda wildcards: config["ALL_CLEANING_OVERALL"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "all_cleaning_overall"
     output:
-        "data/processed/features/all_participants/all_sensor_features_cleaned.csv"
+        "data/processed/features/all_participants/all_sensor_features_cleaned_{provider_key}.csv"
     script:
-        "../src/features/utils/clean_sensor_features.R"
+        "../src/features/entry.R"
+
