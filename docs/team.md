@@ -15,7 +15,6 @@ If you are interested in contributing feel free to submit a pull request or cont
     Meng Li received her Master of Science degree in Information Science from the University of Pittsburgh. She is interested in applying machine learning algorithms to the medical field.
 
     - *lim11* at *upmc* . *edu*
-    - [Linkedin Profile](https://www.linkedin.com/in/meng-li-57238414a)
     - [Github Profile](https://github.com/Meng6)
 
 ###  Abhineeth Reddy Kunta

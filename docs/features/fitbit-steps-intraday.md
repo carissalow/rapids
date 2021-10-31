@@ -29,6 +29,7 @@ Parameters description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]`:
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
 |`[COMPUTE]`                | Set to `True` to extract `FITBIT_STEPS_INTRADAY` features from the `RAPIDS` provider|
 |`[FEATURES]`               |         Features to be computed from steps intraday data, see table below           |
+|`[REFERENCE_HOUR]`         | The reference point from which `firststeptime` or `laststeptime` is to be computed, default is midnight |
 |`[THRESHOLD_ACTIVE_BOUT]`  | Every minute with Fitbit steps data wil be labelled as `sedentary` if its step count is below this threshold, otherwise, `active`.    |
 |`[INCLUDE_ZERO_STEP_ROWS]` | Whether or not to include time segments with a 0 step count during the whole day.                          |
 
@@ -42,6 +43,8 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]`:
 |minsteps                   |steps          |The minimum step count during a time segment.
 |avgsteps                   |steps          |The average step count during a time segment.
 |stdsteps                   |steps          |The standard deviation of step count during a time segment.
+|firststeptime              |minutes        |Minutes until the first non-zero step count.
+|laststeptime               |minutes        |Minutes until the last non-zero step count.
 |countepisodesedentarybout  |bouts          |Number of sedentary bouts during a time segment.
 |sumdurationsedentarybout   |minutes        |Total duration of all sedentary bouts during a time segment.
 |maxdurationsedentarybout   |minutes        |The maximum duration of any sedentary bout during a time segment.
