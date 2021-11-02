@@ -1,8 +1,8 @@
 # Analysis Workflow Example
 
 !!! info "TL;DR"
-    - In addition to using RAPIDS to extract behavioral features and create plots, you can structure your data analysis within RAPIDS (i.e. cleaning your features and creating ML/statistical models)
-    - We include an analysis example in RAPIDS that covers raw data processing, cleaning, feature extraction, machine learning modeling, and evaluation
+    - In addition to using RAPIDS to extract behavioral features, create plots, and clean sensor features, you can structure your data analysis within RAPIDS (i.e. creating ML/statistical models and evaluating your models)
+    - We include an analysis example in RAPIDS that covers raw data processing, feature extraction, cleaning, machine learning modeling, and evaluation
     - Use this example as a guide to structure your own analysis within RAPIDS
     - RAPIDS analysis workflows are compatible with your favorite data science tools and libraries
     - RAPIDS analysis workflows are reproducible and we encourage you to publish them along with your research papers
@@ -69,12 +69,12 @@ Note you will see a lot of warning messages, you can ignore them since they happ
 ??? info "6. Feature cleaning."
     In this stage we perform four steps to clean our sensor feature file. First, we discard days with a data yield hour ratio less than or equal to 0.75, i.e. we include days with at least 18 hours of data. Second, we drop columns (features) with more than 30% of missing rows. Third, we drop columns with zero variance. Fourth, we drop rows (days) with more than 30% of missing columns (features). In this cleaning stage several parameters are created and exposed in `example_profile/example_config.yaml`. 
 
-    After this step, we kept 163 features over 11 days for the individual model of p01, 101 features over 12 days for the individual model of p02 and 109 features over 20 days for the population model. Note that the difference in the number of features between p01 and p02 is mostly due to iOS restrictions that stops researchers from collecting the same number of sensors than in Android phones. 
+    After this step, we kept 173 features over 11 days for the individual model of p01, 101 features over 12 days for the individual model of p02 and 117 features over 22 days for the population model. Note that the difference in the number of features between p01 and p02 is mostly due to iOS restrictions that stops researchers from collecting the same number of sensors than in Android phones. 
     
     Feature cleaning for the individual models is done in the `clean_sensor_features_for_individual_participants` rule and for the population model in the `clean_sensor_features_for_all_participants` rule in `rules/models.smk`.
 
 ??? info "7. Merge features and targets."
-    In this step we merge the cleaned features and target labels for our individual models in the `merge_features_and_targets_for_individual_model` rule in `rules/models.smk`. Additionally, we merge the cleaned features, target labels, and demographic features of our two participants for the population model in the `merge_features_and_targets_for_population_model` rule in `rules/models.smk`. These two merged files are the input for our individual and population models. 
+    In this step we merge the cleaned features and target labels for our individual models in the `merge_features_and_targets_for_individual_model` rule in `rules/features.smk`. Additionally, we merge the cleaned features, target labels, and demographic features of our two participants for the population model in the `merge_features_and_targets_for_population_model` rule in `rules/features.smk`. These two merged files are the input for our individual and population models. 
 
 ??? info "8. Modelling."
     This stage has three phases: model building, training and evaluation. 

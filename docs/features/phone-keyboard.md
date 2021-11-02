@@ -6,6 +6,12 @@ Sensor parameters description for `[PHONE_KEYBOARD]`:
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
 |`[CONTAINER]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the keyboard data is stored
 
+## RAPIDS provider
+
+!!! info "Available time segments and platforms"
+    - Available for all time segments
+    - Available for Android only
+
 !!! info "File Sequence"
     ```bash
     - data/raw/{pid}/phone_keyboard_raw.csv

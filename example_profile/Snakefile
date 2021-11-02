@@ -385,9 +385,12 @@ if config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["PLOT"]:
     files_to_compute.append("reports/data_exploration/heatmap_feature_correlation_matrix.html")
 
 # Data Cleaning
-if config["DATA_CLEANING"]["COMPUTE"]:
-    files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features_cleaned.csv", pid=config["PIDS"]))
-    files_to_compute.append("data/processed/features/all_participants/all_sensor_features_cleaned.csv")
+for provider in config["ALL_CLEANING_INDIVIDUAL"]["PROVIDERS"].keys():
+    if config["ALL_CLEANING_INDIVIDUAL"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features_cleaned_" + provider.lower() +".csv", pid=config["PIDS"]))
+for provider in config["ALL_CLEANING_OVERALL"]["PROVIDERS"].keys():
+    if config["ALL_CLEANING_OVERALL"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/processed/features/all_participants/all_sensor_features_cleaned_" + provider.lower() +".csv"))
 
 # Analysis Workflow Example
 models, scalers = [], []

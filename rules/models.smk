@@ -55,7 +55,7 @@ rule parse_targets:
 
 rule merge_features_and_targets_for_individual_model:
     input:
-        cleaned_sensor_features = "data/processed/features/{pid}/all_sensor_features_cleaned.csv",
+        cleaned_sensor_features = "data/processed/features/{pid}/all_sensor_features_cleaned_rapids.csv",
         targets = "data/processed/targets/{pid}/parsed_targets.csv",
     output:
         "data/processed/models/individual_model/{pid}/input.csv"
@@ -64,7 +64,7 @@ rule merge_features_and_targets_for_individual_model:
 
 rule merge_features_and_targets_for_population_model:
     input:
-        cleaned_sensor_features = "data/processed/features/all_participants/all_sensor_features_cleaned.csv",
+        cleaned_sensor_features = "data/processed/features/all_participants/all_sensor_features_cleaned_rapids.csv",
         demographic_features = expand("data/processed/features/{pid}/demographic_features.csv", pid=config["PIDS"]),
         targets = expand("data/processed/targets/{pid}/parsed_targets.csv", pid=config["PIDS"]),
     output:
