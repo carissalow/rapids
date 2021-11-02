@@ -1,6 +1,8 @@
 # Change Log
 ## v.1.7.0
 - Add tests for phone battery features
+- Fill NA with 0 for the selected event features: (1) each sensor's feature extraction script (2) data cleaning script
+- Refactor data cleaning module: update the structure and add dropping highly correlated features section
 ## v1.6.0
 - Refactor PHONE_CALLS RAPIDS provider to compute features based on call episodes or events
 - Refactor PHONE_LOCATIONS DORYAB provider to compute features based on location episodes
