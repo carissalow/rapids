@@ -9,9 +9,6 @@ If you are interested in contributing feel free to submit a pull request or cont
 ??? abstract "About"
     Julio Vega is a postdoctoral associate at the Mobile Sensing + Health Institute. He is interested in personalized methodologies to monitor chronic conditions that affect daily human behavior using mobile and wearable data.
 
-    - *vegaju* at *upmc* . *edu*
-    - [Personal Website](https://juliovega.info/)
-
 ### Meng Li
 
 ??? abstract "About"
