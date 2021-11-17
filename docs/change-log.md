@@ -1,7 +1,7 @@
 # Change Log
 ## v.1.7.0
 - Add tests for phone battery features
-- Fill NA with 0 for the selected event features: (1) each sensor's feature extraction script (2) data cleaning script
+- Replace NA with 0 for selected event-based features. Done in each feature extraction script and the data cleaning module
 - Refactor data cleaning module: update the structure and add dropping highly correlated features section
 ## v1.6.0
 - Refactor PHONE_CALLS RAPIDS provider to compute features based on call episodes or events

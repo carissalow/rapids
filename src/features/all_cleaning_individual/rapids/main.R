@@ -12,7 +12,9 @@ rapids_cleaning <- function(sensor_data_files, provider){
     cols_nan_threshold <- as.numeric(provider[["COLS_NAN_THRESHOLD"]])
     drop_zero_variance_columns <- as.logical(provider[["COLS_VAR_THRESHOLD"]])
     rows_nan_threshold <- as.numeric(provider[["ROWS_NAN_THRESHOLD"]])
-    data_yielded_hours_ratio_threshold <- as.numeric(provider[["DATA_YIELDED_HOURS_RATIO_THRESHOLD"]])
+    data_yield_unit <- tolower(provider[["DATA_YIELD_UNIT"]])
+    data_yield_column <- paste0("phone_data_yield_rapids_ratiovalidyielded", data_yield_unit)
+    data_yield_ratio_threshold <- as.numeric(provider[["DATA_YIELD_RATIO_THRESHOLD"]])
     drop_highly_correlated_features <- provider[["DROP_HIGHLY_CORRELATED_FEATURES"]]
 
     # Impute selected event features
@@ -33,12 +35,12 @@ rapids_cleaning <- function(sensor_data_files, provider){
         clean_features[selected_columns][is.na(clean_features[selected_columns]) & (clean_features$phone_data_yield_rapids_ratiovalidyieldedminutes > impute_selected_event_features$MIN_DATA_YIELDED_MINUTES_TO_IMPUTE)] <- 0
     }
     
-    # Drop rows with the value of "phone_data_yield_rapids_ratiovalidyieldedhours" column less than data_yielded_hours_ratio_threshold
-    if(!"phone_data_yield_rapids_ratiovalidyieldedhours" %in% colnames(clean_features)){
-        stop("Error: RAPIDS provider needs to clean data based on phone_data_yield_rapids_ratiovalidyieldedhours column, please set config[PHONE_DATA_YIELD][PROVIDERS][RAPIDS][COMPUTE] to True and include 'ratiovalidyieldedhours' in [FEATURES].")
+    # Drop rows with the value of data_yield_column less than data_yield_ratio_threshold
+    if(!data_yield_column %in% colnames(clean_features)){
+        stop(paste0("Error: RAPIDS provider needs to clean data based on ", data_yield_column, " column, please set config[PHONE_DATA_YIELD][PROVIDERS][RAPIDS][COMPUTE] to True and include 'ratiovalidyielded", data_yield_unit, "' in [FEATURES]."))
     }
     clean_features <- clean_features %>% 
-        filter(phone_data_yield_rapids_ratiovalidyieldedhours >= data_yielded_hours_ratio_threshold)
+        filter(.[[data_yield_column]] >= data_yield_ratio_threshold)
 
     # Drop columns with a percentage of NA values above cols_nan_threshold
     if(nrow(clean_features))
