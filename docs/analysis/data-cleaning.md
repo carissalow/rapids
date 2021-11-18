@@ -1,7 +1,7 @@
 Data Cleaning
 =============
 
-The goal of this module is to perform basic clean tasks on the behavioral features that RAPIDS computes. You might need to do further processing depending on your analysis objectives. This module can clean features at the individual level and at the study level. For example, if we have enough data for a participant, we can train a model for that participant. By setting parameters in `[ALL_CLEANING_INDIVIDUAL]` section, we can get cleaned data for that participant. Similarly, if we want to train a model for all participants, we can get the cleaned data for all participants by setting parameters in `[ALL_CLEANING_OVERALL]` section.
+The goal of this module is to perform basic clean tasks on the behavioral features that RAPIDS computes. You might need to do further processing depending on your analysis objectives. This module can clean features at the individual level and at the study level. If you are interested in creating individual models (using each participant's features independently of the others) use [`ALL_CLEANING_INDIVIDUAL`]. If you are interested in creating population models (using everyone's data in the same model) use [`ALL_CLEANING_OVERALL`]
     
 ## Clean sensor features for individual participants
 

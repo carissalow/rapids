@@ -1,8 +1,7 @@
 # Change Log
 ## v.1.7.0
 - Add tests for phone battery features
-- Replace NA with 0 for selected event-based features. Done in each feature extraction script and the data cleaning module
-- Refactor data cleaning module: update the structure and add dropping highly correlated features section
+- Add a data cleaning module to replace NAs with 0 in selected event-based features, discard unreliable rows and columns, discard columns with zero variance, and discard highly correlated columns
 ## v1.6.0
 - Refactor PHONE_CALLS RAPIDS provider to compute features based on call episodes or events
 - Refactor PHONE_LOCATIONS DORYAB provider to compute features based on location episodes
