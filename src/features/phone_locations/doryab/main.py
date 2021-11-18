@@ -180,8 +180,11 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     location_features = location_features.merge(location_entropy(stationary_data_without_outliers), how="outer", left_index=True, right_index=True)
 
     # time at home
-    stationary_data["time_at_home"] = stationary_data.apply(lambda row: row["duration"] if row["distance_from_home"] <= radius_from_home else 0, axis=1)
-    location_features["timeathome"] = stationary_data[["local_segment", "time_at_home"]].groupby(["local_segment"])["time_at_home"].sum()
+    if stationary_data.empty:
+        location_features["timeathome"] = 0
+    else:
+        stationary_data["time_at_home"] = stationary_data.apply(lambda row: row["duration"] if row["distance_from_home"] <= radius_from_home else 0, axis=1)
+        location_features["timeathome"] = stationary_data[["local_segment", "time_at_home"]].groupby(["local_segment"])["time_at_home"].sum()
 
     # home label
     location_features["homelabel"] = stationary_data[["local_segment", "home_label"]].groupby(["local_segment"]).agg(lambda x: pd.Series.mode(x)[0])
