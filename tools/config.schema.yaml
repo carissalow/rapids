@@ -1300,7 +1300,10 @@ properties:
                       type: number
                       minimum: 0
                       maximum: 1
-                    DATA_YIELDED_HOURS_RATIO_THRESHOLD:
+                    DATA_YIELD_UNIT:
+                      type: string
+                      enum: ["HOURS", "MINUTES"]
+                    DATA_YIELD_RATIO_THRESHOLD:
                       type: number
                       minimum: 0
                       maximum: 1
@@ -1352,7 +1355,10 @@ properties:
                       type: number
                       minimum: 0
                       maximum: 1
-                    DATA_YIELDED_HOURS_RATIO_THRESHOLD:
+                    DATA_YIELD_UNIT:
+                      type: string
+                      enum: ["HOURS", "MINUTES"]
+                    DATA_YIELD_RATIO_THRESHOLD:
                       type: number
                       minimum: 0
                       maximum: 1
