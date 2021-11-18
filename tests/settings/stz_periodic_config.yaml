@@ -455,6 +455,7 @@ FITBIT_STEPS_INTRADAY:
         STEPS: ["sum", "max", "min", "avg", "std", "firststeptime", "laststeptime"]
         SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
         ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+      REFERENCE_HOUR: 0
       THRESHOLD_ACTIVE_BOUT: 10 # steps
       INCLUDE_ZERO_STEP_ROWS: False
       SRC_SCRIPT: src/features/fitbit_steps_intraday/rapids/main.py
