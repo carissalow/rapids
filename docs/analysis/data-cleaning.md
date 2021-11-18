@@ -22,8 +22,8 @@ Parameters description for `[ALL_CLEANING_INDIVIDUAL][PROVIDERS][RAPIDS]`:
 |`[COLS_NAN_THRESHOLD]`                 | Discard columns with missing value ratios higher than `[COLS_NAN_THRESHOLD]`. Set to 1 to disable
 |`[COLS_VAR_THRESHOLD]`                 | Set to `True` to discard columns with zero variance
 |`[ROWS_NAN_THRESHOLD]`                 | Discard rows with missing value ratios higher than `[ROWS_NAN_THRESHOLD]`. Set to 1 to disable
-|`[DATA_YIELD_UNIT]`                    | `HOURS` or `MINUTES`. Set to `HOURS` to denote `ratiovalidyieldedhours` feature; set to `MINUTES` to denote `ratiovalidyieldedminutes` feature.
-|`[DATA_YIELD_RATIO_THRESHOLD]`         | Discard rows with `ratiovalidyieldedhours` or `ratiovalidyieldedminutes` feature less than `[DATA_YIELD_RATIO_THRESHOLD]`. The feature name is determined by `[DATA_YIELD_UNIT]` parameter. Set to 0 to disable
+|`[DATA_YIELD_FEATURE]`                 | `RATIO_VALID_YIELDED_HOURS` or `RATIO_VALID_YIELDED_MINUTES`
+|`[DATA_YIELD_RATIO_THRESHOLD]`         | Discard rows with `ratiovalidyieldedhours` or `ratiovalidyieldedminutes` feature less than `[DATA_YIELD_RATIO_THRESHOLD]`. The feature name is determined by `[DATA_YIELD_FEATURE]` parameter. Set to 0 to disable
 |`DROP_HIGHLY_CORRELATED_FEATURES`      | Discard highly correlated features, see table below
 
 Parameters description for `[ALL_CLEANING_INDIVIDUAL][PROVIDERS][RAPIDS][IMPUTE_SELECTED_EVENT_FEATURES]`:
@@ -59,7 +59,7 @@ Steps to clean sensor features for individual participants. It only considers th
       - WiFi: all connected and visible features.
 
 ??? info "2. Discard unreliable rows."
-    Extracted features might be not reliable if the sensor only works for a short period during a time segment. In this step, we discard rows when the `phone_data_yield_rapids_ratiovalidyieldedminutes` column or the `phone_data_yield_rapids_ratiovalidyieldedhours` column is less than the `[DATA_YIELD_RATIO_THRESHOLD]` parameter. We recommend using `phone_data_yield_rapids_ratiovalidyieldedminutes` column (set `[DATA_YIELD_UNIT]` to `MINUTES`) on time segments that are shorter than two or three hours and `phone_data_yield_rapids_ratiovalidyieldedhours` (set `[DATA_YIELD_UNIT]` to `HOURS`) for longer segments. We do not recommend you to skip this step, but you can do it by setting `[DATA_YIELD_RATIO_THRESHOLD]` to 0.
+    Extracted features might be not reliable if the sensor only works for a short period during a time segment. In this step, we discard rows when the `phone_data_yield_rapids_ratiovalidyieldedminutes` column or the `phone_data_yield_rapids_ratiovalidyieldedhours` column is less than the `[DATA_YIELD_RATIO_THRESHOLD]` parameter. We recommend using `phone_data_yield_rapids_ratiovalidyieldedminutes` column (set `[DATA_YIELD_FEATURE]` to `RATIO_VALID_YIELDED_MINUTES`) on time segments that are shorter than two or three hours and `phone_data_yield_rapids_ratiovalidyieldedhours` (set `[DATA_YIELD_FEATURE]` to `RATIO_VALID_YIELDED_HOURS`) for longer segments. We do not recommend you to skip this step, but you can do it by setting `[DATA_YIELD_RATIO_THRESHOLD]` to 0.
 
 ??? info "3. Discard columns (features) with too many missing values."
     In this step, we discard columns with missing value ratios higher than `[COLS_NAN_THRESHOLD]`. We do not recommend you to skip this step, but you can do it by setting `[COLS_NAN_THRESHOLD]` to 1.

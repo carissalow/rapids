@@ -12,7 +12,7 @@ rapids_cleaning <- function(sensor_data_files, provider){
     cols_nan_threshold <- as.numeric(provider[["COLS_NAN_THRESHOLD"]])
     drop_zero_variance_columns <- as.logical(provider[["COLS_VAR_THRESHOLD"]])
     rows_nan_threshold <- as.numeric(provider[["ROWS_NAN_THRESHOLD"]])
-    data_yield_unit <- tolower(provider[["DATA_YIELD_UNIT"]])
+    data_yield_unit <- tolower(str_split_fixed(provider[["DATA_YIELD_FEATURE"]], "_", 4)[[4]])
     data_yield_column <- paste0("phone_data_yield_rapids_ratiovalidyielded", data_yield_unit)
     data_yield_ratio_threshold <- as.numeric(provider[["DATA_YIELD_RATIO_THRESHOLD"]])
     drop_highly_correlated_features <- provider[["DROP_HIGHLY_CORRELATED_FEATURES"]]
