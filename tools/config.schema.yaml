@@ -1142,7 +1142,7 @@ properties:
                         uniqueItems: True
                         items:
                           type: string
-                          enum: ["sum", "max", "min", "avg", "std"]
+                          enum: ["sum", "max", "min", "avg", "std", "firststeptime", "laststeptime"]
                       SEDENTARY_BOUT:
                         type: array
                         uniqueItems: True

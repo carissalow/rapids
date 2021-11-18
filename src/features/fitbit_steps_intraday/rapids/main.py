@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
 
-def statsFeatures(steps_data, features_to_compute, features_type, steps_features):
+def statsFeatures(steps_data, features_to_compute, features_type, steps_features, *args, **kwargs):
     if features_type == "steps" or features_type == "sumsteps":
         col_name = "steps"
+        reference_hour = kwargs["reference_hour"]
     elif features_type == "durationsedentarybout" or features_type == "durationactivebout":
         col_name = "duration"
     else:
@@ -23,6 +24,10 @@ def statsFeatures(steps_data, features_to_compute, features_type, steps_features
         steps_features["median" + features_type] = steps_data.groupby(["local_segment"])[col_name].median()
     if "std" + features_type in features_to_compute:
         steps_features["std" + features_type] = steps_data.groupby(["local_segment"])[col_name].std()
+    if (col_name == "steps") and ("firststeptime" in features_to_compute):
+        steps_features["firststeptime"] = steps_data[steps_data["steps"].ne(0)].groupby(["local_segment"])["local_time"].first().apply(lambda x: (int(x.split(":")[0]) - reference_hour) * 60 + int(x.split(":")[1]) + (int(x.split(":")[2]) / 60))
+    if (col_name == "steps") and ("laststeptime" in features_to_compute):
+        steps_features["laststeptime"] = steps_data[steps_data["steps"].ne(0)].groupby(["local_segment"])["local_time"].last().apply(lambda x: (int(x.split(":")[0]) - reference_hour) * 60 + int(x.split(":")[1]) + (int(x.split(":")[2]) / 60))
 
     return steps_features
 
@@ -38,11 +43,11 @@ def getBouts(steps_data):
 
     return bouts
 
-def extractStepsFeaturesFromIntradayData(steps_intraday_data, threshold_active_bout, intraday_features_to_compute_steps, intraday_features_to_compute_sedentarybout, intraday_features_to_compute_activebout, steps_intraday_features):
+def extractStepsFeaturesFromIntradayData(steps_intraday_data, reference_hour, threshold_active_bout, intraday_features_to_compute_steps, intraday_features_to_compute_sedentarybout, intraday_features_to_compute_activebout, steps_intraday_features):
     steps_intraday_features = pd.DataFrame()
 
     # statistics features of steps count
-    steps_intraday_features = statsFeatures(steps_intraday_data, intraday_features_to_compute_steps, "steps", steps_intraday_features)
+    steps_intraday_features = statsFeatures(steps_intraday_data, intraday_features_to_compute_steps, "steps", steps_intraday_features, reference_hour=reference_hour)
 
     # sedentary bout: less than THRESHOLD_ACTIVE_BOUT (default: 10) steps in a minute
     # active bout: greater or equal to THRESHOLD_ACTIVE_BOUT (default: 10) steps in a minute
@@ -66,6 +71,7 @@ def extractStepsFeaturesFromIntradayData(steps_intraday_data, threshold_active_b
 
 def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
+    reference_hour = provider["REFERENCE_HOUR"]
     threshold_active_bout = provider["THRESHOLD_ACTIVE_BOUT"]
     include_zero_step_rows = provider["INCLUDE_ZERO_STEP_ROWS"]
 
@@ -73,11 +79,11 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
     requested_intraday_features = provider["FEATURES"]
 
-    requested_intraday_features_steps = [x + "steps" for x in requested_intraday_features["STEPS"]]
+    requested_intraday_features_steps = [x + "steps" if x not in ["firststeptime", "laststeptime"] else x for x in requested_intraday_features["STEPS"]]
     requested_intraday_features_sedentarybout = [x + "sedentarybout" for x in requested_intraday_features["SEDENTARY_BOUT"]]
     requested_intraday_features_activebout = [x + "activebout" for x in requested_intraday_features["ACTIVE_BOUT"]]
     # name of the features this function can compute
-    base_intraday_features_steps = ["sumsteps", "maxsteps", "minsteps", "avgsteps", "stdsteps"]
+    base_intraday_features_steps = ["sumsteps", "maxsteps", "minsteps", "avgsteps", "stdsteps", "firststeptime", "laststeptime"]
     base_intraday_features_sedentarybout = ["countepisodesedentarybout", "sumdurationsedentarybout", "maxdurationsedentarybout", "mindurationsedentarybout", "avgdurationsedentarybout", "stddurationsedentarybout"]
     base_intraday_features_activebout = ["countepisodeactivebout", "sumdurationactivebout", "maxdurationactivebout", "mindurationactivebout", "avgdurationactivebout", "stddurationactivebout"]
     # the subset of requested features this function can compute
@@ -99,6 +105,6 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
         steps_intraday_data = filter_data_by_segment(steps_intraday_data, time_segment)
 
         if not steps_intraday_data.empty:
-            steps_intraday_features = extractStepsFeaturesFromIntradayData(steps_intraday_data, threshold_active_bout, intraday_features_to_compute_steps, intraday_features_to_compute_sedentarybout, intraday_features_to_compute_activebout, steps_intraday_features)
+            steps_intraday_features = extractStepsFeaturesFromIntradayData(steps_intraday_data, reference_hour, threshold_active_bout, intraday_features_to_compute_steps, intraday_features_to_compute_sedentarybout, intraday_features_to_compute_activebout, steps_intraday_features)
     
     return steps_intraday_features

@@ -1,5 +1,7 @@
 # Change Log
-## v.1.7.0
+## v1.7.0
+- Add firststeptime and laststeptime features to FITBIT_STEPS_INTRADAY RAPIDS provider
+- Update tests for Fitbit steps intraday features
 - Add tests for phone battery features
 ## v1.6.0
 - Refactor PHONE_CALLS RAPIDS provider to compute features based on call episodes or events
