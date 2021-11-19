@@ -5,14 +5,10 @@
 
 ## RAPIDS
 
-If you used RAPIDS, please cite [this paper](https://preprints.jmir.org/preprint/23246).
+If you used RAPIDS, please cite [this paper](https://www.frontiersin.org/article/10.3389/fdgth.2021.769823).
 
 !!! cite "RAPIDS et al. citation"
-    Vega J, Li M, Aguillera K, Goel N, Joshi E, Durica KC, Kunta AR, Low CA
-    RAPIDS: Reproducible Analysis Pipeline for Data Streams Collected with Mobile Devices
-    JMIR Preprints. 18/08/2020:23246
-    DOI: 10.2196/preprints.23246
-    URL: https://preprints.jmir.org/preprint/23246
+    Vega, J., Li, M., Aguillera, K., Goel, N., Joshi, E., Khandekar, K., ... & Low, C. A. (2021). Reproducible Analysis Pipeline for Data Streams (RAPIDS): Open-Source Software to Process Data Collected with Mobile Devices. Frontiers in Digital Health, 168.
 
 ## DBDP (all Empatica sensors)
 

@@ -1,4 +1,7 @@
 # Change Log
+## v1.7.1
+- Update docs for Git Flow section
+- Update RAPIDS paper information
 ## v1.7.0
 - Add firststeptime and laststeptime features to FITBIT_STEPS_INTRADAY RAPIDS provider
 - Update tests for Fitbit steps intraday features

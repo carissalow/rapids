@@ -127,9 +127,9 @@ git branch -d release/v[NEW_RELEASE]
 ```
 git checkout master
 git merge --ff-only develop
-git push
+git push # Unlock the master branch before merging
 ```
-1. Go to [GitHub](https://github.com/carissalow/rapids/tags) and create a new release based on the newest tag `v[NEW_RELEASE]` (remember to add the change log)
+1. Release happens automatically after passing the tests
 
 ## Release a Hotfix
 1. Pull the latest master
@@ -156,6 +156,6 @@ git branch -d hotfix/v[NEW_HOTFIX]
 ```
 git checkout master
 git merge --ff-only v[NEW_HOTFIX]
-git push
+git push # Unlock the master branch before merging
 ```
-1. Go to [GitHub](https://github.com/carissalow/rapids/tags) and create a new release based on the newest tag `v[NEW_HOTFIX]` (remember to add the change log)
+1. Release happens automatically after passing the tests
