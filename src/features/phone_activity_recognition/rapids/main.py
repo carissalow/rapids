@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
@@ -31,11 +30,13 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
                 if "duration" + column.lower() in features_to_compute:
                     filtered_data = ar_episodes[ar_episodes["activity_name"].isin(pd.Series(activity_labels))]
                     if not filtered_data.empty:
-                        ar_features["duration" + column.lower()] = ar_episodes[ar_episodes["activity_name"].isin(pd.Series(activity_labels))].groupby(["local_segment"])["duration"].sum().fillna(0)
+                        ar_features["duration" + column.lower()] = ar_episodes[ar_episodes["activity_name"].isin(pd.Series(activity_labels))].groupby(["local_segment"])["duration"].sum()
                     else:
                         ar_features["duration" + column.lower()] = 0
 
             ar_features.index.names = ["local_segment"]
             ar_features = ar_features.reset_index()
     
+    ar_features.fillna(value={"count": 0, "countuniqueactivities": 0, "durationstationary": 0, "durationmobile": 0, "durationvehicle": 0}, inplace=True)
+
     return ar_features

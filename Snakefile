@@ -394,6 +394,13 @@ if config["HEATMAP_PHONE_DATA_YIELD_PER_PARTICIPANT_PER_TIME_SEGMENT"]["PLOT"]:
 if config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["PLOT"]:
     files_to_compute.append("reports/data_exploration/heatmap_feature_correlation_matrix.html")
 
+# Data Cleaning
+for provider in config["ALL_CLEANING_INDIVIDUAL"]["PROVIDERS"].keys():
+    if config["ALL_CLEANING_INDIVIDUAL"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features_cleaned_" + provider.lower() +".csv", pid=config["PIDS"]))
+for provider in config["ALL_CLEANING_OVERALL"]["PROVIDERS"].keys():
+    if config["ALL_CLEANING_OVERALL"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/processed/features/all_participants/all_sensor_features_cleaned_" + provider.lower() +".csv"))
 
 rule all:
     input:

@@ -23,10 +23,10 @@ Let's review some key concepts we use throughout these docs:
     - [Add your own behavioral features](../../features/add-new-features/) (we can include them in RAPIDS if you want to share them with the community)
     - [Add support for new data streams](../../datastreams/add-new-data-streams/) if yours cannot be processed by RAPIDS yet
     - Create visualizations for [data quality control](../../visualizations/data-quality-visualizations/)  and [feature inspection](../../visualizations/feature-visualizations/)
-    - [Extending RAPIDS to organize your analysis](../../workflow-examples/analysis/) and publish a code repository along with your code
+    - [Extending RAPIDS to organize your analysis](../../analysis/complete-workflow-example/) and publish a code repository along with your code
 
 !!! hint
-    - We recommend you follow the [Minimal Example](../../workflow-examples/minimal/) tutorial to get familiar with RAPIDS
+    - We recommend you follow the [Minimal Example](../../analysis/minimal/) tutorial to get familiar with RAPIDS
 
     - In order to follow any of the previous tutorials, you will have to [Install](../installation/), [Configure](../configuration/), and learn how to [Execute](../execution/) RAPIDS.
 

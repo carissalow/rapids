@@ -53,35 +53,9 @@ rule parse_targets:
     script:
         "../src/models/workflow_example/parse_targets.py"
 
-rule clean_sensor_features_for_individual_participants:
-    input:
-        rules.merge_sensor_features_for_individual_participants.output
-    params:
-        cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"],
-        cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
-        rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
-        data_yielded_hours_ratio_threshold = config["PARAMS_FOR_ANALYSIS"]["DATA_YIELDED_HOURS_RATIO_THRESHOLD"],
-    output:
-        "data/processed/features/{pid}/all_sensor_features_cleaned.csv"
-    script:
-        "../src/models/workflow_example/clean_sensor_features.R"
-
-rule clean_sensor_features_for_all_participants:
-    input:
-        rules.merge_sensor_features_for_all_participants.output
-    params:
-        cols_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_NAN_THRESHOLD"],
-        cols_var_threshold = config["PARAMS_FOR_ANALYSIS"]["COLS_VAR_THRESHOLD"],
-        rows_nan_threshold = config["PARAMS_FOR_ANALYSIS"]["ROWS_NAN_THRESHOLD"],
-        data_yielded_hours_ratio_threshold = config["PARAMS_FOR_ANALYSIS"]["DATA_YIELDED_HOURS_RATIO_THRESHOLD"],
-    output:
-        "data/processed/features/all_participants/all_sensor_features_cleaned.csv"
-    script:
-        "../src/models/workflow_example/clean_sensor_features.R"
-
 rule merge_features_and_targets_for_individual_model:
     input:
-        cleaned_sensor_features = "data/processed/features/{pid}/all_sensor_features_cleaned.csv",
+        cleaned_sensor_features = "data/processed/features/{pid}/all_sensor_features_cleaned_rapids.csv",
         targets = "data/processed/targets/{pid}/parsed_targets.csv",
     output:
         "data/processed/models/individual_model/{pid}/input.csv"
@@ -90,7 +64,7 @@ rule merge_features_and_targets_for_individual_model:
 
 rule merge_features_and_targets_for_population_model:
     input:
-        cleaned_sensor_features = "data/processed/features/all_participants/all_sensor_features_cleaned.csv",
+        cleaned_sensor_features = "data/processed/features/all_participants/all_sensor_features_cleaned_rapids.csv",
         demographic_features = expand("data/processed/features/{pid}/demographic_features.csv", pid=config["PIDS"]),
         targets = expand("data/processed/targets/{pid}/parsed_targets.csv", pid=config["PIDS"]),
     output:

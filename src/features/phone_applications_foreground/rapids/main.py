@@ -26,40 +26,23 @@ def compute_features(filtered_data, apps_type, requested_features, apps_features
             apps_features["frequencyentropy" + apps_type] = apps_with_count.groupby("local_segment")["timestamp"].agg(entropy)
     if "countevent" in requested_features:
         apps_features["countevent" + apps_type] = filtered_data.groupby(["local_segment"]).count()["timestamp"]
-        apps_features.fillna(value={"countevent" + apps_type: 0}, inplace=True)
 
     if "countepisode" in requested_features:
         apps_features["countepisode" + apps_type] = filtered_data.groupby(["local_segment"]).count()["start_timestamp"]
-        apps_features.fillna(value={"countepisode" + apps_type: 0}, inplace=True)
 
     if "minduration" in requested_features:
-        grouped_data = filtered_data.groupby(by = ['local_segment'])['duration'].min()
-        if grouped_data.empty:
-            apps_features["minduration" + apps_type] = np.nan
-        else:
-            apps_features["minduration" + apps_type] = grouped_data
+        apps_features["minduration" + apps_type] = filtered_data.groupby(by = ["local_segment"])["duration"].min()
             
     if "maxduration" in requested_features:
-        grouped_data = filtered_data.groupby(by = ['local_segment'])['duration'].max()
-        if grouped_data.empty:
-            apps_features["maxduration" + apps_type] = np.nan
-        else:
-            apps_features["maxduration" + apps_type] = grouped_data
+        apps_features["maxduration" + apps_type] = filtered_data.groupby(by = ["local_segment"])["duration"].max()
             
     if "meanduration" in requested_features:
-        grouped_data = filtered_data.groupby(by = ['local_segment'])['duration'].mean()
-        if grouped_data.empty:
-            apps_features["meanduration" + apps_type] = np.nan
-        else:
-            apps_features["meanduration" + apps_type] = grouped_data
+        apps_features["meanduration" + apps_type] = filtered_data.groupby(by = ["local_segment"])["duration"].mean()
             
     if "sumduration" in requested_features:
-        grouped_data = filtered_data.groupby(by = ['local_segment'])['duration'].sum()
-        if grouped_data.empty:
-            apps_features["sumduration" + apps_type] = np.nan
-        else:
-            apps_features["sumduration" + apps_type] = grouped_data
-    apps_features.index.names = ['local_segment']
+        apps_features["sumduration" + apps_type] = filtered_data.groupby(by = ["local_segment"])["duration"].sum()
+    
+    apps_features.index.names = ["local_segment"]
     return apps_features
 
 def process_app_features(data, requested_features, time_segment, provider, filter_data_by_segment):
@@ -145,4 +128,6 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
         
         features = pd.merge(episodes_features, features, how='outer', on='local_segment')
 
+    features.fillna(value={feature_name: 0 for feature_name in features.columns if feature_name.startswith(("countevent", "countepisode", "minduration", "maxduration", "meanduration", "sumduration"))}, inplace=True)
+    
     return features

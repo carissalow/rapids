@@ -205,6 +205,13 @@
       "Repository": "CRAN",
       "Hash": "b7d7f1e926dfcd57c74ce93f5c048e80"
     },
+    "caret": {
+      "Package": "caret",
+      "Version": "6.0-89",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "95cdd7da1e51ab0451c27666f15db891"
+    },
     "cellranger": {
       "Package": "cellranger",
       "Version": "1.1.0",
@@ -274,6 +281,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "ae01381679f4511ca7a72d55fe175213"
+    },
+    "corrr": {
+      "Package": "corrr",
+      "Version": "0.4.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "dbd1387c025b07f62da3334942176e14"
     },
     "cpp11": {
       "Package": "cpp11",

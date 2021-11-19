@@ -761,22 +761,6 @@ rule fitbit_sleep_intraday_r_features:
     script:
         "../src/features/entry.R"
 
-rule merge_sensor_features_for_individual_participants:
-    input:
-        feature_files = input_merge_sensor_features_for_individual_participants
-    output:
-        "data/processed/features/{pid}/all_sensor_features.csv"
-    script:
-        "../src/features/utils/merge_sensor_features_for_individual_participants.R"
-
-rule merge_sensor_features_for_all_participants:
-    input:
-        feature_files = expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"])
-    output:
-        "data/processed/features/all_participants/all_sensor_features.csv"
-    script:
-        "../src/features/utils/merge_sensor_features_for_all_participants.R"
-
 rule empatica_accelerometer_python_features:
     input:
         sensor_data = "data/raw/{pid}/empatica_accelerometer_with_datetime.csv",
@@ -958,3 +942,46 @@ rule empatica_tags_r_features:
         "data/interim/{pid}/empatica_tags_features/empatica_tags_r_{provider_key}.csv"
     script:
         "../src/features/entry.R"
+
+rule merge_sensor_features_for_individual_participants:
+    input:
+        feature_files = input_merge_sensor_features_for_individual_participants
+    output:
+        "data/processed/features/{pid}/all_sensor_features.csv"
+    script:
+        "../src/features/utils/merge_sensor_features_for_individual_participants.R"
+
+rule merge_sensor_features_for_all_participants:
+    input:
+        feature_files = expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"])
+    output:
+        "data/processed/features/all_participants/all_sensor_features.csv"
+    script:
+        "../src/features/utils/merge_sensor_features_for_all_participants.R"
+
+rule clean_sensor_features_for_individual_participants:
+    input:
+        sensor_data = rules.merge_sensor_features_for_individual_participants.output
+    wildcard_constraints:
+        pid = "("+"|".join(config["PIDS"])+")"
+    params:
+        provider = lambda wildcards: config["ALL_CLEANING_INDIVIDUAL"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "all_cleaning_individual"
+    output:
+        "data/processed/features/{pid}/all_sensor_features_cleaned_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+
+rule clean_sensor_features_for_all_participants:
+    input:
+        sensor_data = rules.merge_sensor_features_for_all_participants.output
+    params:
+        provider = lambda wildcards: config["ALL_CLEANING_OVERALL"]["PROVIDERS"][wildcards.provider_key.upper()],
+        provider_key = "{provider_key}",
+        sensor_key = "all_cleaning_overall"
+    output:
+        "data/processed/features/all_participants/all_sensor_features_cleaned_{provider_key}.csv"
+    script:
+        "../src/features/entry.R"
+

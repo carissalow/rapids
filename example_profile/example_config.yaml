@@ -534,6 +534,46 @@ HEATMAP_FEATURE_CORRELATION_MATRIX:
   CORR_METHOD: "pearson" # choose from {"pearson", "kendall", "spearman"}
 
 
+########################################################################################################################
+#                                                    Data Cleaning                                                     #
+########################################################################################################################
+
+ALL_CLEANING_INDIVIDUAL:
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      IMPUTE_SELECTED_EVENT_FEATURES:
+        COMPUTE: False
+        MIN_DATA_YIELDED_MINUTES_TO_IMPUTE: 0.33
+      COLS_NAN_THRESHOLD: 0.3 # set to 1 to disable
+      COLS_VAR_THRESHOLD: True
+      ROWS_NAN_THRESHOLD: 0.3 # set to 1 to disable
+      DATA_YIELD_FEATURE: RATIO_VALID_YIELDED_HOURS # RATIO_VALID_YIELDED_HOURS or RATIO_VALID_YIELDED_MINUTES
+      DATA_YIELD_RATIO_THRESHOLD: 0.75 # set to 0 to disable
+      DROP_HIGHLY_CORRELATED_FEATURES:
+        COMPUTE: False
+        MIN_OVERLAP_FOR_CORR_THRESHOLD: 0.5
+        CORR_THRESHOLD: 0.95
+      SRC_SCRIPT: src/features/all_cleaning_individual/rapids/main.R
+
+ALL_CLEANING_OVERALL:
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      IMPUTE_SELECTED_EVENT_FEATURES:
+        COMPUTE: False
+        MIN_DATA_YIELDED_MINUTES_TO_IMPUTE: 0.33
+      COLS_NAN_THRESHOLD: 0.3 # set to 1 to disable
+      COLS_VAR_THRESHOLD: True
+      ROWS_NAN_THRESHOLD: 0.3 # set to 1 to disable
+      DATA_YIELD_FEATURE: RATIO_VALID_YIELDED_HOURS # RATIO_VALID_YIELDED_HOURS or RATIO_VALID_YIELDED_MINUTES
+      DATA_YIELD_RATIO_THRESHOLD: 0.75 # set to 0 to disable
+      DROP_HIGHLY_CORRELATED_FEATURES:
+        COMPUTE: False
+        MIN_OVERLAP_FOR_CORR_THRESHOLD: 0.5
+        CORR_THRESHOLD: 0.95
+      SRC_SCRIPT: src/features/all_cleaning_overall/rapids/main.R
+
 
 ########################################################################################################################
 #                                              Analysis Workflow Example                                               #
@@ -551,12 +591,6 @@ PARAMS_FOR_ANALYSIS:
   TARGET:
     FOLDER: data/external/example_workflow
     CONTAINER: participant_target.csv
-
-  # Cleaning Parameters
-  COLS_NAN_THRESHOLD: 0.3
-  COLS_VAR_THRESHOLD: True
-  ROWS_NAN_THRESHOLD: 0.3
-  DATA_YIELDED_HOURS_RATIO_THRESHOLD: 0.75
   
   MODEL_NAMES: [LogReg, kNN , SVM, DT, RF, GB, XGBoost, LightGBM]
   CV_METHODS: [LeaveOneOut]

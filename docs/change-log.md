@@ -3,6 +3,7 @@
 - Add firststeptime and laststeptime features to FITBIT_STEPS_INTRADAY RAPIDS provider
 - Update tests for Fitbit steps intraday features
 - Add tests for phone battery features
+- Add a data cleaning module to replace NAs with 0 in selected event-based features, discard unreliable rows and columns, discard columns with zero variance, and discard highly correlated columns
 ## v1.6.0
 - Refactor PHONE_CALLS RAPIDS provider to compute features based on call episodes or events
 - Refactor PHONE_LOCATIONS DORYAB provider to compute features based on location episodes

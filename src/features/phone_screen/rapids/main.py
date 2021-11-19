@@ -62,6 +62,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
                 screen_features = pd.concat([screen_features, getEpisodeDurationFeatures(screen_data, time_segment, episode, features_episodes_to_compute, reference_hour_first_use)], axis=1)
 
         if not screen_features.empty:
+            screen_features.fillna(value={feature_name: 0 for feature_name in screen_features.columns if not feature_name.startswith(("stdduration", "firstuseafter"))}, inplace=True)
             screen_features = screen_features.reset_index()
 
     return screen_features

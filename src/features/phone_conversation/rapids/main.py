@@ -140,7 +140,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
             if "voicemaxenergy" in features_to_compute:
                 conversation_features["voicemaxenergy"] = conversation_data[conversation_data['inference']==2].groupby(["local_segment"])["double_energy"].max()
 
-
+            conversation_features.fillna(value={feature_name: 0 for feature_name in conversation_features.columns if feature_name not in ["timefirstconversation", "timelastconversation", "sdconversationduration", "noisesdenergy", "voicesdenergy"]}, inplace=True)
             conversation_features = conversation_features.reset_index()
 
     return conversation_features

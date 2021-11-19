@@ -74,7 +74,7 @@ extra_css:
 nav:
   - Home: 'index.md'
   - Overview: setup/overview.md
-  - Minimal Example: workflow-examples/minimal.md
+  - Minimal Example: analysis/minimal.md
   - Citation: citation.md
   - Contributing: contributing.md
   - Setup:
@@ -140,8 +140,9 @@ nav:
   - Visualizations:
     - Data Quality: visualizations/data-quality-visualizations.md
     - Features: visualizations/feature-visualizations.md
-  - Analysis Workflows:
-    - Complete Example: workflow-examples/analysis.md
+  - Analysis:
+    - Data Cleaning: analysis/data-cleaning.md
+    - Complete Workflow Example: analysis/complete-workflow-example.md
   - Developers:
     - Git Flow: developers/git-flow.md
     - Remote Support: developers/remote-support.md

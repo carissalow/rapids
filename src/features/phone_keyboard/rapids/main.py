@@ -59,6 +59,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
             if "totalkeyboardtouches" in features_to_compute:
                 keyboard_features["totalkeyboardtouches"] = keyboard_data.groupby(['local_segment','sessionNumber'])['is_password'].count().reset_index().groupby(['local_segment'])['is_password'].mean()
             
+            keyboard_features.fillna(value={"sessioncount": 0, "averagesessionlength": 0, "changeintextlengthlessthanminusone": 0, "changeintextlengthequaltominusone": 0, "changeintextlengthequaltoone": 0, "changeintextlengthmorethanone": 0, "maxtextlength": 0, "totalkeyboardtouches": 0}, inplace=True)
             keyboard_features = keyboard_features.reset_index()
 
     return keyboard_features

@@ -565,3 +565,43 @@ HEATMAP_FEATURE_CORRELATION_MATRIX:
   CORR_THRESHOLD: 0.1
   CORR_METHOD: "pearson" # choose from {"pearson", "kendall", "spearman"}
 
+
+########################################################################################################################
+#                                                    Data Cleaning                                                     #
+########################################################################################################################
+
+ALL_CLEANING_INDIVIDUAL:
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      IMPUTE_SELECTED_EVENT_FEATURES:
+        COMPUTE: True
+        MIN_DATA_YIELDED_MINUTES_TO_IMPUTE: 0.33
+      COLS_NAN_THRESHOLD: 0.3 # set to 1 to disable
+      COLS_VAR_THRESHOLD: True
+      ROWS_NAN_THRESHOLD: 0.3 # set to 1 to disable
+      DATA_YIELD_FEATURE: RATIO_VALID_YIELDED_HOURS # RATIO_VALID_YIELDED_HOURS or RATIO_VALID_YIELDED_MINUTES
+      DATA_YIELD_RATIO_THRESHOLD: 0.5 # set to 0 to disable
+      DROP_HIGHLY_CORRELATED_FEATURES:
+        COMPUTE: True
+        MIN_OVERLAP_FOR_CORR_THRESHOLD: 0.5
+        CORR_THRESHOLD: 0.95
+      SRC_SCRIPT: src/features/all_cleaning_individual/rapids/main.R
+
+ALL_CLEANING_OVERALL:
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: False
+      IMPUTE_SELECTED_EVENT_FEATURES:
+        COMPUTE: True
+        MIN_DATA_YIELDED_MINUTES_TO_IMPUTE: 0.33
+      COLS_NAN_THRESHOLD: 0.3 # set to 1 to disable
+      COLS_VAR_THRESHOLD: True
+      ROWS_NAN_THRESHOLD: 0.3 # set to 1 to disable
+      DATA_YIELD_FEATURE: RATIO_VALID_YIELDED_HOURS # RATIO_VALID_YIELDED_HOURS or RATIO_VALID_YIELDED_MINUTES
+      DATA_YIELD_RATIO_THRESHOLD: 0.5 # set to 0 to disable
+      DROP_HIGHLY_CORRELATED_FEATURES:
+        COMPUTE: True
+        MIN_OVERLAP_FOR_CORR_THRESHOLD: 0.5
+        CORR_THRESHOLD: 0.95
+      SRC_SCRIPT: src/features/all_cleaning_overall/rapids/main.R

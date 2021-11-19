@@ -123,3 +123,13 @@ def fetch_provider_features(provider, provider_key, sensor_key, sensor_data_file
             sensor_features.insert(1 + i, segment_colums.columns[i], segment_colums[segment_colums.columns[i]])
 
     return sensor_features
+
+def run_provider_cleaning_script(provider, provider_key, sensor_key, sensor_data_files):
+    from importlib import import_module, util
+    print("{} Processing {} {}".format(rapids_log_tag, sensor_key, provider_key))
+
+    cleaning_module = import_path(provider["SRC_SCRIPT"])
+    cleaning_function = getattr(cleaning_module,  provider_key.lower() + "_cleaning")
+    sensor_features = cleaning_function(sensor_data_files, provider)
+
+    return sensor_features
