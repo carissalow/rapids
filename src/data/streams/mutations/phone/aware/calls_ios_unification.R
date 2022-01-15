@@ -39,7 +39,7 @@ unify_ios_calls <- function(ios_calls){
                         assigned_segments = first(assigned_segments))
         }
         else {
-            ios_calls <- ios_calls %>% summarise(call_type_sequence = paste(call_type, collapse = ","), call_duration = sum(call_duration),  timestamp = first(timestamp), device_id = first(device_id))
+            ios_calls <- ios_calls %>% summarise(call_type_sequence = paste(call_type, collapse = ","), call_duration = sum(as.numeric(call_duration)),  timestamp = first(timestamp), device_id = first(device_id))
         }
         ios_calls <- ios_calls %>% mutate(call_type = case_when(
             call_type_sequence == "1,2,4" | call_type_sequence == "2,1,4" ~ 1, # incoming
