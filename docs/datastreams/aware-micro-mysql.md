@@ -1,4 +1,4 @@
-# `aware_mysql`
+# `aware_micro_mysql`
 
 This [data stream](../../datastreams/data-streams-introduction) handles iOS and Android sensor data collected with the [AWARE Framework's](https://awareframework.com/) [AWARE Micro](https://github.com/denzilferreira/aware-micro) server and stored in a MySQL database.
 
