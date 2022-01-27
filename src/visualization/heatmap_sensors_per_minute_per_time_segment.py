@@ -24,12 +24,12 @@ def colors2colorscale(colors):
 def getDataForPlot(phone_data_yield_per_segment):
     # calculate the length (in minute) of per segment instance
     phone_data_yield_per_segment["length"] = phone_data_yield_per_segment["timestamps_segment"].str.split(",").apply(lambda x: int((int(x[1])-int(x[0])) / (1000 * 60)))
-    # calculate the number of sensors logged at least one row of data per minute.
-    phone_data_yield_per_segment = phone_data_yield_per_segment.groupby(["local_segment", "length", "local_date", "local_hour", "local_minute"])[["sensor", "local_date_time"]].max().reset_index()
     # extract local start datetime of the segment from "local_segment" column
     phone_data_yield_per_segment["local_segment_start_datetimes"] = pd.to_datetime(phone_data_yield_per_segment["local_segment"].apply(lambda x: x.split("#")[1].split(",")[0]))
     # calculate the number of minutes after local start datetime of the segment
     phone_data_yield_per_segment["minutes_after_segment_start"] = ((phone_data_yield_per_segment["local_date_time"] - phone_data_yield_per_segment["local_segment_start_datetimes"]) / pd.Timedelta(minutes=1)).astype("int")
+    # calculate the number of sensors logged at least one row of data per minute.
+    phone_data_yield_per_segment = phone_data_yield_per_segment.groupby(["local_segment", "length", "local_segment_start_datetimes", "minutes_after_segment_start"])[["sensor"]].max().reset_index()
     
     # impute missing rows with 0
     columns_for_full_index = phone_data_yield_per_segment[["local_segment_start_datetimes", "length"]].drop_duplicates(keep="first")
