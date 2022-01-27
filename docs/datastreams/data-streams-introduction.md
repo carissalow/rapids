@@ -16,6 +16,7 @@ For reference, these are the data streams we currently support:
 | Data Stream | Device | Format | Container | Docs
 |--|--|--|--|--|
 | `aware_mysql`| Phone | AWARE app | MySQL | [link](../aware-mysql)
+| `aware_micro_mysql`| Phone | AWARE Micro server | MySQL | [link](../aware-micro-mysql)
 | `aware_csv`| Phone | AWARE app | CSV files | [link](../aware-csv)
 | `aware_influxdb` (beta)| Phone | AWARE app | InfluxDB | [link](../aware-influxdb)
 | `fitbitjson_mysql`| Fitbit | JSON (per [Fitbit's API](https://dev.fitbit.com/build/reference/web-api/)) | MySQL | [link](../fitbitjson-mysql)
