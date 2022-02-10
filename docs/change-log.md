@@ -1,4 +1,9 @@
 # Change Log
+## v1.8.0
+- Add data stream for AWARE Micro server
+- Fix the NA bug in PHONE_LOCATIONS BARNETT provider
+- Fix the bug of data type for call_duration field
+- Fix the index bug of heatmap_sensors_per_minute_per_time_segment
 ## v1.7.1
 - Update docs for Git Flow section
 - Update RAPIDS paper information
