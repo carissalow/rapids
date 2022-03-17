@@ -97,7 +97,7 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
 
         ``` bash
         cd rapids
-        CONDA_RESTORE_FREE_CHANNEL=1 conda env create -f environment.yml -n rapids
+        conda env create -f environment.yml -n rapids
         conda activate rapids
         ```
 
