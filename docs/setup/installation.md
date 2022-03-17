@@ -58,9 +58,9 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
     We tested these instructions in Catalina and Big Sur
 
     ??? info "M1 Macs"
-        RAPIDS can run on M1 Macs, the only changes as of Feb 21, 2021 are:
+        RAPIDS can run on M1 Macs, the only changes as of Mar 17, 2022 are:
 
-        - R needs to be installed via brew under Rosetta (x86 arch) due to incompatibility issues with some R libraries. To do this, run your terminal [via Rosetta](https://www.youtube.com/watch?v=nv2ylxro7rM&t=138s), then proceed with the usual brew installation command. Use x86 brew to install R and restore RAPIDS' packages (`snakemake -j1 renv_install & snakemake -j1 renv_restore`). 
+        - Brew and everything installed with it needs to be setup under Rosetta (x86 arch) due to incompatibility issues with some R libraries and python packages. To do this, run your terminal [via Rosetta](https://www.youtube.com/watch?v=nv2ylxro7rM&t=138s), then proceed with our installation commands. 
         - There is a bug related to timezone codes. We set the correct `TZ_DIR` in `renv/activate.R` (line #19) `Sys.setenv("TZDIR" = file.path(R.home(), "share", "zoneinfo"))` (RAPIDS does this automatically).
 
     1.  Install [brew](https://brew.sh/)
@@ -83,7 +83,7 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
     4.  Install miniconda (restart your terminal afterwards)
 
         ``` bash
-        brew cask install miniconda
+        brew install --cask miniconda
         conda init zsh # (or conda init bash)
         ```
 
@@ -97,7 +97,7 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
 
         ``` bash
         cd rapids
-        conda env create -f environment.yml -n rapids
+        CONDA_RESTORE_FREE_CHANNEL=1 conda env create -f environment.yml -n rapids
         conda activate rapids
         ```
 
