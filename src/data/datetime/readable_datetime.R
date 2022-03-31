@@ -105,14 +105,13 @@ process_by_chunks <- function(timezone_parameters, device_type, pid, participant
   function(x, pos){
 
     output_is_empty <<- FALSE
-    input <- x %>% arrange(timestamp)
 
     if(timezone_parameters$TYPE == "SINGLE"){
-      output <- input %>% mutate(local_timezone = timezone_parameters$SINGLE$TZCODE)
+      output <- x %>% mutate(local_timezone = timezone_parameters$SINGLE$TZCODE)
       most_common_tz <- timezone_parameters$SINGLE$TZCODE
     }
     else if(timezone_parameters$TYPE == "MULTIPLE"){
-      output <- multiple_time_zone_assignment(input, timezone_parameters, device_type, pid, participant_file)
+      output <- multiple_time_zone_assignment(x, timezone_parameters, device_type, pid, participant_file)
       most_common_tz <- get_participant_most_common_tz(timezone_parameters$MULTIPLE$TZCODES_FILE, participant_file) # in assign_to_multiple_timezones.R
     }
 
