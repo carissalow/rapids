@@ -146,7 +146,8 @@ readable_datetime <- function(){
                   col_names=TRUE,
                   col_types=cols(local_date_time = col_character(),
                                  local_start_date_time = col_character(),
-                                 local_end_date_time = col_character()),)
+                                 local_end_date_time = col_character()),
+                  trim_ws=FALSE)
   
   if(output_is_empty){
     column_names <- c("local_timezone", colnames(read.csv(snakemake@input[["sensor_input"]])), "local_date", "local_time", "local_hour", "local_minute", "assigned_segments")
