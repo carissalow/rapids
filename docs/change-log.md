@@ -1,4 +1,6 @@
 # Change Log
+## v1.9.0
+- Upgrade generics package
 ## v1.8.0
 - Add data stream for AWARE Micro server
 - Fix the NA bug in PHONE_LOCATIONS BARNETT provider
