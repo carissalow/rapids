@@ -102,9 +102,7 @@ filter_wanted_dates <- function(output, participant_file, device_type){
 
 process_by_chunks <- function(timezone_parameters, device_type, pid, participant_file, time_segments, time_segments_type, include_past_periodic_segments, output_file_path){
   
-  function(x, pos){
-
-    output_is_empty <<- FALSE
+  function(x, pos, acc){
 
     if(timezone_parameters$TYPE == "SINGLE"){
       output <- x %>% mutate(local_timezone = timezone_parameters$SINGLE$TZCODE)
@@ -123,6 +121,8 @@ process_by_chunks <- function(timezone_parameters, device_type, pid, participant
       arrange(timestamp)
     
     output %>% write_csv(output_file_path, append=ifelse(pos > 1, T, F))
+    
+    return(acc + 1)
   }
 }
 
@@ -139,9 +139,8 @@ readable_datetime <- function(){
 
   validate_user_timezones(timezone_parameters)
 
-  output_is_empty <<- TRUE
-  read_csv_chunked(snakemake@input[["sensor_input"]], 
-                  callback=DataFrameCallback$new(process_by_chunks(timezone_parameters, device_type, pid, participant_file, time_segments, time_segments_type, include_past_periodic_segments, output_file_path)), 
+  acc <- read_csv_chunked(snakemake@input[["sensor_input"]], 
+                  callback=AccumulateCallback$new(process_by_chunks(timezone_parameters, device_type, pid, participant_file, time_segments, time_segments_type, include_past_periodic_segments, output_file_path), acc=0), 
                   chunk_size=10000,
                   col_names=TRUE,
                   col_types=cols(local_date_time = col_character(),
@@ -149,7 +148,7 @@ readable_datetime <- function(){
                                  local_end_date_time = col_character()),
                   trim_ws=FALSE)
   
-  if(output_is_empty){
+  if(acc == 0){
     column_names <- c("local_timezone", colnames(read.csv(snakemake@input[["sensor_input"]])), "local_date", "local_time", "local_hour", "local_minute", "assigned_segments")
     output <- setNames(data.frame(matrix(nrow=0, ncol=length(column_names))), column_names)
     output %>% write_csv(output_file_path, append=FALSE)
