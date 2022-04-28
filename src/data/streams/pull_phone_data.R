@@ -125,7 +125,8 @@ pull_phone_data <- function(){
   tables <- snakemake@params[["tables"]]
   sensor <- toupper(snakemake@params[["sensor"]])
   device_type <- "phone"
-  output_data_file <- snakemake@output[[1]]
+  output_sensor_raw_file <- snakemake@output[["sensor_raw_file"]]
+  output_platforms_file <- snakemake@output[["platforms_file"]]
 
   validate_participant_file_without_device_ids(participant_file)
   participant_data <- read_yaml(participant_file)
@@ -144,49 +145,59 @@ pull_phone_data <- function(){
   expected_columns <- tolower(rapids_schema[[sensor]])
   participant_data <- setNames(data.frame(matrix(ncol = length(expected_columns), nrow = 0)), expected_columns)
 
+  platforms_data <- setNames(data.frame(matrix(ncol=2, nrow=0)), c("timestamp", "os"))
+
   if(length(devices) == 0){
     warning("There were no PHONE device ids in this participant file:", participant_file)
-    write_csv(participant_data, output_data_file)
-    return()
-  }
+  }else{
+    container_functions <- load_container_script(stream_container)
+    infer_device_os_container <- container_functions$infer_device_os
+    pull_data_container <- container_functions$pull_data
 
-  container_functions <- load_container_script(stream_container)
-  infer_device_os_container <- container_functions$infer_device_os
-  pull_data_container <- container_functions$pull_data
+    for(idx in seq_along(devices)){ 
+      
+      device <- devices[idx]
+      message(paste0("\nProcessing ", sensor, " for ", device))
+      device_os <- ifelse(device_oss[idx] == "infer", infer_device_os_container(data_configuration, device), device_oss[idx])
+      validate_inferred_os(basename(stream_container), participant_file, device, device_os)
+      
+      if(!toupper(device_os) %in% names(stream_schema[[sensor]])){ # the current sensor is only available in a single OS (like PHONE_MESSAGES)
+        warning(sensor, " data is not available for ", device_os, ". No data to download for ", device)
+        next
+      }
 
-  for(idx in seq_along(devices)){ 
-    
-    device <- devices[idx]
-    message(paste0("\nProcessing ", sensor, " for ", device))
-    device_os <- ifelse(device_oss[idx] == "infer", infer_device_os_container(data_configuration, device), device_oss[idx])
-    validate_inferred_os(basename(stream_container), participant_file, device, device_os)
-    
-    if(!toupper(device_os) %in% names(stream_schema[[sensor]])){ # the current sensor is only available in a single OS (like PHONE_MESSAGES)
-      warning(sensor, " data is not available for ", device_os, ". No data to download for ", device)
-      next
+      os_table <- ifelse(length(tables) > 1, tables[[toupper(device_os)]], tables) # some sensor tables have a different name for android and ios    
+
+      columns_to_download <- c(stream_schema[[sensor]][[toupper(device_os)]][["RAPIDS_COLUMN_MAPPINGS"]], stream_schema[[sensor]][[toupper(device_os)]][["MUTATION"]][["COLUMN_MAPPINGS"]])
+      columns_to_download <- columns_to_download[(columns_to_download != "FLAG_TO_MUTATE")]
+      data <- pull_data_container(data_configuration, device, sensor, os_table, columns_to_download)
+      
+      if(!setequal(columns_to_download, colnames(data)))
+        stop(paste0("The pulled data for ", device, " does not have the expected columns (including [RAPIDS_COLUMN_MAPPINGS] and [MUTATE][COLUMN_MAPPINGS]). The container script returned [", paste(colnames(data), collapse=","),"] but the format mappings expected [",paste(columns_to_download, collapse=","), "]. The conainer script is: ", stream_container))
+      
+      renamed_data <- rename_columns(columns_to_download, data)
+      
+      mutation_scripts <- stream_schema[[sensor]][[toupper(device_os)]][["MUTATION"]][["SCRIPTS"]]
+      mutated_data <- mutate_data(mutation_scripts, renamed_data, data_configuration)
+
+      if(!setequal(expected_columns, colnames(mutated_data)))
+        stop(paste0("The mutated data for ", device, " does not have the columns RAPIDS expects. The mutation script returned [", paste(colnames(mutated_data), collapse=","),"] but RAPIDS expected [",paste(expected_columns, collapse=","), "]. One ore more mutation scripts in [", sensor,"][MUTATION][SCRIPTS] are adding extra columns or removing or not adding the ones expected"))
+      if(nrow(mutated_data) > 0){
+        platforms_data <- rbind(platforms_data, list(timestamp=min(mutated_data$timestamp), os=device_os))
+        participant_data <- rbind(participant_data, mutated_data %>% distinct())
+      }
     }
 
-    os_table <- ifelse(length(tables) > 1, tables[[toupper(device_os)]], tables) # some sensor tables have a different name for android and ios    
-
-    columns_to_download <- c(stream_schema[[sensor]][[toupper(device_os)]][["RAPIDS_COLUMN_MAPPINGS"]], stream_schema[[sensor]][[toupper(device_os)]][["MUTATION"]][["COLUMN_MAPPINGS"]])
-    columns_to_download <- columns_to_download[(columns_to_download != "FLAG_TO_MUTATE")]
-    data <- pull_data_container(data_configuration, device, sensor, os_table, columns_to_download)
-    
-    if(!setequal(columns_to_download, colnames(data)))
-      stop(paste0("The pulled data for ", device, " does not have the expected columns (including [RAPIDS_COLUMN_MAPPINGS] and [MUTATE][COLUMN_MAPPINGS]). The container script returned [", paste(colnames(data), collapse=","),"] but the format mappings expected [",paste(columns_to_download, collapse=","), "]. The conainer script is: ", stream_container))
-    
-    renamed_data <- rename_columns(columns_to_download, data)
-    
-    mutation_scripts <- stream_schema[[sensor]][[toupper(device_os)]][["MUTATION"]][["SCRIPTS"]]
-    mutated_data <- mutate_data(mutation_scripts, renamed_data, data_configuration)
-
-    if(!setequal(expected_columns, colnames(mutated_data)))
-      stop(paste0("The mutated data for ", device, " does not have the columns RAPIDS expects. The mutation script returned [", paste(colnames(mutated_data), collapse=","),"] but RAPIDS expected [",paste(expected_columns, collapse=","), "]. One ore more mutation scripts in [", sensor,"][MUTATION][SCRIPTS] are adding extra columns or removing or not adding the ones expected"))
-    participant_data <- rbind(participant_data, mutated_data %>% distinct())
-      
+    participant_data <- participant_data %>% arrange(timestamp)
+    platforms_data <- platforms_data %>% arrange(timestamp)
+    if(lengths(unique(platforms_data$os)) == 1 && nrow(platforms_data) > 1){
+      platforms_data <- head(platforms_data, 1)
+    }
   }
-  participant_data <- participant_data %>% arrange(timestamp)
-  write_csv(participant_data, output_data_file)
+
+  write_csv(participant_data, output_sensor_raw_file)
+  write_csv(platforms_data, output_platforms_file)
+  return()
 }
 
 pull_phone_data()

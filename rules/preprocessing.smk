@@ -19,9 +19,28 @@ rule pull_phone_data:
         sensor = "phone_" + "{sensor}",
         tables = lambda wildcards: config["PHONE_" + str(wildcards.sensor).upper()]["CONTAINER"],
     output:
-        "data/raw/{pid}/phone_{sensor}_raw.csv"
+        sensor_raw_file = "data/raw/{pid}/phone_{sensor}_raw.csv",
+        platforms_file = "data/interim/platforms/{pid}/phone_{sensor}_platforms.csv"
     script:
         "../src/data/streams/pull_phone_data.R"
+
+rule merge_phone_platforms_for_individual_participants:
+    input:
+        platforms_files = input_merge_phone_platforms_for_individual_participants
+    params:
+        pid = "{pid}"
+    output:
+        "data/interim/platforms/{pid}/all_sensor_platforms.csv"
+    script:
+        "../src/data/streams/merge_phone_platforms_for_individual_participants.py"
+
+rule merge_phone_platforms_for_all_participants:
+    input:
+        platforms_files = expand("data/interim/platforms/{pid}/all_sensor_platforms.csv", pid=config["PIDS"])
+    output:
+        "data/interim/platforms/all_participants/all_sensor_platforms.csv"
+    script:
+        "../src/data/streams/merge_phone_platforms_for_all_participants.py"
 
 rule process_time_segments:
     input: 
