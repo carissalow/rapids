@@ -145,7 +145,7 @@ pull_phone_data <- function(){
   expected_columns <- tolower(rapids_schema[[sensor]])
   participant_data <- setNames(data.frame(matrix(ncol = length(expected_columns), nrow = 0)), expected_columns)
 
-  platforms_data <- setNames(data.frame(matrix(ncol=2, nrow=0)), c("timestamp", "os"))
+  platforms_data <- setNames(data.frame(matrix(ncol=3, nrow=0)), c("timestamp", "device_id", "os"))
 
   if(length(devices) == 0){
     warning("There were no PHONE device ids in this participant file:", participant_file)
@@ -183,16 +183,13 @@ pull_phone_data <- function(){
       if(!setequal(expected_columns, colnames(mutated_data)))
         stop(paste0("The mutated data for ", device, " does not have the columns RAPIDS expects. The mutation script returned [", paste(colnames(mutated_data), collapse=","),"] but RAPIDS expected [",paste(expected_columns, collapse=","), "]. One ore more mutation scripts in [", sensor,"][MUTATION][SCRIPTS] are adding extra columns or removing or not adding the ones expected"))
       if(nrow(mutated_data) > 0){
-        platforms_data <- rbind(platforms_data, list(timestamp=min(mutated_data$timestamp), os=device_os))
+        platforms_data <- rbind(platforms_data, list(timestamp=min(mutated_data$timestamp), device_id=device, os=device_os))
         participant_data <- rbind(participant_data, mutated_data %>% distinct())
       }
     }
 
     participant_data <- participant_data %>% arrange(timestamp)
     platforms_data <- platforms_data %>% arrange(timestamp)
-    if(lengths(unique(platforms_data$os)) == 1 && nrow(platforms_data) > 1){
-      platforms_data <- head(platforms_data, 1)
-    }
   }
 
   write_csv(participant_data, output_sensor_raw_file)

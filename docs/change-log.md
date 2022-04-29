@@ -2,6 +2,7 @@
 ## v1.9.0
 - Upgrade generics package
 - Optimize memory usage in readable_datetime.R script
+- Fix the bug of data cleaning module to support multiple platforms
 ## v1.8.0
 - Add data stream for AWARE Micro server
 - Fix the NA bug in PHONE_LOCATIONS BARNETT provider

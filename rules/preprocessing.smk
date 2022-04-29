@@ -34,11 +34,28 @@ rule merge_phone_platforms_for_individual_participants:
     script:
         "../src/data/streams/merge_phone_platforms_for_individual_participants.py"
 
+rule phone_platforms_with_datetime:
+    input:
+        sensor_input = "data/interim/platforms/{pid}/all_sensor_platforms.csv",
+        time_segments = "data/interim/time_segments/{pid}_time_segments.csv",
+        pid_file = "data/external/participant_files/{pid}.yaml",
+        tzcodes_file = input_tzcodes_file,
+    params:
+        device_type = "phone_platforms",
+        timezone_parameters = config["TIMEZONE"],
+        pid = "{pid}",
+        time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
+        include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
+    output:
+        "data/interim/platforms/{pid}/all_sensor_platforms_with_datetime.csv"
+    script:
+        "../src/data/datetime/readable_datetime.R"
+
 rule merge_phone_platforms_for_all_participants:
     input:
-        platforms_files = expand("data/interim/platforms/{pid}/all_sensor_platforms.csv", pid=config["PIDS"])
+        platforms_files = expand("data/interim/platforms/{pid}/all_sensor_platforms_with_datetime.csv", pid=config["PIDS"])
     output:
-        "data/interim/platforms/all_participants/all_sensor_platforms.csv"
+        "data/interim/platforms/all_participants/all_sensor_platforms_with_datetime.csv"
     script:
         "../src/data/streams/merge_phone_platforms_for_all_participants.py"
 

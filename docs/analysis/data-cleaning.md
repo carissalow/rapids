@@ -7,6 +7,8 @@ The goal of this module is to perform basic clean tasks on the behavioral featur
 
 !!! info "File Sequence"
     ```bash
+    - data/interim/platforms/{pid}/all_sensor_platforms.csv
+    - data/interim/platforms/{pid}/all_sensor_platforms_with_datetime.csv
     - data/processed/features/{pid}/all_sensor_features.csv
     - data/processed/features/{pid}/all_sensor_features_cleaned_{provider_key}.csv
     ```
@@ -80,6 +82,7 @@ Steps to clean sensor features for individual participants. It only considers th
 
 !!! info "File Sequence"
     ```bash
+    - data/interim/platforms/all_participants/all_sensor_platforms_with_datetime.csv
     - data/processed/features/all_participants/all_sensor_features.csv
     - data/processed/features/all_participants/all_sensor_features_cleaned_{provider_key}.csv
     ```
