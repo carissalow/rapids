@@ -961,7 +961,8 @@ rule merge_sensor_features_for_all_participants:
 
 rule clean_sensor_features_for_individual_participants:
     input:
-        sensor_data = rules.merge_sensor_features_for_individual_participants.output
+        sensor_data = rules.merge_sensor_features_for_individual_participants.output,
+        platforms = "data/interim/platforms/{pid}/all_sensor_platforms_with_datetime.csv"
     wildcard_constraints:
         pid = "("+"|".join(config["PIDS"])+")"
     params:
@@ -975,7 +976,8 @@ rule clean_sensor_features_for_individual_participants:
 
 rule clean_sensor_features_for_all_participants:
     input:
-        sensor_data = rules.merge_sensor_features_for_all_participants.output
+        sensor_data = rules.merge_sensor_features_for_all_participants.output,
+        platforms = "data/interim/platforms/all_participants/all_sensor_platforms_with_datetime.csv"
     params:
         provider = lambda wildcards: config["ALL_CLEANING_OVERALL"]["PROVIDERS"][wildcards.provider_key.upper()],
         provider_key = "{provider_key}",

@@ -10,6 +10,17 @@ def get_script_language(script_path):
         return "r"
 
 
+# Preprocessing.smk #########################################################################################################
+def input_merge_phone_platforms_for_individual_participants(wildcards):
+    platforms_files = []
+    for config_key in config.keys():
+        if config_key.startswith("PHONE") and "PROVIDERS" in config[config_key] and isinstance(config[config_key]["PROVIDERS"], dict) and config_key != "PHONE_DATA_YIELD":
+            for provider_key, provider in config[config_key]["PROVIDERS"].items():
+                if "COMPUTE" in provider.keys() and provider["COMPUTE"]:
+                    platforms_files.append("data/interim/platforms/{pid}/" + config_key.lower() + "_platforms.csv")
+                    break
+    return platforms_files
+
 # Features.smk #########################################################################################################
 def optional_phone_yield_input_for_locations(wildcards):
     if config["PHONE_LOCATIONS"]["LOCATIONS_TO_USE"] in ["ALL_RESAMPLED","FUSED_RESAMPLED"]:

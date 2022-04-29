@@ -397,9 +397,12 @@ if config["HEATMAP_FEATURE_CORRELATION_MATRIX"]["PLOT"]:
 # Data Cleaning
 for provider in config["ALL_CLEANING_INDIVIDUAL"]["PROVIDERS"].keys():
     if config["ALL_CLEANING_INDIVIDUAL"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/interim/platforms/{pid}/all_sensor_platforms.csv", pid=config["PIDS"]))
+        files_to_compute.extend(expand("data/interim/platforms/{pid}/all_sensor_platforms_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features_cleaned_" + provider.lower() +".csv", pid=config["PIDS"]))
 for provider in config["ALL_CLEANING_OVERALL"]["PROVIDERS"].keys():
     if config["ALL_CLEANING_OVERALL"]["PROVIDERS"][provider]["COMPUTE"]:
+        files_to_compute.extend(expand("data/interim/platforms/all_participants/all_sensor_platforms_with_datetime.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/processed/features/all_participants/all_sensor_features_cleaned_" + provider.lower() +".csv"))
 
 rule all:

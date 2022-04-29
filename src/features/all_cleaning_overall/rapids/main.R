@@ -8,6 +8,7 @@ library(corrr)
 rapids_cleaning <- function(sensor_data_files, provider){
 
     clean_features <- read.csv(sensor_data_files[["sensor_data"]], stringsAsFactors = FALSE)
+    platforms <- read.csv(sensor_data_files[["platforms"]], stringsAsFactors = FALSE)
     impute_selected_event_features <- provider[["IMPUTE_SELECTED_EVENT_FEATURES"]]
     cols_nan_threshold <- as.numeric(provider[["COLS_NAN_THRESHOLD"]])
     drop_zero_variance_columns <- as.logical(provider[["COLS_VAR_THRESHOLD"]])
@@ -23,16 +24,48 @@ rapids_cleaning <- function(sensor_data_files, provider){
             stop("Error: RAPIDS provider needs to impute the selected event features based on phone_data_yield_rapids_ratiovalidyieldedminutes column, please set config[PHONE_DATA_YIELD][PROVIDERS][RAPIDS][COMPUTE] to True and include 'ratiovalidyieldedminutes' in [FEATURES].")
         }
         column_names <- colnames(clean_features)
-        selected_apps_features <- column_names[grepl("^phone_applications_foreground_rapids_(countevent|countepisode|minduration|maxduration|meanduration|sumduration)", column_names)]
+        # Features which can be extracted from both Android and iOS devices
         selected_battery_features <- column_names[grepl("^phone_battery_rapids_", column_names)]
         selected_calls_features <- column_names[grepl("^phone_calls_rapids_.*_(count|distinctcontacts|sumduration|minduration|maxduration|meanduration|modeduration)", column_names)]
+        selected_screen_features <- column_names[grepl("^phone_screen_rapids_(sumduration|maxduration|minduration|avgduration|countepisode)", column_names)]
+        selected_wifi_connected_features <- column_names[grepl("^phone_wifi_connected_rapids_", column_names)]
+        selected_androidios_columns <- c(selected_battery_features, selected_calls_features, selected_screen_features, selected_wifi_connected_features)
+
+        # Features which can only be extracted from Android devices
+        selected_apps_features <- column_names[grepl("^phone_applications_foreground_rapids_(countevent|countepisode|minduration|maxduration|meanduration|sumduration)", column_names)]        
         selected_keyboard_features <- column_names[grepl("^phone_keyboard_rapids_(sessioncount|averagesessionlength|changeintextlengthlessthanminusone|changeintextlengthequaltominusone|changeintextlengthequaltoone|changeintextlengthmorethanone|maxtextlength|totalkeyboardtouches)", column_names)]
         selected_messages_features <- column_names[grepl("^phone_messages_rapids_.*_(count|distinctcontacts)", column_names)]
-        selected_screen_features <- column_names[grepl("^phone_screen_rapids_(sumduration|maxduration|minduration|avgduration|countepisode)", column_names)]
-        selected_wifi_features <- column_names[grepl("^phone_wifi_(connected|visible)_rapids_", column_names)]
+        selected_wifi_visible_features <- column_names[grepl("^phone_wifi_visible_rapids_", column_names)]
+        selected_android_columns <- c(selected_apps_features, selected_keyboard_features, selected_messages_features, selected_wifi_visible_features)
         
-        selected_columns <- c(selected_apps_features, selected_battery_features, selected_calls_features, selected_keyboard_features, selected_messages_features, selected_screen_features, selected_wifi_features)
-        clean_features[selected_columns][is.na(clean_features[selected_columns]) & (clean_features$phone_data_yield_rapids_ratiovalidyieldedminutes > impute_selected_event_features$MIN_DATA_YIELDED_MINUTES_TO_IMPUTE)] <- 0
+        merged_features <- data.frame()
+        for(pid in unique(clean_features$pid)){
+            
+            clean_features_per_participant <- clean_features[clean_features$pid == pid, ]
+            platforms_per_participant <- platforms[platforms$pid == pid, ]
+
+            # For selected_androidios_columns
+            clean_features_per_participant[selected_androidios_columns][is.na(clean_features_per_participant[selected_androidios_columns]) & (clean_features_per_participant$phone_data_yield_rapids_ratiovalidyieldedminutes > impute_selected_event_features$MIN_DATA_YIELDED_MINUTES_TO_IMPUTE)] <- 0
+            # For selected_android_columns
+            if(nrow(platforms_per_participant) == 1){ # Single platform
+                if(platforms_per_participant$os == "android"){
+                    clean_features_per_participant[selected_android_columns][is.na(clean_features_per_participant[selected_android_columns]) & (clean_features_per_participant$phone_data_yield_rapids_ratiovalidyieldedminutes > impute_selected_event_features$MIN_DATA_YIELDED_MINUTES_TO_IMPUTE)] <- 0
+                }
+            }else{ # Multiple platforms
+                for(idx in 1:nrow(platforms_per_participant)){
+                    if(platforms_per_participant[idx, "os"] == "android"){
+                        if(idx < nrow(platforms_per_participant)){
+                            selected_android_rows <- (clean_features_per_participant$local_segment_start_datetime >= platforms_per_participant[idx, "local_date_time"]) & (clean_features_per_participant$local_segment_end_datetime <= platforms_per_participant[idx + 1, "local_date_time"])
+                        }else{
+                            selected_android_rows <- clean_features_per_participant$local_segment_start_datetime >= platforms_per_participant[idx, "local_date_time"]
+                        }
+                        clean_features_per_participant[selected_android_rows, selected_android_columns][is.na(clean_features_per_participant[selected_android_rows, selected_android_columns]) & (clean_features_per_participant[selected_android_rows, ]$phone_data_yield_rapids_ratiovalidyieldedminutes > impute_selected_event_features$MIN_DATA_YIELDED_MINUTES_TO_IMPUTE)] <- 0
+                    }
+                }
+            }
+            merged_features <- rbind(merged_features, clean_features_per_participant)
+        }
+        clean_features <- merged_features
     }
     
     # Drop rows with the value of data_yield_column less than data_yield_ratio_threshold
