@@ -223,6 +223,7 @@ PHONE_KEYBOARD:
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
+      MINIMUM_SECONDS_TO_DETECT_TYPING_SESSIONS: 5
       FEATURES: ["sessioncount","averageinterkeydelay","averagesessionlength","changeintextlengthlessthanminusone","changeintextlengthequaltominusone","changeintextlengthequaltoone","changeintextlengthmorethanone","maxtextlength","lastmessagelength","totalkeyboardtouches"]
       SRC_SCRIPT: src/features/phone_keyboard/rapids/main.py
 
