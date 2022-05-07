@@ -617,14 +617,14 @@ properties:
             allOf:
               - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
-                MINIMUM_SECONDS_TO_DETECT_TYPING_SESSIONS:
-                  type: integer
-                  minimum: 0
-                FEATURES:
-                  uniqueItems: True
-                  items:
-                    type: string
-                    enum: ["sessioncount", "averageinterkeydelay", "averagesessionlength", "changeintextlengthlessthanminusone", "changeintextlengthequaltominusone", "changeintextlengthequaltoone", "changeintextlengthmorethanone", "maxtextlength", "lastmessagelength", "totalkeyboardtouches"]
+                  MINIMUM_SECONDS_TO_DETECT_TYPING_SESSIONS:
+                    type: integer
+                    exclusiveMinimum: 0
+                  FEATURES:
+                    uniqueItems: True
+                    items:
+                      type: string
+                      enum: ["sessioncount", "averageinterkeydelay", "averagesessionlength", "changeintextlengthlessthanminusone", "changeintextlengthequaltominusone", "changeintextlengthequaltoone", "changeintextlengthmorethanone", "maxtextlength", "lastmessagelength", "totalkeyboardtouches"]
         additionalProperties: 
           $ref: "#/definitions/FEATURES_PROVIDER"
 
