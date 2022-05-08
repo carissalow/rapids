@@ -1,8 +1,9 @@
 # Change Log
 ## v1.9.0
-- Upgrade generics package
+- Upgrade generics, stringi, and Hmisc package
 - Optimize memory usage in readable_datetime.R script
 - Fix the bug of missing local_segment column in FITBIT_SLEEP_SUMMARY RAPIDS provider
+- Add TYPING_SESSION_DURATION parameter for typing sessions detection to PHONE_KEYBOARD RAPIDS provider
 ## v1.8.0
 - Add data stream for AWARE Micro server
 - Fix the NA bug in PHONE_LOCATIONS BARNETT provider
