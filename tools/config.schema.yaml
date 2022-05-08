@@ -617,7 +617,7 @@ properties:
             allOf:
               - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
-                  MINIMUM_SECONDS_TO_DETECT_TYPING_SESSIONS:
+                  TYPING_SESSION_DURATION:
                     type: integer
                     exclusiveMinimum: 0
                   FEATURES:
