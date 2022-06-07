@@ -3,9 +3,8 @@ import numpy as np
 
 def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
+    keyboard_data = pd.read_csv(sensor_data_files["sensor_data"], dtype={"current_text":object, "before_text":object})
     typing_session_duration = provider["TYPING_SESSION_DURATION"] * 1000 # convert seconds to milliseconds
-
-    keyboard_data = pd.read_csv(sensor_data_files["sensor_data"])
     requested_features = provider["FEATURES"]
 
     # name of the features this function can compute
