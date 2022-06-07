@@ -56,6 +56,7 @@ RAPIDS is open source, documented, multi-platform, modular, tested, and reproduc
 
 
 ??? quote "Publications using RAPIDS"
+    - Mood ratings and digital biomarkers from smartphone and wearable data differentiates and predicts depression status: A longitudinal data analysis [link](https://doi.org/10.1016/j.pmcj.2022.101621)
     - Predicting Symptoms of Depression and Anxiety Using Smartphone and Wearable Data [link](https://www.frontiersin.org/articles/10.3389/fpsyt.2021.625247/full)
     - Predicting Depression from Smartphone Behavioral Markers Using Machine Learning Methods, Hyperparameter Optimization, and Feature Importance Analysis: Exploratory Study [link](https://mhealth.jmir.org/2021/7/e26540)
     -  Digital Biomarkers of Symptom Burden Self-Reported by Perioperative Patients Undergoing Pancreatic Surgery: Prospective Longitudinal Study [link](https://cancer.jmir.org/2021/2/e27975/)
