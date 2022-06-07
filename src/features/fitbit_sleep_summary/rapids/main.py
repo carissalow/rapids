@@ -118,7 +118,6 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
             sleep_summary_data = sleep_summary_data[sleep_summary_data["local_segment"].str.match(segment_regex)]
 
             if not sleep_summary_data.empty:
-                sleep_summary_features = pd.DataFrame()
 
                 waketime_features = sleep_summary_data.drop_duplicates(subset=["local_date_time"]).groupby(["local_segment"]).agg(
                     firstwaketimeall=("firstwaketimeall", "mean"),
@@ -130,12 +129,15 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
                 )
                 sleep_summary_data.dropna(subset=["is_main_sleep"], inplace=True)
 
-                for sleep_type in sleep_types_to_compute:
-                    sleep_summary_features = extractSleepFeaturesFromSummaryData(sleep_summary_data, summary_features_to_compute, sleep_type, waketime_features, sleep_summary_features)
-                
-                sleep_summary_features.dropna(how="all", inplace=True)
-                sleep_summary_features.loc[notna_segments, colnames_can_be_zero] = sleep_summary_features.loc[notna_segments, colnames_can_be_zero].fillna(0)
+                if not sleep_summary_data.empty:
+                    sleep_summary_features = pd.DataFrame()
 
-                sleep_summary_features = sleep_summary_features.reset_index()
+                    for sleep_type in sleep_types_to_compute:
+                        sleep_summary_features = extractSleepFeaturesFromSummaryData(sleep_summary_data, summary_features_to_compute, sleep_type, waketime_features, sleep_summary_features)
+                    
+                    sleep_summary_features.dropna(how="all", inplace=True)
+                    sleep_summary_features.loc[notna_segments, colnames_can_be_zero] = sleep_summary_features.loc[notna_segments, colnames_can_be_zero].fillna(0)
+
+                    sleep_summary_features = sleep_summary_features.reset_index()
     
     return sleep_summary_features

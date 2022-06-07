@@ -49,7 +49,8 @@ rule phone_readable_datetime:
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
-        "data/raw/{pid}/phone_{sensor}_with_datetime.csv"
+        sensor_with_datetime = "data/raw/{pid}/phone_{sensor}_with_datetime.csv",
+        flag_file = touch("data/raw/{pid}/phone_{sensor}_with_datetime.done")
     script:
         "../src/data/datetime/readable_datetime.R"
 
@@ -76,7 +77,8 @@ rule phone_yielded_timestamps_with_datetime:
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
-        "data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv"
+        timestamps_with_datetime = "data/interim/{pid}/phone_yielded_timestamps_with_datetime.csv",
+        flag_file = touch("data/interim/{pid}/phone_yielded_timestamps_with_datetime.done")
     script:
         "../src/data/datetime/readable_datetime.R"
 
@@ -118,7 +120,8 @@ rule phone_locations_processed_with_datetime:
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
-        "data/interim/{pid}/phone_locations_processed_with_datetime.csv"
+        locations_processed_with_datetime = "data/interim/{pid}/phone_locations_processed_with_datetime.csv",
+        flag_file = touch("data/interim/{pid}/phone_locations_processed_with_datetime.done")
     script:
         "../src/data/datetime/readable_datetime.R"
 
@@ -143,7 +146,8 @@ rule resample_episodes_with_datetime:
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
-        "data/interim/{pid}/{sensor}_episodes_resampled_with_datetime.csv"
+        sensor_episodes_resampled_with_datetime = "data/interim/{pid}/{sensor}_episodes_resampled_with_datetime.csv",
+        flag_file = touch("data/interim/{pid}/{sensor}_episodes_resampled_with_datetime.done")
     script:
         "../src/data/datetime/readable_datetime.R"
 
@@ -189,7 +193,8 @@ rule fitbit_readable_datetime:
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
-        "data/raw/{pid}/fitbit_{sensor}_with_datetime.csv"
+        sensor_with_datetime = "data/raw/{pid}/fitbit_{sensor}_with_datetime.csv",
+        flag_file = touch("data/raw/{pid}/fitbit_{sensor}_with_datetime.done")
     script:
         "../src/data/datetime/readable_datetime.R"
 
@@ -217,6 +222,7 @@ rule empatica_readable_datetime:
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
-        "data/raw/{pid}/empatica_{sensor}_with_datetime.csv"
+        sensor_with_datetime = "data/raw/{pid}/empatica_{sensor}_with_datetime.csv",
+        flag_file = touch("data/raw/{pid}/empatica_{sensor}_with_datetime.done")
     script:
         "../src/data/datetime/readable_datetime.R"

@@ -4,6 +4,7 @@ import numpy as np
 def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
 
     keyboard_data = pd.read_csv(sensor_data_files["sensor_data"], dtype={"current_text":object, "before_text":object})
+    typing_session_duration = provider["TYPING_SESSION_DURATION"] * 1000 # convert seconds to milliseconds
     requested_features = provider["FEATURES"]
 
     # name of the features this function can compute
@@ -20,7 +21,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
             keyboard_features = pd.DataFrame()
 
             keyboard_data["keyboardStrokeDuration"] = keyboard_data['timestamp'].shift(-1) - keyboard_data['timestamp']
-            keyboard_data["sessionStart"]           = keyboard_data["keyboardStrokeDuration"].apply(lambda x: 1 if x>=5000 else 0)
+            keyboard_data["sessionStart"]           = keyboard_data["keyboardStrokeDuration"].apply(lambda x: 1 if x >= typing_session_duration else 0)
             keyboard_data["hasAppChanged"]          = keyboard_data["package_name"].shift(1, fill_value=keyboard_data["package_name"].head(1)) != keyboard_data["package_name"]
             keyboard_data["sessionStart"]           = keyboard_data[['hasAppChanged','sessionStart']].apply(lambda row: 1 if row['hasAppChanged'] == True else row['sessionStart'],axis=1)
             keyboard_data["sessionNumber"]          = keyboard_data["sessionStart"].cumsum()

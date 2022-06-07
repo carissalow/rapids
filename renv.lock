@@ -46,7 +46,7 @@
     },
     "Hmisc": {
       "Package": "Hmisc",
-      "Version": "4.4-2",
+      "Version": "4.7-0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "66458e906b2112a8b1639964efd77d7c"
@@ -445,7 +445,7 @@
     },
     "generics": {
       "Package": "generics",
-      "Version": "0.1.0",
+      "Version": "0.1.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "4d243a9c10b00589889fe32314ffd902"
@@ -1082,7 +1082,7 @@
     },
     "stringi": {
       "Package": "stringi",
-      "Version": "1.5.3",
+      "Version": "1.7.6",
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "a063ebea753c92910a4cca7b18bc1f05"

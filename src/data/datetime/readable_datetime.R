@@ -99,8 +99,35 @@ filter_wanted_dates <- function(output, participant_file, device_type){
 
   return(output)
 }
+
+process_by_chunks <- function(timezone_parameters, device_type, pid, participant_file, time_segments, time_segments_type, include_past_periodic_segments, output_file_path){
+  
+  function(x, pos, acc){
+
+    if(timezone_parameters$TYPE == "SINGLE"){
+      output <- x %>% mutate(local_timezone = timezone_parameters$SINGLE$TZCODE)
+      most_common_tz <- timezone_parameters$SINGLE$TZCODE
+    }
+    else if(timezone_parameters$TYPE == "MULTIPLE"){
+      output <- multiple_time_zone_assignment(x, timezone_parameters, device_type, pid, participant_file)
+      most_common_tz <- get_participant_most_common_tz(timezone_parameters$MULTIPLE$TZCODES_FILE, participant_file) # in assign_to_multiple_timezones.R
+    }
+
+    output %<>%  
+      create_mising_temporal_column(device_type)  %>% 
+      split_local_date_time() %>% 
+      assign_to_time_segment(time_segments, time_segments_type, include_past_periodic_segments, most_common_tz) %>% 
+      filter_wanted_dates(participant_file, device_type) %>% 
+      arrange(timestamp)
+    
+    output %>% write_csv(output_file_path, append=ifelse(pos > 1, T, F))
+    
+    return(acc + 1)
+  }
+}
+
 readable_datetime <- function(){
-  input <- read.csv(snakemake@input[["sensor_input"]]) %>% arrange(timestamp)
+
   time_segments <- read.csv(snakemake@input[["time_segments"]])
   participant_file <- snakemake@input[["pid_file"]]
   device_type <- snakemake@params[["device_type"]]
@@ -108,26 +135,25 @@ readable_datetime <- function(){
   pid <- snakemake@params[["pid"]]
   time_segments_type <- snakemake@params[["time_segments_type"]]
   include_past_periodic_segments <- snakemake@params[["include_past_periodic_segments"]]
+  output_file_path <- snakemake@output[[1]]
 
   validate_user_timezones(timezone_parameters)
+
+  acc <- read_csv_chunked(snakemake@input[["sensor_input"]], 
+                  callback=AccumulateCallback$new(process_by_chunks(timezone_parameters, device_type, pid, participant_file, time_segments, time_segments_type, include_past_periodic_segments, output_file_path), acc=0), 
+                  chunk_size=10000,
+                  col_names=TRUE,
+                  col_types=cols(local_date_time = col_character(),
+                                 local_start_date_time = col_character(),
+                                 local_end_date_time = col_character()),
+                  trim_ws=FALSE)
   
-  if(timezone_parameters$TYPE == "SINGLE"){
-    output <- input %>% mutate(local_timezone = timezone_parameters$SINGLE$TZCODE)
-    most_common_tz <- timezone_parameters$SINGLE$TZCODE
-  }
-  else if(timezone_parameters$TYPE == "MULTIPLE"){
-    output <- multiple_time_zone_assignment(input, timezone_parameters, device_type, pid, participant_file)
-    most_common_tz <- get_participant_most_common_tz(timezone_parameters$MULTIPLE$TZCODES_FILE, participant_file) # in assign_to_multiple_timezones.R
+  if(acc == 0){
+    column_names <- c("local_timezone", colnames(read.csv(snakemake@input[["sensor_input"]])), "local_date", "local_time", "local_hour", "local_minute", "assigned_segments")
+    output <- setNames(data.frame(matrix(nrow=0, ncol=length(column_names))), column_names)
+    output %>% write_csv(output_file_path, append=FALSE)
   }
 
-  output  %<>%  
-    create_mising_temporal_column(device_type)  %>% 
-    split_local_date_time() %>% 
-    assign_to_time_segment(time_segments, time_segments_type, include_past_periodic_segments, most_common_tz) %>% 
-    filter_wanted_dates(participant_file, device_type) %>% 
-    arrange(timestamp)
-
-  write_csv(output, snakemake@output[[1]])
 }
 
 readable_datetime()

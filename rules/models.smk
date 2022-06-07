@@ -40,7 +40,8 @@ rule target_readable_datetime:
         time_segments_type = config["TIME_SEGMENTS"]["TYPE"],
         include_past_periodic_segments = config["TIME_SEGMENTS"]["INCLUDE_PAST_PERIODIC_SEGMENTS"]
     output:
-        "data/raw/{pid}/participant_target_with_datetime.csv"
+        target_with_datetime = "data/raw/{pid}/participant_target_with_datetime.csv",
+        flag_file = touch("data/raw/{pid}/participant_target_with_datetime.done")
     script:
         "../src/data/datetime/readable_datetime.R"
 
