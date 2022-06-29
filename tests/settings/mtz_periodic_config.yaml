@@ -435,7 +435,7 @@ FITBIT_STEPS_SUMMARY:
   PROVIDERS:
     RAPIDS:
       COMPUTE: True
-      FEATURES: ["maxsumsteps", "minsumsteps", "avgsumsteps", "mediansumsteps", "stdsumsteps"]
+      FEATURES: ["maxsumsteps", "minsumsteps", "avgsumsteps", "mediansumsteps", "stdsumsteps", "maxvolatilitysteps", "minvolatilitysteps", "avgvolatilitysteps", "medianvolatilitysteps", "stdvolatilitysteps", "annualizedvolatilitysteps"]
       SRC_SCRIPT: src/features/fitbit_steps_summary/rapids/main.py
 
 # See https://www.rapids.science/latest/features/fitbit-steps-intraday/

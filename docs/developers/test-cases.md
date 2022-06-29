@@ -34,7 +34,6 @@ The following is a list of the sensors that testing is currently available.
 | Fitbit Steps Summary          | RAPIDS   | Y        | Y         | Y     |
 | Fitbit Steps Intraday         | RAPIDS   | Y        | Y         | Y     |
 
-
 ## Accelerometer
 
 Description
@@ -532,7 +531,7 @@ Checklist
 
 Description
 
-- The 4-day raw heartrate summary data is contained in `fitbit_steps_intraday_raw.csv`
+- The 4-day raw step summary data is contained in `fitbit_steps_intraday_raw.csv`
 - One episode for each daily segment (`night`, `morning`, `afternoon` and `evening`) on each day
 - Two episodes within the same 30-min segment (`Fri 05:58:00` and `Fri 05:59:00`)
 - A one-min episode at `2020-03-07 09:00:00` that will be converted to New York time `2020-03-07 12:00:00`
@@ -556,8 +555,11 @@ Checklist
 
 Description
 
-- The 4-day raw heartrate summary data is contained in `fitbit_steps_summary_raw.csv`.
-- As heartrate summary is periodic, it only generates results in periodic feature, there will be no result in frequency and event. 
+- The 4-day calculated step summary data is contained in `fitbit_steps_summary_raw.csv`.
+- The 4-day calculated step volatility summary data is contained in`fitbit_steps_summary_raw.csv`.
+- Step summary including max, min, median, mean and standard deviation value.
+- Volatility summary including max, min, median, mean, standard deviation and annulized volatility value.
+- As step summary is periodic, it only generates results in periodic feature, there will be no result in frequency and event. 
 
 
 Checklist

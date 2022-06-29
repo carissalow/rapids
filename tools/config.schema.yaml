@@ -1125,7 +1125,7 @@ properties:
                     uniqueItems: True
                     items:
                       type: string
-                      enum: ["maxsumsteps", "minsumsteps", "avgsumsteps", "mediansumsteps", "stdsumsteps"]
+                      enum: ["maxsumsteps", "minsumsteps", "avgsumsteps", "mediansumsteps", "stdsumsteps", "maxvolatilitysteps", "minvolatilitysteps", "avgvolatilitysteps", "medianvolatilitysteps", "stdvolatilitysteps", "annualizedvolatilitysteps"]
   
   FITBIT_STEPS_INTRADAY:
     type: object
