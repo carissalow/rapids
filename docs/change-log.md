@@ -1,4 +1,7 @@
 # Change Log
+## v1.9.1
+- It fixes a library conflict that broke RAPIDS installation
+
 ## v1.9.0
 - Upgrade generics, stringi, Hmisc, ellipsis, glue, rlang, tibble, and vctrs packages
 - Optimize memory usage in readable_datetime.R script
