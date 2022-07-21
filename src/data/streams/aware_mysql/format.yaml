@@ -287,6 +287,18 @@ PHONE_SCREEN:
       SCRIPTS: # List any python or r scripts that mutate your raw data
         - "src/data/streams/mutations/phone/aware/screen_ios_unification.R"
 
+PHONE_SENTIMENT:
+  ANDROID:
+    RAPIDS_COLUMN_MAPPINGS:
+      TIMESTAMP: timestamp
+      DEVICE_ID: device_id
+      APP_NAME: app_name
+      WORD_CATEGORY: word_category
+      DOUBLE_SENTIMENT_SCORE: double_sentiment_score
+    MUTATION:
+      COLUMN_MAPPINGS:
+      SCRIPTS: # List any python or r scripts that mutate your raw data
+
 PHONE_WIFI_CONNECTED:
   ANDROID:
     RAPIDS_COLUMN_MAPPINGS:

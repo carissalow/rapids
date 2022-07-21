@@ -118,6 +118,7 @@ nav:
         - Phone Log: features/phone-log.md
         - Phone Messages: features/phone-messages.md
         - Phone Screen: features/phone-screen.md
+        - Phone Sentiment: features/phone-sentiment.md
         - Phone WiFI Connected: features/phone-wifi-connected.md
         - Phone WiFI Visible: features/phone-wifi-visible.md
       - Fitbit:

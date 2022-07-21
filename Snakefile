@@ -121,7 +121,17 @@ for provider in config["PHONE_ACCELEROMETER"]["PROVIDERS"].keys():
         files_to_compute.extend(expand("data/processed/features/{pid}/phone_accelerometer.csv", pid=config["PIDS"]))
         files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
         files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")
-
+        
+if isinstance(config["PHONE_SENTIMENT"]["PROVIDERS"], dict):
+    for provider in config["PHONE_SENTIMENT"]["PROVIDERS"].keys():
+        if config["PHONE_SENTIMENT"]["PROVIDERS"][provider]["COMPUTE"]:
+            files_to_compute.extend(expand("data/raw/{pid}/phone_sentiment_raw.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/raw/{pid}/phone_sentiment_with_datetime.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/interim/{pid}/phone_sentiment_features/phone_sentiment_{language}_{provider_key}.csv", pid=config["PIDS"], language=get_script_language(config["PHONE_SENTIMENT"]["PROVIDERS"][provider]["SRC_SCRIPT"]), provider_key=provider.lower()))
+            files_to_compute.extend(expand("data/processed/features/{pid}/phone_sentiment.csv", pid=config["PIDS"]))
+            files_to_compute.extend(expand("data/processed/features/{pid}/all_sensor_features.csv", pid=config["PIDS"]))
+            files_to_compute.append("data/processed/features/all_participants/all_sensor_features.csv")        
+            
 for provider in config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"].keys():
     if config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"][provider]["COMPUTE"]:
         files_to_compute.extend(expand("data/raw/{pid}/phone_applications_foreground_raw.csv", pid=config["PIDS"]))
