@@ -3,11 +3,11 @@
 ########################################################################################################################
 
 # See https://www.rapids.science/latest/setup/configuration/#participant-files
-PIDS: [test01]
-
+PIDS: ['R_3rO2YAaOLHQxCEh']
+#PIDS: ['Chumleys iPhone']
 # See https://www.rapids.science/latest/setup/configuration/#automatic-creation-of-participant-files
 CREATE_PARTICIPANT_FILES:
-  CSV_FILE_PATH: "data/external/example_participants.csv" # see docs for required format
+  CSV_FILE_PATH: "data/external/participants.csv" # see docs for required format
   PHONE_SECTION:
     ADD: True
     IGNORED_DEVICE_IDS: []
@@ -47,7 +47,7 @@ PHONE_DATA_STREAMS:
   
   # AVAILABLE:
   aware_mysql: 
-    DATABASE_GROUP: MY_GROUP
+    DATABASE_GROUP: DOUG_GROUP
 
   aware_csv:
     FOLDER: data/external/aware_csv
@@ -223,6 +223,8 @@ PHONE_KEYBOARD:
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
+      NEW_SESSION_KEYSTROKE_MIN_PAUSE_LENGTH: 8000  # Length is in ms, standard is 5000
+      MIN_KEYSTROKE_PER_SESSION: 8  # Standard is 0 (No minimum number of keystrokes per session)
       FEATURES: ["sessioncount","averageinterkeydelay","averagesessionlength","changeintextlengthlessthanminusone","changeintextlengthequaltominusone","changeintextlengthequaltoone","changeintextlengthmorethanone","maxtextlength","lastmessagelength","totalkeyboardtouches"]
       SRC_SCRIPT: src/features/phone_keyboard/rapids/main.py
 
@@ -297,6 +299,17 @@ PHONE_SCREEN:
       FEATURES: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration", "firstuseafter"] # "episodepersensedminutes" needs to be added later
       EPISODE_TYPES: ["unlock"]
       SRC_SCRIPT: src/features/phone_screen/rapids/main.py
+
+# See https://www.rapids.science/latest/features/phone-sentiment/
+PHONE_SENTIMENT:
+  CONTAINER: plugin_sentiment
+  PROVIDERS:
+    RAPIDS:
+      COMPUTE: True
+      SCOPE: ["per_app", "all_apps"]
+      LEXICA_INCLUDED: ["affect","happiness", "life_satisfaction","loneliness","politeness","stress"]
+      FEATURES: ["score"]
+      SRC_SCRIPT: src/features/phone_sentiment/rapids/main.py
 
 # See https://www.rapids.science/latest/features/phone-wifi-connected/
 PHONE_WIFI_CONNECTED:
