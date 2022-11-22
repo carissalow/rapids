@@ -2,6 +2,7 @@
 ## v1.9.2
 - Add mutation script to fix character encoding of application_name column in phone applications foreground data  
 - Fix discrepancies between computed episode and event features in PHONE_APPLICATIONS_FOREGROUND RAPIDS provider
+- Upgrade cli, lifecycle, lubridate, pillar, and vctrs R packages
 ## v1.9.1
 - It fixes a library conflict that broke RAPIDS installation
 ## v1.9.0
