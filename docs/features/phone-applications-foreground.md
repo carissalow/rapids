@@ -33,7 +33,7 @@ Parameters description for `[PHONE_APPLICATIONS_FOREGROUND][PROVIDERS][RAPIDS]`:
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
 |`[COMPUTE]`| Set to `True` to extract `PHONE_APPLICATIONS_FOREGROUND` features from the `RAPIDS` provider|
-|`[INCLUDE_EPISODE_FEATURES]`| Set to `True` to extract features from application usage episodes using Screen data |
+|`[INCLUDE_EPISODE_FEATURES]`| Set to `True` to extract features from application usage episodes using Screen data. If set to `True`, all `episodes` and `events` features are computed from episode data; otherwise, `events` features are computed from event data |
 |`[FEATURES]` |         Features to be computed, see table below
 |`[SINGLE_CATEGORIES]`     | An array of app categories to be *included* in the feature extraction computation. The special keyword `all` represents a category with all the apps from each participant. By default, we use the category catalog pointed by `[APPLICATION_CATEGORIES][CATALOGUE_FILE]` (see the Sensor parameters description table above)
 |`[CUSTOM_CATEGORIES]`   | An array of collections representing your own app categories. The key of each element is the name of the custom category, and the value is an array of the package names (apps) included in that category.

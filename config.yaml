@@ -111,7 +111,7 @@ PHONE_APPLICATIONS_FOREGROUND:
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
-      INCLUDE_EPISODE_FEATURES: False
+      INCLUDE_EPISODE_FEATURES: False # if True, all requested app events and app episodes features will be computed from episode data; otherwise, app events features will be computed from event data
       SINGLE_CATEGORIES: ["all", "email"]
       MULTIPLE_CATEGORIES:
         social: ["socialnetworks", "socialmediatools"]
