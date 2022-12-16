@@ -6,38 +6,38 @@ from scipy.stats import entropy
 
 def compute_features(filtered_data, apps_type, requested_features, apps_features, time_segment):        
     if "timestamp" in filtered_data.columns:
-        col_name = "timestamp"
+        timestamp_column = "timestamp"
     else:
-        col_name = "start_timestamp"
+        timestamp_column = "start_timestamp"
 
     # There is the rare occasion that filtered_data is empty (found in testing)
     if "timeoffirstuse" in requested_features:
-        time_first_event = filtered_data.sort_values(by=col_name, ascending=True).drop_duplicates(subset="local_segment", keep="first").set_index("local_segment")
+        time_first_event = filtered_data.sort_values(by=timestamp_column, ascending=True).drop_duplicates(subset="local_segment", keep="first").set_index("local_segment")
         if time_first_event.empty:
             apps_features["timeoffirstuse" + apps_type] = np.nan
-        elif col_name == "timestamp":
+        elif timestamp_column == "timestamp":
             apps_features["timeoffirstuse" + apps_type] = time_first_event["local_hour"] * 60 + time_first_event["local_minute"]
         else:
             apps_features["timeoffirstuse" + apps_type] = time_first_event["local_start_date_time"].dt.hour * 60 + time_first_event["local_start_date_time"].dt.minute
 
     if "timeoflastuse" in requested_features:
-        time_last_event = filtered_data.sort_values(by=col_name, ascending=False).drop_duplicates(subset="local_segment", keep="first").set_index("local_segment")
+        time_last_event = filtered_data.sort_values(by=timestamp_column, ascending=False).drop_duplicates(subset="local_segment", keep="first").set_index("local_segment")
         if time_last_event.empty:
             apps_features["timeoflastuse" + apps_type] = np.nan
-        elif col_name == "timestamp":
+        elif timestamp_column == "timestamp":
             apps_features["timeoflastuse" + apps_type] = time_last_event["local_hour"] * 60 + time_last_event["local_minute"]
         else:
             apps_features["timeoflastuse" + apps_type] = time_last_event["local_start_date_time"].dt.hour * 60 + time_last_event["local_start_date_time"].dt.minute
 
     if "frequencyentropy" in requested_features:
-        apps_with_count = filtered_data.groupby(["local_segment","application_name"]).count().sort_values(by=col_name, ascending=False).reset_index()
+        apps_with_count = filtered_data.groupby(["local_segment","application_name"]).count().sort_values(by=timestamp_column, ascending=False).reset_index()
         if (len(apps_with_count.index) < 2 ):
             apps_features["frequencyentropy" + apps_type] = np.nan
         else:    
-            apps_features["frequencyentropy" + apps_type] = apps_with_count.groupby("local_segment")[col_name].agg(entropy)
+            apps_features["frequencyentropy" + apps_type] = apps_with_count.groupby("local_segment")[timestamp_column].agg(entropy)
 
     if "countevent" in requested_features:
-        apps_features["countevent" + apps_type] = filtered_data.groupby(["local_segment"]).count()[col_name]
+        apps_features["countevent" + apps_type] = filtered_data.groupby(["local_segment"]).count()[timestamp_column]
 
     if "countepisode" in requested_features:
         apps_features["countepisode" + apps_type] = filtered_data.groupby(["local_segment"]).count()["start_timestamp"]
@@ -125,19 +125,17 @@ def process_app_features(data, requested_features, time_segment, provider, filte
 
 def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
     
+    app_foreground_data = pd.read_csv(sensor_data_files["sensor_data"])
     app_episodes_requirement = provider["INCLUDE_EPISODE_FEATURES"]
     
     # if INCLUDE_EPISODE_FEATURES = True, we compute all requested episodes and events features using episode data; otherwise, we compute only events features using event data
     if app_episodes_requirement:
-        episode_data = pd.read_csv(sensor_data_files["episode_data"])
-        requested_episodes_and_events_features = provider["FEATURES"]["APP_EPISODES"] + provider["FEATURES"]["APP_EVENTS"]
-        episode_data = episode_data.drop(episode_data[ (episode_data['duration'] < provider["IGNORE_EPISODES_SHORTER_THAN"]) | (episode_data['duration'] > provider["IGNORE_EPISODES_LONGER_THAN"])].index)
-        features = process_app_features(episode_data, requested_episodes_and_events_features, time_segment, provider, filter_data_by_segment)
+        app_foreground_data = app_foreground_data.drop(app_foreground_data[ (app_foreground_data['duration'] < provider["IGNORE_EPISODES_SHORTER_THAN"]) | (app_foreground_data['duration'] > provider["IGNORE_EPISODES_LONGER_THAN"])].index)
+        requested_features = provider["FEATURES"]["APP_EPISODES"] + provider["FEATURES"]["APP_EVENTS"]
     else:
-        apps_events_data = pd.read_csv(sensor_data_files["sensor_data"])
-        requested_events_features = provider["FEATURES"]["APP_EVENTS"]
-        features = process_app_features(apps_events_data, requested_events_features, time_segment, provider, filter_data_by_segment)
- 
+        requested_features = provider["FEATURES"]["APP_EVENTS"]
+        
+    features = process_app_features(app_foreground_data, requested_features, time_segment, provider, filter_data_by_segment)
     features.fillna(value={feature_name: 0 for feature_name in features.columns if feature_name.startswith(("countevent", "countepisode", "minduration", "maxduration", "meanduration", "sumduration"))}, inplace=True)
     
     return features
