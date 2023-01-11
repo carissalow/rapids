@@ -101,6 +101,7 @@ timestamp,device_id,package_name,application_name,is_system_app
 1583803508001,android,com.google.android.inputmethod.latin,Gboard,1
 1583803620001,android,com.facebook.katana,Facebook,0
 1583803726001,android,com.google.android.inputmethod.latin,Gboard,1
+1583803786001,android,com.nianticlabs.pokemongo,Pokémon Go,0
 1583803805001,android,com.facebook.katana,Facebook,0
 1604040640385,android,com.aware.plugin.google.activity_recognition,AWARE: Google Activity Recognition,0
 1604040642385,android,com.aware.plugin.google.fused_location,AWARE: Google Fused Location,0
@@ -204,4 +205,5 @@ timestamp,device_id,package_name,application_name,is_system_app
 1604370308001,android,com.google.android.inputmethod.latin,Gboard,1
 1604370420001,android,com.facebook.katana,Facebook,0
 1604370526001,android,com.google.android.inputmethod.latin,Gboard,1
+1604370586001,android,com.nianticlabs.pokemongo,Pokémon Go,0
 1604370605001,android,com.facebook.katana,Facebook,0

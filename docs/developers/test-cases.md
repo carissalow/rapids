@@ -278,6 +278,7 @@ Description
 - Two episodes locate in the same daily segment (`Fri 11:57:56.385` and `Fri 12:02:56.385`)
 - One episode before the time switch (`Sun 00:07:48.001`) and one episode after the time switch (`Sun 05:10:30.001`)
 - Two custom category (`Dating`) episode, one at `Fri 06:05:10.385`, another one at ` Fri 11:53:00.385`
+- One episode for an application containing a special character (`Pokémon GO`) at `Mon 21:29:46.001`
 
 Checklist:
 
