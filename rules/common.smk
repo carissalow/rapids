@@ -33,6 +33,12 @@ def get_calls_input(wildcards):
     else:
         return "data/raw/{pid}/phone_calls_with_datetime.csv"
 
+def get_applications_foreground_input(wildcards):
+    if (wildcards.provider_key.upper() == "RAPIDS") and config["PHONE_APPLICATIONS_FOREGROUND"]["PROVIDERS"]["RAPIDS"]["INCLUDE_EPISODE_FEATURES"]:
+        return "data/interim/{pid}/phone_app_episodes_resampled_with_datetime.csv"
+    else:
+        return "data/raw/{pid}/phone_applications_foreground_with_datetime_with_categories.csv"
+
 def find_features_files(wildcards):
     feature_files = []
     for provider_key, provider in config[(wildcards.sensor_key).upper()]["PROVIDERS"].items():

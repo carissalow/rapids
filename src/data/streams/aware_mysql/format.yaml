@@ -72,6 +72,7 @@ PHONE_APPLICATIONS_FOREGROUND:
     MUTATION:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
+        - "src/data/streams/mutations/phone/aware/applications_foreground_encoding.R"
 
 PHONE_APPLICATIONS_NOTIFICATIONS:
   ANDROID:
