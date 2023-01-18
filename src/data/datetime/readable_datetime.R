@@ -129,6 +129,7 @@ process_by_chunks <- function(timezone_parameters, device_type, pid, participant
 readable_datetime <- function(){
 
   time_segments <- read.csv(snakemake@input[["time_segments"]])
+  sensor_input <- snakemake@input[["sensor_input"]]
   participant_file <- snakemake@input[["pid_file"]]
   device_type <- snakemake@params[["device_type"]]
   timezone_parameters <- snakemake@params[["timezone_parameters"]]
@@ -137,19 +138,29 @@ readable_datetime <- function(){
   include_past_periodic_segments <- snakemake@params[["include_past_periodic_segments"]]
   output_file_path <- snakemake@output[[1]]
 
+  if (device_type != "fitbit") {
+    column_specifications <- cols()
+  } else if (!grepl("sleep_summary", sensor_input)) {
+    column_specifications <- cols(local_date_time = col_character())
+  } else {
+    column_specifications <- cols(
+      local_date_time = col_character(),
+      local_start_date_time = col_character(),
+      local_end_date_time = col_character()
+    )
+  } 
+
   validate_user_timezones(timezone_parameters)
 
-  acc <- read_csv_chunked(snakemake@input[["sensor_input"]], 
+  acc <- read_csv_chunked(sensor_input, 
                   callback=AccumulateCallback$new(process_by_chunks(timezone_parameters, device_type, pid, participant_file, time_segments, time_segments_type, include_past_periodic_segments, output_file_path), acc=0), 
                   chunk_size=10000,
                   col_names=TRUE,
-                  col_types=cols(local_date_time = col_character(),
-                                 local_start_date_time = col_character(),
-                                 local_end_date_time = col_character()),
+                  col_types=column_specifications,
                   trim_ws=FALSE)
   
   if(acc == 0){
-    column_names <- c("local_timezone", colnames(read.csv(snakemake@input[["sensor_input"]])), "local_date", "local_time", "local_hour", "local_minute", "assigned_segments")
+    column_names <- c("local_timezone", colnames(read.csv(sensor_input)), "local_date", "local_time", "local_hour", "local_minute", "assigned_segments")
     output <- setNames(data.frame(matrix(nrow=0, ncol=length(column_names))), column_names)
     output %>% write_csv(output_file_path, append=FALSE)
   }
