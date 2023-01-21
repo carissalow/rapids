@@ -52,7 +52,7 @@ create_mising_temporal_column <- function(data, device_type){
   if(device_type == "fitbit" && all(data$timestamp == 0) && "local_date_time" %in% colnames(data)){
       # For fibit we infere timestamp from Fitbit's local date time only right after pulling it
       if(nrow(data) == 0)
-        return(data %>% mutate(timestamp = NA_real_))
+        return(data %>% mutate(timestamp = NA_real_) %>% relocate(local_timezone)) # move local_timezone to the beginning of df to match column positions when data is not empty (group > nest)
       if(any(is.na(parse_date_time(data$local_date_time, orders= c("%Y/%m/%d %H:%M:%S","%Y-%m-%d %H:%M:%S"), exact=T))))
         stop("One or more values in the local_date_time column do not have the expected format: yyyy-mm-dd hh:mm:ss or yyyy/mm/dd hh:mm:ss")
       return(data %>% 
@@ -66,7 +66,7 @@ create_mising_temporal_column <- function(data, device_type){
     } else {
       # For the rest of devices we infere local date time from timestamp
       if(nrow(data) == 0)
-        return(data %>% mutate(local_date_time = NA_character_))
+        return(data %>% mutate(local_date_time = NA_character_) %>% relocate(local_timezone)) # move local_timezone to the beginning of df to match column positions when data is not empty (group > nest)
       return(data %>% 
           group_by(local_timezone) %>% 
           nest() %>% 
