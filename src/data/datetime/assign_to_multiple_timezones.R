@@ -48,6 +48,19 @@ assign_tz_code <- function(data, device_id, tz_codes, device_type){
   if(column == "local_date_time")
     data$local_date_time <- format(data$local_date_time, format="%Y-%m-%d %H:%M:%S")
 
+  if(any(is.na(data$local_timezone))){
+    data_without_timezones <- data %>% filter(is.na(local_timezone))
+    warning(glue("We are discarding data for device {device_id} because some rows could not be assigned to a timezone. 
+                    This happens because the timezones in TZCODES_FILE are not covering the total period this device was sensing data. 
+                    You have two possible fixes
+                    - A) Add another timezone entry to TZCODES_FILE that covers the missing period from {min(data_without_timezones[[column]])} to {max(data_without_timezones[[column]])}.
+                          Note there will be multiple chunks because we read the sensor data in batches but you could combine the suggested individual missing periods into a single one. 
+                    - B) Assign this device id to a single timezone for the entire duration of the study. 
+                          To do this, in TZCODES_FILE, replace any timezones for {device_id} with following line:
+                              {device_id},{time_zone},0 \n\n
+                  "))
+  }
+
   return(data %>% filter(!is.na(local_timezone)))
   
 }
