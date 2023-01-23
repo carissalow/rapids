@@ -4,6 +4,7 @@
 - Fix discrepancies between computed episode and event features in PHONE_APPLICATIONS_FOREGROUND RAPIDS provider
 - Upgrade cli, lifecycle, lubridate, pillar, and vctrs R packages
 - Fix bug that scrambled the column order of resampled episodes when processng multiple time zones and some data fell outside those timezone periods
+- Resolve column specification warning messages produced by readable_datetime.R script
 ## v1.9.1
 - It fixes a library conflict that broke RAPIDS installation
 ## v1.9.0
