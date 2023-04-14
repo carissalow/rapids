@@ -33,9 +33,9 @@ Features description for `[PHONE_WIFI_CONNECTED][PROVIDERS][RAPIDS]`:
 
 |Feature                    |Units      |Description|
 |-------------------------- |---------- |---------------------------|
-| countscans                 | devices | Number of scanned WiFi access points connected during a time_segment, an access point can be detected multiple times over time and these appearances are counted separately |
-| uniquedevices              | devices | Number of unique access point during a time_segment as identified by their hardware address                                                                       |
-| countscansmostuniquedevice | scans   | Number of scans of the most scanned access point during a time_segment across the whole monitoring period                                                         |
+| countscans                 | scans | Number of scanned WiFi access points connected (i.e., connected devices) during a time_segment, an access point can be detected multiple times over time and these appearances are counted separately |
+| uniquedevices              | devices | Number of unique connected device during a time_segment as identified by their hardware address                                                                       |
+| countscansmostuniquedevice | scans   | Number of scans of the most scanned connected device during a time_segment across the whole monitoring period                                                         |
 
 !!! note "Assumptions/Observations"
     1. A connected WiFI access point is one that a phone was connected to.
