@@ -6,7 +6,6 @@
 - Fix bug in PHONE_SCREEN RAPIDS provider that dropped rows exceeding specified thresholds based on within-segment rather than overall episode duration  
 - Add mutation script to fix character encoding of bt_name column in phone Bluetooth data  
 - Add mutation script to fix character encoding of package_name, before_text, and current_text columns in phone keyboard data   
-- Add packages that are installed when the R environment is restored but were not explicitly recorded in the lockfile to `renv.lock`  
 - Update documentation for Docker and Ubuntu installation  
 
 ## v1.9.3
