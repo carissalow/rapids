@@ -30,7 +30,7 @@ jobs:
           # sudo apt install libxml2-dev
           sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
           sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' 
-          sudo apt install r-base
+          sudo apt install -y --allow-downgrades r-base-core=4.2.3-1.2004.0
       - name: Cache R packages
         uses: actions/cache@v2
         id: cacherenv

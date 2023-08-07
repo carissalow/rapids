@@ -8,11 +8,18 @@ RUN apt update && apt install -y \
     libmysqlclient-dev \
     libglpk40 \
     mysql-server
+# required to install R qgraph package
+RUN apt-get update && apt-get install -y \ 
+    make \
+    g++ \
+    gfortran \
+    libblas-dev \
+    liblapack-dev
 RUN apt-get update && apt-get install -y gnupg
 RUN apt-get update && apt-get install -y software-properties-common
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
 RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
-RUN apt update && apt install -y r-base
+RUN apt update && apt install -y --allow-downgrades r-base-core=4.2.3-1.2004.0
 RUN apt install -y pandoc
 RUN apt install -y git
 RUN apt-get update && apt-get install -y vim
