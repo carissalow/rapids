@@ -72,7 +72,7 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         brew services start mysql
         ```
 
-    3.  Install R 4.0, pandoc and rmarkdown. If you have other instances of R, we recommend uninstalling them
+    3.  Install R 4.2, pandoc and rmarkdown. If you have other instances of R, we recommend uninstalling them
 
         ``` bash
         brew install r
@@ -162,11 +162,11 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
             sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
             ```
 
-    5. Install R 4.0. If you have other instances of R, we recommend uninstalling them
+    5. Install R 4.2. If you have other instances of R, we recommend uninstalling them. Note you may need to include the `-y --allow-downgrades` flags in order to install this R version; please use with caution
 
         ``` bash
         sudo apt update
-        sudo apt install r-base
+        sudo apt install r-base-core=4.2.3-1.2004.0
         ```
 
     6.  Install Pandoc and rmarkdown
