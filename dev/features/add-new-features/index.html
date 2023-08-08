@@ -15,7 +15,7 @@
         
       
       <link rel="icon" href="../../img/logo.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-7.1.6+insiders-2.9.1">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-7.1.6+insiders-2.9.1">
     
     
       
@@ -2067,8 +2067,8 @@
 <li>the weekly segment could be named <code>my_weeks</code> and if <code>p01</code> was monitored for 14 days, it would have 2 instances.</li>
 <li>the weekend segment could be named <code>my_weekends</code> and if <code>p01</code> was monitored for 14 days, it would have 2 instances.</li>
 </ul>
-<p>For this example, RAPIDS will call your provider function three times for <code>p01</code>, once where <code>time_segment</code> is <code>my_days</code>, once where <code>time_segment</code> is <code>my_weeks</code>, and once where <code>time_segment</code> is <code>my_weekends</code>. In this example, not every row in <code>p01</code>&lsquo;s data needs to take part in the feature computation for either segment <strong>and</strong> the rows need to be grouped differently. </p>
-<p>Thus <code>filter_data_by_segment()</code> comes in handy, it will return a data frame that contains the rows that were logged during a time segment plus an extra column called <code>local_segment</code>. This new column will have as many unique values as time segment instances exist (14, 2, and 2 for our <code>p01</code>&lsquo;s <code>my_days</code>, <code>my_weeks</code>, and <code>my_weekends</code> examples). After filtering, <strong>you should group the data frame by this column and compute any desired features</strong>, for example:</p>
+<p>For this example, RAPIDS will call your provider function three times for <code>p01</code>, once where <code>time_segment</code> is <code>my_days</code>, once where <code>time_segment</code> is <code>my_weeks</code>, and once where <code>time_segment</code> is <code>my_weekends</code>. In this example, not every row in <code>p01</code>&rsquo;s data needs to take part in the feature computation for either segment <strong>and</strong> the rows need to be grouped differently. </p>
+<p>Thus <code>filter_data_by_segment()</code> comes in handy, it will return a data frame that contains the rows that were logged during a time segment plus an extra column called <code>local_segment</code>. This new column will have as many unique values as time segment instances exist (14, 2, and 2 for our <code>p01</code>&rsquo;s <code>my_days</code>, <code>my_weeks</code>, and <code>my_weekends</code> examples). After filtering, <strong>you should group the data frame by this column and compute any desired features</strong>, for example:</p>
 <div class="highlight"><pre><span></span><code><span class="n">acc_features</span><span class="p">[</span><span class="s2">&quot;maxmagnitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;local_segment&quot;</span><span class="p">])[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 </code></pre></div>
 <p>The reason RAPIDS does not filter the participant&rsquo;s data set for you is because your code might need to compute something based on a participant&rsquo;s complete dataset before computing their features. For example, you might want to identify the number that called a participant the most throughout the study before computing a feature with the number of calls the participant received from that number.</p>
@@ -2077,7 +2077,7 @@
 <summary>3. Return a data frame with your features</summary>
 <p>After filtering, grouping your data, and computing your features, your provider function should return a data frame that has:</p>
 <ul>
-<li>One row per time segment instance (e.g., 14 our <code>p01</code>&lsquo;s <code>my_days</code> example)</li>
+<li>One row per time segment instance (e.g., 14 our <code>p01</code>&rsquo;s <code>my_days</code> example)</li>
 <li>The <code>local_segment</code> column added by <code>filter_data_by_segment()</code></li>
 <li>One column per feature. The name of your features should only contain letters or numbers (<code>feature1</code>) by convention. RAPIDS automatically adds the correct sensor and provider prefix; in our example, this prefix is <code>phone_accelerometr_vega_</code>.</li>
 </ul>

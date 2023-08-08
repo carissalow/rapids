@@ -15,7 +15,7 @@
         
       
       <link rel="icon" href="../../img/logo.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-7.1.6+insiders-2.9.1">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-7.1.6+insiders-2.9.1">
     
     
       
@@ -1860,7 +1860,7 @@ brew<span class="w"> </span>services<span class="w"> </span>start<span class="w"
 </code></pre></div>
 </li>
 <li>
-<p>Install R 4.0, pandoc and rmarkdown. If you have other instances of R, we recommend uninstalling them</p>
+<p>Install R 4.2, pandoc and rmarkdown. If you have other instances of R, we recommend uninstalling them</p>
 <div class="highlight"><pre><span></span><code>brew<span class="w"> </span>install<span class="w"> </span>r
 brew<span class="w"> </span>install<span class="w"> </span>pandoc
 Rscript<span class="w"> </span>--vanilla<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;install.packages(&quot;rmarkdown&quot;, repos=&quot;http://cran.us.r-project.org&quot;)&#39;</span>
@@ -1941,9 +1941,9 @@ sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> <
 </div>
 </li>
 <li>
-<p>Install R 4.0. If you have other instances of R, we recommend uninstalling them</p>
+<p>Install R 4.2. If you have other instances of R, we recommend uninstalling them. Note you may need to include the <code>-y --allow-downgrades</code> flags in order to install this R version; please use with caution</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>update
-sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>r-base
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>r-base-core<span class="o">=</span><span class="m">4</span>.2.3-1.2004.0
 </code></pre></div>
 </li>
 <li>
