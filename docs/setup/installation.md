@@ -4,7 +4,7 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
 
 === "Docker"
     
-    1.  Install [Docker](https://docs.docker.com/desktop/)
+    1.  Install the latest version of [Docker](https://docs.docker.com/desktop/)
 
     2.  Pull our RAPIDS container
         ``` bash
@@ -173,7 +173,7 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
 
         ``` bash
         sudo apt install pandoc
-        Rscript --vanilla -e 'install.packages("rmarkdown", repos="http://cran.us.r-project.org")'
+        sudo Rscript --vanilla -e 'install.packages("rmarkdown", repos="http://cran.us.r-project.org")'
         ```
 
     7.  Install git

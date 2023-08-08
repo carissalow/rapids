@@ -125,6 +125,7 @@ PHONE_BLUETOOTH:
     MUTATION:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
+        - "src/data/streams/mutations/phone/aware/bluetooth_encoding.R"
   IOS:
     RAPIDS_COLUMN_MAPPINGS:
       TIMESTAMP: timestamp
@@ -135,6 +136,7 @@ PHONE_BLUETOOTH:
     MUTATION:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
+        - "src/data/streams/mutations/phone/aware/bluetooth_encoding.R"
 
 PHONE_CALLS:
   ANDROID:
@@ -197,6 +199,7 @@ PHONE_KEYBOARD:
     MUTATION:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
+        - "src/data/streams/mutations/phone/aware/keyboard_encoding.R"
 
 PHONE_LIGHT:
   ANDROID:

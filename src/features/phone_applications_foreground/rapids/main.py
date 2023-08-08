@@ -4,11 +4,13 @@ import itertools
 from scipy.stats import entropy
 
 
-def compute_features(filtered_data, apps_type, requested_features, apps_features, time_segment):        
+def compute_features(filtered_data, apps_type, requested_features, features, time_segment):        
     if "timestamp" in filtered_data.columns:
         timestamp_column = "timestamp"
     else:
         timestamp_column = "start_timestamp"
+
+    apps_features = pd.DataFrame(columns=["local_segment"]).set_index("local_segment")
 
     # There is the rare occasion that filtered_data is empty (found in testing)
     if "timeoffirstuse" in requested_features:
@@ -54,8 +56,8 @@ def compute_features(filtered_data, apps_type, requested_features, apps_features
     if "sumduration" in requested_features:
         apps_features["sumduration" + apps_type] = filtered_data.groupby(by = ["local_segment"])["duration"].sum()
     
-    apps_features.index.names = ["local_segment"]
-    return apps_features
+    features = pd.concat([features, apps_features], axis=1, join="outer")
+    return features
 
 def process_app_features(data, requested_features, time_segment, provider, filter_data_by_segment):
     
@@ -83,7 +85,9 @@ def process_app_features(data, requested_features, time_segment, provider, filte
     # exclude apps in the excluded_apps list
     data = data[~data["package_name"].isin(excluded_apps)]
             
-    features = pd.DataFrame(columns=["local_segment"] + ["".join(feature) for feature in itertools.product(requested_features, single_categories + list(custom_categories.keys()) + list(multiple_categories.keys()) + single_apps)])
+    expected_columns = pd.DataFrame(columns=["local_segment"] + ["".join(feature) for feature in itertools.product(requested_features, single_categories + list(custom_categories.keys()) + list(multiple_categories.keys()) + single_apps)])
+    features = pd.DataFrame(columns=["local_segment"]).set_index("local_segment")
+    
     if not data.empty:
         # deep copy the data for the top1global computation
         data_global = data.copy()
@@ -118,9 +122,10 @@ def process_app_features(data, requested_features, time_segment, provider, filte
                     col_name = "top1global"
                 filtered_data = data[data["package_name"].isin([app])]
                 features = compute_features(filtered_data, col_name, requested_features, features, time_segment)
- 
-            features = features.reset_index()
 
+    features.index.names = ["local_segment"]
+    features.reset_index(inplace=True)
+    features = pd.concat([expected_columns, features], axis=0)
     return features
 
 def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):

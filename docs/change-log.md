@@ -1,5 +1,17 @@
 # Change Log
 
+## v1.10.0  
+
+- Fix bug in PHONE_APPLICATIONS_FOREGROUND RAPIDS provider that could result in some rows being excluded from output depending on order in which apps are processed   
+- Fix bug in PHONE_SCREEN RAPIDS provider that dropped rows exceeding specified thresholds based on within-segment rather than overall episode duration  
+- Add mutation script to fix character encoding of bt_name column in phone Bluetooth data  
+- Add mutation script to fix character encoding of package_name, before_text, and current_text columns in phone keyboard data   
+- Update documentation for Docker and Ubuntu installation  
+
+## v1.9.3
+
+- Update documentation for phone WiFI connected and WiFI visible behavioral features  
+
 ## v1.9.2
 
 - Add mutation script to fix character encoding of application_name column in phone applications foreground data

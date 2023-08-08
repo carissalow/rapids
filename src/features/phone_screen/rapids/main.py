@@ -47,14 +47,16 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
     screen_features = pd.DataFrame(columns=["local_segment"] + features_to_compute)
     if not screen_data.empty:
-
-        screen_data = filter_data_by_segment(screen_data, time_segment)
         
+        screen_data["episode_duration"] = (screen_data.groupby(["episode_id"])["end_timestamp"].transform("max") - screen_data.groupby(["episode_id"])["start_timestamp"].transform("min")) / (1000 * 60)
+        if ignore_episodes_shorter_than > 0:
+            screen_data = screen_data.query('@ignore_episodes_shorter_than <= episode_duration')
+        if ignore_episodes_longer_than > 0:
+            screen_data = screen_data.query('episode_duration <= @ignore_episodes_longer_than')
+        screen_data = screen_data.drop(["episode_duration"], axis=1)
+
         if not screen_data.empty:
-            if ignore_episodes_shorter_than > 0:
-                screen_data = screen_data.query('@ignore_episodes_shorter_than <= duration')
-            if ignore_episodes_longer_than > 0:
-                screen_data = screen_data.query('duration <= @ignore_episodes_longer_than')
+            screen_data = filter_data_by_segment(screen_data, time_segment)
 
         if not screen_data.empty:
             screen_features = pd.DataFrame()
