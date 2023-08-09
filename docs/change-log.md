@@ -1,12 +1,14 @@
 # Change Log
 
-## v1.10.0  
+## v1.9.4  
 
+- Fix bug in PHONE_BATTERY RAPIDS provider that could result in negative values for battery consumption rate features
 - Fix bug in PHONE_APPLICATIONS_FOREGROUND RAPIDS provider that could result in some rows being excluded from output depending on order in which apps are processed   
 - Fix bug in PHONE_SCREEN RAPIDS provider that dropped rows exceeding specified thresholds based on within-segment rather than overall episode duration  
 - Add mutation script to fix character encoding of bt_name column in phone Bluetooth data  
 - Add mutation script to fix character encoding of package_name, before_text, and current_text columns in phone keyboard data   
-- Update documentation for Docker and Ubuntu installation  
+- Specify that R version 4.2.3 be installed in tests workflow and Dockerfile
+- Update documentation for Docker, Mac and Ubuntu installation  
 
 ## v1.9.3
 

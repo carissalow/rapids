@@ -17,9 +17,14 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
 
         if not battery_data.empty:
         
-            battery_data["episode_id"] = ((battery_data.battery_status != battery_data.battery_status.shift()) | (battery_data.start_timestamp - battery_data.end_timestamp.shift() > 1)).cumsum()
+            battery_data["episode_id"] = (
+                (battery_data.battery_status != battery_data.battery_status.shift()) | 
+                (battery_data.start_timestamp - battery_data.end_timestamp.shift() > 1) | 
+                ((battery_data.battery_status.isin([3, 4])) & (battery_data.battery_level > battery_data.battery_level.shift()))
+            ).cumsum()
+
             grouped = battery_data.groupby(by=["local_segment", "episode_id", "battery_status"])
-            battery_episodes= grouped[["duration"]].sum()
+            battery_episodes = grouped[["duration"]].sum()
             battery_episodes["battery_diff"] = grouped["battery_level"].first() - grouped["battery_level"].last()
             battery_episodes["battery_consumption_rate"] = battery_episodes["battery_diff"] / battery_episodes["duration"]
             battery_episodes.reset_index(inplace=True)
