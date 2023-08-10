@@ -2,6 +2,7 @@
 
 ## v1.9.4  
 
+- Fix bug in process_location_types.R script that allowed for <1 minute time differences between a final resampled row and the next sensed location row   
 - Fix bug in PHONE_BATTERY RAPIDS provider that could result in negative values for battery consumption rate features
 - Fix bug in PHONE_APPLICATIONS_FOREGROUND RAPIDS provider that could result in some rows being excluded from output depending on order in which apps are processed   
 - Fix bug in PHONE_SCREEN RAPIDS provider that dropped rows exceeding specified thresholds based on within-segment rather than overall episode duration  
