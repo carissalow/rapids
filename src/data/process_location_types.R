@@ -71,6 +71,8 @@ if(locations_to_use == "ALL"){
                     id = id -1,
                     timestamp = timestamp + (id * 60000)) %>% 
             ungroup() %>% 
+            # drop last resampled row from a group if there is not at least 1 minute between its timestamp and the following sensed location timestamp
+            filter(!(provider == "resampled" & !is.na(lead(timestamp)) & lead(timestamp) - timestamp < 60000)) %>%
             select(-resample_group, -limit, -id)
     } else {
         processed_locations <- locations
