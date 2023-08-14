@@ -2267,6 +2267,7 @@
                 <h1 id="change-log">Change Log<a class="headerlink" href="#change-log" title="Permanent link">&para;</a></h1>
 <h2 id="v194">v1.9.4<a class="headerlink" href="#v194" title="Permanent link">&para;</a></h2>
 <ul>
+<li>Fix bug in process_location_types.R script that allowed for &lt;1 minute time differences between a final resampled row and the next sensed location row   </li>
 <li>Fix bug in PHONE_BATTERY RAPIDS provider that could result in negative values for battery consumption rate features</li>
 <li>Fix bug in PHONE_APPLICATIONS_FOREGROUND RAPIDS provider that could result in some rows being excluded from output depending on order in which apps are processed   </li>
 <li>Fix bug in PHONE_SCREEN RAPIDS provider that dropped rows exceeding specified thresholds based on within-segment rather than overall episode duration  </li>
