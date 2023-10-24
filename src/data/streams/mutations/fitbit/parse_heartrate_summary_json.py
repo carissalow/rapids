@@ -1,6 +1,6 @@
 import json
 import pandas as pd
-
+import numpy as np
 
 HR_SUMMARY_COLUMNS = ("device_id",
                         "local_date_time",
@@ -16,11 +16,11 @@ def parseHeartrateSummaryData(record_summary, device_id, curr_date):
     # API Version X: not sure the exact version
     if "heartRateZones" in record_summary:
         heartrate_zones = record_summary["heartRateZones"]
-        d_resting_heartrate = record_summary["value"] if "value" in record_summary else None
+        d_resting_heartrate = record_summary["value"] if "value" in record_summary else np.NaN
     # API VERSION Y: not sure the exact version
     elif "value" in record_summary:
         heartrate_zones = record_summary["value"]["heartRateZones"]
-        d_resting_heartrate = record_summary["value"]["restingHeartRate"] if "restingHeartRate" in record_summary["value"] else None
+        d_resting_heartrate = record_summary["value"]["restingHeartRate"] if "restingHeartRate" in record_summary["value"] else np.NaN
     else:
         ValueError("Heartrate zone are stored in an unkown format, this could mean Fitbit's heartrate API changed")
     
@@ -30,7 +30,7 @@ def parseHeartrateSummaryData(record_summary, device_id, curr_date):
         d_calories_cardio = heartrate_zones[2]["caloriesOut"]
         d_calories_peak = heartrate_zones[3]["caloriesOut"]
     else:
-        d_calories_outofrange, d_calories_fatburn, d_calories_cardio, d_calories_peak = None, None, None, None
+        d_calories_outofrange = d_calories_fatburn = d_calories_cardio = d_calories_peak = np.NaN
     
     row_summary = (device_id,
                     curr_date,
