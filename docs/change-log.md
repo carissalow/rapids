@@ -1,5 +1,12 @@
 # Change Log
 
+## v1.10.0  
+
+- Add walking cadence and activity fragmentation features to FITBIT_STEPS_INTRADAY RAPIDS provider  
+- Add parameter to exclude rows with implausible step count values from Fitbit steps intraday feature computation    
+- Update tests for Fitbit steps intraday features    
+- Fix bug of None/NULL values in parsed Fitbit heartrate summary JSON data       
+
 ## v1.9.4  
 
 - Fix bug in process_location_types.R script that allowed for <1 minute time differences between a final resampled row and the next sensed location row   

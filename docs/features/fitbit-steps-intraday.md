@@ -31,7 +31,7 @@ Parameters description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]`:
 |`[FEATURES]`                           |         Features to be computed from steps intraday data, see table below           |
 |`[REFERENCE_HOUR]`                     | The reference point from which `firststeptime` or `laststeptime` is to be computed, default is midnight |
 |`[THRESHOLD_ACTIVE_BOUT]`              | Every minute with Fitbit steps data wil be labelled as `sedentary` if its step count is below this threshold, otherwise, `active`.    |  
-|`[THRESHOLD_DEVICE_NONWEAR_TIME]`      | Number of consecutive minutes with zero step counts at or above which to label as a period of device non-wear time. Used only to calculate `uncensoredmeancadence` feature. Default is 60. Set to 1 to calculate a measure of mean non-zero walking cadence or to 0 to disable.  |   
+|`[THRESHOLD_DEVICE_NONWEAR_TIME]`      | Number of consecutive minutes with zero step counts at or above which to label as a period of device non-wear time. Used only to calculate `uncensoredmeancadence` feature. Default is 1, which corresponds to a measure of mean non-zero walking cadence. Set to 60 for consistency with Tudor-Locke et al.'s definition. Set to 0 to disable.  |   
 |`[THRESHOLD_MINUTE_LEVEL_STEP_COUNT]`  | Rows with minute-level step counts above this threshold will be excluded from feature computation. Default is 1000; set to 0 to disable. |  
 |`[INCLUDE_ZERO_STEP_ROWS]`             | Whether or not to include time segments with a 0 step count during the whole day.                          |
 
@@ -88,6 +88,6 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]`:
 !!! note "Assumptions/Observations"
     
     1. _Active and sedentary bouts_. If the step count per minute is smaller than `THRESHOLD_ACTIVE_BOUT` (default value is 10), that minute is labelled as sedentary, otherwise, is labelled as active. Active and sedentary bouts are periods of consecutive minutes labelled as `active` or `sedentary`.  
-    2. Activity fragmentation features are based on the following papers: [Di et al., 2017](https://doi.org/10.1101/182337), [Schrack et al., 2019](https://doi.org/10.1093/gerona/gly243), and [Wanigatunga et al., 2019](https://doi.org/10.1001/jamanetworkopen.2019.12352)  
-    3. Walking cadence features are based on the following review paper: [Tudor-Locke et al., 2018](https://doi.org/10.1136/bjsports-2017-097628)  
+    2. Activity fragmentation features are based on the following papers: [Di et al., 2017](https://doi.org/10.1101/182337), [Schrack et al., 2019](https://doi.org/10.1093/gerona/gly243), and [Wanigatunga et al., 2019](https://doi.org/10.1001/jamanetworkopen.2019.12352).   
+    3. Walking cadence features are based on the following review paper: [Tudor-Locke et al., 2018](https://doi.org/10.1136/bjsports-2017-097628).    
 
