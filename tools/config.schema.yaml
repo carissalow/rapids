@@ -1160,7 +1160,7 @@ properties:
               - $ref: "#/definitions/FEATURES_PROVIDER"
               - properties:
                   FEATURES:
-                    required: [STEPS, SEDENTARY_BOUT, ACTIVE_BOUT]
+                    required: [STEPS, SEDENTARY_BOUT, ACTIVE_BOUT, ACTIVITY_FRAGMENTATION, WALKING_CADENCE]
                     properties:
                       STEPS:
                         type: array
@@ -1180,7 +1180,25 @@ properties:
                         items:
                           type: string
                           enum: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+                      ACTIVITY_FRAGMENTATION:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["activetosedentarytransitionprobability", "sumdurationactivitylessthan5minutes", "sumdurationactivity5to105minutes", "sumdurationactivitygreaterthan10minutes", "ginicoefficient"]
+                      WALKING_CADENCE:
+                        type: array
+                        uniqueItems: True
+                        items:
+                          type: string
+                          enum: ["mean", "uncensoredmean", "peak1minute", "peak30minute", "peak60minute", "max5minute", "max20minute", "max30minute", "max60minute", "totalminutes0", "totalminutes1to19", "totalminutes20to39", "totalminutes40to59", "totalminutes60to79", "totalminutes80to99", "totalminutes100to119", "totalminutes120plus","totalminutesabove0", "totalminutesabove19", "totalminutesabove100"]
                   THRESHOLD_ACTIVE_BOUT: 
+                    type: integer
+                    minimum: 0
+                  THRESHOLD_DEVICE_NONWEAR_TIME: 
+                    type: integer
+                    minimum: 0
+                  THRESHOLD_MINUTE_LEVEL_STEP_COUNT:
                     type: integer
                     minimum: 0
                   INCLUDE_ZERO_STEP_ROWS:

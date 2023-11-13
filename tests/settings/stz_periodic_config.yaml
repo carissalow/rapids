@@ -455,8 +455,12 @@ FITBIT_STEPS_INTRADAY:
         STEPS: ["sum", "max", "min", "avg", "std", "firststeptime", "laststeptime"]
         SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
         ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
+        ACTIVITY_FRAGMENTATION: ["activetosedentarytransitionprobability", "sumdurationactivitylessthan5minutes", "sumdurationactivity5to105minutes", "sumdurationactivitygreaterthan10minutes", "ginicoefficient"]
+        WALKING_CADENCE: ["mean", "uncensoredmean", "peak1minute", "peak30minute", "peak60minute", "max5minute", "max20minute", "max30minute", "max60minute", "totalminutes0", "totalminutes1to19", "totalminutes20to39", "totalminutes40to59", "totalminutes60to79", "totalminutes80to99", "totalminutes100to119", "totalminutes120plus","totalminutesabove0", "totalminutesabove19", "totalminutesabove100"]
       REFERENCE_HOUR: 0
       THRESHOLD_ACTIVE_BOUT: 10 # steps
+      THRESHOLD_DEVICE_NONWEAR_TIME: 1 # consecutive minutes with zero step counts, used only to calculate uncensoredmeancadence feature; set to 0 to disable
+      THRESHOLD_MINUTE_LEVEL_STEP_COUNT: 1000 # drop rows with minute-level step counts above this threshold; set to 0 to disable
       INCLUDE_ZERO_STEP_ROWS: False
       SRC_SCRIPT: src/features/fitbit_steps_intraday/rapids/main.py
 
