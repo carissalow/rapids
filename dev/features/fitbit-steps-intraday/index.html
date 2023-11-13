@@ -1881,6 +1881,14 @@
 <td>Every minute with Fitbit steps data wil be labelled as <code>sedentary</code> if its step count is below this threshold, otherwise, <code>active</code>.</td>
 </tr>
 <tr>
+<td><code>[THRESHOLD_DEVICE_NONWEAR_TIME]</code></td>
+<td>Number of consecutive minutes with zero step counts at or above which to label as a period of device non-wear time. Used only to calculate <code>uncensoredmeancadence</code> feature. Default is 1, which corresponds to a measure of mean non-zero walking cadence. Set to 60 for consistency with Tudor-Locke et al.&rsquo;s definition. Set to 0 to disable.</td>
+</tr>
+<tr>
+<td><code>[THRESHOLD_MINUTE_LEVEL_STEP_COUNT]</code></td>
+<td>Rows with minute-level step counts above this threshold will be excluded from feature computation. Default is 1000; set to 0 to disable.</td>
+</tr>
+<tr>
 <td><code>[INCLUDE_ZERO_STEP_ROWS]</code></td>
 <td>Whether or not to include time segments with a 0 step count during the whole day.</td>
 </tr>
@@ -1991,12 +1999,139 @@
 <td>minutes</td>
 <td>The standard deviation of the duration of active bouts during a time segment.</td>
 </tr>
+<tr>
+<td>activetosedentarytransitionprobability</td>
+<td>unitless</td>
+<td>Active-to-sedentary transition probability (ASTP). The reciprocal of the mean active bout length during a time segment. Bounded by 0 and 1.</td>
+</tr>
+<tr>
+<td>sumdurationactivitylessthan5minutes</td>
+<td>minutes</td>
+<td>Sum of duration of active bouts less than 5 minutes in length during a time segment.</td>
+</tr>
+<tr>
+<td>sumdurationactivity5to105minutes</td>
+<td>minutes</td>
+<td>Sum of duration of active bouts between 5 and 10 minutes in length, inclusive, during a time segment.</td>
+</tr>
+<tr>
+<td>sumdurationactivitygreaterthan10minutes</td>
+<td>minutes</td>
+<td>Sum of duration of active bouts more than 10 minutes in length during a time segment.</td>
+</tr>
+<tr>
+<td>ginicoefficient</td>
+<td>unitless</td>
+<td>Measure of (absolute, not squared) variability of active bout durations normalized by the average active bout duration during a time segment. When the Gini coefficient is close to 1, it indicates that total time is accumulated via a small number of longer bouts. Conversely, when the Gini coefficient is close to 0, it indicates that all bouts contribute equally to total time.</td>
+</tr>
+<tr>
+<td>meancadence</td>
+<td>steps/minute</td>
+<td>The average steps/minute during a time segment.</td>
+</tr>
+<tr>
+<td>uncensoredmeancadence</td>
+<td>steps/minute</td>
+<td>The total raw steps accumulated divided by device wear time during a time segment.</td>
+</tr>
+<tr>
+<td>peak1minutecadence</td>
+<td>steps/minute</td>
+<td>The steps/minute recorded for the highest single minute during a time segment; this is also equivalent to the maximum 1 minute cadence.</td>
+</tr>
+<tr>
+<td>peak30minutecadence</td>
+<td>steps/minute</td>
+<td>The average steps/minute recorded for the 30 highest, but not necessarily consecutive, minutes during a time segment.</td>
+</tr>
+<tr>
+<td>peak60minutecadence</td>
+<td>steps/minute</td>
+<td>The average steps/minute recorded for the 60 highest, but not necessarily consecutive, minutes during a time segment.</td>
+</tr>
+<tr>
+<td>max5minutecadence</td>
+<td>steps/minute</td>
+<td>The average steps/minute of the maximum number of steps obtained over 5 continuous minutes during a time segment.</td>
+</tr>
+<tr>
+<td>max20minutecadence</td>
+<td>steps/minute</td>
+<td>The average steps/minute of the maximum number of steps obtained over 20 continuous minutes during a time segment.</td>
+</tr>
+<tr>
+<td>max30minutecadence</td>
+<td>steps/minute</td>
+<td>The average steps/minute of the maximum number of steps obtained over 30 continuous minutes during a time segment.</td>
+</tr>
+<tr>
+<td>max60minutecadence</td>
+<td>steps/minute</td>
+<td>The average steps/minute of the maximum number of steps obtained over 60 continuous minutes during a time segment.</td>
+</tr>
+<tr>
+<td>totalminutes0cadence</td>
+<td>minutes</td>
+<td>Total minutes with no movement (0 steps/minute) during a time segment; an indicator of non-ambulatory or sedentary time.</td>
+</tr>
+<tr>
+<td>totalminutes1to19cadence</td>
+<td>minutes</td>
+<td>Total minutes with incidental movement ([1, 20) steps/minute) during a time segment.</td>
+</tr>
+<tr>
+<td>totalminutes20to39cadence</td>
+<td>minutes</td>
+<td>Total minutes with sporadic movement ([20, 40) steps/minute) during a time segment.</td>
+</tr>
+<tr>
+<td>totalminutes40to59cadence</td>
+<td>minutes</td>
+<td>Total minutes with purposeful steps ([40, 60) steps/minute) during a time segment.</td>
+</tr>
+<tr>
+<td>totalminutes60to79cadence</td>
+<td>minutes</td>
+<td>Total minutes with slow walking ([60, 80) steps/minute) during a time segment.</td>
+</tr>
+<tr>
+<td>totalminutes80to99cadence</td>
+<td>minutes</td>
+<td>Total minutes with medium walking ([80, 100) steps/minute) during a time segment.</td>
+</tr>
+<tr>
+<td>totalminutes100to119cadence</td>
+<td>minutes</td>
+<td>Total minutes with brisk walking ([100, 120) steps/minute) during a time segment.</td>
+</tr>
+<tr>
+<td>totalminutes120pluscadence</td>
+<td>minutes</td>
+<td>Total minutes with all faster ambulation ([120, Inf) steps/minute) during a time segment.</td>
+</tr>
+<tr>
+<td>totalminutesabove0cadence</td>
+<td>minutes</td>
+<td>Total minutes with any movement (&gt;0 steps/minute) during a time segment.</td>
+</tr>
+<tr>
+<td>totalminutesabove19cadence</td>
+<td>minutes</td>
+<td>Total minutes with non-incidental movement (&gt;19 steps/minute) during a time segment.</td>
+</tr>
+<tr>
+<td>totalminutesabove100cadence</td>
+<td>minutes</td>
+<td>Total minutes with movement of at least moderate intensity (&gt;100 steps/minute) during a time segment; this threshold was based on findings from ostensibly health individuals without movement impairments.</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="admonition-title">Assumptions/Observations</p>
 <ol>
-<li><em>Active and sedentary bouts</em>. If the step count per minute is smaller than <code>THRESHOLD_ACTIVE_BOUT</code> (default value is 10), that minute is labelled as sedentary, otherwise, is labelled as active. Active and sedentary bouts are periods of consecutive minutes labelled as <code>active</code> or <code>sedentary</code>.</li>
+<li><em>Active and sedentary bouts</em>. If the step count per minute is smaller than <code>THRESHOLD_ACTIVE_BOUT</code> (default value is 10), that minute is labelled as sedentary, otherwise, is labelled as active. Active and sedentary bouts are periods of consecutive minutes labelled as <code>active</code> or <code>sedentary</code>.  </li>
+<li>Activity fragmentation features are based on the following papers: <a href="https://doi.org/10.1101/182337">Di et al., 2017</a>, <a href="https://doi.org/10.1093/gerona/gly243">Schrack et al., 2019</a>, and <a href="https://doi.org/10.1001/jamanetworkopen.2019.12352">Wanigatunga et al., 2019</a>.   </li>
+<li>Walking cadence features are based on the following review paper: <a href="https://doi.org/10.1136/bjsports-2017-097628">Tudor-Locke et al., 2018</a>.    </li>
 </ol>
 </div>
                 
