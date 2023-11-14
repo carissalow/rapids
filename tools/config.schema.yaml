@@ -232,7 +232,10 @@ properties:
     required: [CONTAINER, PROVIDERS]
     properties:
       CONTAINER:
-        type: string
+        type: [array, string]
+        uniqueItems: True
+        items:
+          type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -280,9 +283,15 @@ properties:
         required: [ANDROID, IOS]
         properties:
           ANDROID: 
-            type: string
+            type: [array, string]
+              uniqueItems: True
+              items:
+                type: string
           IOS: 
-            type: string
+            type: [array, string]
+              uniqueItems: True
+              items:
+                type: string
       EPISODE_THRESHOLD_BETWEEN_ROWS:
         type: integer
         maximum: 1440
@@ -329,7 +338,10 @@ properties:
     required: [CONTAINER, APPLICATION_CATEGORIES, PROVIDERS]
     properties:
       CONTAINER: 
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       APPLICATION_CATEGORIES:
         allOf:
           - $ref: "#/definitions/APPLICATION_CATEGORIES_FEATURE"
@@ -342,7 +354,10 @@ properties:
     required: [CONTAINER, APPLICATION_CATEGORIES, PROVIDERS]
     properties:
       CONTAINER:
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       APPLICATION_CATEGORIES:
         allOf:
           - $ref: "#/definitions/APPLICATION_CATEGORIES_FEATURE"
@@ -415,7 +430,10 @@ properties:
     required: [CONTAINER, APPLICATION_CATEGORIES, PROVIDERS]
     properties:
       CONTAINER:
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       APPLICATION_CATEGORIES:
         allOf:
           - $ref: "#/definitions/APPLICATION_CATEGORIES_FEATURE"
@@ -429,7 +447,10 @@ properties:
     required: [CONTAINER, PROVIDERS, EPISODE_THRESHOLD_BETWEEN_ROWS]
     properties:
       CONTAINER:
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       EPISODE_THRESHOLD_BETWEEN_ROWS:
         type: integer
         maximum: 1440
@@ -454,7 +475,10 @@ properties:
     required: [CONTAINER, PROVIDERS]
     properties:
       CONTAINER:
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -493,7 +517,10 @@ properties:
     required: [CONTAINER, PROVIDERS]
     properties:
       CONTAINER: 
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -546,9 +573,15 @@ properties:
         required: [ANDROID, IOS]
         properties:
           ANDROID:
-            type: string
+            type: [array, string]
+              uniqueItems: True
+              items:
+                type: string
           IOS:
-            type: string
+            type: [array, string]
+              uniqueItems: True
+              items:
+                type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -609,7 +642,10 @@ properties:
     required: [CONTAINER, PROVIDERS]
     properties:
       CONTAINER: 
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -633,7 +669,10 @@ properties:
     required: [CONTAINER, PROVIDERS]
     properties:
       CONTAINER:
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -654,7 +693,10 @@ properties:
     required: [CONTAINER, LOCATIONS_TO_USE, FUSED_RESAMPLED_CONSECUTIVE_THRESHOLD, FUSED_RESAMPLED_TIME_SINCE_VALID_LOCATION, ACCURACY_LIMIT, PROVIDERS]
     properties:
       CONTAINER: 
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       LOCATIONS_TO_USE:
         type: string
         enum: [ALL, GPS, ALL_RESAMPLED, FUSED_RESAMPLED]
@@ -737,9 +779,15 @@ properties:
         required: [ANDROID, IOS]
         properties:
           ANDROID:
-            type: string
+            type: [array, string]
+              uniqueItems: True
+              items:
+                type: string
           IOS:
-            type: string
+            type: [array, string]
+              uniqueItems: True
+              items:
+                type: string
       PROVIDERS:
         type: ["null", object]
         additionalProperties: 
@@ -750,7 +798,10 @@ properties:
     required: [CONTAINER, PROVIDERS]
     properties: 
       CONTAINER: 
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -787,7 +838,10 @@ properties:
     required: [CONTAINER, PROVIDERS]
     properties:
       CONTAINER: 
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -822,7 +876,10 @@ properties:
     required: [CONTAINER, PROVIDERS]
     properties:
       CONTAINER: 
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -843,7 +900,10 @@ properties:
     required: [CONTAINER, PROVIDERS]
     properties:
       CONTAINER:
-        type: string
+        type: [array, string]
+          uniqueItems: True
+          items:
+            type: string
       PROVIDERS:
         type: ["null", object]
         properties:

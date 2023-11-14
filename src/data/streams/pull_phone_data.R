@@ -166,24 +166,28 @@ pull_phone_data <- function(){
       next
     }
 
-    os_table <- ifelse(length(tables) > 1, tables[[toupper(device_os)]], tables) # some sensor tables have a different name for android and ios    
+    os_tables <- if (is.list(tables)) tables[[toupper(device_os)]] else tables # some sensor tables have a different name for android and ios 
 
-    columns_to_download <- c(stream_schema[[sensor]][[toupper(device_os)]][["RAPIDS_COLUMN_MAPPINGS"]], stream_schema[[sensor]][[toupper(device_os)]][["MUTATION"]][["COLUMN_MAPPINGS"]])
-    columns_to_download <- columns_to_download[(columns_to_download != "FLAG_TO_MUTATE")]
-    data <- pull_data_container(data_configuration, device, sensor, os_table, columns_to_download)
-    
-    if(!setequal(columns_to_download, colnames(data)))
-      stop(paste0("The pulled data for ", device, " does not have the expected columns (including [RAPIDS_COLUMN_MAPPINGS] and [MUTATE][COLUMN_MAPPINGS]). The container script returned [", paste(colnames(data), collapse=","),"] but the format mappings expected [",paste(columns_to_download, collapse=","), "]. The conainer script is: ", stream_container))
-    
-    renamed_data <- rename_columns(columns_to_download, data)
-    
-    mutation_scripts <- stream_schema[[sensor]][[toupper(device_os)]][["MUTATION"]][["SCRIPTS"]]
-    mutated_data <- mutate_data(mutation_scripts, renamed_data, data_configuration)
-
-    if(!setequal(expected_columns, colnames(mutated_data)))
-      stop(paste0("The mutated data for ", device, " does not have the columns RAPIDS expects. The mutation script returned [", paste(colnames(mutated_data), collapse=","),"] but RAPIDS expected [",paste(expected_columns, collapse=","), "]. One ore more mutation scripts in [", sensor,"][MUTATION][SCRIPTS] are adding extra columns or removing or not adding the ones expected"))
-    participant_data <- rbind(participant_data, mutated_data %>% distinct())
+    for(idx in seq_along(os_tables)){
       
+      os_table <- os_tables[idx]
+      columns_to_download <- c(stream_schema[[sensor]][[toupper(device_os)]][["RAPIDS_COLUMN_MAPPINGS"]], stream_schema[[sensor]][[toupper(device_os)]][["MUTATION"]][["COLUMN_MAPPINGS"]])
+      columns_to_download <- columns_to_download[(columns_to_download != "FLAG_TO_MUTATE")]
+      data <- pull_data_container(data_configuration, device, sensor, os_table, columns_to_download)
+    
+      if(!setequal(columns_to_download, colnames(data)))
+        stop(paste0("The pulled data for ", device, " does not have the expected columns (including [RAPIDS_COLUMN_MAPPINGS] and [MUTATE][COLUMN_MAPPINGS]). The container script returned [", paste(colnames(data), collapse=","),"] but the format mappings expected [",paste(columns_to_download, collapse=","), "]. The conainer script is: ", stream_container))
+    
+      renamed_data <- rename_columns(columns_to_download, data)
+    
+      mutation_scripts <- stream_schema[[sensor]][[toupper(device_os)]][["MUTATION"]][["SCRIPTS"]]
+      mutated_data <- mutate_data(mutation_scripts, renamed_data, data_configuration)
+
+      if(!setequal(expected_columns, colnames(mutated_data)))
+        stop(paste0("The mutated data for ", device, " does not have the columns RAPIDS expects. The mutation script returned [", paste(colnames(mutated_data), collapse=","),"] but RAPIDS expected [",paste(expected_columns, collapse=","), "]. One ore more mutation scripts in [", sensor,"][MUTATION][SCRIPTS] are adding extra columns or removing or not adding the ones expected"))
+      
+      participant_data <- rbind(participant_data, mutated_data %>% distinct())
+    }
   }
   participant_data <- participant_data %>% arrange(timestamp)
   write_csv(participant_data, output_data_file)
