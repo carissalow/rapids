@@ -284,14 +284,14 @@ properties:
         properties:
           ANDROID: 
             type: [array, string]
-              uniqueItems: True
-              items:
-                type: string
+            uniqueItems: True
+            items:
+              type: string
           IOS: 
             type: [array, string]
-              uniqueItems: True
-              items:
-                type: string
+            uniqueItems: True
+            items:
+              type: string
       EPISODE_THRESHOLD_BETWEEN_ROWS:
         type: integer
         maximum: 1440
@@ -339,9 +339,9 @@ properties:
     properties:
       CONTAINER: 
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       APPLICATION_CATEGORIES:
         allOf:
           - $ref: "#/definitions/APPLICATION_CATEGORIES_FEATURE"
@@ -355,9 +355,9 @@ properties:
     properties:
       CONTAINER:
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       APPLICATION_CATEGORIES:
         allOf:
           - $ref: "#/definitions/APPLICATION_CATEGORIES_FEATURE"
@@ -431,9 +431,9 @@ properties:
     properties:
       CONTAINER:
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       APPLICATION_CATEGORIES:
         allOf:
           - $ref: "#/definitions/APPLICATION_CATEGORIES_FEATURE"
@@ -448,9 +448,9 @@ properties:
     properties:
       CONTAINER:
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       EPISODE_THRESHOLD_BETWEEN_ROWS:
         type: integer
         maximum: 1440
@@ -476,9 +476,9 @@ properties:
     properties:
       CONTAINER:
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -518,9 +518,9 @@ properties:
     properties:
       CONTAINER: 
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -574,14 +574,14 @@ properties:
         properties:
           ANDROID:
             type: [array, string]
-              uniqueItems: True
-              items:
-                type: string
+            uniqueItems: True
+            items:
+              type: string
           IOS:
             type: [array, string]
-              uniqueItems: True
-              items:
-                type: string
+            uniqueItems: True
+            items:
+              type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -643,9 +643,9 @@ properties:
     properties:
       CONTAINER: 
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -670,9 +670,9 @@ properties:
     properties:
       CONTAINER:
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -694,9 +694,9 @@ properties:
     properties:
       CONTAINER: 
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       LOCATIONS_TO_USE:
         type: string
         enum: [ALL, GPS, ALL_RESAMPLED, FUSED_RESAMPLED]
@@ -780,14 +780,14 @@ properties:
         properties:
           ANDROID:
             type: [array, string]
-              uniqueItems: True
-              items:
-                type: string
+            uniqueItems: True
+            items:
+              type: string
           IOS:
             type: [array, string]
-              uniqueItems: True
-              items:
-                type: string
+            uniqueItems: True
+            items:
+              type: string
       PROVIDERS:
         type: ["null", object]
         additionalProperties: 
@@ -799,9 +799,9 @@ properties:
     properties: 
       CONTAINER: 
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -839,9 +839,9 @@ properties:
     properties:
       CONTAINER: 
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -877,9 +877,9 @@ properties:
     properties:
       CONTAINER: 
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       PROVIDERS:
         type: ["null", object]
         properties:
@@ -901,9 +901,9 @@ properties:
     properties:
       CONTAINER:
         type: [array, string]
-          uniqueItems: True
-          items:
-            type: string
+        uniqueItems: True
+        items:
+          type: string
       PROVIDERS:
         type: ["null", object]
         properties:
