@@ -4,8 +4,8 @@ Sensor parameters description for `[PHONE_ACTIVITY_RECOGNITION]`:
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[CONTAINER][ANDROID]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the activity data from Android devices is stored (the AWARE client saves this data on different tables for Android and iOS)
-|`[CONTAINER][IOS]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the activity data from iOS devices is stored (the AWARE client saves this data on different tables for Android and iOS)
+|`[CONTAINER][ANDROID]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the activity data from Android devices is stored (the AWARE client saves this data on different tables for Android and iOS). This can be a single container or an array of containers  
+|`[CONTAINER][IOS]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the activity data from iOS devices is stored (the AWARE client saves this data on different tables for Android and iOS). This can be a single container or an array of containers  
 |`[EPISODE_THRESHOLD_BETWEEN_ROWS]` | Difference in minutes between any two rows for them to be considered part of the same activity episode
 
 ## RAPIDS provider

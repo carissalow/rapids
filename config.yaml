@@ -59,7 +59,7 @@ PHONE_DATA_STREAMS:
 
 # https://www.rapids.science/latest/features/phone-accelerometer/
 PHONE_ACCELEROMETER:
-  CONTAINER: accelerometer
+  CONTAINER: accelerometer # for multiple containers, e.g.: [accelerometer, accelerometer_old]
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
