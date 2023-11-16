@@ -2,6 +2,7 @@
 
 ## v1.10.0  
 
+- Add functionality to pull data from multiple containers per phone sensor  
 - Add walking cadence and activity fragmentation features to FITBIT_STEPS_INTRADAY RAPIDS provider  
 - Add parameter to exclude rows with implausible step count values from Fitbit steps intraday feature computation    
 - Update tests for Fitbit steps intraday features    

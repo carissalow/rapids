@@ -4,7 +4,7 @@ Sensor parameters description for `[PHONE_APPLICATIONS_FOREGROUND]` (these param
 
 |Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            | Description |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------
-|`[CONTAINER]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the applications foreground data is stored
+|`[CONTAINER]`| Data stream [container](../../datastreams/data-streams-introduction/) (database table, CSV file, etc.) where the applications foreground data is stored. This can be a single container or an array of containers  
 |`[APPLICATION_CATEGORIES][CATALOGUE_SOURCE]` | `FILE` or `GOOGLE`. If `FILE`, app categories (genres) are read from `[CATALOGUE_FILE]`. If `[GOOGLE]`, app categories (genres) are scrapped from the Play Store
 |`[APPLICATION_CATEGORIES][CATALOGUE_FILE]` | CSV file with a `package_name` and `genre` column. By default we provide the catalogue created by [Stachl et al](../../citation#stachl-applications-foreground) in `data/external/stachl_application_genre_catalogue.csv`
 |`[APPLICATION_CATEGORIES][UPDATE_CATALOGUE_FILE]` | if `[CATALOGUE_SOURCE]` is equal to `FILE`, this flag signals whether or not to update `[CATALOGUE_FILE]`, if `[CATALOGUE_SOURCE]` is equal to `GOOGLE` all scraped genres will be saved to `[CATALOGUE_FILE]`
