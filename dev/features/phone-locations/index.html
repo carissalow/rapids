@@ -2106,6 +2106,10 @@ For a detailed description of how this is calculated, see <a href="../../citatio
 <td><code>[RADIUS_FOR_HOME]</code></td>
 <td>All location coordinates within this distance (meters) from the home location coordinates are considered a homestay (see <code>timeathome</code> feature).</td>
 </tr>
+<tr>
+<td><code>[THRESHOLD_MAX_SPEED]</code></td>
+<td>Any rows of locations data with calculated speed greater than this threshold value in km/hr will be dropped prior to feature computation. Set to 0 to disable and retain all rows.</td>
+</tr>
 </tbody>
 </table>
 <p>Features description for <code>[PHONE_LOCATIONS][PROVIDERS][DORYAB]</code>:</p>
