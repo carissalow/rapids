@@ -258,6 +258,7 @@ PHONE_LOCATIONS:
       MINIMUM_DAYS_TO_DETECT_HOME_CHANGES: 3
       CLUSTERING_ALGORITHM: DBSCAN # DBSCAN, OPTICS
       RADIUS_FOR_HOME: 100
+      THRESHOLD_MAX_SPEED: 250 #km/h; set to 0 to disable
       SRC_SCRIPT: src/features/phone_locations/doryab/main.py
 
     BARNETT:
