@@ -751,6 +751,9 @@ properties:
                     RADIUS_FOR_HOME:
                       type: integer
                       exclusiveMinimum: 0
+                    THRESHOLD_MAX_SPEED:
+                      type: integer
+                      minimum: 0
                     
           BARNETT:
             allOf:

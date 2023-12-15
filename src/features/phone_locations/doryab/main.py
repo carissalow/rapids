@@ -127,6 +127,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     cluster_on = provider["CLUSTER_ON"]
     clustering_algorithm = provider["CLUSTERING_ALGORITHM"]
     radius_from_home = provider["RADIUS_FOR_HOME"]
+    threshold_max_speed = provider["THRESHOLD_MAX_SPEED"]
     
     if provider["MINUTES_DATA_USED"]:
         requested_features.append("minutesdataused")
@@ -136,10 +137,15 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     # the subset of requested features this function can compute
     features_to_compute = list(set(requested_features) & set(base_features_names))
     
+    # if not disabled (threshold_max_speed=0), drop any rows of data where speed is greater than the specified value in km/h prior to feature computation
+    if threshold_max_speed > 0:
+        location_data = location_data.drop(location_data[location_data.speed > threshold_max_speed].index)
+
     location_data = apply_cluster_strategy(location_data, time_segment, clustering_algorithm, dbscan_eps, dbscan_minsamples, cluster_on, filter_data_by_segment)
 
     if location_data.empty:
         return pd.DataFrame(columns=["local_segment"] + features_to_compute)
+        
     location_features = pd.DataFrame()
 
     # update distance after chunk_episodes() function

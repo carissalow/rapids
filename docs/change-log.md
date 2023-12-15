@@ -7,6 +7,7 @@
 - Add parameter to exclude rows with implausible step count values from Fitbit steps intraday feature computation    
 - Update tests for Fitbit steps intraday features    
 - Fix bug of None/NULL values in parsed Fitbit heartrate summary JSON data       
+- Add parameter to PHONE_LOCATIONS DORYAB provider to exclude rows of locations data with implausible speed values from feature computation  
 
 ## v1.9.4  
 

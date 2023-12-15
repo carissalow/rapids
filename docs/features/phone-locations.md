@@ -136,6 +136,7 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 |`[MINIMUM_DAYS_TO_DETECT_HOME_CHANGES]`   | The minimum number of consecutive days a new home location candidate has to repeat before it is considered the participant's new home. This parameter will be used only when `[INFER_HOME_LOCATION_STRATEGY]` is set to `SUN_LI_VEGA_STRATEGY`.
 | `[CLUSTERING_ALGORITHM]`   | The original Doryab et al. implementation uses `DBSCAN`, `OPTICS` is also available with similar (but not identical) clustering results and lower memory consumption.
 | `[RADIUS_FOR_HOME]`        | All location coordinates within this distance (meters) from the home location coordinates are considered a homestay (see `timeathome` feature).
+| `[THRESHOLD_MAX_SPEED]`    | Any rows of locations data with calculated speed greater than this threshold value in km/hr will be dropped prior to feature computation. Set to 0 to disable and retain all rows.    
 
 
 Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
