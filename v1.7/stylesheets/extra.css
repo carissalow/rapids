@@ -1,0 +1,51 @@
+@media screen and (min-width: 76.25em) {
+    .md-nav__item--section {
+        display: block;
+        margin: 1.75em 0;
+    }
+
+    .md-nav :not(.md-nav--primary) > .md-nav__list {
+        padding-left: 7px;
+    }
+}
+.md-nav__item .md-nav__link--active {
+    color: var(--md-typeset-a-color);
+    background-color: var(--md-code-bg-color);
+}
+
+div[data-md-component=announce] {
+    background-color: rgba(255,145,0,.1);
+}
+div[data-md-component=announce]>div#announce-msg{
+    color: var(--md-admonition-fg-color);
+    font-size: .8rem;
+    text-align: center;
+    margin: 15px;
+}
+div[data-md-component=announce]>div#announce-msg>a{
+    color: var(--md-typeset-a-color);
+    text-decoration: underline;
+}
+
+.md-typeset table:not([class]) th {
+    min-width: 0rem;
+}
+
+/*  Users and contributors grid */
+.users {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-rows: auto;
+    grid-gap: 15px;
+}
+
+.users > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.users > div >  img {
+    max-height: 100px;
+    object-fit: contain;
+}
