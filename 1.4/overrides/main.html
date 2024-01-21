@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block disqus %}
+  <!-- Add custom comment system integration here -->
+  {% include "partials/integrations/utterances.html" %}
+{% endblock %}
+
+{% block outdated %}
+  You're not viewing the latest stable version of RAPIDS.
+  <a href="https://rapids.science/latest">
+    <strong> Click here to go to latest. </strong>
+  </a>
+{% endblock %}
