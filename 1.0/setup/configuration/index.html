@@ -2699,7 +2699,7 @@
 <tbody>
 <tr>
 <td><code>[DEVICE_IDS]</code></td>
-<td>An array of the strings that uniquely identify each smartphone, you can have more than one for when participants changed phones in the middle of the study, in this case, data from all their devices will be joined and relabeled with the last 1 on this list.</td>
+<td>An array of the strings that uniquely identify each smartphone, you can have more than one for when participants changed phones in the middle of the study.</td>
 </tr>
 <tr>
 <td><code>[PLATFORMS]</code></td>
@@ -2731,7 +2731,7 @@
 <tbody>
 <tr>
 <td><code>[DEVICE_IDS]</code></td>
-<td>An array of the strings that uniquely identify each Fitbit, you can have more than one in case the participant changed devices in the middle of the study, in this case, data from all devices will be joined and relabeled with the last  <code>device_id</code>  on this list.</td>
+<td>An array of the strings that uniquely identify each Fitbit, you can have more than one in case the participant changed devices in the middle of the study.</td>
 </tr>
 <tr>
 <td><code>[LABEL]</code></td>
@@ -3008,6 +3008,15 @@ mood,1587906020000,7D,0,0,a748ee1a-1d0b-4ae9-9074-279a2b6ba524
 <p>This example will create eight segments for a single participant (<code>a748ee1a...</code>), five independent <code>stressX</code> segments with various lengths (1,4,3,7, and 9 hours). Segments <code>stress1</code>, <code>stress3</code>, and <code>stress5</code> are shifted forwards by 5 minutes and <code>stress2</code> and <code>stress4</code> are shifted backwards by 4 hours (that is, if the <code>stress4</code> event happened on March 15<sup>th</sup> at 1pm EST (<code>1584291600000</code>), the time segment will start on that day at 9am and end at 4pm). </p>
 <p>The three <code>mood</code> segments are 1 hour, 1 day and 7 days long and have no shift. In addition, these <code>mood</code> segments are grouped together, meaning that although RAPIDS will compute features on each one of them, some necessary information to compute a few of such features will be extracted from all three segments, for example the phone contact that called a participant the most or the location clusters visited by a participant.</p>
 </div>
+<details class="info">
+<summary>Date time labels of event segments</summary>
+<p>In the final feature file, you will find a row per event segment. The <code>local_segment</code> column of each row has a <code>label</code>, a start date-time string, and an end date-time string.</p>
+<div class="highlight"><pre><span></span><code>weeklysurvey2060#2020-09-12<span class="w"> </span><span class="m">01</span>:00:00,2020-09-18<span class="w"> </span><span class="m">23</span>:59:59
+</code></pre></div>
+<p>All sensor data is always segmented based on timestamps, and the date-time strings are attached for informative purposes. For example, you can plot your features based on these strings. </p>
+<p>When you configure RAPIDS to work with a single time zone, such tz code will be used to convert start/end timestamps (the ones you typed in the event segments file) into start/end date-time strings. However, when you configure RAPIDS to work with multiple time zones, RAPIDS will use the most common time zone across all devices of every participant to do the conversion. The most common time zone is the one in which a participant spent the most time.</p>
+<p>In practical terms, this means that the date-time strings of event segments that happened in uncommon time zones will have shifted start/end date-time labels. However, the data within each segment was correctly filtered based on timestamps.</p>
+</details>
 </div>
 </div>
 <h3 id="segment-examples">Segment Examples<a class="headerlink" href="#segment-examples" title="Permanent link">&para;</a></h3>
@@ -3072,7 +3081,7 @@ survey2,1584291600000,2H,1H,-1,klj34oi2-8frk-2343-21kk-324ljklewlr3
 <span class="w">    </span><span class="nt">TZCODE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">America/New_York</span>
 </code></pre></div>
 <h3 id="multiple-timezones">Multiple timezones<a class="headerlink" href="#multiple-timezones" title="Permanent link">&para;</a></h3>
-<p>If your participants lived on different time zones or they travelled across time zones, and you know when participants&rsquo; devices were in a specific time zone, RAPIDS can use this data to process your data streams with the correct date-time. You need to provide RAPIDS with the time zone data in a CSV file (<code>[TZCODES_FILE]</code>) in the format described below.</p>
+<p>If your participants lived in different time zones or they traveled across time zones, and you know when participants&rsquo; devices were in a specific time zone, RAPIDS can use this data to process your data streams with the correct date-time. You need to provide RAPIDS with the time zone data in a CSV file (<code>[TZCODES_FILE]</code>) in the format described below.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">TIMEZONE</span><span class="p">:</span><span class="w"> </span>
 <span class="w">    </span><span class="nt">TYPE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MULTIPLE</span>
 <span class="w">    </span><span class="nt">SINGLE</span><span class="p">:</span>
@@ -3104,7 +3113,7 @@ survey2,1584291600000,2H,1H,-1,klj34oi2-8frk-2343-21kk-324ljklewlr3
 </tr>
 <tr>
 <td><code>[MULTIPLE][TZCODES_FILE]</code></td>
-<td>A CSV file containing the time and code from this <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">list</a> visited by each device in the study. Multiple devices can be linked to the same person, read more in <a href="#participant-files">Participants Files</a></td>
+<td>A CSV file containing the time zones in which participants&rsquo; devices sensed data (see the required format below). Multiple devices can be linked to the same person, read more in <a href="#participant-files">Participants Files</a></td>
 </tr>
 <tr>
 <td><code>[MULTIPLE][IF_MISSING_TZCODE]</code></td>
@@ -3167,7 +3176,7 @@ survey2,1584291600000,2H,1H,-1,klj34oi2-8frk-2343-21kk-324ljklewlr3
 </details>
 <details class="note">
 <summary>Can I get the <code>TZCODES_FILE</code> from the time zone table collected automatically by the AWARE app?</summary>
-<p>Sure. You can put your timezone table (<code>timezone.csv</code>) collected by AWARE app under <code>data/external</code> folder and run:
+<p>Sure. You can put your timezone table (<code>timezone.csv</code>) collected by the AWARE app under <code>data/external</code> folder and run:
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>tools/create_multi_timezones_file.py
 </code></pre></div>
 The <code>TZCODES_FILE</code> will be saved as <code>data/external/multiple_timezones.csv</code> file.</p>
