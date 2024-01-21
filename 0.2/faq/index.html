@@ -1206,6 +1206,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../developers/git-flow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Git Flow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../developers/remote-support/" class="md-nav__link">
         
   
@@ -1555,6 +1576,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#embedded-nul-in-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      Embedded nul in string
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1763,6 +1793,15 @@
   <a href="#error-while-updating-your-conda-environment-in-ubuntu" class="md-nav__link">
     <span class="md-ellipsis">
       Error while updating your conda environment in Ubuntu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#embedded-nul-in-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      Embedded nul in string
     </span>
   </a>
   
@@ -1999,6 +2038,29 @@ ClobberError:<span class="w"> </span>This<span class="w"> </span>transaction<spa
 <details class="done" open="open">
 <summary>Solution</summary>
 <p>Reinstall conda</p>
+</details>
+<h2 id="embedded-nul-in-string">Embedded nul in string<a class="headerlink" href="#embedded-nul-in-string" title="Permanent link">&para;</a></h2>
+<details class="failure" open="open">
+<summary>Problem</summary>
+<p>You get the following error when downloading sensor data:
+<div class="highlight"><pre><span></span><code>Error<span class="w"> </span><span class="k">in</span><span class="w"> </span>result_fetch<span class="o">(</span>res@ptr,<span class="w"> </span><span class="nv">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>n<span class="o">)</span><span class="w"> </span>:<span class="w"> </span>
+<span class="w">  </span>embedded<span class="w"> </span>nul<span class="w"> </span><span class="k">in</span><span class="w"> </span>string:
+</code></pre></div></p>
+</details>
+<details class="done" open="open">
+<summary>Solution</summary>
+<p>This problem is due to the way <code>RMariaDB</code> handles a mismatch between data types in R and MySQL (see <a href="https://github.com/r-dbi/RMariaDB/issues/121">this issue</a>). Since it seems this problem won&rsquo;t be handled by <code>RMariaDB</code>, you have two options:</p>
+<ol>
+<li>If it&rsquo;s only a few rows that are causing this problem, remove the the null character from the conflictive table cell.</li>
+<li>If it&rsquo;s not feasible to modify your data you can try swapping <code>RMariaDB</code> with <code>RMySQL</code>. Just have in mind you might have problems connecting to modern MySQL servers running in Liunx:<ul>
+<li>Add <code>RMySQL</code> to the renv environment by running the following command in a terminal open on RAPIDS root folder
+<div class="highlight"><pre><span></span><code>R<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;renv::install(&quot;RMySQL&quot;)&#39;</span>
+</code></pre></div></li>
+<li>Go to <code>src/data/download_phone_data.R</code> and replace <code>library(RMariaDB)</code> with <code>library(RMySQL)</code></li>
+<li>In the same file replace <code>dbEngine &lt;- dbConnect(MariaDB(), default.file = "./.env", group = group)</code> with <code>dbEngine &lt;- dbConnect(MySQL(), default.file = "./.env", group = group)</code></li>
+</ul>
+</li>
+</ol>
 </details>
 
 

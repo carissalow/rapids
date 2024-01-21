@@ -739,6 +739,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#doryab-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      DORYAB provider
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1259,6 +1268,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../../developers/git-flow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Git Flow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../developers/remote-support/" class="md-nav__link">
         
   
@@ -1572,6 +1602,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#doryab-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      DORYAB provider
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1607,6 +1646,10 @@
 </tbody>
 </table>
 <h2 id="rapids-provider">RAPIDS provider<a class="headerlink" href="#rapids-provider" title="Permanent link">&para;</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The features of this provider are deprecated in favor of <code>DORYAB</code> provider (see below).</p>
+</div>
 <div class="admonition info">
 <p class="admonition-title">Available time segments and platforms</p>
 <ul>
@@ -1652,25 +1695,200 @@
 </thead>
 <tbody>
 <tr>
-<td>countscans</td>
+<td><del class="critic">countscans</del></td>
 <td>devices</td>
-<td>Number of scanned devices during a <code>time_segment</code>, a device can be detected multiple times over time and these appearances are counted separately</td>
+<td>Number of scanned devices during a time segment, a device can be detected multiple times over time and these appearances are counted separately</td>
 </tr>
 <tr>
-<td>uniquedevices</td>
+<td><del class="critic">uniquedevices</del></td>
 <td>devices</td>
-<td>Number of unique devices during a <code>time_segment</code> as identified by their hardware (<code>bt_address</code>) address</td>
+<td>Number of unique devices during a time segment as identified by their hardware (<code>bt_address</code>) address</td>
 </tr>
 <tr>
-<td>countscansmostuniquedevice</td>
+<td><del class="critic">countscansmostuniquedevice</del></td>
 <td>scans</td>
-<td>Number of scans of the most scanned device during a <code>time_segment</code> across the whole monitoring period</td>
+<td>Number of scans of the most sensed device within each time segment instance</td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="admonition-title">Assumptions/Observations</p>
-<p>NA</p>
+<ul>
+<li>From <code>v0.2.0</code> <code>countscans</code>, <code>uniquedevices</code>, <code>countscansmostuniquedevice</code> were deprecated because they overlap with the respective features for <code>ALL</code> devices of the <code>PHONE_BLUETOOTH</code> <code>DORYAB</code> provider</li>
+</ul>
+</div>
+<h2 id="doryab-provider">DORYAB provider<a class="headerlink" href="#doryab-provider" title="Permanent link">&para;</a></h2>
+<p>This provider is adapted from the work by <a href="../../citation#doryab-bluetooth">Doryab et al</a>. </p>
+<div class="admonition info">
+<p class="admonition-title">Available time segments and platforms</p>
+<ul>
+<li>Available for all time segments</li>
+<li>Available for Android only</li>
+</ul>
+</div>
+<div class="admonition info">
+<p class="admonition-title">File Sequence</p>
+<div class="highlight"><pre><span></span><code>-<span class="w"> </span>data/raw/<span class="o">{</span>pid<span class="o">}</span>/phone_bluetooth_raw.csv
+-<span class="w"> </span>data/raw/<span class="o">{</span>pid<span class="o">}</span>/phone_bluetooth_with_datetime.csv
+-<span class="w"> </span>data/interim/<span class="o">{</span>pid<span class="o">}</span>/phone_bluetooth_features/phone_bluetooth_<span class="o">{</span>language<span class="o">}</span>_<span class="o">{</span>provider_key<span class="o">}</span>.csv
+-<span class="w"> </span>data/processed/features/<span class="o">{</span>pid<span class="o">}</span>/phone_bluetooth.csv<span class="s2">&quot;</span>
+</code></pre></div>
+</div>
+<p>Parameters description for <code>[PHONE_BLUETOOTH][PROVIDERS][DORYAB]</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[COMPUTE]</code></td>
+<td>Set to <code>True</code> to extract <code>PHONE_BLUETOOTH</code> features from the <code>DORYAB</code> provider</td>
+</tr>
+<tr>
+<td><code>[FEATURES]</code></td>
+<td>Features to be computed, see table below. These features are computed for three device categories: <code>all</code> devices, <code>own</code> devices and <code>other</code> devices.</td>
+</tr>
+</tbody>
+</table>
+<p>Features description for <code>[PHONE_BLUETOOTH][PROVIDERS][DORYAB]</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Feature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>Units</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>countscans</td>
+<td>scans</td>
+<td>Number of scans (rows) from the devices sensed during a time segment instance. The more scans a bluetooth device has the longer it remained within range of the participant&rsquo;s phone</td>
+</tr>
+<tr>
+<td>uniquedevices</td>
+<td>devices</td>
+<td>Number of unique bluetooth devices sensed during a time segment instance as identified by their hardware addresses (<code>bt_address</code>)</td>
+</tr>
+<tr>
+<td>meanscans</td>
+<td>scans</td>
+<td>Mean of the scans of every sensed device within each time segment instance</td>
+</tr>
+<tr>
+<td>stdscans</td>
+<td>scans</td>
+<td>Standard deviation of the scans of every sensed device within each time segment instance</td>
+</tr>
+<tr>
+<td>countscans<mark class="critic">most</mark>frequentdevice<mark class="critic">within</mark>segments</td>
+<td>scans</td>
+<td>Number of scans of the <strong>most</strong> sensed device <strong>within</strong> each time segment instance</td>
+</tr>
+<tr>
+<td>countscans<mark class="critic">least</mark>frequentdevice<mark class="critic">within</mark>segments</td>
+<td>scans</td>
+<td>Number of scans of the <strong>least</strong> sensed device <strong>within</strong> each time segment instance</td>
+</tr>
+<tr>
+<td>countscans<mark class="critic">most</mark>frequentdevice<mark class="critic">across</mark>segments</td>
+<td>scans</td>
+<td>Number of scans of the <strong>most</strong> sensed device <strong>across</strong> time segment instances of the same type</td>
+</tr>
+<tr>
+<td>countscans<mark class="critic">least</mark>frequentdevice<mark class="critic">across</mark>segments</td>
+<td>scans</td>
+<td>Number of scans of the <strong>least</strong> sensed device <strong>across</strong> time segment instances of the same type per device</td>
+</tr>
+<tr>
+<td>countscans<mark class="critic">most</mark>frequentdevice<mark class="critic">acrossdataset</mark></td>
+<td>scans</td>
+<td>Number of scans of the <strong>most</strong> sensed device <strong>across</strong> the entire dataset of every participant</td>
+</tr>
+<tr>
+<td>countscans<mark class="critic">least</mark>frequentdevice<mark class="critic">acrossdataset</mark></td>
+<td>scans</td>
+<td>Number of scans of the <strong>least</strong> sensed device <strong>across</strong> the entire dataset of every participant</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Assumptions/Observations</p>
+<ul>
+<li>Devices are classified as belonging to the participant (<code>own</code>) or to other people (<code>others</code>) using k-means based on the number of times and the number of days each device was detected across each participant&rsquo;s dataset. See <a href="../../citation#doryab-bluetooth">Doryab et al</a> for more details.</li>
+<li>If ownership cannot be computed because all devices were detected on only one day, they are all considered as <code>other</code>. Thus <code>all</code> and <code>other</code> features will be equal. The likelihood of this scenario decreases the more days of data you have.</li>
+<li>The most and least frequent devices will be the same across time segment instances and across the entire dataset when every time segment instance covers every hour of a dataset. For example, daily segments (00:00 to 23:59) fall in this category but morning segments (06:00am to 11:59am) or periodic 30-minute segments don&rsquo;t.</li>
+</ul>
+<details class="info">
+<summary>Example</summary>
+<details class="example">
+<summary>Simplified raw bluetooth data</summary>
+<p>The following is a simplified example with bluetooth data from three days and two time segments: morning and afternoon. There are two <code>own</code> devices: <code>5C836F5-487E-405F-8E28-21DBD40FA4FF</code> detected seven times across two days and <code>499A1EAF-DDF1-4657-986C-EA5032104448</code> detected eight times on a single day.
+<div class="highlight"><pre><span></span><code>local_date  segment     bt_address                              own_device
+2016-11-29  morning     55C836F5-487E-405F-8E28-21DBD40FA4FF              1
+2016-11-29  morning     55C836F5-487E-405F-8E28-21DBD40FA4FF              1
+2016-11-29  morning     55C836F5-487E-405F-8E28-21DBD40FA4FF              1
+2016-11-29  morning     55C836F5-487E-405F-8E28-21DBD40FA4FF              1
+2016-11-29  morning     48872A52-68DE-420D-98DA-73339A1C4685              0
+2016-11-29  afternoon   55C836F5-487E-405F-8E28-21DBD40FA4FF              1
+2016-11-29  afternoon   48872A52-68DE-420D-98DA-73339A1C4685              0
+2016-11-30  morning     55C836F5-487E-405F-8E28-21DBD40FA4FF              1
+2016-11-30  morning     48872A52-68DE-420D-98DA-73339A1C4685              0
+2016-11-30  morning     25262DC7-780C-4AD5-AD3A-D9776AEF7FC1              0
+2016-11-30  morning     5B1E6981-2E50-4D9A-99D8-67AED430C5A8              0
+2016-11-30  morning     5B1E6981-2E50-4D9A-99D8-67AED430C5A8              0
+2016-11-30  afternoon   55C836F5-487E-405F-8E28-21DBD40FA4FF              1
+2017-05-07  morning     5C5A9C41-2F68-4CEB-96D0-77DE3729B729              0
+2017-05-07  morning     25262DC7-780C-4AD5-AD3A-D9776AEF7FC1              0
+2017-05-07  morning     5B1E6981-2E50-4D9A-99D8-67AED430C5A8              0
+2017-05-07  morning     6C444841-FE64-4375-BC3F-FA410CDC0AC7              0
+2017-05-07  morning     4DC7A22D-9F1F-4DEF-8576-086910AABCB5              0
+2017-05-07  afternoon   5B1E6981-2E50-4D9A-99D8-67AED430C5A8              0
+2017-05-07  afternoon   499A1EAF-DDF1-4657-986C-EA5032104448              1
+2017-05-07  afternoon   499A1EAF-DDF1-4657-986C-EA5032104448              1
+2017-05-07  afternoon   499A1EAF-DDF1-4657-986C-EA5032104448              1
+2017-05-07  afternoon   499A1EAF-DDF1-4657-986C-EA5032104448              1
+2017-05-07  afternoon   499A1EAF-DDF1-4657-986C-EA5032104448              1
+2017-05-07  afternoon   499A1EAF-DDF1-4657-986C-EA5032104448              1
+2017-05-07  afternoon   499A1EAF-DDF1-4657-986C-EA5032104448              1
+2017-05-07  afternoon   499A1EAF-DDF1-4657-986C-EA5032104448              1
+</code></pre></div></p>
+</details>
+<details class="example">
+<summary>The most and least frequent <code>OTHER</code> devices (<code>own_device == 0</code>) during morning segments</summary>
+<p>The most and least frequent <code>ALL</code>|<code>OWN</code>|<code>OTHER</code> devices are computed within each time segment instance, across time segment instances of the same type and across the entire dataset of each person. These are the most and least frequent devices for <code>OTHER</code> devices during morning segments.
+<div class="highlight"><pre><span></span><code>most frequent device across 2016-11-29 morning:   &#39;48872A52-68DE-420D-98DA-73339A1C4685&#39;  (this device is the only one in this instance)
+least frequent device across 2016-11-29 morning:  &#39;48872A52-68DE-420D-98DA-73339A1C4685&#39;  (this device is the only one in this instance)
+most frequent device across 2016-11-30 morning:   &#39;5B1E6981-2E50-4D9A-99D8-67AED430C5A8&#39;
+least frequent device across 2016-11-30 morning:  &#39;25262DC7-780C-4AD5-AD3A-D9776AEF7FC1&#39;  (when tied, the first occurance is chosen)
+most frequent device across 2017-05-07 morning:   &#39;25262DC7-780C-4AD5-AD3A-D9776AEF7FC1&#39;  (when tied, the first occurance is chosen)
+least frequent device across 2017-05-07 morning:  &#39;25262DC7-780C-4AD5-AD3A-D9776AEF7FC1&#39;  (when tied, the first occurance is chosen)
+
+most frequent across morning segments:            &#39;5B1E6981-2E50-4D9A-99D8-67AED430C5A8&#39;
+least frequent across morning segments:           &#39;6C444841-FE64-4375-BC3F-FA410CDC0AC7&#39; (when tied, the first occurance is chosen)
+
+most frequent across dataset:                     &#39;499A1EAF-DDF1-4657-986C-EA5032104448&#39; (only taking into account &quot;morning&quot; segments)
+least frequent across dataset:                    &#39;4DC7A22D-9F1F-4DEF-8576-086910AABCB5&#39; (when tied, the first occurance is chosen)
+</code></pre></div></p>
+</details>
+<details class="example">
+<summary>Bluetooth features for  <code>OTHER</code> devices and morning segments</summary>
+<p>For brevity we only show the following features for morning segments:
+<div class="highlight"><pre><span></span><code><span class="nt">OTHER</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">DEVICES</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;countscans&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;uniquedevices&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;meanscans&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;stdscans&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">SCANS_MOST_FREQUENT_DEVICE</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;withinsegments&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;acrosssegments&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;acrossdataset&quot;</span><span class="p p-Indicator">]</span>
+</code></pre></div></p>
+<p>Note that <code>countscansmostfrequentdeviceacrossdatasetothers</code> is all <code>0</code>s because <code>499A1EAF-DDF1-4657-986C-EA5032104448</code> is excluded from the count as is labelled as an <code>own</code> device (not <code>other</code>).
+<div class="highlight"><pre><span></span><code>local_segment       countscansothers    uniquedevicesothers meanscansothers stdscansothers  countscansmostfrequentdevicewithinsegmentsothers    countscansmostfrequentdeviceacrosssegmentsothers    countscansmostfrequentdeviceacrossdatasetothers
+2016-11-29-morning  1                   1                   1.000000        NaN             1                                                   0.0                                                 0.0
+2016-11-30-morning  4                   3                   1.333333        0.57735         2                                                   2.0                                                 2.0
+2017-05-07-morning  5                   5                   1.000000        0.00000         1                                                   1.0                                                 1.0
+</code></pre></div></p>
+</details>
+</details>
 </div>
 
 
