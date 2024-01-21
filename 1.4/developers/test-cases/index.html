@@ -2833,7 +2833,7 @@
 <td>RAPIDS</td>
 <td>Y</td>
 <td>Y</td>
-<td>N</td>
+<td>Y</td>
 </tr>
 <tr>
 <td>Phone Screen</td>
@@ -2923,21 +2923,68 @@
 </table>
 <h2 id="messages-sms">Messages (SMS)<a class="headerlink" href="#messages-sms" title="Permanent link">&para;</a></h2>
 <ul>
-<li>The raw message data file contains data for 2 separate days.</li>
-<li>The data for the first day contains records 5 records for every
-    <code>epoch</code>.</li>
-<li>The second day's data contains 6 records for each of only 2
-    <code>epoch</code> (currently <code>morning</code> and <code>evening</code>)</li>
-<li>The raw message data contains records for both <code>message_types</code>
-    (i.e. <code>recieved</code> and <code>sent</code>) in both days in all epochs. The
-    number records with each <code>message_types</code> per epoch is randomly
-    distributed There is at least one records with each
-    <code>message_types</code> per epoch.</li>
-<li>There is one raw message data file each, as described above, for
-    testing both iOS and Android data.</li>
-<li>There is also an additional empty data file for both android and
-    iOS for testing empty data files</li>
+<li>The raw message data file, <code>phone_messages_raw.csv</code>, contains data for 4 separate days.</li>
+<li>One episode for each daily segment (night, morning, afternoon and evening)</li>
+<li>Two <code>sent</code> episodes locate in the same 30-min segment (<code>Fri 16:08:03.000</code> and <code>Fri 16:19:35.000</code>)</li>
+<li>Two <code>received</code> episodes locate in the same 30-min segment (<code>Sat 06:45:05.000</code> and <code>Fri 06:45:05.000</code>)</li>
+<li>Two episodes locate in the same daily segment (<code>Fri 11:57:56.385</code> and <code>Sat 10:54:10.000</code>)</li>
+<li>One episode before the time switch (<code>Sun 00:48:01.000</code>) and one episode after the time switch (<code>Sun 06:21:01.000</code>)</li>
 </ul>
+<p>Checklist:</p>
+<table>
+<thead>
+<tr>
+<th>time segment</th>
+<th>single tz</th>
+<th>multi tz</th>
+<th>platform</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>30min</td>
+<td>OK</td>
+<td>OK</td>
+<td>android</td>
+</tr>
+<tr>
+<td>morning</td>
+<td>OK</td>
+<td>OK</td>
+<td>android</td>
+</tr>
+<tr>
+<td>daily</td>
+<td>OK</td>
+<td>OK</td>
+<td>android</td>
+</tr>
+<tr>
+<td>threeday</td>
+<td>OK</td>
+<td>OK</td>
+<td>android</td>
+</tr>
+<tr>
+<td>weekend</td>
+<td>OK</td>
+<td>OK</td>
+<td>android</td>
+</tr>
+<tr>
+<td>beforeMarchEvent</td>
+<td>OK</td>
+<td>OK</td>
+<td>android</td>
+</tr>
+<tr>
+<td>beforeNovemberEvent</td>
+<td>OK</td>
+<td>OK</td>
+<td>android</td>
+</tr>
+</tbody>
+</table>
 <h2 id="calls">Calls<a class="headerlink" href="#calls" title="Permanent link">&para;</a></h2>
 <p>Due to the difference in the format of the raw data for iOS and Android the following is the expected results 
 the <code>phone_calls.csv</code>. </p>
@@ -2994,43 +3041,43 @@ When generating test data, all traces for iOS device need to be unique otherwise
 <td>30min</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 <tr>
 <td>morning</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 <tr>
 <td>daily</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 <tr>
 <td>threeday</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 <tr>
 <td>weekend</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 <tr>
 <td>beforeMarchEvent</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 <tr>
 <td>beforeNovemberEvent</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 </tbody>
 </table>
@@ -3083,43 +3130,43 @@ When generating test data, all traces for iOS device need to be unique otherwise
 <td>30min</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 <tr>
 <td>morning</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 <tr>
 <td>daily</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 <tr>
 <td>threeday</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 <tr>
 <td>weekend</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 <tr>
 <td>beforeMarchEvent</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 <tr>
 <td>beforeNovemberEvent</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android, iOS</td>
+<td>android, iOS</td>
 </tr>
 </tbody>
 </table>
@@ -3167,43 +3214,43 @@ When generating test data, all traces for iOS device need to be unique otherwise
 <td>30min</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 <tr>
 <td>morning</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 <tr>
 <td>daily</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 <tr>
 <td>threeday</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 <tr>
 <td>weekend</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 <tr>
 <td>beforeMarchEvent</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 <tr>
 <td>beforeNovemberEvent</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 </tbody>
 </table>
@@ -3424,43 +3471,43 @@ When generating test data, all traces for iOS device need to be unique otherwise
 <td>30min</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 <tr>
 <td>morning</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 <tr>
 <td>daily</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 <tr>
 <td>threeday</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 <tr>
 <td>weekend</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 <tr>
 <td>beforeMarchEvent</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 <tr>
 <td>beforeNovemberEvent</td>
 <td>OK</td>
 <td>OK</td>
-<td>Android</td>
+<td>android</td>
 </tr>
 </tbody>
 </table>
