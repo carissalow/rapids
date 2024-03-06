@@ -11,6 +11,10 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         docker pull moshiresearch/rapids:latest
         ```
 
+        !!! note
+            On M1 and M2 chip Macs, you may need to use the following command to pull the RAPIDS container:  
+            `docker pull --platform linux/x86_64 moshiresearch/rapids:latest`
+
     3.  Run RAPIDS\' container (after this step is done you should see a
         prompt in the main RAPIDS folder with its python environment active)
 
