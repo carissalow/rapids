@@ -1,4 +1,9 @@
 # Change Log
+## v1.10.1
+- Add accelerometer unit conversion from iOS to Android units. iOS accelerometer data, originally recorded in G-forces, is now converted to meters per second squared (m/s²) to match Android's units. This conversion ensures consistent accelerometer readings across platforms by multiplying iOS data by 9.8 (the gravitational constant).
+- Update `aware_*/format.yaml` files in `src/data/streams/` to reflect new unit conversion and format changes.
+- Update processed test data in `tests/data/processed/features/*/ios/phone_accelerometer.csv` to align with the new conversion and ensure test consistency.
+- Update `renv.lock` with necessary changes to R package versions, 4.0.0 to 4.3.2, including compatibility adjustments for `vctrs`.
 
 ## v1.10.0  
 
