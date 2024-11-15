@@ -1,5 +1,6 @@
 # Change Log
 
+
 ## v1.10.1
 
 - Convert iOS accelerometer data from G-forces to Android units (m/s²) by multiplying by 9.8, ensuring consistent readings across platforms.
