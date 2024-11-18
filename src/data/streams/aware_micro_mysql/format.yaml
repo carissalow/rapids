@@ -19,7 +19,8 @@ PHONE_ACCELEROMETER:
     MUTATION:
       COLUMN_MAPPINGS:
       SCRIPTS: # List any python or r scripts that mutate your raw data
-
+        - "src/data/streams/mutations/phone/aware/accelerometer_ios_unification.py"
+        
 PHONE_ACTIVITY_RECOGNITION:
   ANDROID:
     RAPIDS_COLUMN_MAPPINGS:
