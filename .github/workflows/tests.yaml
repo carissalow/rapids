@@ -50,6 +50,7 @@ jobs:
       - name: Cache conda packages
         uses: actions/cache@v3 # Updated from v1 to v3
         env:
+          # Increase this value to reset cache if environment.yml has not changed
           CACHE_NUMBER: 0
         with:
           path: ~/conda_pkgs_dir
@@ -60,7 +61,7 @@ jobs:
         with:
           activate-environment: rapidstests
           environment-file: environment.yml
-          use-only-tar-bz2: true 
+          use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
       - name: Run tests
         shell: bash -l {0}
         run: |
