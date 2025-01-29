@@ -6,6 +6,7 @@
 - Add mutation to convert raw iOS accelerometer data from G-forces to meters per second squared (m/s²) for consistency with Android's units
 - Update tests for phone accelerometer
 - Update R version, packages, and package versions in `renv.lock`
+- Update deprecated GitHub actions
 
 ## v1.10.0  
 

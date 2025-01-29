@@ -16,13 +16,13 @@ jobs:
   test-on-latest-ubuntu:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3 # Updated from v2 to v3
         with:
           fetch-depth: 0
       - run: "sed -i 's/name:.*/name: rapidstests/g' environment.yml"
       - run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - run: echo "RELEASE_VERSION_URL=$(echo $RELEASE_VERSION | sed -e 's/\.//g')" >> $GITHUB_ENV
-      - run : |
+      - run: |
           sudo apt update
           sudo apt install libglpk40
           # sudo apt install libcurl4-openssl-dev
@@ -32,7 +32,7 @@ jobs:
           sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' 
           sudo apt install -y --allow-downgrades r-base-core=4.2.3-1.2004.0
       - name: Cache R packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3 # Updated from v2 to v3
         id: cacherenv
         with:
           path: ${{ env.RENV_PATHS_ROOT }}
@@ -48,14 +48,13 @@ jobs:
           if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
           renv::restore(repos = c(CRAN = "https://packagemanager.rstudio.com/all/__linux__/focal/latest"))
       - name: Cache conda packages
-        uses: actions/cache@v1
+        uses: actions/cache@v3 # Updated from v1 to v3
         env:
           # Increase this value to reset cache if environment.yml has not changed
           CACHE_NUMBER: 0
         with:
           path: ~/conda_pkgs_dir
-          key:
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
+          key: ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
             hashFiles('**/environment.yml') }}
       - name: Restore conda packages
         uses: conda-incubator/setup-miniconda@v2
@@ -65,9 +64,9 @@ jobs:
           use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
       - name: Run tests
         shell: bash -l {0}
-        run : |
-            conda activate rapidstests
-            bash tests/scripts/run_tests.sh -t all
+        run: |
+          conda activate rapidstests
+          bash tests/scripts/run_tests.sh -t all
       - name: Release tag
         if: success() && startsWith(github.ref, 'refs/tags')
         id: create_release
