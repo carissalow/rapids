@@ -27,7 +27,8 @@ markdown_extensions:
     - pymdownx.superfences
     - pymdownx.snippets:
         check_paths: True
-    - pymdownx.tabbed
+    - pymdownx.tabbed:
+        alternate_style: true
     - pymdownx.tasklist:
         custom_checkbox: True
     - pymdownx.tilde
@@ -69,6 +70,7 @@ theme:
     - navigation.sections
     - search.suggest
     - search.highlight
+    - content.tabs
 extra_css:
     - stylesheets/extra.css
 nav:

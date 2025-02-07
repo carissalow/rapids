@@ -3,7 +3,6 @@
 You can install RAPIDS using Docker (the fastest), or native instructions for MacOS and Linux (Ubuntu). Windows is supported through Docker or WSL.
 
 === "Docker"
-    
     1.  Install the latest version of [Docker](https://docs.docker.com/desktop/)
 
     2.  Pull our RAPIDS container
