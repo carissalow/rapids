@@ -8,26 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://www.rapids.science/">
+        <link rel="canonical" href="https://www.rapids.science/migrating-from-old-versions/">
       
       
+        <link rel="prev" href="../developers/validation-schema-config/">
       
-        <link rel="next" href="setup/overview/">
+      
+        <link rel="next" href="../code_of_conduct/">
       
       
-      <link rel="icon" href="img/logo.png">
+      <link rel="icon" href="../img/logo.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.3">
     
     
       
-        <title>RAPIDS</title>
+        <title>Migrating from an old version - RAPIDS</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.d7758b05.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.d7758b05.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -46,9 +48,9 @@
       
     
     
-      <link rel="stylesheet" href="stylesheets/extra.css">
+      <link rel="stylesheet" href="../stylesheets/extra.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#welcome-to-rapids-documentation" class="md-skip">
+        <a href="#migration-guides" class="md-skip">
           Skip to content
         </a>
       
@@ -94,7 +96,7 @@
   </a>
 
             </div>
-            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL(".."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
           </aside>
         
       </div>
@@ -106,9 +108,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="RAPIDS" class="md-header__button md-logo" aria-label="RAPIDS" data-md-component="logo">
+    <a href=".." title="RAPIDS" class="md-header__button md-logo" aria-label="RAPIDS" data-md-component="logo">
       
-  <img src="img/logo.png" alt="logo">
+  <img src="../img/logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -125,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Migrating from an old version
             
           </span>
         </div>
@@ -240,9 +242,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="RAPIDS" class="md-nav__button md-logo" aria-label="RAPIDS" data-md-component="logo">
+    <a href=".." title="RAPIDS" class="md-nav__button md-logo" aria-label="RAPIDS" data-md-component="logo">
       
-  <img src="img/logo.png" alt="logo">
+  <img src="../img/logo.png" alt="logo">
 
     </a>
     RAPIDS
@@ -266,31 +268,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Home
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -300,44 +281,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-are-the-benefits-of-using-rapids" class="md-nav__link">
-    <span class="md-ellipsis">
-      What are the benefits of using RAPIDS?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#users-and-contributors" class="md-nav__link">
-    <span class="md-ellipsis">
-      Users and Contributors
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -349,7 +292,7 @@
   
   
     <li class="md-nav__item">
-      <a href="setup/overview/" class="md-nav__link">
+      <a href="../setup/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -370,7 +313,7 @@
   
   
     <li class="md-nav__item">
-      <a href="analysis/minimal/" class="md-nav__link">
+      <a href="../analysis/minimal/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -391,7 +334,7 @@
   
   
     <li class="md-nav__item">
-      <a href="citation/" class="md-nav__link">
+      <a href="../citation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -412,7 +355,7 @@
   
   
     <li class="md-nav__item">
-      <a href="contributing/" class="md-nav__link">
+      <a href="../contributing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -474,7 +417,7 @@
   
   
     <li class="md-nav__item">
-      <a href="setup/installation/" class="md-nav__link">
+      <a href="../setup/installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -496,7 +439,7 @@
   
   
     <li class="md-nav__item">
-      <a href="setup/configuration/" class="md-nav__link">
+      <a href="../setup/configuration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -518,7 +461,7 @@
   
   
     <li class="md-nav__item">
-      <a href="setup/execution/" class="md-nav__link">
+      <a href="../setup/execution/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -588,7 +531,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/data-streams-introduction/" class="md-nav__link">
+      <a href="../datastreams/data-streams-introduction/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -648,7 +591,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/aware-mysql/" class="md-nav__link">
+      <a href="../datastreams/aware-mysql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -670,7 +613,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/aware-micro-mysql/" class="md-nav__link">
+      <a href="../datastreams/aware-micro-mysql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -692,7 +635,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/aware-csv/" class="md-nav__link">
+      <a href="../datastreams/aware-csv/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -714,7 +657,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/aware-influxdb/" class="md-nav__link">
+      <a href="../datastreams/aware-influxdb/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -736,7 +679,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/mandatory-phone-format/" class="md-nav__link">
+      <a href="../datastreams/mandatory-phone-format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -804,7 +747,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/fitbitjson-mysql/" class="md-nav__link">
+      <a href="../datastreams/fitbitjson-mysql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -826,7 +769,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/fitbitjson-csv/" class="md-nav__link">
+      <a href="../datastreams/fitbitjson-csv/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -848,7 +791,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/fitbitparsed-mysql/" class="md-nav__link">
+      <a href="../datastreams/fitbitparsed-mysql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -870,7 +813,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/fitbitparsed-csv/" class="md-nav__link">
+      <a href="../datastreams/fitbitparsed-csv/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -892,7 +835,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/mandatory-fitbit-format/" class="md-nav__link">
+      <a href="../datastreams/mandatory-fitbit-format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -960,7 +903,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/empatica-zip/" class="md-nav__link">
+      <a href="../datastreams/empatica-zip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -982,7 +925,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/mandatory-empatica-format/" class="md-nav__link">
+      <a href="../datastreams/mandatory-empatica-format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1012,7 +955,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/add-new-data-streams/" class="md-nav__link">
+      <a href="../datastreams/add-new-data-streams/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1082,7 +1025,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/feature-introduction/" class="md-nav__link">
+      <a href="../features/feature-introduction/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1142,7 +1085,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-accelerometer/" class="md-nav__link">
+      <a href="../features/phone-accelerometer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1164,7 +1107,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-activity-recognition/" class="md-nav__link">
+      <a href="../features/phone-activity-recognition/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1186,7 +1129,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-applications-crashes/" class="md-nav__link">
+      <a href="../features/phone-applications-crashes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1208,7 +1151,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-applications-foreground/" class="md-nav__link">
+      <a href="../features/phone-applications-foreground/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1230,7 +1173,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-applications-notifications/" class="md-nav__link">
+      <a href="../features/phone-applications-notifications/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1252,7 +1195,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-battery/" class="md-nav__link">
+      <a href="../features/phone-battery/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1274,7 +1217,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-bluetooth/" class="md-nav__link">
+      <a href="../features/phone-bluetooth/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1296,7 +1239,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-calls/" class="md-nav__link">
+      <a href="../features/phone-calls/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1318,7 +1261,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-conversation/" class="md-nav__link">
+      <a href="../features/phone-conversation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1340,7 +1283,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-data-yield/" class="md-nav__link">
+      <a href="../features/phone-data-yield/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1362,7 +1305,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-keyboard/" class="md-nav__link">
+      <a href="../features/phone-keyboard/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1384,7 +1327,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-light/" class="md-nav__link">
+      <a href="../features/phone-light/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1406,7 +1349,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-locations/" class="md-nav__link">
+      <a href="../features/phone-locations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1428,7 +1371,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-log/" class="md-nav__link">
+      <a href="../features/phone-log/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1450,7 +1393,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-messages/" class="md-nav__link">
+      <a href="../features/phone-messages/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1472,7 +1415,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-screen/" class="md-nav__link">
+      <a href="../features/phone-screen/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1494,7 +1437,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-wifi-connected/" class="md-nav__link">
+      <a href="../features/phone-wifi-connected/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1516,7 +1459,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-wifi-visible/" class="md-nav__link">
+      <a href="../features/phone-wifi-visible/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1584,7 +1527,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-calories-intraday/" class="md-nav__link">
+      <a href="../features/fitbit-calories-intraday/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1606,7 +1549,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-data-yield/" class="md-nav__link">
+      <a href="../features/fitbit-data-yield/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1628,7 +1571,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-heartrate-summary/" class="md-nav__link">
+      <a href="../features/fitbit-heartrate-summary/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1650,7 +1593,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-heartrate-intraday/" class="md-nav__link">
+      <a href="../features/fitbit-heartrate-intraday/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1672,7 +1615,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-sleep-summary/" class="md-nav__link">
+      <a href="../features/fitbit-sleep-summary/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1694,7 +1637,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-sleep-intraday/" class="md-nav__link">
+      <a href="../features/fitbit-sleep-intraday/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1716,7 +1659,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-steps-summary/" class="md-nav__link">
+      <a href="../features/fitbit-steps-summary/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1738,7 +1681,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-steps-intraday/" class="md-nav__link">
+      <a href="../features/fitbit-steps-intraday/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1806,7 +1749,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-accelerometer/" class="md-nav__link">
+      <a href="../features/empatica-accelerometer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1828,7 +1771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-heartrate/" class="md-nav__link">
+      <a href="../features/empatica-heartrate/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1850,7 +1793,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-temperature/" class="md-nav__link">
+      <a href="../features/empatica-temperature/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1872,7 +1815,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-electrodermal-activity/" class="md-nav__link">
+      <a href="../features/empatica-electrodermal-activity/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1894,7 +1837,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-blood-volume-pulse/" class="md-nav__link">
+      <a href="../features/empatica-blood-volume-pulse/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1916,7 +1859,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-inter-beat-interval/" class="md-nav__link">
+      <a href="../features/empatica-inter-beat-interval/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1938,7 +1881,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-tags/" class="md-nav__link">
+      <a href="../features/empatica-tags/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1968,7 +1911,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/add-new-features/" class="md-nav__link">
+      <a href="../features/add-new-features/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2038,7 +1981,7 @@
   
   
     <li class="md-nav__item">
-      <a href="visualizations/data-quality-visualizations/" class="md-nav__link">
+      <a href="../visualizations/data-quality-visualizations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2060,7 +2003,7 @@
   
   
     <li class="md-nav__item">
-      <a href="visualizations/feature-visualizations/" class="md-nav__link">
+      <a href="../visualizations/feature-visualizations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2130,7 +2073,7 @@
   
   
     <li class="md-nav__item">
-      <a href="analysis/data-cleaning/" class="md-nav__link">
+      <a href="../analysis/data-cleaning/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2152,7 +2095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="analysis/complete-workflow-example/" class="md-nav__link">
+      <a href="../analysis/complete-workflow-example/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2222,7 +2165,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/git-flow/" class="md-nav__link">
+      <a href="../developers/git-flow/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2244,7 +2187,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/remote-support/" class="md-nav__link">
+      <a href="../developers/remote-support/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2266,7 +2209,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/virtual-environments/" class="md-nav__link">
+      <a href="../developers/virtual-environments/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2288,7 +2231,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/documentation/" class="md-nav__link">
+      <a href="../developers/documentation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2310,7 +2253,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/testing/" class="md-nav__link">
+      <a href="../developers/testing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2332,7 +2275,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/test-cases/" class="md-nav__link">
+      <a href="../developers/test-cases/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2354,7 +2297,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/validation-schema-config/" class="md-nav__link">
+      <a href="../developers/validation-schema-config/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2380,8 +2323,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -2391,11 +2336,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" checked>
         
           
           <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="">
@@ -2410,7 +2355,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_12">
             <span class="md-nav__icon md-icon"></span>
             Others
@@ -2421,10 +2366,31 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="migrating-from-old-versions/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Migrating from an old version
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -2434,6 +2400,44 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#migrating-from-rapids-04x-or-older" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migrating from RAPIDS 0.4.x or older
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migrating-from-rapids-beta" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migrating from RAPIDS beta
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2446,7 +2450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="code_of_conduct/" class="md-nav__link">
+      <a href="../code_of_conduct/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2468,7 +2472,7 @@
   
   
     <li class="md-nav__item">
-      <a href="common-errors/" class="md-nav__link">
+      <a href="../common-errors/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2490,7 +2494,7 @@
   
   
     <li class="md-nav__item">
-      <a href="team/" class="md-nav__link">
+      <a href="../team/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2512,7 +2516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="change-log/" class="md-nav__link">
+      <a href="../change-log/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2561,18 +2565,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-are-the-benefits-of-using-rapids" class="md-nav__link">
+  <a href="#migrating-from-rapids-04x-or-older" class="md-nav__link">
     <span class="md-ellipsis">
-      What are the benefits of using RAPIDS?
+      Migrating from RAPIDS 0.4.x or older
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#users-and-contributors" class="md-nav__link">
+  <a href="#migrating-from-rapids-beta" class="md-nav__link">
     <span class="md-ellipsis">
-      Users and Contributors
+      Migrating from RAPIDS beta
     </span>
   </a>
   
@@ -2597,76 +2601,97 @@
   
 
 
-<h1 id="welcome-to-rapids-documentation">Welcome to RAPIDS documentation<a class="headerlink" href="#welcome-to-rapids-documentation" title="Permanent link">&para;</a></h1>
-<p>Reproducible Analysis Pipeline for Data Streams (RAPIDS) allows you to process smartphone and wearable data to <a href="features/feature-introduction/">extract</a> and <a href="features/add-new-features/">create</a> <strong>behavioral features</strong> (a.k.a. digital biomarkers), <a href="visualizations/data-quality-visualizations/">visualize</a> mobile sensor data, and <a href="analysis/complete-workflow-example/">structure</a> your analysis into reproducible workflows. Check out our <a href="https://www.frontiersin.org/article/10.3389/fdgth.2021.769823">paper</a>!</p>
-<p>RAPIDS is open source, documented, multi-platform, modular, tested, and reproducible. At the moment, we support <a href="datastreams/data-streams-introduction">data streams</a> logged by smartphones, Fitbit wearables, and Empatica wearables (the latter in collaboration with the <a href="https://dbdp.org/">DBDP</a>). </p>
-<div class="admonition tip">
-<p class="admonition-title">Where do I start?</p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 3h-2v10h2zm4.83 2.17-1.42 1.42A6.94 6.94 0 0 1 19 12a7 7 0 0 1-7 7A6.995 6.995 0 0 1 7.58 6.58L6.17 5.17a9 9 0 0 0-1.03 12.69c3.22 3.78 8.9 4.24 12.69 1.02A9 9 0 0 0 21 12c0-2.63-1.16-5.13-3.17-6.83"/></svg></span> New to RAPIDS? Check our <a href="setup/overview/">Overview + FAQ</a> and <a href="analysis/minimal">minimal example</a></p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 2.05v2c4.39.54 7.5 4.53 6.96 8.92-.46 3.64-3.32 6.53-6.96 6.96v2c5.5-.55 9.5-5.43 8.95-10.93-.45-4.75-4.22-8.5-8.95-8.97zM5.67 19.74A10 10 0 0 0 11 22v-2a8 8 0 0 1-3.9-1.63zm1.43-14c1.12-.9 2.47-1.48 3.9-1.68v-2c-1.95.19-3.81.94-5.33 2.2zM5.69 7.1 4.26 5.67A9.9 9.9 0 0 0 2.05 11h2c.19-1.42.75-2.77 1.64-3.9M4.06 13h-2c.2 1.96.97 3.81 2.21 5.33l1.42-1.43A8 8 0 0 1 4.06 13M10 16.5l6-4.5-6-4.5z"/></svg></span> <a href="setup/installation">Install</a>, <a href="setup/configuration">configure</a>, and <a href="setup/execution">execute</a> RAPIDS to <a href="features/feature-introduction/">extract</a> and <a href="visualizations/data-quality-visualizations/">plot</a> behavioral features</p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2"/></svg></span> Bugs should be reported on <a href="https://github.com/carissalow/rapids/issues">Github issues</a></p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 15H1V3a2 2 0 0 1 2-2h16v2H3zm9 8a1 1 0 0 1-1-1v-3H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4.1l-3.7 3.71c-.2.18-.44.29-.7.29zM9 9v2h10V9zm0 4v2h8v-2z"/></svg></span> Questions, discussions, feature requests, and feedback can be posted on our <a href="https://github.com/carissalow/rapids/discussions">Github discussions</a></p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.2 4.2 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.52 8.52 0 0 1-5.33 1.84q-.51 0-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23"/></svg></span> Keep up to date with our <a href="https://twitter.com/RAPIDS_Science">Twitter feed</a> or <a href="http://awareframework.com:3000/">Slack channel</a></p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 11V9h-3V6h-2v3H8v2h3v3h2v-3zm1-8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4v2h1a1 1 0 0 1 1 1h7v2h-7a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1H2v-2h7a1 1 0 0 1 1-1h1v-2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg></span> Do you want to modify or add new functionality to RAPIDS? Check our <a href="./contributing">contributing guide</a></p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 6v3l4-4-4-4v3a8 8 0 0 0-8 8c0 1.57.46 3.03 1.24 4.26L6.7 14.8A5.9 5.9 0 0 1 6 12a6 6 0 0 1 6-6m6.76 1.74L17.3 9.2c.44.84.7 1.8.7 2.8a6 6 0 0 1-6 6v-3l-4 4 4 4v-3a8 8 0 0 0 8-8c0-1.57-.46-3.03-1.24-4.26"/></svg></span> Are you upgrading from RAPIDS <code>0.4.x</code> or older? Follow this <a href="migrating-from-old-versions">guide</a></p>
-</div>
-<h2 id="what-are-the-benefits-of-using-rapids">What are the benefits of using RAPIDS?<a class="headerlink" href="#what-are-the-benefits-of-using-rapids" title="Permanent link">&para;</a></h2>
-<ol>
-<li><strong>Consistent analysis</strong>. Every participant sensor dataset is analyzed in the same way and isolated from each other.</li>
-<li><strong>Efficient analysis</strong>. Every analysis step is executed only once. Whenever your data or configuration changes, only the affected files are updated.</li>
-<li><strong>Parallel execution</strong>. Thanks to <a href="https://snakemake.github.io/">Snakemake</a>, your analysis can be executed over multiple cores without changing your code.</li>
-<li><strong>Code-free features</strong>. Extract any of the behavioral features offered by RAPIDS without writing any code.</li>
-<li><strong>Extensible code</strong>. You can easily add your own data streams or behavioral features in R or Python, share them with the community, and keep authorship and citations.</li>
-<li><strong>Time zone aware</strong>. Your data is adjusted to one or more time zones per participant.</li>
-<li><strong>Flexible time segments</strong>. You can extract behavioral features on time windows of any length (e.g., 5 minutes, 3 hours, 2 days), on every day or particular days (e.g., weekends, Mondays, the 1<sup>st</sup> of each month, etc.), or around events of interest (e.g., surveys or clinical relapses).</li>
-<li><strong>Tested code</strong>. We are continually adding tests to make sure our behavioral features are correct.</li>
-<li><strong>Reproducible code</strong>. If you structure your analysis within RAPIDS, you can be sure your code will run in other computers as intended, thanks to R and Python virtual environments. You can share your analysis code along with your publications without any overhead.</li>
-<li><strong>Private</strong>. All your data is processed locally.</li>
-</ol>
-<h2 id="users-and-contributors">Users and Contributors<a class="headerlink" href="#users-and-contributors" title="Permanent link">&para;</a></h2>
-<details class="quote">
-<summary>Community Contributors</summary>
-<p>Many thanks to the <a href="./team">whole team</a> and our community contributions:</p>
+<h1 id="migration-guides">Migration guides<a class="headerlink" href="#migration-guides" title="Permanent link">&para;</a></h1>
+<h2 id="migrating-from-rapids-04x-or-older">Migrating from RAPIDS 0.4.x or older<a class="headerlink" href="#migrating-from-rapids-04x-or-older" title="Permanent link">&para;</a></h2>
+<p>There are four actions that you need to take if you were using RAPIDS <code>0.4.3</code> or older (<a href="https://github.com/carissalow/rapids/releases/tag/v0.4.3">before Feb 9<sup>th</sup>, 2021</a>):</p>
+<details class="check">
+<summary>Check the new Overview page</summary>
+<p>Check the new <a href="../setup/overview/">Overview</a> page. Hopefully, it is a better overview of RAPIDS and provides answers to Frequently Asked Questions.</p>
+</details>
+<details class="check">
+<summary>Deploy RAPIDS in a new folder</summary>
 <ul>
-<li>Agam Kumar (CMU)</li>
-<li>Yasaman S. Sefidgar (University of Washington)</li>
-<li>Joe Kim (Duke University)</li>
-<li>Brinnae Bent (Duke University)</li>
-<li>Stephen Price (CMU)</li>
-<li>Neil Singh (University of Virginia)</li>
-</ul>
-<p>Many thanks to the researchers that made <a href="./citation">their work</a> open source:</p>
-<ul>
-<li>Panda et al. <a href="https://pubmed.ncbi.nlm.nih.gov/31657854/">paper</a></li>
-<li>Stachl et al. <a href="https://www.pnas.org/content/117/30/17680">paper</a></li>
-<li>Doryab et al. <a href="https://arxiv.org/abs/1812.10394">paper</a></li>
-<li>Barnett et al. <a href="https://doi.org/10.1093/biostatistics/kxy059">paper</a></li>
-<li>Canzian et al. <a href="https://doi.org/10.1145/2750858.2805845">paper</a></li>
+<li>Clone RAPIDS 1.x in a new folder (do not pull the updates in your current folder)</li>
+<li>Activate your conda environment</li>
+<li>Install renv again <code>snakemake -j1 renv_install</code> (for Ubuntu take advantage of the <a href="../setup/installation">platform specific R <code>renv</code> instructions</a>)</li>
+<li>Restore renv packages <code>snakemake -j1 renv_restore</code> (for Ubuntu take advantage of the <a href="../setup/installation">platform specific R <code>renv</code> instructions</a>)</li>
+<li>Move your participant files <code>pxx.yaml</code> to the new folder</li>
+<li>Move your time segment files to the new folder</li>
+<li>Move your <code>.env</code> file to the new folder</li>
 </ul>
 </details>
-<details class="quote">
-<summary>Publications using RAPIDS</summary>
+<details class="check">
+<summary>Migrate your <code>.env</code> file to the new <code>credentials.yaml</code> format</summary>
+<p>The <code>.env</code> file is not used anymore, the same credential groups are stored in <code>credentials.yaml</code>, migrate your <code>.env</code> file by running:
+  <div class="highlight"><pre><span></span><code>python<span class="w"> </span>tools/update_format_env.py
+</code></pre></div></p>
+</details>
+<details class="check">
+<summary>Reconfigure your <code>config.yaml</code></summary>
+<p>Reconfigure your <code>config.yaml</code> file by hand (don&rsquo;t copy and paste the old one). Some keys and values changed but the defaults should be compatible with the things you know from RAPIDS 0.x (see below).</p>
+</details>
+<p>The most relevant changes to RAPIDS that you need to know about are:</p>
+<details class="danger">
+<summary>We introduced the concept of data streams</summary>
+<p>RAPIDS abstracts sensor data logged by different devices, platforms and stored in different data containers as <a href="../datastreams/data-streams-introduction/">data streams</a>.</p>
+<p>The default data stream for <code>PHONE</code> is <a href="../datastreams/aware-mysql/"><code>aware_mysql</code></a>, and the default for <code>FITBIT</code> is <a href="../datastreams/fitbitjson-mysql/"><code>fitbitjson_mysql</code></a>. This is compatible with the old functionality (AWARE and JSON Fitbit data stored in MySQL). These values are set in <code>[PHONE_DATA_STREAMS][USE]</code> and <code>[FITBIT_DATA_STREAMS][USE]</code>.</p>
+<p>You can <a href="../datastreams/add-new-data-streams/">add new data stream</a> formats (sensing apps) and containers (database engines, file types, etc.).</p>
+<p>If you were processing your Fitbit data either in JSON or plain text (parsed) format, and it was stored in MySQL or CSV files, the changes that you made to your raw data will be compatible. Just choose <a href="../datastreams/fitbitjson-mysql/"><code>fitbitjson_mysql</code></a>, <a href="../datastreams/fitbitparsed-mysql/"><code>fitbitparsed_mysql</code></a>, <a href="../datastreams/fitbitjson-csv/"><code>fitbitjson_csv</code></a>, <a href="../datastreams/fitbitparsed-csv/"><code>fitbitparsed_csv</code></a> accordingly and set it in <code>[FITBIT_DATA_STREAMS][USE]</code>. </p>
+<p>In the future, you will not have to change your raw data; you will be able to just change column mappings/values in the data stream&rsquo;s <code>format.yaml</code> file.</p>
+</details>
+<details class="danger">
+<summary>We introduced multiple time zones</summary>
+<p>You can now process data from participants that visited multiple time zones. The default is still a single time zone (America/New_York). See how to handle <a href="../setup/configuration/#multiple-timezones">multiple time zones</a></p>
+</details>
+<details class="danger">
+<summary>The keyword <code>multiple</code> is now <code>infer</code></summary>
+<p>When processing data from smartphones, RAPIDS allows you to <a href="../setup/configuration/#participant-files">infer</a> the OS of a smartphone by using the keyword <code>multiple</code> in the <code>[PLATFORM]</code> key of participant files. Now RAPIDS uses <code>infer</code> instead of <code>multiple</code> Nonetheless, <code>multiple</code> still works for backward compatibility.</p>
+</details>
+<details class="danger">
+<summary>A global <code>DATABASE_GROUP</code> does not exist anymore</summary>
+<p>There is no global <code>DATABASE_GROUP</code> anymore. Each data stream that needs credentials to connect to a database has its own <a href="../setup/configuration/#data-stream-configuration"><code>DATABASE_GROUP</code> config key</a>. The groups are defined in <code>credentials.yaml</code> instead of the <code>.env</code>.</p>
+</details>
+<details class="danger">
+<summary><code>[DEVICE_SENSOR][TABLE]</code> is now <code>[DEVICE_SENSOR][CONTAINER]</code></summary>
+<p>We renamed the keys <code>[DEVICE_SENSOR][TABLE]</code> to <code>[DEVICE_SENSOR][CONTAINER]</code> to reflect that, with the introduction of data streams, they can point to a database table, file, or any other data container.</p>
+</details>
+<details class="danger">
+<summary>Creating participant files from the AWARE_DEVICE_TABLE is deprecated</summary>
+<p>In previous versions of RAPIDS, you could create participant files automatically using the <code>aware_device</code> table. We deprecated this option but you can still achieve the same results if you export the output of the following SQL query as a CSV file and follow the instructions to <a href="../setup/configuration/#automatic-creation-of-participant-files">create participant files from CSV files</a>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">device_id</span><span class="p">,</span><span class="w"> </span><span class="n">device_id</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">fitbit_id</span><span class="p">,</span><span class="w"> </span><span class="n">CONCAT</span><span class="p">(</span><span class="ss">&quot;p&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">_id</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">empatica_id</span><span class="p">,</span><span class="w"> </span><span class="n">CONCAT</span><span class="p">(</span><span class="ss">&quot;p&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">_id</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">brand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;iPhone&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ios&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;android&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">platform</span><span class="p">,</span><span class="w"> </span><span class="n">CONCAT</span><span class="p">(</span><span class="ss">&quot;p&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">_id</span><span class="p">)</span><span class="w">  </span><span class="k">as</span><span class="w"> </span><span class="n">label</span><span class="p">,</span><span class="w"> </span><span class="n">DATE_FORMAT</span><span class="p">(</span><span class="n">FROM_UNIXTIME</span><span class="p">((</span><span class="k">timestamp</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span><span class="o">-</span><span class="w"> </span><span class="mi">86400</span><span class="p">),</span><span class="w"> </span><span class="ss">&quot;%Y-%m-%d&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">start_date</span><span class="p">,</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">end_date</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">aware_device</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">_id</span><span class="p">;</span>
+</code></pre></div>
+</details>
+<details class="danger">
+<summary><code>SCR_SCRIPT</code> and <code>SRC_LANGUAGE</code> are replaced by <code>SRC_SCRIPT</code></summary>
+<p>The attributes <code>SCR_SCRIPT</code> and <code>SRC_LANGUAGE</code> of every sensor <code>PROVIDER</code> are replaced by <code>SRC_SCRIPT</code>. <code>SRC_SCRIPT</code> is a relative path from the RAPIDS root folder to that provider&rsquo;s feature script. We did this to simplify and clarify where the features scripts are stored. </p>
+<p>There are no actions to take unless you created your own feature provider; update it with your feature script path.</p>
+</details>
+<h2 id="migrating-from-rapids-beta">Migrating from RAPIDS beta<a class="headerlink" href="#migrating-from-rapids-beta" title="Permanent link">&para;</a></h2>
+<p>If you were relying on the <a href="https://rapidspitt.readthedocs.io/en/latest/">old docs</a> and the most recent version of RAPIDS you are working with is from or before <a href="https://github.com/carissalow/rapids/commit/640890c7b49492d150accff5c87b1eb25bd97a49">Oct 13, 2020</a> you are using the beta version of RAPIDS.</p>
+<p>You can start using the RAPIDS <code>0.1.0</code> right away, just take into account the following:</p>
+<details class="check">
+<summary>Deploy RAPIDS in a new folder</summary>
 <ul>
-<li>Mood ratings and digital biomarkers from smartphone and wearable data differentiates and predicts depression status: A longitudinal data analysis <a href="https://doi.org/10.1016/j.pmcj.2022.101621">link</a></li>
-<li>Predicting Symptoms of Depression and Anxiety Using Smartphone and Wearable Data <a href="https://www.frontiersin.org/articles/10.3389/fpsyt.2021.625247/full">link</a></li>
-<li>Predicting Depression from Smartphone Behavioral Markers Using Machine Learning Methods, Hyperparameter Optimization, and Feature Importance Analysis: Exploratory Study <a href="https://mhealth.jmir.org/2021/7/e26540">link</a></li>
-<li>Digital Biomarkers of Symptom Burden Self-Reported by Perioperative Patients Undergoing Pancreatic Surgery: Prospective Longitudinal Study <a href="https://cancer.jmir.org/2021/2/e27975/">link</a></li>
-<li>An Automated Machine Learning Pipeline for Monitoring and Forecasting Mobile Health Data <a href="https://ieeexplore.ieee.org/abstract/document/9483755/">link</a></li>
-<li>Mobile Footprinting: Linking Individual Distinctiveness in Mobility Patterns to Mood, Sleep, and Brain Functional Connectivity <a href="https://www.biorxiv.org/content/10.1101/2021.05.17.444568v1.abstract">link</a></li>
+<li><a href="../setup/installation/">Install</a> a new copy of RAPIDS (the R and Python virtual environments didn&rsquo;t change so the cached versions will be reused)</li>
+<li>Make sure you don&rsquo;t skip a new Installation step to give execution permissions to the RAPIDS script: <code>chmod +x rapids</code></li>
+<li>Move your old <code>.env</code> file</li>
+<li>Move your participant files</li>
 </ul>
 </details>
-<div class="users">
-<div><img alt="carnegie mellon university" loading="lazy" src="./img/logos/cmu.png" /></div>
-<div><img alt="digital biomarker development pipeline" loading="lazy" src="./img/logos/dbdp.png" /></div>
-<div><img alt="university of helsinki" loading="lazy" src="./img/logos/helsinki.jpg" /></div>
-<div><img alt="university of manchester" loading="lazy" src="./img/logos/manchester.png" /></div>
-<div><img alt="monash university" loading="lazy" src="./img/logos/monash.jpg" /></div>
-<div><img alt="oulu university" loading="lazy" src="./img/logos/oulu.png" /></div>
-<div><img alt="university of pennsylvania" loading="lazy" src="./img/logos/penn.png" /></div>
-<div><img alt="university of pittsburgh" loading="lazy" src="./img/logos/pitt.png" /></div>
-<div><img alt="university of virginia" loading="lazy" src="./img/logos/virginia.jpg" /></div>
-<div><img alt="university of washington" loading="lazy" src="./img/logos/uw.jpg" /></div>
-</div>
+<details class="check">
+<summary>Migrate your participant files</summary>
+<p>You can migrate your old participant files to the new YAML format:
+  <div class="highlight"><pre><span></span><code>python<span class="w"> </span>tools/update_format_participant_files.py
+</code></pre></div></p>
+</details>
+<details class="check">
+<summary>Follow the new Configuration guide</summary>
+<p>Follow the new <a href="https://www.rapids.science/0.1/setup/configuration/">Configuration</a> guide</p>
+</details>
+<details class="check">
+<summary>Learn more about the new way to run RAPIDS</summary>
+<p>Get familiar with the new way of <a href="https://www.rapids.science/0.1/setup/execution">Executing</a> RAPIDS</p>
+</details>
 
 
 
@@ -2732,10 +2757,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.sections", "search.suggest", "search.highlight"], "search": "assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="assets/javascripts/bundle.f1b6f286.min.js"></script>
+      <script src="../assets/javascripts/bundle.f1b6f286.min.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

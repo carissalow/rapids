@@ -8,26 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://www.rapids.science/">
+        <link rel="canonical" href="https://www.rapids.science/datastreams/aware-mysql/">
       
       
+        <link rel="prev" href="../data-streams-introduction/">
       
-        <link rel="next" href="setup/overview/">
+      
+        <link rel="next" href="../aware-micro-mysql/">
       
       
-      <link rel="icon" href="img/logo.png">
+      <link rel="icon" href="../../img/logo.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.3">
     
     
       
-        <title>RAPIDS</title>
+        <title>aware_mysql - RAPIDS</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.d7758b05.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.d7758b05.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -46,9 +48,9 @@
       
     
     
-      <link rel="stylesheet" href="stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#welcome-to-rapids-documentation" class="md-skip">
+        <a href="#aware_mysql" class="md-skip">
           Skip to content
         </a>
       
@@ -94,7 +96,7 @@
   </a>
 
             </div>
-            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("../.."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
           </aside>
         
       </div>
@@ -106,9 +108,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="RAPIDS" class="md-header__button md-logo" aria-label="RAPIDS" data-md-component="logo">
+    <a href="../.." title="RAPIDS" class="md-header__button md-logo" aria-label="RAPIDS" data-md-component="logo">
       
-  <img src="img/logo.png" alt="logo">
+  <img src="../../img/logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -125,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              aware_mysql
             
           </span>
         </div>
@@ -240,9 +242,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="RAPIDS" class="md-nav__button md-logo" aria-label="RAPIDS" data-md-component="logo">
+    <a href="../.." title="RAPIDS" class="md-nav__button md-logo" aria-label="RAPIDS" data-md-component="logo">
       
-  <img src="img/logo.png" alt="logo">
+  <img src="../../img/logo.png" alt="logo">
 
     </a>
     RAPIDS
@@ -266,31 +268,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Home
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -300,44 +281,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-are-the-benefits-of-using-rapids" class="md-nav__link">
-    <span class="md-ellipsis">
-      What are the benefits of using RAPIDS?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#users-and-contributors" class="md-nav__link">
-    <span class="md-ellipsis">
-      Users and Contributors
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -349,7 +292,7 @@
   
   
     <li class="md-nav__item">
-      <a href="setup/overview/" class="md-nav__link">
+      <a href="../../setup/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -370,7 +313,7 @@
   
   
     <li class="md-nav__item">
-      <a href="analysis/minimal/" class="md-nav__link">
+      <a href="../../analysis/minimal/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -391,7 +334,7 @@
   
   
     <li class="md-nav__item">
-      <a href="citation/" class="md-nav__link">
+      <a href="../../citation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -412,7 +355,7 @@
   
   
     <li class="md-nav__item">
-      <a href="contributing/" class="md-nav__link">
+      <a href="../../contributing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -474,7 +417,7 @@
   
   
     <li class="md-nav__item">
-      <a href="setup/installation/" class="md-nav__link">
+      <a href="../../setup/installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -496,7 +439,7 @@
   
   
     <li class="md-nav__item">
-      <a href="setup/configuration/" class="md-nav__link">
+      <a href="../../setup/configuration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -518,7 +461,7 @@
   
   
     <li class="md-nav__item">
-      <a href="setup/execution/" class="md-nav__link">
+      <a href="../../setup/execution/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -544,8 +487,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -555,11 +500,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
           <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
@@ -574,7 +519,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             Data Streams
@@ -588,7 +533,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/data-streams-introduction/" class="md-nav__link">
+      <a href="../data-streams-introduction/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -607,6 +552,8 @@
                 
   
   
+    
+  
   
   
     
@@ -615,11 +562,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" checked>
         
           
           <label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
@@ -634,7 +581,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7_2">
             <span class="md-nav__icon md-icon"></span>
             Phone
@@ -645,10 +592,31 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="datastreams/aware-mysql/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    aware_mysql
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -658,6 +626,44 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#container" class="md-nav__link">
+    <span class="md-ellipsis">
+      Container
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#format" class="md-nav__link">
+    <span class="md-ellipsis">
+      Format
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -670,7 +676,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/aware-micro-mysql/" class="md-nav__link">
+      <a href="../aware-micro-mysql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -692,7 +698,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/aware-csv/" class="md-nav__link">
+      <a href="../aware-csv/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -714,7 +720,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/aware-influxdb/" class="md-nav__link">
+      <a href="../aware-influxdb/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -736,7 +742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/mandatory-phone-format/" class="md-nav__link">
+      <a href="../mandatory-phone-format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -804,7 +810,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/fitbitjson-mysql/" class="md-nav__link">
+      <a href="../fitbitjson-mysql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -826,7 +832,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/fitbitjson-csv/" class="md-nav__link">
+      <a href="../fitbitjson-csv/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -848,7 +854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/fitbitparsed-mysql/" class="md-nav__link">
+      <a href="../fitbitparsed-mysql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -870,7 +876,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/fitbitparsed-csv/" class="md-nav__link">
+      <a href="../fitbitparsed-csv/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -892,7 +898,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/mandatory-fitbit-format/" class="md-nav__link">
+      <a href="../mandatory-fitbit-format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -960,7 +966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/empatica-zip/" class="md-nav__link">
+      <a href="../empatica-zip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -982,7 +988,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/mandatory-empatica-format/" class="md-nav__link">
+      <a href="../mandatory-empatica-format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1012,7 +1018,7 @@
   
   
     <li class="md-nav__item">
-      <a href="datastreams/add-new-data-streams/" class="md-nav__link">
+      <a href="../add-new-data-streams/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1082,7 +1088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/feature-introduction/" class="md-nav__link">
+      <a href="../../features/feature-introduction/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1142,7 +1148,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-accelerometer/" class="md-nav__link">
+      <a href="../../features/phone-accelerometer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1164,7 +1170,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-activity-recognition/" class="md-nav__link">
+      <a href="../../features/phone-activity-recognition/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1186,7 +1192,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-applications-crashes/" class="md-nav__link">
+      <a href="../../features/phone-applications-crashes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1208,7 +1214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-applications-foreground/" class="md-nav__link">
+      <a href="../../features/phone-applications-foreground/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1230,7 +1236,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-applications-notifications/" class="md-nav__link">
+      <a href="../../features/phone-applications-notifications/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1252,7 +1258,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-battery/" class="md-nav__link">
+      <a href="../../features/phone-battery/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1274,7 +1280,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-bluetooth/" class="md-nav__link">
+      <a href="../../features/phone-bluetooth/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1296,7 +1302,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-calls/" class="md-nav__link">
+      <a href="../../features/phone-calls/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1318,7 +1324,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-conversation/" class="md-nav__link">
+      <a href="../../features/phone-conversation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1340,7 +1346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-data-yield/" class="md-nav__link">
+      <a href="../../features/phone-data-yield/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1362,7 +1368,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-keyboard/" class="md-nav__link">
+      <a href="../../features/phone-keyboard/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1384,7 +1390,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-light/" class="md-nav__link">
+      <a href="../../features/phone-light/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1406,7 +1412,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-locations/" class="md-nav__link">
+      <a href="../../features/phone-locations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1428,7 +1434,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-log/" class="md-nav__link">
+      <a href="../../features/phone-log/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1450,7 +1456,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-messages/" class="md-nav__link">
+      <a href="../../features/phone-messages/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1472,7 +1478,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-screen/" class="md-nav__link">
+      <a href="../../features/phone-screen/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1494,7 +1500,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-wifi-connected/" class="md-nav__link">
+      <a href="../../features/phone-wifi-connected/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1516,7 +1522,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/phone-wifi-visible/" class="md-nav__link">
+      <a href="../../features/phone-wifi-visible/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1584,7 +1590,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-calories-intraday/" class="md-nav__link">
+      <a href="../../features/fitbit-calories-intraday/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1606,7 +1612,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-data-yield/" class="md-nav__link">
+      <a href="../../features/fitbit-data-yield/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1628,7 +1634,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-heartrate-summary/" class="md-nav__link">
+      <a href="../../features/fitbit-heartrate-summary/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1650,7 +1656,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-heartrate-intraday/" class="md-nav__link">
+      <a href="../../features/fitbit-heartrate-intraday/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1672,7 +1678,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-sleep-summary/" class="md-nav__link">
+      <a href="../../features/fitbit-sleep-summary/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1694,7 +1700,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-sleep-intraday/" class="md-nav__link">
+      <a href="../../features/fitbit-sleep-intraday/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1716,7 +1722,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-steps-summary/" class="md-nav__link">
+      <a href="../../features/fitbit-steps-summary/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1738,7 +1744,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/fitbit-steps-intraday/" class="md-nav__link">
+      <a href="../../features/fitbit-steps-intraday/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1806,7 +1812,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-accelerometer/" class="md-nav__link">
+      <a href="../../features/empatica-accelerometer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1828,7 +1834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-heartrate/" class="md-nav__link">
+      <a href="../../features/empatica-heartrate/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1850,7 +1856,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-temperature/" class="md-nav__link">
+      <a href="../../features/empatica-temperature/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1872,7 +1878,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-electrodermal-activity/" class="md-nav__link">
+      <a href="../../features/empatica-electrodermal-activity/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1894,7 +1900,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-blood-volume-pulse/" class="md-nav__link">
+      <a href="../../features/empatica-blood-volume-pulse/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1916,7 +1922,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-inter-beat-interval/" class="md-nav__link">
+      <a href="../../features/empatica-inter-beat-interval/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1938,7 +1944,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/empatica-tags/" class="md-nav__link">
+      <a href="../../features/empatica-tags/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1968,7 +1974,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/add-new-features/" class="md-nav__link">
+      <a href="../../features/add-new-features/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2038,7 +2044,7 @@
   
   
     <li class="md-nav__item">
-      <a href="visualizations/data-quality-visualizations/" class="md-nav__link">
+      <a href="../../visualizations/data-quality-visualizations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2060,7 +2066,7 @@
   
   
     <li class="md-nav__item">
-      <a href="visualizations/feature-visualizations/" class="md-nav__link">
+      <a href="../../visualizations/feature-visualizations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2130,7 +2136,7 @@
   
   
     <li class="md-nav__item">
-      <a href="analysis/data-cleaning/" class="md-nav__link">
+      <a href="../../analysis/data-cleaning/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2152,7 +2158,7 @@
   
   
     <li class="md-nav__item">
-      <a href="analysis/complete-workflow-example/" class="md-nav__link">
+      <a href="../../analysis/complete-workflow-example/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2222,7 +2228,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/git-flow/" class="md-nav__link">
+      <a href="../../developers/git-flow/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2244,7 +2250,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/remote-support/" class="md-nav__link">
+      <a href="../../developers/remote-support/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2266,7 +2272,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/virtual-environments/" class="md-nav__link">
+      <a href="../../developers/virtual-environments/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2288,7 +2294,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/documentation/" class="md-nav__link">
+      <a href="../../developers/documentation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2310,7 +2316,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/testing/" class="md-nav__link">
+      <a href="../../developers/testing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2332,7 +2338,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/test-cases/" class="md-nav__link">
+      <a href="../../developers/test-cases/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2354,7 +2360,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developers/validation-schema-config/" class="md-nav__link">
+      <a href="../../developers/validation-schema-config/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2424,7 +2430,7 @@
   
   
     <li class="md-nav__item">
-      <a href="migrating-from-old-versions/" class="md-nav__link">
+      <a href="../../migrating-from-old-versions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2446,7 +2452,7 @@
   
   
     <li class="md-nav__item">
-      <a href="code_of_conduct/" class="md-nav__link">
+      <a href="../../code_of_conduct/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2468,7 +2474,7 @@
   
   
     <li class="md-nav__item">
-      <a href="common-errors/" class="md-nav__link">
+      <a href="../../common-errors/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2490,7 +2496,7 @@
   
   
     <li class="md-nav__item">
-      <a href="team/" class="md-nav__link">
+      <a href="../../team/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2512,7 +2518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="change-log/" class="md-nav__link">
+      <a href="../../change-log/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2561,18 +2567,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-are-the-benefits-of-using-rapids" class="md-nav__link">
+  <a href="#container" class="md-nav__link">
     <span class="md-ellipsis">
-      What are the benefits of using RAPIDS?
+      Container
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#users-and-contributors" class="md-nav__link">
+  <a href="#format" class="md-nav__link">
     <span class="md-ellipsis">
-      Users and Contributors
+      Format
     </span>
   </a>
   
@@ -2597,76 +2603,1206 @@
   
 
 
-<h1 id="welcome-to-rapids-documentation">Welcome to RAPIDS documentation<a class="headerlink" href="#welcome-to-rapids-documentation" title="Permanent link">&para;</a></h1>
-<p>Reproducible Analysis Pipeline for Data Streams (RAPIDS) allows you to process smartphone and wearable data to <a href="features/feature-introduction/">extract</a> and <a href="features/add-new-features/">create</a> <strong>behavioral features</strong> (a.k.a. digital biomarkers), <a href="visualizations/data-quality-visualizations/">visualize</a> mobile sensor data, and <a href="analysis/complete-workflow-example/">structure</a> your analysis into reproducible workflows. Check out our <a href="https://www.frontiersin.org/article/10.3389/fdgth.2021.769823">paper</a>!</p>
-<p>RAPIDS is open source, documented, multi-platform, modular, tested, and reproducible. At the moment, we support <a href="datastreams/data-streams-introduction">data streams</a> logged by smartphones, Fitbit wearables, and Empatica wearables (the latter in collaboration with the <a href="https://dbdp.org/">DBDP</a>). </p>
-<div class="admonition tip">
-<p class="admonition-title">Where do I start?</p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 3h-2v10h2zm4.83 2.17-1.42 1.42A6.94 6.94 0 0 1 19 12a7 7 0 0 1-7 7A6.995 6.995 0 0 1 7.58 6.58L6.17 5.17a9 9 0 0 0-1.03 12.69c3.22 3.78 8.9 4.24 12.69 1.02A9 9 0 0 0 21 12c0-2.63-1.16-5.13-3.17-6.83"/></svg></span> New to RAPIDS? Check our <a href="setup/overview/">Overview + FAQ</a> and <a href="analysis/minimal">minimal example</a></p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 2.05v2c4.39.54 7.5 4.53 6.96 8.92-.46 3.64-3.32 6.53-6.96 6.96v2c5.5-.55 9.5-5.43 8.95-10.93-.45-4.75-4.22-8.5-8.95-8.97zM5.67 19.74A10 10 0 0 0 11 22v-2a8 8 0 0 1-3.9-1.63zm1.43-14c1.12-.9 2.47-1.48 3.9-1.68v-2c-1.95.19-3.81.94-5.33 2.2zM5.69 7.1 4.26 5.67A9.9 9.9 0 0 0 2.05 11h2c.19-1.42.75-2.77 1.64-3.9M4.06 13h-2c.2 1.96.97 3.81 2.21 5.33l1.42-1.43A8 8 0 0 1 4.06 13M10 16.5l6-4.5-6-4.5z"/></svg></span> <a href="setup/installation">Install</a>, <a href="setup/configuration">configure</a>, and <a href="setup/execution">execute</a> RAPIDS to <a href="features/feature-introduction/">extract</a> and <a href="visualizations/data-quality-visualizations/">plot</a> behavioral features</p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2"/></svg></span> Bugs should be reported on <a href="https://github.com/carissalow/rapids/issues">Github issues</a></p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 15H1V3a2 2 0 0 1 2-2h16v2H3zm9 8a1 1 0 0 1-1-1v-3H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4.1l-3.7 3.71c-.2.18-.44.29-.7.29zM9 9v2h10V9zm0 4v2h8v-2z"/></svg></span> Questions, discussions, feature requests, and feedback can be posted on our <a href="https://github.com/carissalow/rapids/discussions">Github discussions</a></p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.2 4.2 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.52 8.52 0 0 1-5.33 1.84q-.51 0-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23"/></svg></span> Keep up to date with our <a href="https://twitter.com/RAPIDS_Science">Twitter feed</a> or <a href="http://awareframework.com:3000/">Slack channel</a></p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 11V9h-3V6h-2v3H8v2h3v3h2v-3zm1-8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4v2h1a1 1 0 0 1 1 1h7v2h-7a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1H2v-2h7a1 1 0 0 1 1-1h1v-2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg></span> Do you want to modify or add new functionality to RAPIDS? Check our <a href="./contributing">contributing guide</a></p>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 6v3l4-4-4-4v3a8 8 0 0 0-8 8c0 1.57.46 3.03 1.24 4.26L6.7 14.8A5.9 5.9 0 0 1 6 12a6 6 0 0 1 6-6m6.76 1.74L17.3 9.2c.44.84.7 1.8.7 2.8a6 6 0 0 1-6 6v-3l-4 4 4 4v-3a8 8 0 0 0 8-8c0-1.57-.46-3.03-1.24-4.26"/></svg></span> Are you upgrading from RAPIDS <code>0.4.x</code> or older? Follow this <a href="migrating-from-old-versions">guide</a></p>
+<h1 id="aware_mysql"><code>aware_mysql</code><a class="headerlink" href="#aware_mysql" title="Permanent link">&para;</a></h1>
+<p>This <a href="../../datastreams/data-streams-introduction">data stream</a> handles iOS and Android sensor data collected with the <a href="https://awareframework.com/">AWARE Framework</a> and stored in a MySQL database.</p>
+<h2 id="container">Container<a class="headerlink" href="#container" title="Permanent link">&para;</a></h2>
+<p>A MySQL database with a table per sensor, each containing the data for all participants. This is the default database created by the old PHP AWARE server (as opposed to the new JavaScript Micro server).</p>
+<p>The script to connect and download data from this container is at:
+<div class="highlight"><pre><span></span><code>src/data/streams/aware_mysql/container.R
+</code></pre></div></p>
+<h2 id="format">Format<a class="headerlink" href="#format" title="Permanent link">&para;</a></h2>
+<p>If you collected sensor data with the vanilla (original) AWARE mobile clients, you shouldn&rsquo;t need to modify this format (described below). </p>
+<p>Remember that a format maps and transforms columns in your raw data stream to the <a href="../mandatory-phone-format">mandatory columns RAPIDS needs</a>.</p>
+<p>The yaml file that describes the format of this data stream is at:
+<div class="highlight"><pre><span></span><code>src/data/streams/aware_csv/format.yaml
+</code></pre></div></p>
+<p>For some sensors, we need to transform iOS data into Android format; you can refer to <a href="../../datastreams/add-new-data-streams/#os-complex-mapping">OS complex mapping</a> for learn how this works.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The mappings in this stream (RAPIDS/Stream) are the same names because AWARE data was the first stream RAPIDS supported, meaning that it considers AWARE column names the default.</p>
 </div>
-<h2 id="what-are-the-benefits-of-using-rapids">What are the benefits of using RAPIDS?<a class="headerlink" href="#what-are-the-benefits-of-using-rapids" title="Permanent link">&para;</a></h2>
-<ol>
-<li><strong>Consistent analysis</strong>. Every participant sensor dataset is analyzed in the same way and isolated from each other.</li>
-<li><strong>Efficient analysis</strong>. Every analysis step is executed only once. Whenever your data or configuration changes, only the affected files are updated.</li>
-<li><strong>Parallel execution</strong>. Thanks to <a href="https://snakemake.github.io/">Snakemake</a>, your analysis can be executed over multiple cores without changing your code.</li>
-<li><strong>Code-free features</strong>. Extract any of the behavioral features offered by RAPIDS without writing any code.</li>
-<li><strong>Extensible code</strong>. You can easily add your own data streams or behavioral features in R or Python, share them with the community, and keep authorship and citations.</li>
-<li><strong>Time zone aware</strong>. Your data is adjusted to one or more time zones per participant.</li>
-<li><strong>Flexible time segments</strong>. You can extract behavioral features on time windows of any length (e.g., 5 minutes, 3 hours, 2 days), on every day or particular days (e.g., weekends, Mondays, the 1<sup>st</sup> of each month, etc.), or around events of interest (e.g., surveys or clinical relapses).</li>
-<li><strong>Tested code</strong>. We are continually adding tests to make sure our behavioral features are correct.</li>
-<li><strong>Reproducible code</strong>. If you structure your analysis within RAPIDS, you can be sure your code will run in other computers as intended, thanks to R and Python virtual environments. You can share your analysis code along with your publications without any overhead.</li>
-<li><strong>Private</strong>. All your data is processed locally.</li>
-</ol>
-<h2 id="users-and-contributors">Users and Contributors<a class="headerlink" href="#users-and-contributors" title="Permanent link">&para;</a></h2>
-<details class="quote">
-<summary>Community Contributors</summary>
-<p>Many thanks to the <a href="./team">whole team</a> and our community contributions:</p>
+<details class="info">
+<summary>PHONE_ACCELEROMETER</summary>
+<div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>DOUBLE_VALUES_0</td>
+<td>double_values_0</td>
+</tr>
+<tr>
+<td>DOUBLE_VALUES_1</td>
+<td>double_values_1</td>
+</tr>
+<tr>
+<td>DOUBLE_VALUES_2</td>
+<td>double_values_2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
 <ul>
-<li>Agam Kumar (CMU)</li>
-<li>Yasaman S. Sefidgar (University of Washington)</li>
-<li>Joe Kim (Duke University)</li>
-<li>Brinnae Bent (Duke University)</li>
-<li>Stephen Price (CMU)</li>
-<li>Neil Singh (University of Virginia)</li>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
 </ul>
-<p>Many thanks to the researchers that made <a href="./citation">their work</a> open source:</p>
-<ul>
-<li>Panda et al. <a href="https://pubmed.ncbi.nlm.nih.gov/31657854/">paper</a></li>
-<li>Stachl et al. <a href="https://www.pnas.org/content/117/30/17680">paper</a></li>
-<li>Doryab et al. <a href="https://arxiv.org/abs/1812.10394">paper</a></li>
-<li>Barnett et al. <a href="https://doi.org/10.1093/biostatistics/kxy059">paper</a></li>
-<li>Canzian et al. <a href="https://doi.org/10.1145/2750858.2805845">paper</a></li>
-</ul>
-</details>
-<details class="quote">
-<summary>Publications using RAPIDS</summary>
-<ul>
-<li>Mood ratings and digital biomarkers from smartphone and wearable data differentiates and predicts depression status: A longitudinal data analysis <a href="https://doi.org/10.1016/j.pmcj.2022.101621">link</a></li>
-<li>Predicting Symptoms of Depression and Anxiety Using Smartphone and Wearable Data <a href="https://www.frontiersin.org/articles/10.3389/fpsyt.2021.625247/full">link</a></li>
-<li>Predicting Depression from Smartphone Behavioral Markers Using Machine Learning Methods, Hyperparameter Optimization, and Feature Importance Analysis: Exploratory Study <a href="https://mhealth.jmir.org/2021/7/e26540">link</a></li>
-<li>Digital Biomarkers of Symptom Burden Self-Reported by Perioperative Patients Undergoing Pancreatic Surgery: Prospective Longitudinal Study <a href="https://cancer.jmir.org/2021/2/e27975/">link</a></li>
-<li>An Automated Machine Learning Pipeline for Monitoring and Forecasting Mobile Health Data <a href="https://ieeexplore.ieee.org/abstract/document/9483755/">link</a></li>
-<li>Mobile Footprinting: Linking Individual Distinctiveness in Mobility Patterns to Mood, Sleep, and Brain Functional Connectivity <a href="https://www.biorxiv.org/content/10.1101/2021.05.17.444568v1.abstract">link</a></li>
-</ul>
-</details>
-<div class="users">
-<div><img alt="carnegie mellon university" loading="lazy" src="./img/logos/cmu.png" /></div>
-<div><img alt="digital biomarker development pipeline" loading="lazy" src="./img/logos/dbdp.png" /></div>
-<div><img alt="university of helsinki" loading="lazy" src="./img/logos/helsinki.jpg" /></div>
-<div><img alt="university of manchester" loading="lazy" src="./img/logos/manchester.png" /></div>
-<div><img alt="monash university" loading="lazy" src="./img/logos/monash.jpg" /></div>
-<div><img alt="oulu university" loading="lazy" src="./img/logos/oulu.png" /></div>
-<div><img alt="university of pennsylvania" loading="lazy" src="./img/logos/penn.png" /></div>
-<div><img alt="university of pittsburgh" loading="lazy" src="./img/logos/pitt.png" /></div>
-<div><img alt="university of virginia" loading="lazy" src="./img/logos/virginia.jpg" /></div>
-<div><img alt="university of washington" loading="lazy" src="./img/logos/uw.jpg" /></div>
 </div>
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">IOS</label><div class="tabbed-content">
+<p>Same as ANDROID</p>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_ACTIVITY_RECOGNITION</summary>
+<div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>ACTIVITY_NAME</td>
+<td>activity_name</td>
+</tr>
+<tr>
+<td>ACTIVITY_TYPE</td>
+<td>activity_type</td>
+</tr>
+<tr>
+<td>CONFIDENCE</td>
+<td>confidence</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">IOS</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>ACTIVITY_NAME</td>
+<td>FLAG_TO_MUTATE</td>
+</tr>
+<tr>
+<td>ACTIVITY_TYPE</td>
+<td>FLAG_TO_MUTATE</td>
+</tr>
+<tr>
+<td>CONFIDENCE</td>
+<td>FLAG_TO_MUTATE</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Script column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ACTIVITIES</td>
+<td>activities</td>
+</tr>
+<tr>
+<td>CONFIDENCE</td>
+<td>confidence</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>SCRIPTS</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>src/data/streams/mutations/phone/aware/activity_recogniton_ios_unification.R
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For RAPIDS columns of <code>ACTIVITY_NAME</code> and <code>ACTIVITY_TYPE</code>:</p>
+<ul>
+<li>if stream&rsquo;s <code>activities</code> field is automotive, set <code>ACTIVITY_NAME</code> = in_vehicle and <code>ACTIVITY_TYPE</code> = 0</li>
+<li>if stream&rsquo;s <code>activities</code> field is cycling, set <code>ACTIVITY_NAME</code> = on_bicycle and <code>ACTIVITY_TYPE</code> = 1</li>
+<li>if stream&rsquo;s <code>activities</code> field is walking, set <code>ACTIVITY_NAME</code> = walking and <code>ACTIVITY_TYPE</code> = 7</li>
+<li>if stream&rsquo;s <code>activities</code> field is running, set <code>ACTIVITY_NAME</code> = running and <code>ACTIVITY_TYPE</code> = 8</li>
+<li>if stream&rsquo;s <code>activities</code> field is stationary, set <code>ACTIVITY_NAME</code> = still and <code>ACTIVITY_TYPE</code> = 3</li>
+<li>if stream&rsquo;s <code>activities</code> field is unknown, set <code>ACTIVITY_NAME</code> = unknown and  <code>ACTIVITY_TYPE</code> = 4</li>
+</ul>
+<p>For RAPIDS <code>CONFIDENCE</code> column:</p>
+<ul>
+<li>if stream&rsquo;s <code>confidence</code> field is 0, set <code>CONFIDENCE</code> = 0</li>
+<li>if stream&rsquo;s <code>confidence</code> field is 1, set <code>CONFIDENCE</code> = 50</li>
+<li>if stream&rsquo;s <code>confidence</code> field is 2, set <code>CONFIDENCE</code> = 100</li>
+</ul>
+</div>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_APPLICATIONS_CRASHES</summary>
+<div class="tabbed-set" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>PACKAGE_NAME</td>
+<td>package_name</td>
+</tr>
+<tr>
+<td>APPLICATION_NAME</td>
+<td>application_name</td>
+</tr>
+<tr>
+<td>APPLICATION_VERSION</td>
+<td>application_version</td>
+</tr>
+<tr>
+<td>ERROR_SHORT</td>
+<td>error_short</td>
+</tr>
+<tr>
+<td>ERROR_LONG</td>
+<td>error_long</td>
+</tr>
+<tr>
+<td>ERROR_CONDITION</td>
+<td>error_condition</td>
+</tr>
+<tr>
+<td>IS_SYSTEM_APP</td>
+<td>is_system_app</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">IOS</label><div class="tabbed-content">
+<p>This sensor is not supported by iOS devices.</p>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_APPLICATIONS_FOREGROUND</summary>
+<div class="tabbed-set" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>PACKAGE_NAME</td>
+<td>package_name</td>
+</tr>
+<tr>
+<td>APPLICATION_NAME</td>
+<td>application_name</td>
+</tr>
+<tr>
+<td>IS_SYSTEM_APP</td>
+<td>is_system_app</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><label for="__tabbed_4_2">IOS</label><div class="tabbed-content">
+<p>This sensor is not supported by iOS devices.</p>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_APPLICATIONS_NOTIFICATIONS</summary>
+<div class="tabbed-set" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><label for="__tabbed_5_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>PACKAGE_NAME</td>
+<td>package_name</td>
+</tr>
+<tr>
+<td>APPLICATION_NAME</td>
+<td>application_name</td>
+</tr>
+<tr>
+<td>TEXT</td>
+<td>text</td>
+</tr>
+<tr>
+<td>SOUND</td>
+<td>sound</td>
+</tr>
+<tr>
+<td>VIBRATE</td>
+<td>vibrate</td>
+</tr>
+<tr>
+<td>DEFAULTS</td>
+<td>defaults</td>
+</tr>
+<tr>
+<td>FLAGS</td>
+<td>flags</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><label for="__tabbed_5_2">IOS</label><div class="tabbed-content">
+<p>This sensor is not supported by iOS devices.</p>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_BATTERY</summary>
+<div class="tabbed-set" data-tabs="6:3"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><label for="__tabbed_6_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>BATTERY_STATUS</td>
+<td>battery_status</td>
+</tr>
+<tr>
+<td>BATTERY_LEVEL</td>
+<td>battery_level</td>
+</tr>
+<tr>
+<td>BATTERY_SCALE</td>
+<td>battery_scale</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><label for="__tabbed_6_2">IOS Client V1</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>BATTERY_STATUS</td>
+<td>FLAG_TO_MUTATE</td>
+</tr>
+<tr>
+<td>BATTERY_LEVEL</td>
+<td>battery_level</td>
+</tr>
+<tr>
+<td>BATTERY_SCALE</td>
+<td>battery_scale</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Script column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BATTERY_STATUS</td>
+<td>battery_status</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>SCRIPTS</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>src/data/streams/mutations/phone/aware/battery_ios_unification.R
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For RAPIDS <code>BATTERY_STATUS</code> column:</p>
+<ul>
+<li>if stream&rsquo;s <code>battery_status</code> field is 3, set <code>BATTERY_STATUS</code> = 5 (full status)</li>
+<li>if stream&rsquo;s <code>battery_status</code> field is 1, set <code>BATTERY_STATUS</code> = 3 (discharge)</li>
+</ul>
+</div>
+</div>
+<input id="__tabbed_6_3" name="__tabbed_6" type="radio" /><label for="__tabbed_6_3">IOS Client V2</label><div class="tabbed-content">
+<p>Same as ANDROID</p>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_BLUETOOTH</summary>
+<div class="tabbed-set" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><label for="__tabbed_7_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>BT_ADDRESS</td>
+<td>bt_address</td>
+</tr>
+<tr>
+<td>BT_NAME</td>
+<td>bt_name</td>
+</tr>
+<tr>
+<td>BT_RSSI</td>
+<td>bt_rssi</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><label for="__tabbed_7_2">IOS</label><div class="tabbed-content">
+<p>Only old iOS versions supported this sensor (same mapping as Android).</p>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_CALLS</summary>
+<div class="tabbed-set" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><label for="__tabbed_8_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>CALL_TYPE</td>
+<td>call_type</td>
+</tr>
+<tr>
+<td>CALL_DURATION</td>
+<td>call_duration</td>
+</tr>
+<tr>
+<td>TRACE</td>
+<td>trace</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><label for="__tabbed_8_2">IOS</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>CALL_TYPE</td>
+<td>FLAG_TO_MUTATE</td>
+</tr>
+<tr>
+<td>CALL_DURATION</td>
+<td>call_duration</td>
+</tr>
+<tr>
+<td>TRACE</td>
+<td>trace</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Script column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CALL_TYPE</td>
+<td>call_type</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>SCRIPTS</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>src/data/streams/mutations/phone/aware/calls_ios_unification.R
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We transform iOS call logs into Android&rsquo;s format. iOS stores call status: 1=incoming, 2=connected, 3=dialing, 4=disconnected, as opposed to Android&rsquo;s events: 1=incoming, 2=outgoing, 3=missed. </p>
+<p>We follow this algorithm to convert iOS call data (there are some inaccuracies in the way we handle sequences, see new rules below):</p>
+<ul>
+<li>Search for the disconnected (4) status as it is common to all calls</li>
+<li>Group all events that preceded every status 4</li>
+<li>We convert every 1,2,4 (or 2,1,4) sequence to an incoming call</li>
+<li>We convert every 3,2,4 (or 2,3,4) sequence to an outgoing call</li>
+<li>We convert every 1,4 or 3,4 sequence to a missed call (either incoming or outgoing)</li>
+<li>We set the duration of the call to be the sum of every status (dialing/ringing to hangup) as opposed to the duration of the last status (pick up to hang up)</li>
+</ul>
+<p><strong>Tested with an Android (OnePlus 7T) and an iPhone XR</strong></p>
+<table>
+<thead>
+<tr>
+<th>Call type</th>
+<th>Android (duration)</th>
+<th>iOS (duration)</th>
+<th>New Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Outgoing missed ended by me</td>
+<td>2 (0)</td>
+<td>3,4 (0,X)</td>
+<td>3,4 is converted to 2 with duration 0</td>
+</tr>
+<tr>
+<td>Outgoing missed ended by them</td>
+<td>2(0)</td>
+<td>3,2,4 (0,X,X2)</td>
+<td>3,2,4 is converted to 2 with duration X2*</td>
+</tr>
+<tr>
+<td>Incoming missed ended by me</td>
+<td>NA**</td>
+<td>1,4 (0,X)</td>
+<td>1,4 is converted to 3 with duration 0</td>
+</tr>
+<tr>
+<td>Incoming missed ended by them</td>
+<td>3(0)</td>
+<td>1,4 (0,X)</td>
+<td>1,4 is converted to 3 with duration 0</td>
+</tr>
+<tr>
+<td>Outgoing answered</td>
+<td>2(X excluding dialing time)</td>
+<td>3,2,4 (0,X,X2)</td>
+<td>3,2,4 is converted to 2 with duration X2</td>
+</tr>
+<tr>
+<td>Incoming answered</td>
+<td>1(X excluding dialing time)</td>
+<td>1,2,4 (0,X,X2)</td>
+<td>1,2,4 is converted to 1 with duration X2</td>
+</tr>
+</tbody>
+</table>
+<p>.* There is no way to differentiate an outgoing missed call ended by them from an outgoing answered call because the phone goes directly to voice mail and it counts as call time (essentially the voice mail answered).</p>
+<p>.** Android does not record incoming missed calls ended by the participant, just those ended by the person calling or ignored by the participant.</p>
+</div>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_CONVERSATION</summary>
+<div class="tabbed-set" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><label for="__tabbed_9_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>DOUBLE_ENERGY</td>
+<td>double_energy</td>
+</tr>
+<tr>
+<td>INFERENCE</td>
+<td>inference</td>
+</tr>
+<tr>
+<td>DOUBLE_CONVO_START</td>
+<td>double_convo_start</td>
+</tr>
+<tr>
+<td>DOUBLE_CONVO_END</td>
+<td>double_convo_end</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><label for="__tabbed_9_2">IOS</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>DOUBLE_ENERGY</td>
+<td>double_energy</td>
+</tr>
+<tr>
+<td>INFERENCE</td>
+<td>inference</td>
+</tr>
+<tr>
+<td>DOUBLE_CONVO_START</td>
+<td>FLAG_TO_MUTATE</td>
+</tr>
+<tr>
+<td>DOUBLE_CONVO_END</td>
+<td>FLAG_TO_MUTATE</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Script column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOUBLE_CONVO_START</td>
+<td>double_convo_start</td>
+</tr>
+<tr>
+<td>DOUBLE_CONVO_END</td>
+<td>double_convo_end</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>SCRIPTS</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>src/data/streams/mutations/phone/aware/conversation_ios_timestamp.R
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For RAPIDS columns of <code>DOUBLE_CONVO_START</code> and <code>DOUBLE_CONVO_END</code>:</p>
+<ul>
+<li>if stream&rsquo;s <code>double_convo_start</code> field is smaller than 9999999999, it is in seconds instead of milliseconds. Set <code>DOUBLE_CONVO_START</code> = 1000 * <code>double_convo_start</code>.</li>
+<li>if stream&rsquo;s <code>double_convo_end</code> field is smaller than 9999999999, it is in seconds instead of milliseconds. Set <code>DOUBLE_CONVO_END</code> = 1000 * <code>double_convo_end</code>.</li>
+</ul>
+</div>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_KEYBOARD</summary>
+<div class="tabbed-set" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><label for="__tabbed_10_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>PACKAGE_NAME</td>
+<td>package_name</td>
+</tr>
+<tr>
+<td>BEFORE_TEXT</td>
+<td>before_text</td>
+</tr>
+<tr>
+<td>CURRENT_TEXT</td>
+<td>current_text</td>
+</tr>
+<tr>
+<td>IS_PASSWORD</td>
+<td>is_password</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><label for="__tabbed_10_2">IOS</label><div class="tabbed-content">
+<p>This sensor is not supported by iOS devices.</p>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_LIGHT</summary>
+<div class="tabbed-set" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><label for="__tabbed_11_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>DOUBLE_LIGHT_LUX</td>
+<td>double_light_lux</td>
+</tr>
+<tr>
+<td>ACCURACY</td>
+<td>accuracy</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><label for="__tabbed_11_2">IOS</label><div class="tabbed-content">
+<p>This sensor is not supported by iOS devices.</p>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_LOCATIONS</summary>
+<div class="tabbed-set" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><label for="__tabbed_12_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>DOUBLE_LATITUDE</td>
+<td>double_latitude</td>
+</tr>
+<tr>
+<td>DOUBLE_LONGITUDE</td>
+<td>double_longitude</td>
+</tr>
+<tr>
+<td>DOUBLE_BEARING</td>
+<td>double_bearing</td>
+</tr>
+<tr>
+<td>DOUBLE_SPEED</td>
+<td>double_speed</td>
+</tr>
+<tr>
+<td>DOUBLE_ALTITUDE</td>
+<td>double_altitude</td>
+</tr>
+<tr>
+<td>PROVIDER</td>
+<td>provider</td>
+</tr>
+<tr>
+<td>ACCURACY</td>
+<td>accuracy</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><label for="__tabbed_12_2">IOS</label><div class="tabbed-content">
+<p>Same as ANDROID</p>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_LOG</summary>
+<div class="tabbed-set" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><label for="__tabbed_13_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>LOG_MESSAGE</td>
+<td>log_message</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><label for="__tabbed_13_2">IOS</label><div class="tabbed-content">
+<p>Same as ANDROID</p>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_MESSAGES</summary>
+<div class="tabbed-set" data-tabs="14:2"><input checked="checked" id="__tabbed_14_1" name="__tabbed_14" type="radio" /><label for="__tabbed_14_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>MESSAGE_TYPE</td>
+<td>message_type</td>
+</tr>
+<tr>
+<td>TRACE</td>
+<td>trace</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_14_2" name="__tabbed_14" type="radio" /><label for="__tabbed_14_2">IOS</label><div class="tabbed-content">
+<p>This sensor is not supported by iOS devices.</p>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_SCREEN</summary>
+<div class="tabbed-set" data-tabs="15:2"><input checked="checked" id="__tabbed_15_1" name="__tabbed_15" type="radio" /><label for="__tabbed_15_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>SCREEN_STATUS</td>
+<td>screen_status</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_15_2" name="__tabbed_15" type="radio" /><label for="__tabbed_15_2">IOS</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>SCREEN_STATUS</td>
+<td>FLAG_TO_MUTATE</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Script column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SCREEN_STATUS</td>
+<td>screen_status</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>SCRIPTS</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>src/data/streams/mutations/phone/aware/screen_ios_unification.R
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For <code>SCREEN_STATUS</code> RAPIDS column:</p>
+<ul>
+<li>if stream&rsquo;s <code>screen_status</code> field is 2 (lock episode), set <code>SCREEN_STATUS</code> = 0 (off episode).</li>
+</ul>
+</div>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_WIFI_CONNECTED</summary>
+<div class="tabbed-set" data-tabs="16:2"><input checked="checked" id="__tabbed_16_1" name="__tabbed_16" type="radio" /><label for="__tabbed_16_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>MAC_ADDRESS</td>
+<td>mac_address</td>
+</tr>
+<tr>
+<td>SSID</td>
+<td>ssid</td>
+</tr>
+<tr>
+<td>BSSID</td>
+<td>bssid</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_16_2" name="__tabbed_16" type="radio" /><label for="__tabbed_16_2">IOS</label><div class="tabbed-content">
+<p>Same as ANDROID</p>
+</div>
+</div>
+</details>
+<details class="info">
+<summary>PHONE_WIFI_VISIBLE</summary>
+<div class="tabbed-set" data-tabs="17:2"><input checked="checked" id="__tabbed_17_1" name="__tabbed_17" type="radio" /><label for="__tabbed_17_1">ANDROID</label><div class="tabbed-content">
+<p><strong>RAPIDS_COLUMN_MAPPINGS</strong></p>
+<table>
+<thead>
+<tr>
+<th>RAPIDS column</th>
+<th>Stream column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TIMESTAMP</td>
+<td>timestamp</td>
+</tr>
+<tr>
+<td>DEVICE_ID</td>
+<td>device_id</td>
+</tr>
+<tr>
+<td>SSID</td>
+<td>ssid</td>
+</tr>
+<tr>
+<td>BSSID</td>
+<td>bssid</td>
+</tr>
+<tr>
+<td>SECURITY</td>
+<td>security</td>
+</tr>
+<tr>
+<td>FREQUENCY</td>
+<td>frequency</td>
+</tr>
+<tr>
+<td>RSSI</td>
+<td>rssi</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MUTATION</strong></p>
+<ul>
+<li><strong>COLUMN_MAPPINGS</strong> (None)</li>
+<li><strong>SCRIPTS</strong> (None)</li>
+</ul>
+</div>
+<input id="__tabbed_17_2" name="__tabbed_17" type="radio" /><label for="__tabbed_17_2">IOS</label><div class="tabbed-content">
+<p>Only old iOS versions supported this sensor (same mapping as Android).</p>
+</div>
+</div>
+</details>
 
 
 
@@ -2732,10 +3868,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.sections", "search.suggest", "search.highlight"], "search": "assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="assets/javascripts/bundle.f1b6f286.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f1b6f286.min.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       
