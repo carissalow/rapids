@@ -70,6 +70,7 @@ theme:
     - navigation.sections
     - search.suggest
     - search.highlight
+    - content.tabs
 extra_css:
     - stylesheets/extra.css
 nav:
