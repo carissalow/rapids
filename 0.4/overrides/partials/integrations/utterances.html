@@ -1,0 +1,38 @@
+<!-- Utterances integration -->
+{% if not page.is_homepage %}
+  <h2 id="__comments">{{ lang.t("meta.comments") }}</h2>
+
+   <script type="text/javascript">
+    var rapids_utterances_theme = false
+    document.onreadystatechange = function () {
+        if (document.readyState == "interactive") {
+          // wait for utterances to load and send it's first message.
+          addEventListener('message', event => {
+            if (event.origin !== 'https://utteranc.es' || rapids_utterances_theme == true) {
+              return;
+            }
+            rapids_utterances_theme = true
+            if(document.body.getAttribute("data-md-color-scheme") == "default")
+              document.querySelector("iframe.utterances-frame").contentWindow.postMessage({ type: "set-theme", theme: "github-light" },"https://utteranc.es/")
+            else
+              document.querySelector("iframe.utterances-frame").contentWindow.postMessage({ type: "set-theme", theme: "photon-dark" },"https://utteranc.es/")
+          });
+          document.getElementById('__palette_1').onclick = function(){
+            document.querySelector("iframe.utterances-frame").contentWindow.postMessage({ type: "set-theme", theme: "github-light" },"https://utteranc.es/")
+          }
+          document.getElementById('__palette_2').onclick = function(){
+            document.querySelector("iframe.utterances-frame").contentWindow.postMessage({ type: "set-theme", theme: "photon-dark" },"https://utteranc.es/")
+          }
+        }
+      }
+  </script>
+
+  <script src="https://utteranc.es/client.js"
+    repo="carissalow/rapids"
+    issue-term="pathname"
+    label="docs comments"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
+  </script>
+{% endif %}
