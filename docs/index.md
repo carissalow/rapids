@@ -12,13 +12,13 @@ RAPIDS is open source, documented, multi-platform, modular, tested, and reproduc
 
     :material-github: Bugs should be reported on [Github issues](https://github.com/carissalow/rapids/issues)
 
-    :fontawesome-solid-list-check: Questions, discussions, feature requests, and feedback can be posted on our [Github discussions](https://github.com/carissalow/rapids/discussions)
+    :material-comment-text-multiple: Questions, discussions, feature requests, and feedback can be posted on our [Github discussions](https://github.com/carissalow/rapids/discussions)
 
     :material-twitter: Keep up to date with our [Twitter feed](https://twitter.com/RAPIDS_Science) or [Slack channel](http://awareframework.com:3000/)
 
     :material-plus-network: Do you want to modify or add new functionality to RAPIDS? Check our [contributing guide](./contributing)
 
-    :fontawesome-solid-rotate: Are you upgrading from RAPIDS `0.4.x` or older? Follow this [guide](migrating-from-old-versions)
+    :material-autorenew: Are you upgrading from RAPIDS `0.4.x` or older? Follow this [guide](migrating-from-old-versions)
 
 
 ## What are the benefits of using RAPIDS?
