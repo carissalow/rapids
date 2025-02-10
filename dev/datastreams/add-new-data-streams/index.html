@@ -86,7 +86,7 @@
             <div class="md-banner__inner md-grid md-typeset">
               
   You're not viewing the latest stable version of RAPIDS.
-  <a href="https://rapids.science/latest">
+  <a href="https://rapids.science/">
     <strong> Click here to go to latest. </strong>
   </a>
 
@@ -1957,7 +1957,7 @@
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p>This is the <code>pull_data</code> function we implemented for <code>aware_mysql</code>. Note that we can <code>message</code>, <code>warn</code> or <code>stop</code> the user during execution.</p>
-<div class="highlight"><pre><span></span><code><span class="n">pull_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">stream_parameters</span><span class="p">,</span><span class="w"> </span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="n">sensor_container</span><span class="p">,</span><span class="w"> </span><span class="n">columns</span><span class="p">){</span>
+<div class="highlight"><pre><span></span><code><span class="n">pull_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">stream_parameters</span><span class="p">,</span><span class="w"> </span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="n">sensor_container</span><span class="p">,</span><span class="w"> </span><span class="n">columns</span><span class="p">){</span>
 <span class="w">    </span><span class="c1"># get_db_engine is an auxiliary function not shown here for brevity bu can be found in src/data/streams/aware_mysql/container.R</span>
 <span class="w">    </span><span class="n">dbEngine</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">get_db_engine</span><span class="p">(</span><span class="n">stream_parameters</span><span class="o">$</span><span class="n">DATABASE_GROUP</span><span class="p">)</span>
 <span class="w">    </span><span class="n">query</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;SELECT &quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="p">),</span><span class="s">&quot; FROM &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sensor_container</span><span class="p">,</span><span class="w"> </span><span class="s">&quot; WHERE device_id = &#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">device</span><span class="p">,</span><span class="s">&quot;&#39;&quot;</span><span class="p">)</span>
@@ -1967,10 +1967,10 @@
 
 <span class="w">    </span><span class="nf">dbDisconnect</span><span class="p">(</span><span class="n">dbEngine</span><span class="p">)</span>
 
-<span class="w">    </span><span class="nf">if</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">sensor_data</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">sensor_data</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
 <span class="w">        </span><span class="nf">warning</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;The device &#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">device</span><span class="p">,</span><span class="s">&quot;&#39; did not have data in &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sensor_container</span><span class="p">))</span>
 
-<span class="w">    </span><span class="nf">return</span><span class="p">(</span><span class="n">sensor_data</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">return</span><span class="p">(</span><span class="n">sensor_data</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
 </div>
@@ -2005,7 +2005,7 @@
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p>This is the <code>infer_device_os</code> function we implemented for <code>aware_mysql</code>. Note that we can <code>message</code>, <code>warn</code> or <code>stop</code> the user during execution.</p>
-<div class="highlight"><pre><span></span><code><span class="n">infer_device_os</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">stream_parameters</span><span class="p">,</span><span class="w"> </span><span class="n">device</span><span class="p">){</span>
+<div class="highlight"><pre><span></span><code><span class="n">infer_device_os</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">stream_parameters</span><span class="p">,</span><span class="w"> </span><span class="n">device</span><span class="p">){</span>
 <span class="w">    </span><span class="c1"># get_db_engine is an auxiliary function not shown here for brevity bu can be found in src/data/streams/aware_mysql/container.R</span>
 <span class="w">    </span><span class="n">group</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">stream_parameters</span><span class="o">$</span><span class="n">DATABASE_GROUP</span>
 
@@ -2015,12 +2015,12 @@
 <span class="w">    </span><span class="n">os</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">dbGetQuery</span><span class="p">(</span><span class="n">dbEngine</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="p">)</span>
 <span class="w">    </span><span class="nf">dbDisconnect</span><span class="p">(</span><span class="n">dbEngine</span><span class="p">)</span>
 
-<span class="w">    </span><span class="nf">if</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">os</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
-<span class="w">        </span><span class="nf">return</span><span class="p">(</span><span class="n">os</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">os</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="n">brand</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;iPhone&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ios&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;android&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">pull</span><span class="p">(</span><span class="n">os</span><span class="p">))</span>
-<span class="w">    </span><span class="n">else</span>
+<span class="w">    </span><span class="kr">if</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">os</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="w">        </span><span class="kr">return</span><span class="p">(</span><span class="n">os</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">os</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="n">brand</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;iPhone&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ios&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;android&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">pull</span><span class="p">(</span><span class="n">os</span><span class="p">))</span>
+<span class="w">    </span><span class="kr">else</span>
 <span class="w">        </span><span class="nf">stop</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;We cannot infer the OS of the following device id because it does not exist in the aware_device table:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">device</span><span class="p">))</span>
 
-<span class="w">    </span><span class="nf">return</span><span class="p">(</span><span class="n">os</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">return</span><span class="p">(</span><span class="n">os</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
 </div>
@@ -2114,9 +2114,9 @@
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Example of a python mutation script
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream_parameters</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream_parameters</span><span class="p">):</span>
     <span class="c1"># mutate data</span>
     <span class="k">return</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></p>
@@ -2126,9 +2126,9 @@
 <div class="highlight"><pre><span></span><code><span class="nf">source</span><span class="p">(</span><span class="s">&quot;renv/activate.R&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1"># needed to use RAPIDS renv environment</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
 
-<span class="n">main</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">stream_parameters</span><span class="p">){</span>
+<span class="n">main</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">stream_parameters</span><span class="p">){</span>
 <span class="w">    </span><span class="c1"># mutate data</span>
-<span class="w">    </span><span class="nf">return</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">return</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div></p>
 </div>
@@ -2155,9 +2155,9 @@
 <span class="hll"><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">src/data/streams/mutations/phone/beiwe/beiwe_split_acc.py</span>
 </span></code></pre></div>
 <p>This is a draft of <code>beiwe_split_acc.py</code> <code>MUTATION_SCRIPT</code>:
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream_parameters</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream_parameters</span><span class="p">):</span>
     <span class="c1"># data has the acc_col</span>
     <span class="c1"># split acc_col into three columns: double_values_0, double_values_1, double_values_2 to match RAPIDS format</span>
     <span class="c1"># remove acc_col since we don&#39;t need it anymore</span>
@@ -2199,7 +2199,7 @@
 <span class="nf">library</span><span class="p">(</span><span class="s">&quot;dplyr&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">warn.conflicts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">F</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span>
 
-<span class="n">clean_ios_activity_column</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">ios_gar</span><span class="p">){</span>
+<span class="n">clean_ios_activity_column</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">ios_gar</span><span class="p">){</span>
 <span class="w">    </span><span class="n">ios_gar</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ios_gar</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">        </span><span class="nf">mutate</span><span class="p">(</span><span class="n">activities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">str_replace_all</span><span class="p">(</span><span class="n">activities</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;(&quot;|\\[|\\])&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">replacement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">))</span>
 
@@ -2211,17 +2211,17 @@
 
 <span class="w">    </span><span class="n">known_multiple_activities</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;stationary,automotive&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="n">unkown_multiple_actvities</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">setdiff</span><span class="p">(</span><span class="n">existent_multiple_activities</span><span class="p">,</span><span class="w"> </span><span class="n">known_multiple_activities</span><span class="p">)</span>
-<span class="w">    </span><span class="nf">if</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">unkown_multiple_actvities</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">){</span>
+<span class="w">    </span><span class="kr">if</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">unkown_multiple_actvities</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">){</span>
 <span class="w">        </span><span class="nf">stop</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;There are unkwown combinations of ios activities, you need to implement the decision of the ones to keep: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">unkown_multiple_actvities</span><span class="p">))</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="n">ios_gar</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ios_gar</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">        </span><span class="nf">mutate</span><span class="p">(</span><span class="n">activities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">str_replace_all</span><span class="p">(</span><span class="n">activities</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;stationary,automotive&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">replacement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;automotive&quot;</span><span class="p">))</span>
 
-<span class="w">    </span><span class="nf">return</span><span class="p">(</span><span class="n">ios_gar</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">return</span><span class="p">(</span><span class="n">ios_gar</span><span class="p">)</span>
 <span class="p">}</span>
 
-<span class="n">unify_ios_activity_recognition</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">ios_gar</span><span class="p">){</span>
+<span class="n">unify_ios_activity_recognition</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">ios_gar</span><span class="p">){</span>
 <span class="w">    </span><span class="c1"># We only need to unify Google Activity Recognition data for iOS</span>
 <span class="w">    </span><span class="c1"># discard rows where activities column is blank</span>
 <span class="w">    </span><span class="n">ios_gar</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ios_gar</span><span class="p">[</span><span class="o">-</span><span class="nf">which</span><span class="p">(</span><span class="n">ios_gar</span><span class="o">$</span><span class="n">activities</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">),</span><span class="w"> </span><span class="p">]</span>
@@ -2247,11 +2247,11 @@
 <span class="w">                                    </span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
 <span class="w">        </span><span class="nf">select</span><span class="p">(</span><span class="o">-</span><span class="n">activities</span><span class="p">)</span>
 
-<span class="w">    </span><span class="nf">return</span><span class="p">(</span><span class="n">ios_gar</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">return</span><span class="p">(</span><span class="n">ios_gar</span><span class="p">)</span>
 <span class="p">}</span>
 
-<span class="n">main</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">stream_parameters</span><span class="p">){</span>
-<span class="w">    </span><span class="nf">return</span><span class="p">(</span><span class="nf">unify_ios_activity_recognition</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">stream_parameters</span><span class="p">))</span>
+<span class="n">main</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">stream_parameters</span><span class="p">){</span>
+<span class="w">    </span><span class="kr">return</span><span class="p">(</span><span class="nf">unify_ios_activity_recognition</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">stream_parameters</span><span class="p">))</span>
 <span class="p">}</span>
 </code></pre></div></p>
 </details>
@@ -2379,7 +2379,7 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.df8cae7d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "search.suggest", "search.highlight", "content.tabs"], "search": "../../assets/javascripts/workers/search.df8cae7d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.0c4ae912.min.js"></script>
