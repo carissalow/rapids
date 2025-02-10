@@ -28,7 +28,7 @@ markdown_extensions:
     - pymdownx.snippets:
         check_paths: True
     - pymdownx.tabbed:
-        alternate_style: true
+        alternate_style: True
     - pymdownx.tasklist:
         custom_checkbox: True
     - pymdownx.tilde
