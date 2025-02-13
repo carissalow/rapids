@@ -21,6 +21,10 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         docker run -it moshiresearch/rapids:latest
         ```
 
+        !!! note
+            On M1 and M2 chip Macs, you may need to use the following command to run the RAPIDS container:  
+            `docker run -it --platform linux/x86_64 moshiresearch/rapids:latest`
+
     4.  Pull the latest version of RAPIDS
 
         ``` bash
@@ -75,7 +79,7 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         brew services start mysql
         ```
 
-    3.  Install R 4.2, pandoc and rmarkdown. If you have other instances of R, we recommend uninstalling them
+    3.  Install R 4.2.3, pandoc and rmarkdown. If you have other instances of R, we recommend uninstalling them
 
         ``` bash
         brew install r
@@ -129,6 +133,12 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
 
     We tested RAPIDS on Ubuntu 18.04 & 20.04. Note that the necessary Python and R packages are available in other Linux distributions, so if you decide to give it a try, let us know and we can update these docs.
 
+    ??? info "Ubuntu Compatibility"
+        RAPIDS has not been tested on newer versions of Ubuntu. The officially supported versions are **Ubuntu 18.04 (Bionic) and 20.04 (Focal)**. 
+
+        Newer versions such as **Ubuntu 22.04 (Jammy) and 24.04 (Noble)** may encounter dependency or library compatibility issues. If you choose to run RAPIDS on an unsupported version, be prepared to troubleshoot package dependencies and potential incompatibilities.
+
+
     1.  Install dependencies
 
         ``` bash
@@ -165,7 +175,8 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
             sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
             ```
 
-    5. Install R 4.2. If you have other instances of R, we recommend uninstalling them. Note you may need to include the `-y --allow-downgrades` flags in order to install this R version; please use with caution
+    5. Install R 4.2.3. If you have other R versions, we recommend uninstalling them to avoid conflicts. Some package managers block older versions if a newer one is installed. If needed, use `-y --allow-downgrades`, but be cautious—this may overwrite dependencies and affect other projects.
+
 
         ``` bash
         sudo apt update
@@ -185,9 +196,14 @@ You can install RAPIDS using Docker (the fastest), or native instructions for Ma
         sudo apt install git
         ```
 
-    8.  Install [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)
+    8. Install [Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) 
 
-    9.  Restart your current shell
+    9. Restart your current shell to apply changes. You can do this by either closing and reopening your terminal or running:
+    
+        ```bash
+        source ~/.bashrc  # For Bash
+        source ~/.zshrc   # For Zsh
+        ```
 
     10. Clone our repo:
 
