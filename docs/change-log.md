@@ -7,7 +7,9 @@
 - Update tests for phone accelerometer
 - Update R version, packages, and package versions in `renv.lock`
 - Update deprecated GitHub actions
-
+- Update installation documentation for Docker, Mac and Ubuntu
+- Fix website issues, including icons, tabs, and URLs
+  
 ## v1.10.0  
 
 - Add functionality to pull data from multiple containers per phone sensor  
