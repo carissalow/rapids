@@ -8,7 +8,8 @@
 - Update R version, packages, and package versions in `renv.lock`
 - Update deprecated GitHub actions
 - Update installation documentation for Docker, Mac and Ubuntu
-- Fix website issues, including icons, tabs, and URLs
+- Fix website issues, including icons, tabs, and URLs.
+- Add automatic deployment to update website changes on every push.
   
 ## v1.10.0  
 
