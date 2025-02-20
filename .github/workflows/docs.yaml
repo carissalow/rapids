@@ -29,7 +29,13 @@ jobs:
       - if: startsWith(github.ref, 'refs/tags')
         run: mike deploy --push --update-aliases $DOCS_TAG latest
       - if: ${{ github.ref == 'refs/heads/develop' }}
-        run: mike deploy --push --update-aliases dev
+        run: |
+          mike deploy --push --update-aliases dev
+          mike alias latest $DOCS_TAG --push  # Update 'latest' to new stable version
+      - if: ${{ github.ref == 'refs/heads/develop' }}       # Deploy 'dev' version AND update 'latest' when develop branch is updated
+        run: | #Deploy dev and Update 'latest' to reflect ongoing changes
+          mike deploy --push --update-aliases dev
+          mike alias latest dev --push
 
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
