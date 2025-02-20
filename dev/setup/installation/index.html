@@ -2550,6 +2550,11 @@
     prompt in the main RAPIDS folder with its python environment active)</p>
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>moshiresearch/rapids:latest
 </code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On M1 and M2 chip Macs, you may need to use the following command to run the RAPIDS container:<br />
+<code>docker run -it --platform linux/x86_64 moshiresearch/rapids:latest</code></p>
+</div>
 </li>
 <li>
 <p>Pull the latest version of RAPIDS</p>
@@ -2622,7 +2627,7 @@ brew<span class="w"> </span>services<span class="w"> </span>start<span class="w"
 </code></pre></div>
 </li>
 <li>
-<p>Install R 4.2, pandoc and rmarkdown. If you have other instances of R, we recommend uninstalling them</p>
+<p>Install R 4.2.3, pandoc and rmarkdown. If you have other instances of R, we recommend uninstalling them</p>
 <div class="highlight"><pre><span></span><code>brew<span class="w"> </span>install<span class="w"> </span>r
 brew<span class="w"> </span>install<span class="w"> </span>pandoc
 Rscript<span class="w"> </span>--vanilla<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;install.packages(&quot;rmarkdown&quot;, repos=&quot;http://cran.us.r-project.org&quot;)&#39;</span>
@@ -2670,6 +2675,11 @@ snakemake<span class="w"> </span>-j1<span class="w"> </span>renv_restore
 </div>
 <div class="tabbed-block">
 <p>We tested RAPIDS on Ubuntu 18.04 &amp; 20.04. Note that the necessary Python and R packages are available in other Linux distributions, so if you decide to give it a try, let us know and we can update these docs.</p>
+<details class="info">
+<summary>Ubuntu Compatibility</summary>
+<p>RAPIDS has not been tested on newer versions of Ubuntu. The officially supported versions are <strong>Ubuntu 18.04 (Bionic) and 20.04 (Focal)</strong>. </p>
+<p>Newer versions such as <strong>Ubuntu 22.04 (Jammy) and 24.04 (Noble)</strong> may encounter dependency or library compatibility issues. If you choose to run RAPIDS on an unsupported version, be prepared to troubleshoot package dependencies and potential incompatibilities.</p>
+</details>
 <ol>
 <li>
 <p>Install dependencies</p>
@@ -2706,7 +2716,7 @@ sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> <
 </div>
 </li>
 <li>
-<p>Install R 4.2. If you have other instances of R, we recommend uninstalling them. Note you may need to include the <code>-y --allow-downgrades</code> flags in order to install this R version; please use with caution</p>
+<p>Install R 4.2.3. If you have other R versions, we recommend uninstalling them to avoid conflicts. Some package managers block older versions if a newer one is installed. If needed, use <code>-y --allow-downgrades</code>, but be cautious—this may overwrite dependencies and affect other projects.</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>update
 sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>r-base-core<span class="o">=</span><span class="m">4</span>.2.3-1.2004.0
 </code></pre></div>
@@ -2723,10 +2733,13 @@ sudo<span class="w"> </span>Rscript<span class="w"> </span>--vanilla<span class=
 </code></pre></div>
 </li>
 <li>
-<p>Install <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html">miniconda</a></p>
+<p>Install <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html">Miniconda</a> </p>
 </li>
 <li>
-<p>Restart your current shell</p>
+<p>Restart your current shell to apply changes. You can do this by either closing and reopening your terminal or running:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">source</span><span class="w"> </span>~/.bashrc<span class="w">  </span><span class="c1"># For Bash</span>
+<span class="nb">source</span><span class="w"> </span>~/.zshrc<span class="w">   </span><span class="c1"># For Zsh</span>
+</code></pre></div>
 </li>
 <li>
 <p>Clone our repo:</p>
