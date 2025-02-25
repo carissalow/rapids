@@ -9,27 +9,39 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - if: ${{ github.ref == 'refs/heads/develop' }} #we delay develop because when we release a hotgix (tag + develop push), one of these push will be out of sync
+      - if: ${{ github.ref == 'refs/heads/develop' }} # Delay develop to prevent out-of-sync updates
         uses: jakejarvis/wait-action@master
         with:
           time: '60s'
+
       - uses: actions/setup-python@v2
         with:
           python-version: 3.x
+
       - run: pip install git+https://${GH_TOKEN}@github.com/carissalow/mkdocs-material-insiders.git
       - run: pip install mike
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
       - run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
+
       - run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - run: echo "DOCS_TAG=$(echo $RELEASE_VERSION | sed -n "s/v\([0-9]\+\.[0-9]\+\).*$/\1/p")" >> $GITHUB_ENV
+
+      # Deploy and update 'latest' on tagged releases
       - if: startsWith(github.ref, 'refs/tags')
-        run: mike deploy --push --update-aliases $DOCS_TAG latest
+        run: |
+          mike deploy --push --update-aliases $DOCS_TAG latest
+
+      # Deploy 'dev' and update 'latest' to 'dev' on develop branch updates
       - if: ${{ github.ref == 'refs/heads/develop' }}
-        run: mike deploy --push --update-aliases dev
+        run: |
+          mike deploy --push --update-aliases dev
+          mike alias latest dev --push  # Ensure 'latest' always reflects the most recent build
 
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
