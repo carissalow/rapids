@@ -43,7 +43,5 @@ jobs:
           mike deploy --push dev  # Always redeploy to update docs
           mike alias latest dev --push  # Ensure 'latest' always follows 'dev'
 
-
-
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
