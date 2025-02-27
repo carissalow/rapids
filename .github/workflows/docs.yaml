@@ -40,8 +40,9 @@ jobs:
       # Deploy 'dev' and update 'latest' to 'dev' on develop branch updates
       - if: ${{ github.ref == 'refs/heads/develop' }}
         run: |
-          mike list | grep -q '^dev$' || mike deploy --push --update-aliases dev
-          mike alias latest dev --push
+          mike deploy --push dev  # Always redeploy to update docs
+          mike alias latest dev --push  # Ensure 'latest' always follows 'dev'
+
 
 
 env:
