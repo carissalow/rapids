@@ -1,5 +1,12 @@
 [
   {
+    "version": "mike",
+    "title": "mike",
+    "aliases": [
+      "list"
+    ]
+  },
+  {
     "version": "dev",
     "title": "dev",
     "aliases": []
