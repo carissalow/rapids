@@ -1,5 +1,9 @@
 # Change Log
 
+## v1.10.2 
+
+- Fix bug in phone locations radius of gyration feature that caused weights and data for weighted average to have different dimensions  
+- Update tests and docker workflow runner images from Ubuntu 20.04 to Ubuntu 22.04  
 
 ## v1.10.1
 
