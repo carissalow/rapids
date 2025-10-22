@@ -28,6 +28,8 @@ jobs:
           # sudo apt install libcurl4-openssl-dev
           # sudo apt install libssl-dev
           # sudo apt install libxml2-dev
+          wget http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu66_66.1-2ubuntu2_amd64.deb
+          sudo dpkg -i libicu66_66.1-2ubuntu2_amd64.deb
           sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
           sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' 
           sudo apt install -y --allow-downgrades r-base-core=4.2.3-1.2004.0
