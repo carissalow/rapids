@@ -2,6 +2,7 @@
 
 ## v1.10.2 
 
+- Add significant location cluster centroid latitude and longitude features to phone locations Doryab provider   
 - Fix bug in phone locations radius of gyration feature that caused weights and data for weighted average to have different dimensions  
 - Update tests and docker workflow runner images from Ubuntu 20.04 to Ubuntu 22.04  
 

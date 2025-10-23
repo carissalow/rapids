@@ -4,9 +4,7 @@ import pandas as pd
 from phone_locations.doryab.doryab_clustering import haversine, create_clustering_hyperparameters, cluster
 
 
-
 def apply_cluster_strategy(location_data, time_segment, clustering_algorithm, dbscan_eps, dbscan_minsamples, cluster_on, filter_data_by_segment):
-
     hyperparameters = create_clustering_hyperparameters(clustering_algorithm, dbscan_eps, dbscan_minsamples)
 
     if cluster_on == "PARTICIPANT_DATASET":
@@ -27,6 +25,7 @@ def apply_cluster_strategy(location_data, time_segment, clustering_algorithm, db
 
 def variance_and_logvariance_features(location_data, location_features):
     location_data_grouped = location_data.groupby("local_segment")
+    
     location_data["latitude_X_duration"] = location_data["double_latitude"] * location_data["duration"]
     location_data["longitude_X_duration"] = location_data["double_longitude"] * location_data["duration"]
     
@@ -42,7 +41,6 @@ def variance_and_logvariance_features(location_data, location_features):
     return location_features
 
 def distance_and_speed_features(moving_data):
-
     distance_and_speed = moving_data[["local_segment", "distance"]].groupby(["local_segment"]).sum().rename(columns={"distance": "totaldistance"})
     
     moving_data_grouped = moving_data.groupby(["local_segment"])
@@ -56,23 +54,33 @@ def distance_and_speed_features(moving_data):
     
     return distance_and_speed
 
-def radius_of_gyration(location_data):
-    if location_data.empty:
-        return np.nan
-
+def cluster_centroids(location_data):
     # reset index so that it is unique which ensures weights have same dimension as data for weighted mean
     location_data_copy = location_data.copy()
     location_data_copy.reset_index(drop=True, inplace=True)
 
     # define a lambda function to compute the weighted mean for each cluster
     weighted_mean = lambda x: np.average(x, weights=location_data_copy.loc[x.index, "duration"])
+
+    centroids = (
+        location_data_copy
+        .groupby(["local_segment", "cluster_label"])
+        .agg(
+            double_latitude = ("double_latitude", weighted_mean),
+            double_longitude = ("double_longitude", weighted_mean),
+            time_in_a_cluster = ("duration", "sum")
+        )
+        .reset_index()
+    )
+
+    return centroids
+
+def radius_of_gyration(location_data):
+    if location_data.empty:
+        return np.nan
  
     # center is the centroid of the places visited during a segment instance, not the home location
-    clusters = location_data_copy.groupby(["local_segment", "cluster_label"]).agg(
-        double_latitude = ("double_latitude", weighted_mean),
-        double_longitude = ("double_longitude", weighted_mean),
-        time_in_a_cluster = ("duration", "sum")
-    ).reset_index()
+    clusters = cluster_centroids(location_data)
 
     # redefine the lambda function to compute the weighted mean across clusters
     weighted_mean = lambda x: np.average(x, weights=clusters.loc[x.index, "time_in_a_cluster"])
@@ -90,24 +98,36 @@ def cluster_stay(x, stay_at_clusters, cluster_n):
     time_at_topn = topn_cluster_label.iloc[0] if len(topn_cluster_label) == 1 else None
     return time_at_topn
 
-def stay_at_topn_clusters(location_data):
-
+def stay_at_topn_clusters(location_data, include_coordinates):
     stay_at_clusters = location_data[["local_segment", "cluster_label", "duration"]].groupby(["local_segment", "cluster_label"], sort=True).sum().reset_index()
 
     stay_at_clusters_features = stay_at_clusters.groupby(["local_segment"]).agg(        
-        timeattop1location=("duration", lambda x: cluster_stay(x, stay_at_clusters, 1)),
-        timeattop2location=("duration", lambda x: cluster_stay(x, stay_at_clusters, 2)),
-        timeattop3location=("duration", lambda x: cluster_stay(x, stay_at_clusters, 3)),
-        maxlengthstayatclusters=("duration", "max"),
-        minlengthstayatclusters=("duration", "min"),
-        avglengthstayatclusters=("duration", "mean"),
-        stdlengthstayatclusters=("duration", "std")
+        timeattop1location = ("duration", lambda x: cluster_stay(x, stay_at_clusters, 1)),
+        timeattop2location = ("duration", lambda x: cluster_stay(x, stay_at_clusters, 2)),
+        timeattop3location = ("duration", lambda x: cluster_stay(x, stay_at_clusters, 3)),
+        maxlengthstayatclusters = ("duration", "max"),
+        minlengthstayatclusters = ("duration", "min"),
+        avglengthstayatclusters = ("duration", "mean"),
+        stdlengthstayatclusters = ("duration", "std")
     ).fillna(0)
 
+    if include_coordinates:
+        centroids = cluster_centroids(location_data)
+
+        centroids_features = centroids.groupby(["local_segment"]).agg(     
+            latitudetop1location = ("double_latitude", lambda x: cluster_stay(x, stay_at_clusters, 1)),
+            latitudetop2location = ("double_latitude", lambda x: cluster_stay(x, stay_at_clusters, 2)),
+            latitudetop3location = ("double_latitude", lambda x: cluster_stay(x, stay_at_clusters, 3)),
+            longitudetop1location = ("double_longitude", lambda x: cluster_stay(x, stay_at_clusters, 1)),
+            longitudetop2location = ("double_longitude", lambda x: cluster_stay(x, stay_at_clusters, 2)),
+            longitudetop3location = ("double_longitude", lambda x: cluster_stay(x, stay_at_clusters, 3))
+        )
+
+        stay_at_clusters_features = stay_at_clusters_features.merge(centroids_features, how="outer", left_index=True, right_index=True)
+    
     return stay_at_clusters_features
 
 def location_entropy(location_data):
-
     location_data = location_data.groupby(["local_segment", "cluster_label"])[["duration"]].sum().reset_index().rename(columns={"duration": "cluster_duration"})
     location_data["all_clusters_duration"] = location_data.groupby(["local_segment"])["cluster_duration"].transform("sum")
     location_data["plogp"] = (location_data["cluster_duration"] / location_data["all_clusters_duration"]).apply(lambda x: x * np.log(x))
@@ -120,8 +140,8 @@ def location_entropy(location_data):
     return entropy
 
 
-
 def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_segment, *args, **kwargs):
+    TOP_N_LOCATIONS = 3
 
     location_data = pd.read_csv(sensor_data_files["sensor_data"])
     requested_features = provider["FEATURES"]
@@ -131,6 +151,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     clustering_algorithm = provider["CLUSTERING_ALGORITHM"]
     radius_from_home = provider["RADIUS_FOR_HOME"]
     threshold_max_speed = provider["THRESHOLD_MAX_SPEED"]
+    include_coordinates = provider["INCLUDE_COORDINATES"]
     
     if provider["MINUTES_DATA_USED"]:
         requested_features.append("minutesdataused")
@@ -139,6 +160,10 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     base_features_names = ["locationvariance","loglocationvariance","totaldistance","avgspeed","varspeed","numberofsignificantplaces","numberlocationtransitions","radiusgyration","timeattop1location","timeattop2location","timeattop3location","movingtostaticratio","outlierstimepercent","maxlengthstayatclusters","minlengthstayatclusters","avglengthstayatclusters","stdlengthstayatclusters","locationentropy","normalizedlocationentropy","minutesdataused","timeathome","homelabel"]    
     # the subset of requested features this function can compute
     features_to_compute = list(set(requested_features) & set(base_features_names))
+    if include_coordinates:
+        for i in range(1, TOP_N_LOCATIONS+1):
+            if f"timeattop{i}location" in features_to_compute:
+                features_to_compute = features_to_compute + [f"latitudetop{i}location", f"longitudetop{i}location"]
     
     # if not disabled (threshold_max_speed=0), drop any rows of data where speed is greater than the specified value in km/h prior to feature computation
     if threshold_max_speed > 0:
@@ -174,7 +199,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     location_features["radiusgyration"] = radius_of_gyration(stationary_data_without_outliers)
     
     # stay at topn clusters features
-    location_features = location_features.merge(stay_at_topn_clusters(stationary_data_without_outliers), how="outer", left_index=True, right_index=True)
+    location_features = location_features.merge(stay_at_topn_clusters(stationary_data_without_outliers, include_coordinates), how="outer", left_index=True, right_index=True)
 
     # moving to static ratio
     static_time = stationary_data.groupby(["local_segment"])["duration"].sum()

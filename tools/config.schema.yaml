@@ -754,6 +754,8 @@ properties:
                     THRESHOLD_MAX_SPEED:
                       type: integer
                       minimum: 0
+                    INCLUDE_COORDINATES:
+                      type: boolean
                     
           BARNETT:
             allOf:

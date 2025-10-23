@@ -137,6 +137,7 @@ Parameters description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 | `[CLUSTERING_ALGORITHM]`   | The original Doryab et al. implementation uses `DBSCAN`, `OPTICS` is also available with similar (but not identical) clustering results and lower memory consumption.
 | `[RADIUS_FOR_HOME]`        | All location coordinates within this distance (meters) from the home location coordinates are considered a homestay (see `timeathome` feature).
 | `[THRESHOLD_MAX_SPEED]`    | Any rows of locations data with calculated speed greater than this threshold value in km/hr will be dropped prior to feature computation. Set to 0 to disable and retain all rows.    
+| `[INCLUDE_COORDINATES]`    | Whether to include in the processed feature dataset the latitude and longitude of the centroids of the clusters corresponding to the top *n* locations. Default is False. Note that if set to True, processed data will no longer be considered deidentified.    
 
 
 Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
@@ -155,6 +156,12 @@ Features description for `[PHONE_LOCATIONS][PROVIDERS][DORYAB]`:
 |timeattop1location                                           |minutes       |Time spent at the most significant location.
 |timeattop2location                                           |minutes       |Time spent at the 2nd most significant location.
 |timeattop3location                                           |minutes       |Time spent at the 3rd most significant location. 
+|latitudetop1location                                           |decimal degrees       |Latitude of the centroid of the most significant location.
+|latitudetop2location                                           |decimal degrees       |Latitude of the centroid of the 2nd most significant location.
+|latitudetop3location                                           |decimal degrees       |Latitude of the centroid of the 3rd most significant location. 
+|longitudetop1location                                           |decimal degrees       |Longitude of the centroid of the most significant location.
+|longitudetop2location                                           |decimal degrees       |Longitude of the centroid of the 2nd most significant location.
+|longitudetop3location                                           |decimal degrees       |Longitude of the centroid of the 3rd most significant location. 
 |movingtostaticratio                                          | -   |  Ratio between stationary time and total location sensed time. A lat/long coordinate pair is labeled as stationary if its speed (distance/time) to the next coordinate pair is less than 1km/hr. A higher value represents a more stationary routine.
 |outlierstimepercent                                          | -   | Ratio between the time spent in non-significant clusters divided by the time spent in all clusters (stationary time. Only stationary samples are clustered). A higher value represents more time spent in non-significant clusters.
 |maxlengthstayatclusters                                      |minutes       |Maximum time spent in a cluster (significant location).
