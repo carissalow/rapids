@@ -261,6 +261,7 @@ PHONE_LOCATIONS:
       CLUSTERING_ALGORITHM: DBSCAN # DBSCAN, OPTICS
       RADIUS_FOR_HOME: 100
       THRESHOLD_MAX_SPEED: 0 #km/h; set to 0 to disable
+      INCLUDE_COORDINATES: False # whether to include in processed data the latitude and longitude of the centroids of the clusters corresponding to the top n locations. Note that if set to True, processed data will NOT be deidentified
       SRC_SCRIPT: src/features/phone_locations/doryab/main.py
 
     BARNETT:
