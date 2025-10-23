@@ -105,7 +105,7 @@ def stay_at_topn_clusters(location_data, include_coordinates):
         timeattop1location = ("duration", lambda x: cluster_stay(x, stay_at_clusters, 1)),
         timeattop2location = ("duration", lambda x: cluster_stay(x, stay_at_clusters, 2)),
         timeattop3location = ("duration", lambda x: cluster_stay(x, stay_at_clusters, 3)),
-        maxlengthstayatcluster = ("duration", "max"),
+        maxlengthstayatclusters = ("duration", "max"),
         minlengthstayatclusters = ("duration", "min"),
         avglengthstayatclusters = ("duration", "mean"),
         stdlengthstayatclusters = ("duration", "std")
@@ -124,7 +124,7 @@ def stay_at_topn_clusters(location_data, include_coordinates):
         )
 
         stay_at_clusters_features = stay_at_clusters_features.merge(centroids_features, how="outer", left_index=True, right_index=True)
-
+    
     return stay_at_clusters_features
 
 def location_entropy(location_data):
@@ -161,7 +161,7 @@ def doryab_features(sensor_data_files, time_segment, provider, filter_data_by_se
     # the subset of requested features this function can compute
     features_to_compute = list(set(requested_features) & set(base_features_names))
     if include_coordinates:
-        for i in range(i, TOP_N_LOCATIONS+1):
+        for i in range(1, TOP_N_LOCATIONS+1):
             if f"timeattop{i}location" in features_to_compute:
                 features_to_compute = features_to_compute + [f"latitudetop{i}location", f"longitudetop{i}location"]
     
