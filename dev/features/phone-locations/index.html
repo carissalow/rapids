@@ -2110,6 +2110,10 @@ For a detailed description of how this is calculated, see <a href="../../citatio
 <td><code>[THRESHOLD_MAX_SPEED]</code></td>
 <td>Any rows of locations data with calculated speed greater than this threshold value in km/hr will be dropped prior to feature computation. Set to 0 to disable and retain all rows.</td>
 </tr>
+<tr>
+<td><code>[INCLUDE_COORDINATES]</code></td>
+<td>Whether to include in the processed feature dataset the latitude and longitude of the centroids of the clusters corresponding to the top <em>n</em> locations. Default is False. Note that if set to True, processed data will no longer be considered deidentified.</td>
+</tr>
 </tbody>
 </table>
 <p>Features description for <code>[PHONE_LOCATIONS][PROVIDERS][DORYAB]</code>:</p>
@@ -2181,6 +2185,36 @@ For a detailed description of how this is calculated, see <a href="../../citatio
 <td>timeattop3location</td>
 <td>minutes</td>
 <td>Time spent at the 3<sup>rd</sup> most significant location.</td>
+</tr>
+<tr>
+<td>latitudetop1location</td>
+<td>decimal degrees</td>
+<td>Latitude of the centroid of the most significant location.</td>
+</tr>
+<tr>
+<td>latitudetop2location</td>
+<td>decimal degrees</td>
+<td>Latitude of the centroid of the 2<sup>nd</sup> most significant location.</td>
+</tr>
+<tr>
+<td>latitudetop3location</td>
+<td>decimal degrees</td>
+<td>Latitude of the centroid of the 3<sup>rd</sup> most significant location.</td>
+</tr>
+<tr>
+<td>longitudetop1location</td>
+<td>decimal degrees</td>
+<td>Longitude of the centroid of the most significant location.</td>
+</tr>
+<tr>
+<td>longitudetop2location</td>
+<td>decimal degrees</td>
+<td>Longitude of the centroid of the 2<sup>nd</sup> most significant location.</td>
+</tr>
+<tr>
+<td>longitudetop3location</td>
+<td>decimal degrees</td>
+<td>Longitude of the centroid of the 3<sup>rd</sup> most significant location.</td>
 </tr>
 <tr>
 <td>movingtostaticratio</td>
