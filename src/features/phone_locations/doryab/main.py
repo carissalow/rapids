@@ -57,18 +57,21 @@ def distance_and_speed_features(moving_data):
     return distance_and_speed
 
 def radius_of_gyration(location_data):
-    
     if location_data.empty:
         return np.nan
 
+    # reset index so that it is unique which ensures weights have same dimension as data for weighted mean
+    location_data_copy = location_data.copy()
+    location_data_copy.reset_index(drop=True, inplace=True)
+
     # define a lambda function to compute the weighted mean for each cluster
-    weighted_mean = lambda x: np.average(x, weights=location_data.loc[x.index, "duration"])
+    weighted_mean = lambda x: np.average(x, weights=location_data_copy.loc[x.index, "duration"])
  
     # center is the centroid of the places visited during a segment instance, not the home location
-    clusters = location_data.groupby(["local_segment", "cluster_label"]).agg(
-        double_latitude=("double_latitude", weighted_mean),
-        double_longitude=("double_longitude", weighted_mean),
-        time_in_a_cluster=("duration", "sum")
+    clusters = location_data_copy.groupby(["local_segment", "cluster_label"]).agg(
+        double_latitude = ("double_latitude", weighted_mean),
+        double_longitude = ("double_longitude", weighted_mean),
+        time_in_a_cluster = ("duration", "sum")
     ).reset_index()
 
     # redefine the lambda function to compute the weighted mean across clusters
