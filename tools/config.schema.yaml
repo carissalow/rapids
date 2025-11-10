@@ -1250,7 +1250,7 @@ properties:
                         uniqueItems: True
                         items:
                           type: string
-                          enum: ["activetosedentarytransitionprobability", "sumdurationactivitylessthan5minutes", "sumdurationactivity5to105minutes", "sumdurationactivitygreaterthan10minutes", "ginicoefficient"]
+                          enum: ["activetosedentarytransitionprobability", "sumdurationactivitylessthan5minutes", "sumdurationactivity5to10minutes", "sumdurationactivitygreaterthan10minutes", "ginicoefficient"]
                       WALKING_CADENCE:
                         type: array
                         uniqueItems: True

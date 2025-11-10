@@ -82,11 +82,11 @@ def activityFragmentationFeatures(steps_data, features_to_compute, steps_feature
             steps_features["sumdurationactivitylessthan5minutes"] = steps_data.groupby(["local_segment"]).apply(lambda x: x[x["duration"] < 5]["duration"].sum())
         else:
              steps_features["sumdurationactivitylessthan5minutes"] = np.nan
-    if "sumdurationactivity5to105minutes" in features_to_compute:
+    if "sumdurationactivity5to10minutes" in features_to_compute:
         if not steps_data.empty:
-            steps_features["sumdurationactivity5to105minutes"] = steps_data.groupby(["local_segment"]).apply(lambda x: x[x["duration"].between(5, 10, inclusive = "both")]["duration"].sum())
+            steps_features["sumdurationactivity5to10minutes"] = steps_data.groupby(["local_segment"]).apply(lambda x: x[x["duration"].between(5, 10, inclusive = "both")]["duration"].sum())
         else:
-            steps_features["sumdurationactivity5to105minutes"] = np.nan
+            steps_features["sumdurationactivity5to10minutes"] = np.nan
     if "sumdurationactivitygreaterthan10minutes" in features_to_compute:
         if not steps_data.empty:
             steps_features["sumdurationactivitygreaterthan10minutes"] = steps_data.groupby(["local_segment"]).apply(lambda x: x[x["duration"] > 10]["duration"].sum())
@@ -198,7 +198,7 @@ def rapids_features(sensor_data_files, time_segment, provider, filter_data_by_se
     base_intraday_features_steps = ["sumsteps", "maxsteps", "minsteps", "avgsteps", "stdsteps", "firststeptime", "laststeptime"]
     base_intraday_features_sedentarybout = ["countepisodesedentarybout", "sumdurationsedentarybout", "maxdurationsedentarybout", "mindurationsedentarybout", "avgdurationsedentarybout", "stddurationsedentarybout"]
     base_intraday_features_activebout = ["countepisodeactivebout", "sumdurationactivebout", "maxdurationactivebout", "mindurationactivebout", "avgdurationactivebout", "stddurationactivebout"]
-    base_intraday_features_activityfragmentation = ["activetosedentarytransitionprobability", "sumdurationactivitylessthan5minutes", "sumdurationactivity5to105minutes", "sumdurationactivitygreaterthan10minutes", "ginicoefficient"]
+    base_intraday_features_activityfragmentation = ["activetosedentarytransitionprobability", "sumdurationactivitylessthan5minutes", "sumdurationactivity5to10minutes", "sumdurationactivitygreaterthan10minutes", "ginicoefficient"]
     base_intraday_features_walkingcadence = ["meancadence", "uncensoredmeancadence", "peak1minutecadence", "peak30minutecadence", "peak60minutecadence", "max5minutecadence", "max20minutecadence", "max30minutecadence", "max60minutecadence",
         "totalminutes0cadence", "totalminutes1to19cadence", "totalminutes20to39cadence", "totalminutes40to59cadence", "totalminutes60to79cadence", "totalminutes80to99cadence", "totalminutes100to119cadence", "totalminutes120pluscadence", 
         "totalminutesabove0cadence", "totalminutesabove19cadence", "totalminutesabove100cadence"]
