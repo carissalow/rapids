@@ -375,7 +375,7 @@ FITBIT_DATA_YIELD:
 
 # See https://www.rapids.science/latest/features/fitbit-heartrate-summary/
 FITBIT_HEARTRATE_SUMMARY:
-  CONTAINER: heartrate_summary
+  CONTAINER: fitbit_data
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -384,7 +384,7 @@ FITBIT_HEARTRATE_SUMMARY:
 
 # See https://www.rapids.science/latest/features/fitbit-heartrate-intraday/
 FITBIT_HEARTRATE_INTRADAY:
-  CONTAINER: heartrate_intraday
+  CONTAINER: fitbit_data
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -393,7 +393,7 @@ FITBIT_HEARTRATE_INTRADAY:
 
 # See https://www.rapids.science/latest/features/fitbit-sleep-summary/
 FITBIT_SLEEP_SUMMARY:
-  CONTAINER: sleep_summary
+  CONTAINER: fitbit_data
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -403,7 +403,7 @@ FITBIT_SLEEP_SUMMARY:
 
 # See https://www.rapids.science/latest/features/fitbit-sleep-intraday/
 FITBIT_SLEEP_INTRADAY:
-  CONTAINER: sleep_intraday
+  CONTAINER: fitbit_data
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -433,7 +433,7 @@ FITBIT_SLEEP_INTRADAY:
 
 # See https://www.rapids.science/latest/features/fitbit-steps-summary/
 FITBIT_STEPS_SUMMARY:
-  CONTAINER: steps_summary
+  CONTAINER: fitbit_data
   PROVIDERS:
     RAPIDS:
       COMPUTE: False
@@ -442,7 +442,7 @@ FITBIT_STEPS_SUMMARY:
 
 # See https://www.rapids.science/latest/features/fitbit-steps-intraday/
 FITBIT_STEPS_INTRADAY:
-  CONTAINER: steps_intraday
+  CONTAINER: fitbit_data
   EXCLUDE_SLEEP: # you can exclude step data that was logged during sleep periods
     TIME_BASED:
       EXCLUDE: False
@@ -457,7 +457,7 @@ FITBIT_STEPS_INTRADAY:
         STEPS: ["sum", "max", "min", "avg", "std", "firststeptime", "laststeptime"]
         SEDENTARY_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
         ACTIVE_BOUT: ["countepisode", "sumduration", "maxduration", "minduration", "avgduration", "stdduration"]
-        ACTIVITY_FRAGMENTATION: ["activetosedentarytransitionprobability", "sumdurationactivitylessthan5minutes", "sumdurationactivity5to105minutes", "sumdurationactivitygreaterthan10minutes", "ginicoefficient"]
+        ACTIVITY_FRAGMENTATION: ["activetosedentarytransitionprobability", "sumdurationactivitylessthan5minutes", "sumdurationactivity5to10minutes", "sumdurationactivitygreaterthan10minutes", "ginicoefficient"]
         WALKING_CADENCE: ["mean", "uncensoredmean", "peak1minute", "peak30minute", "peak60minute", "max5minute", "max20minute", "max30minute", "max60minute", "totalminutes0", "totalminutes1to19", "totalminutes20to39", "totalminutes40to59", "totalminutes60to79", "totalminutes80to99", "totalminutes100to119", "totalminutes120plus","totalminutesabove0", "totalminutesabove19", "totalminutesabove100"]
       REFERENCE_HOUR: 0
       THRESHOLD_ACTIVE_BOUT: 10 # steps

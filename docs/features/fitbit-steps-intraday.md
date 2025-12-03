@@ -61,7 +61,7 @@ Features description for `[FITBIT_STEPS_INTRADAY][PROVIDERS][RAPIDS]`:
 |stddurationactivebout                      |minutes        |The standard deviation of the duration of active bouts during a time segment.  
 |activetosedentarytransitionprobability     |unitless       |Active-to-sedentary transition probability (ASTP). The reciprocal of the mean active bout length during a time segment. Bounded by 0 and 1.    
 |sumdurationactivitylessthan5minutes        |minutes        |Sum of duration of active bouts less than 5 minutes in length during a time segment.   
-|sumdurationactivity5to105minutes           |minutes        |Sum of duration of active bouts between 5 and 10 minutes in length, inclusive, during a time segment.  
+|sumdurationactivity5to10minutes            |minutes        |Sum of duration of active bouts between 5 and 10 minutes in length, inclusive, during a time segment.  
 |sumdurationactivitygreaterthan10minutes    |minutes        |Sum of duration of active bouts more than 10 minutes in length during a time segment.  
 |ginicoefficient                            |unitless       |Measure of (absolute, not squared) variability of active bout durations normalized by the average active bout duration during a time segment. When the Gini coefficient is close to 1, it indicates that total time is accumulated via a small number of longer bouts. Conversely, when the Gini coefficient is close to 0, it indicates that all bouts contribute equally to total time.  
 |meancadence                                |steps/minute   |The average steps/minute during a time segment.  

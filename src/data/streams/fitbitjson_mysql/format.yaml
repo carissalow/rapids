@@ -1,7 +1,7 @@
 FITBIT_HEARTRATE_SUMMARY:
   RAPIDS_COLUMN_MAPPINGS:
     TIMESTAMP: FLAG_TO_MUTATE
-    DEVICE_ID: device_id
+    DEVICE_ID: fitbit_id
     LOCAL_DATE_TIME: FLAG_TO_MUTATE
     HEARTRATE_DAILY_RESTINGHR: FLAG_TO_MUTATE
     HEARTRATE_DAILY_CALORIESOUTOFRANGE: FLAG_TO_MUTATE
@@ -10,7 +10,7 @@ FITBIT_HEARTRATE_SUMMARY:
     HEARTRATE_DAILY_CALORIESPEAK: FLAG_TO_MUTATE
   MUTATION:
     COLUMN_MAPPINGS:
-      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+      JSON_FITBIT_COLUMN: data # string columnwith JSON objects
     SCRIPTS: # List any python or r scripts that mutate your raw data
       - src/data/streams/mutations/fitbit/parse_heartrate_summary_json.py
       - src/data/streams/mutations/fitbit/add_zero_timestamp.py
@@ -18,13 +18,13 @@ FITBIT_HEARTRATE_SUMMARY:
 FITBIT_HEARTRATE_INTRADAY:
   RAPIDS_COLUMN_MAPPINGS:
     TIMESTAMP: FLAG_TO_MUTATE
-    DEVICE_ID: device_id
+    DEVICE_ID: fitbit_id
     LOCAL_DATE_TIME: FLAG_TO_MUTATE
     HEARTRATE: FLAG_TO_MUTATE
     HEARTRATE_ZONE: FLAG_TO_MUTATE
   MUTATION:
     COLUMN_MAPPINGS:
-      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+      JSON_FITBIT_COLUMN: data # string columnwith JSON objects
     SCRIPTS: # List any python or r scripts that mutate your raw data
       - src/data/streams/mutations/fitbit/parse_heartrate_intraday_json.py
       - src/data/streams/mutations/fitbit/add_zero_timestamp.py
@@ -32,7 +32,7 @@ FITBIT_HEARTRATE_INTRADAY:
 FITBIT_SLEEP_SUMMARY:
   RAPIDS_COLUMN_MAPPINGS:
     TIMESTAMP: FLAG_TO_MUTATE
-    DEVICE_ID: device_id
+    DEVICE_ID: fitbit_id
     LOCAL_DATE_TIME: FLAG_TO_MUTATE
     LOCAL_START_DATE_TIME: FLAG_TO_MUTATE
     LOCAL_END_DATE_TIME: FLAG_TO_MUTATE
@@ -46,7 +46,7 @@ FITBIT_SLEEP_SUMMARY:
     TYPE: FLAG_TO_MUTATE
   MUTATION:
     COLUMN_MAPPINGS:
-      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+      JSON_FITBIT_COLUMN: data # string columnwith JSON objects
     SCRIPTS: # List any python or r scripts that mutate your raw data
       - src/data/streams/mutations/fitbit/parse_sleep_summary_json.py
       - src/data/streams/mutations/fitbit/add_local_date_time.py
@@ -55,7 +55,7 @@ FITBIT_SLEEP_SUMMARY:
 FITBIT_SLEEP_INTRADAY:
   RAPIDS_COLUMN_MAPPINGS:
     TIMESTAMP: FLAG_TO_MUTATE
-    DEVICE_ID: device_id
+    DEVICE_ID: fitbit_id
     LOCAL_DATE_TIME: FLAG_TO_MUTATE
     TYPE_EPISODE_ID: FLAG_TO_MUTATE
     DURATION: FLAG_TO_MUTATE
@@ -64,7 +64,7 @@ FITBIT_SLEEP_INTRADAY:
     LEVEL: FLAG_TO_MUTATE
   MUTATION:
     COLUMN_MAPPINGS:
-      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+      JSON_FITBIT_COLUMN: data # string columnwith JSON objects
     SCRIPTS: # List any python or r scripts that mutate your raw data
       - src/data/streams/mutations/fitbit/parse_sleep_intraday_json.py
       - src/data/streams/mutations/fitbit/add_zero_timestamp.py
@@ -72,12 +72,12 @@ FITBIT_SLEEP_INTRADAY:
 FITBIT_STEPS_SUMMARY:
   RAPIDS_COLUMN_MAPPINGS:
     TIMESTAMP: FLAG_TO_MUTATE
-    DEVICE_ID: device_id
+    DEVICE_ID: fitbit_id
     LOCAL_DATE_TIME: FLAG_TO_MUTATE
     STEPS: FLAG_TO_MUTATE
   MUTATION:
     COLUMN_MAPPINGS:
-      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+      JSON_FITBIT_COLUMN: data # string columnwith JSON objects
     SCRIPTS: # List any python or r scripts that mutate your raw data
       - src/data/streams/mutations/fitbit/parse_steps_summary_json.py
       - src/data/streams/mutations/fitbit/add_zero_timestamp.py
@@ -85,12 +85,12 @@ FITBIT_STEPS_SUMMARY:
 FITBIT_STEPS_INTRADAY:
   RAPIDS_COLUMN_MAPPINGS:
     TIMESTAMP: FLAG_TO_MUTATE
-    DEVICE_ID: device_id
+    DEVICE_ID: fitbit_id
     LOCAL_DATE_TIME: FLAG_TO_MUTATE
     STEPS: FLAG_TO_MUTATE
   MUTATION:
     COLUMN_MAPPINGS:
-      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+      JSON_FITBIT_COLUMN: data # string columnwith JSON objects
     SCRIPTS: # List any python or r scripts that mutate your raw data
       - src/data/streams/mutations/fitbit/parse_steps_intraday_json.py
       - src/data/streams/mutations/fitbit/add_zero_timestamp.py
@@ -98,14 +98,14 @@ FITBIT_STEPS_INTRADAY:
 FITBIT_CALORIES_INTRADAY:
   RAPIDS_COLUMN_MAPPINGS:
     TIMESTAMP: FLAG_TO_MUTATE
-    DEVICE_ID: device_id
+    DEVICE_ID: fitbit_id
     LOCAL_DATE_TIME: FLAG_TO_MUTATE
     LEVEL: FLAG_TO_MUTATE
     METS: FLAG_TO_MUTATE
     VALUE: FLAG_TO_MUTATE
   MUTATION:
     COLUMN_MAPPINGS:
-      JSON_FITBIT_COLUMN: fitbit_data # string columnwith JSON objects
+      JSON_FITBIT_COLUMN: data # string columnwith JSON objects
     SCRIPTS: # List any python or r scripts that mutate your raw data
       - src/data/streams/mutations/fitbit/parse_calories_intraday_json.py
       - src/data/streams/mutations/fitbit/add_zero_timestamp.py
