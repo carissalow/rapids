@@ -73,6 +73,13 @@ def cluster_centroids(location_data):
         .reset_index()
     )
 
+    if "index" in centroids.columns:
+        centroids.drop("index", axis=1, inplace=True)
+    if not "local_segment" in centroids.columns:
+        centroids = centroids.assign(local_segment=None)
+    if not "cluster_label" in centroids.columns:
+        centroids = centroids.assign(cluster_label=None)
+
     return centroids
 
 def radius_of_gyration(location_data):
