@@ -12,15 +12,17 @@ def parseCaloriesData(calories_data):
 
     # Parse JSON into individual records
     for record in calories_data.json_fitbit_column:
-        record = json.loads(record)  # Parse text into JSON
+        record = json.loads(record)  
         if "activities-calories" in record and "activities-calories-intraday" in record:
             curr_date = datetime.strptime(record["activities-calories"][0]["dateTime"], "%Y-%m-%d")
             dataset = record["activities-calories-intraday"]["dataset"]
             for data in dataset:
                 d_time = datetime.strptime(data["time"], '%H:%M:%S').time()
                 d_datetime = datetime.combine(curr_date, d_time).strftime("%Y-%m-%d %H:%M:%S")
-                row_intraday = (device_id, data["level"], data["mets"], data["value"], d_datetime, 0)
-                records_intraday.append(row_intraday)
+                # discard minutes that do not contain all expected level, mets, and value elements
+                if all(element in data.keys() for element in ["level", "mets", "value"]):
+                    row_intraday = (device_id, data["level"], data["mets"], data["value"], d_datetime, 0)
+                    records_intraday.append(row_intraday)
 
     return pd.DataFrame(data=records_intraday, columns=CALORIES_INTRADAY_COLUMNS)
 
