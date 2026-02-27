@@ -4,6 +4,7 @@
 
 - Add significant location cluster centroid latitude and longitude features to phone locations Doryab provider   
 - Fix bug in phone locations radius of gyration feature that caused weights and data for weighted average to have different dimensions 
+- Fix bug parsing raw Fitbit calories JSON data when records in the intraday dataset are missing level and/or mets elements    
 - Fix typo in name of Fitbit steps intraday RAPIDS provider sumdurationactivity5to10minutes feature that did not affect computation  
 - Change Fitbit JSON MySQL data stream default settings to match PittBit's format  
 - Relocate participant ID column from end to beginning of merged processed feature data  
