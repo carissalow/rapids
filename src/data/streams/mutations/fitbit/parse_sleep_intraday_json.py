@@ -148,9 +148,8 @@ def parseSleepData(sleep_data):
                 
                 type_episode_id += 1
 
-    parsed_data = pd.DataFrame(data=records_intraday)
-    parsed_data.insert(0, column="device_id", value=device_id)
-    
+    parsed_data = pd.DataFrame(data=records_intraday, columns=SLEEP_INTRADAY_COLUMNS)
+    parsed_data["device_id"] = device_id
     return parsed_data
 
 
